@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Routes, Route, Link, useLocation } from "react-router";
 import yzEnglishLogo from "@/imports/logo-4.png";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import type { ReactNode } from "react";
@@ -7,8 +8,6 @@ import {
   Volume2, Bookmark, Share2, ChevronLeft, Mic,
   Clock, Globe, BarChart2, Download, ArrowRight, X, Layers,
 } from "lucide-react";
-
-type Page = "home" | "explore" | "scene" | "resources" | "about";
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
@@ -38,15 +37,15 @@ const CATEGORY_BG: Record<string, string> = {
 };
 
 const SCENES = [
-  { id: 1, titleEn: "Returning Clothes at a Store", titleZh: "在商店退衣服", category: "Shopping & Returns", region: "Universal", level: "A2–B1", duration: "2 min", featured: true, isNew: false, desc: "Learn how to handle a return at a clothing store, including what to do when you don't have a receipt." },
-  { id: 2, titleEn: "Picking Up a Child Early from School", titleZh: "提前接孩子放学", category: "School & Family", region: "Universal", level: "A2–B1", duration: "5 min", featured: true, isNew: true, desc: "Practice talking to the school office when you need to pick up your child before dismissal." },
-  { id: 3, titleEn: "Booking a Dentist Appointment", titleZh: "预约牙医", category: "Healthcare", region: "Universal", level: "B1–B2", duration: "6 min", featured: false, isNew: false, desc: "Learn to call a dental clinic, answer intake questions, and confirm your appointment." },
-  { id: 4, titleEn: "Asking for a Costco Price Adjustment", titleZh: "Costco价格调整申请", category: "Shopping & Returns", region: "Canada", level: "A2–B1", duration: "3 min", featured: false, isNew: true, desc: "Understand how to request a price adjustment if an item you bought goes on sale within the allowed window." },
-  { id: 5, titleEn: "Ordering at a Drive-Through", titleZh: "得来速点餐", category: "Food & Restaurants", region: "North America", level: "A1–A2", duration: "3 min", featured: true, isNew: false, desc: "Practice ordering food at a drive-through, including customizing your order and paying." },
-  { id: 6, titleEn: "Reporting a Repair Issue to Your Landlord", titleZh: "向房东报修", category: "Housing", region: "Universal", level: "B1–B2", duration: "5 min", featured: false, isNew: false, desc: "Learn to describe a maintenance problem clearly and follow up on the repair status." },
-  { id: 7, titleEn: "Checking In at a Hotel", titleZh: "酒店入住", category: "Travel", region: "Universal", level: "A2–B1", duration: "4 min", featured: false, isNew: false, desc: "Navigate the front desk check-in process, including room preferences and facility questions." },
-  { id: 8, titleEn: "Airport Check-In and Baggage Drop", titleZh: "机场值机与行李托运", category: "Travel", region: "Universal", level: "A2–B1", duration: "5 min", featured: false, isNew: true, desc: "Handle the airline check-in counter, answer security questions, and deal with overweight baggage." },
-  { id: 9, titleEn: "Calling in Sick at Work", titleZh: "打电话请病假", category: "Work", region: "Universal", level: "A2–B1", duration: "3 min", featured: false, isNew: false, desc: "Learn the right words and tone to call your manager when you cannot come to work." },
+  { id: 1, slug: "returning-clothes-at-a-store", titleEn: "Returning Clothes at a Store", titleZh: "在商店退衣服", category: "Shopping & Returns", region: "Universal", level: "A2–B1", duration: "2 min", featured: true, isNew: false, desc: "Learn how to handle a return at a clothing store, including what to do when you don't have a receipt." },
+  { id: 2, slug: "picking-up-a-child-early-from-school", titleEn: "Picking Up a Child Early from School", titleZh: "提前接孩子放学", category: "School & Family", region: "Universal", level: "A2–B1", duration: "5 min", featured: true, isNew: true, desc: "Practice talking to the school office when you need to pick up your child before dismissal." },
+  { id: 3, slug: "booking-a-dentist-appointment", titleEn: "Booking a Dentist Appointment", titleZh: "预约牙医", category: "Healthcare", region: "Universal", level: "B1–B2", duration: "6 min", featured: false, isNew: false, desc: "Learn to call a dental clinic, answer intake questions, and confirm your appointment." },
+  { id: 4, slug: "asking-for-a-costco-price-adjustment", titleEn: "Asking for a Costco Price Adjustment", titleZh: "Costco价格调整申请", category: "Shopping & Returns", region: "Canada", level: "A2–B1", duration: "3 min", featured: false, isNew: true, desc: "Understand how to request a price adjustment if an item you bought goes on sale within the allowed window." },
+  { id: 5, slug: "ordering-at-a-drive-through", titleEn: "Ordering at a Drive-Through", titleZh: "得来速点餐", category: "Food & Restaurants", region: "North America", level: "A1–A2", duration: "3 min", featured: true, isNew: false, desc: "Practice ordering food at a drive-through, including customizing your order and paying." },
+  { id: 6, slug: "reporting-a-repair-issue-to-your-landlord", titleEn: "Reporting a Repair Issue to Your Landlord", titleZh: "向房东报修", category: "Housing", region: "Universal", level: "B1–B2", duration: "5 min", featured: false, isNew: false, desc: "Learn to describe a maintenance problem clearly and follow up on the repair status." },
+  { id: 7, slug: "checking-in-at-a-hotel", titleEn: "Checking In at a Hotel", titleZh: "酒店入住", category: "Travel", region: "Universal", level: "A2–B1", duration: "4 min", featured: false, isNew: false, desc: "Navigate the front desk check-in process, including room preferences and facility questions." },
+  { id: 8, slug: "airport-check-in-and-baggage-drop", titleEn: "Airport Check-In and Baggage Drop", titleZh: "机场值机与行李托运", category: "Travel", region: "Universal", level: "A2–B1", duration: "5 min", featured: false, isNew: true, desc: "Handle the airline check-in counter, answer security questions, and deal with overweight baggage." },
+  { id: 9, slug: "calling-in-sick-at-work", titleEn: "Calling in Sick at Work", titleZh: "打电话请病假", category: "Work", region: "Universal", level: "A2–B1", duration: "3 min", featured: false, isNew: false, desc: "Learn the right words and tone to call your manager when you cannot come to work." },
 ];
 
 const DIALOGUE = [
@@ -256,13 +255,14 @@ function ImgBox({ label, className = "", color = "bg-secondary" }: { label: stri
   );
 }
 
-function Btn({ variant = "primary", size = "md", children, onClick, disabled, className = "" }: {
+function Btn({ variant = "primary", size = "md", children, onClick, disabled, className = "", to }: {
   variant?: "primary" | "secondary" | "ghost" | "accent" | "outline-light";
   size?: "sm" | "md" | "lg";
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
   className?: string;
+  to?: string;
 }) {
   const base = "inline-flex items-center justify-center gap-1.5 font-semibold rounded-xl transition-all duration-150 cursor-pointer select-none";
   const variants = {
@@ -273,9 +273,12 @@ function Btn({ variant = "primary", size = "md", children, onClick, disabled, cl
     "outline-light": "bg-transparent text-white border border-white/30 hover:bg-white/10 active:scale-95",
   };
   const sizes = { sm: "text-xs px-3 py-1.5", md: "text-sm px-4 py-2.5", lg: "text-sm px-5 py-3" };
+  const classes = `${base} ${variants[variant]} ${sizes[size]} ${disabled ? "opacity-35 cursor-not-allowed pointer-events-none" : ""} ${className}`;
+  if (to && !disabled) {
+    return <Link to={to} className={classes}>{children}</Link>;
+  }
   return (
-    <button onClick={onClick} disabled={disabled}
-      className={`${base} ${variants[variant]} ${sizes[size]} ${disabled ? "opacity-35 cursor-not-allowed pointer-events-none" : ""} ${className}`}>
+    <button onClick={onClick} disabled={disabled} className={classes}>
       {children}
     </button>
   );
@@ -296,11 +299,11 @@ function Collapsible({ label, defaultOpen = false, children }: { label: ReactNod
 
 // ─── Scene card ───────────────────────────────────────────────────────────────
 
-function SceneCard({ scene, onClick }: { scene: typeof SCENES[0]; onClick: () => void }) {
+function SceneCard({ scene }: { scene: typeof SCENES[0] }) {
   const photo = SCENE_PHOTOS[scene.id];
   const catColor = CATEGORY_BG[scene.category] ?? "bg-secondary";
   return (
-    <button onClick={onClick} className="w-full text-left border border-border rounded-2xl overflow-hidden bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 transition-all duration-200 group">
+    <Link to={`/scenes/${scene.slug}`} className="block w-full text-left border border-border rounded-2xl overflow-hidden bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 transition-all duration-200 group">
       <div className="relative h-48 overflow-hidden">
         {photo ? (
           <img src={photo} alt={scene.titleEn} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
@@ -323,35 +326,43 @@ function SceneCard({ scene, onClick }: { scene: typeof SCENES[0]; onClick: () =>
           <span className="ml-auto"><DurationLabel duration={scene.duration} /></span>
         </div>
       </div>
-    </button>
+    </Link>
   );
 }
 
 // ─── Desktop nav — dark forest green ─────────────────────────────────────────
 
-function DesktopNav({ currentPage, nav }: { currentPage: Page; nav: (p: Page) => void }) {
+function isNavActive(pathname: string, path: string) {
+  return path === "/" ? pathname === "/" : pathname === path || pathname.startsWith(`${path}/`);
+}
+
+function DesktopNav() {
+  const { pathname } = useLocation();
   return (
     <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 h-16 items-center px-8 gap-10" style={{ backgroundColor: "#184C3A" }}>
-      <button onClick={() => nav("home")} className="flex-shrink-0 flex items-center">
+      <Link to="/" className="flex-shrink-0 flex items-center">
         <ImageWithFallback
           src={yzEnglishLogo}
           alt="Yz English — Real English for Real Life"
           className="object-contain lg:h-[56px] h-[46px]"
           style={{ width: "auto" }}
         />
-      </button>
-      {([["home", "Home"], ["explore", "Explore"], ["resources", "Resources"], ["about", "About"]] as [Page, string][]).map(([p, label]) => (
-        <button key={p} onClick={() => nav(p)}
-          className={`text-sm font-semibold transition-colors relative py-4 ${
-            currentPage === p
-              ? "text-accent"
-              : "text-white/70 hover:text-white"
-          }`}
-          style={currentPage === p ? { color: "#B7F21D" } : {}}>
-          {label}
-          {currentPage === p && <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full" style={{ backgroundColor: "#B7F21D" }} />}
-        </button>
-      ))}
+      </Link>
+      {([["/", "Home"], ["/explore", "Explore"], ["/resources", "Resources"], ["/about", "About"]] as [string, string][]).map(([path, label]) => {
+        const active = isNavActive(pathname, path);
+        return (
+          <Link key={path} to={path}
+            className={`text-sm font-semibold transition-colors relative py-4 ${
+              active
+                ? "text-accent"
+                : "text-white/70 hover:text-white"
+            }`}
+            style={active ? { color: "#B7F21D" } : {}}>
+            {label}
+            {active && <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full" style={{ backgroundColor: "#B7F21D" }} />}
+          </Link>
+        );
+      })}
       <div className="ml-auto flex items-center gap-2 rounded-xl px-3.5 py-2 cursor-text" style={{ backgroundColor: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}>
         <Search size={13} className="text-white/40" />
         <span className="text-xs text-white/40">Search scenes…</span>
@@ -362,24 +373,25 @@ function DesktopNav({ currentPage, nav }: { currentPage: Page; nav: (p: Page) =>
 
 // ─── Mobile nav ───────────────────────────────────────────────────────────────
 
-function MobileNav({ currentPage, nav }: { currentPage: Page; nav: (p: Page) => void }) {
+function MobileNav() {
+  const { pathname } = useLocation();
   const items = [
-    { label: "Home", page: "home" as Page, Icon: Home },
-    { label: "Explore", page: "explore" as Page, Icon: Grid },
-    { label: "Resources", page: "resources" as Page, Icon: FileText },
-    { label: "About", page: "about" as Page, Icon: Info },
+    { label: "Home", path: "/", Icon: Home },
+    { label: "Explore", path: "/explore", Icon: Grid },
+    { label: "Resources", path: "/resources", Icon: FileText },
+    { label: "About", path: "/about", Icon: Info },
   ];
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border h-16 flex shadow-lg">
-      {items.map(({ label, page, Icon }) => {
-        const active = currentPage === page;
+      {items.map(({ label, path, Icon }) => {
+        const active = isNavActive(pathname, path);
         return (
-          <button key={label} onClick={() => nav(page)} className="flex-1 flex flex-col items-center justify-center gap-1 py-2">
+          <Link key={label} to={path} className="flex-1 flex flex-col items-center justify-center gap-1 py-2">
             <div className={`flex items-center justify-center w-9 h-6 rounded-full transition-colors ${active ? "bg-primary/10" : ""}`}>
               <Icon size={19} className={active ? "text-primary" : "text-muted-foreground"} strokeWidth={active ? 2.5 : 1.75} />
             </div>
             <span className={`text-[10px] font-semibold ${active ? "text-primary" : "text-muted-foreground"}`}>{label}</span>
-          </button>
+          </Link>
         );
       })}
     </nav>
@@ -388,7 +400,7 @@ function MobileNav({ currentPage, nav }: { currentPage: Page; nav: (p: Page) => 
 
 // ─── Home page ────────────────────────────────────────────────────────────────
 
-function HomePage({ nav }: { nav: (p: Page) => void }) {
+function HomePage() {
   const recentScenes = SCENES.filter(s => s.isNew);
 
   return (
@@ -457,10 +469,10 @@ function HomePage({ nav }: { nav: (p: Page) => void }) {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <Btn variant="accent" size="lg" onClick={() => nav("explore")}>
+              <Btn variant="accent" size="lg" to="/explore">
                 Explore Scenes <ArrowRight size={15} />
               </Btn>
-              <Btn variant="secondary" size="lg" onClick={() => nav("explore")}>
+              <Btn variant="secondary" size="lg" to="/explore">
                 Browse Travel English
               </Btn>
             </div>
@@ -542,12 +554,12 @@ function HomePage({ nav }: { nav: (p: Page) => void }) {
             { url: "https://images.unsplash.com/photo-1629308993023-bb7ca078abdc?w=320&h=200&fit=crop&auto=format", alt: "Airport terminal", label: "Travel" },
             { url: "https://images.unsplash.com/photo-1545575950-59f935d6521c?w=320&h=200&fit=crop&auto=format", alt: "Drive-through food counter", label: "Food & Restaurants" },
           ].map(p => (
-            <button key={p.url} onClick={() => nav("explore")} className="flex-shrink-0 w-44 text-left group">
+            <Link key={p.url} to="/explore" className="flex-shrink-0 w-44 text-left group">
               <div className="rounded-2xl overflow-hidden aspect-video mb-2 shadow-md bg-secondary">
                 <img src={p.url} alt={p.alt} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
               </div>
               <p className="text-xs font-bold text-foreground">{p.label}</p>
-            </button>
+            </Link>
           ))}
         </div>
       </section>
@@ -591,13 +603,13 @@ function HomePage({ nav }: { nav: (p: Page) => void }) {
               <p className="text-[9px] font-black uppercase tracking-[0.18em] text-muted-foreground mb-1">Featured scenes · 精选场景</p>
               <p className="text-2xl font-black text-foreground leading-tight">Real situations. Practise them first.</p>
             </div>
-            <button onClick={() => nav("explore")} className="text-xs font-bold text-primary flex items-center gap-0.5 hover:opacity-70 transition-opacity flex-shrink-0 mb-1">
+            <Link to="/explore" className="text-xs font-bold text-primary flex items-center gap-0.5 hover:opacity-70 transition-opacity flex-shrink-0 mb-1">
               See all <ChevronRight size={13} />
-            </button>
+            </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {SCENES.filter(s => s.featured).map(scene => (
-              <SceneCard key={scene.id} scene={scene} onClick={() => nav("scene")} />
+              <SceneCard key={scene.id} scene={scene} />
             ))}
           </div>
         </div>
@@ -610,16 +622,16 @@ function HomePage({ nav }: { nav: (p: Page) => void }) {
         <div className="max-w-lg mx-auto md:max-w-5xl px-4">
           <div className="flex items-end justify-between mb-5">
             <p className="text-[9px] font-black uppercase tracking-[0.18em] text-muted-foreground">Browse by life situation · 按生活任务</p>
-            <button onClick={() => nav("explore")} className="text-xs font-bold text-primary flex items-center gap-0.5 hover:opacity-70 transition-opacity">
+            <Link to="/explore" className="text-xs font-bold text-primary flex items-center gap-0.5 hover:opacity-70 transition-opacity">
               View all scenes <ChevronRight size={13} />
-            </button>
+            </Link>
           </div>
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map(cat => (
-              <button key={cat} onClick={() => nav("explore")}
+              <Link key={cat} to="/explore"
                 className="text-xs font-bold border border-border rounded-full px-4 py-2 bg-card hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-150 text-foreground">
                 {cat}
-              </button>
+              </Link>
             ))}
           </div>
         </div>
@@ -635,15 +647,15 @@ function HomePage({ nav }: { nav: (p: Page) => void }) {
               <p className="text-[9px] font-black uppercase tracking-[0.18em] text-muted-foreground mb-0.5">Recently added · 最新场景</p>
               <p className="text-xl font-black text-foreground">New scenes this week</p>
             </div>
-            <button onClick={() => nav("explore")} className="text-xs font-bold text-primary flex items-center gap-0.5 hover:opacity-70 transition-opacity">
+            <Link to="/explore" className="text-xs font-bold text-primary flex items-center gap-0.5 hover:opacity-70 transition-opacity">
               See all <ChevronRight size={13} />
-            </button>
+            </Link>
           </div>
           <div className="space-y-3">
             {recentScenes.map(scene => {
               const photo = SCENE_PHOTOS[scene.id];
               return (
-                <button key={scene.id} onClick={() => nav("scene")}
+                <Link key={scene.id} to={`/scenes/${scene.slug}`}
                   className="w-full flex items-center gap-4 rounded-2xl p-3 bg-card border border-border text-left hover:border-primary/25 hover:shadow-md transition-all duration-150">
                   <div className={`w-16 h-16 rounded-xl flex-shrink-0 overflow-hidden ${photo ? "" : (CATEGORY_BG[scene.category] ?? "bg-secondary")}`}>
                     {photo ? (
@@ -664,7 +676,7 @@ function HomePage({ nav }: { nav: (p: Page) => void }) {
                     <span className="text-[10px] font-black px-2.5 py-1 rounded-full" style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}>New</span>
                     <DurationLabel duration={scene.duration} />
                   </div>
-                </button>
+                </Link>
               );
             })}
           </div>
@@ -681,9 +693,9 @@ function HomePage({ nav }: { nav: (p: Page) => void }) {
               <p className="text-[9px] font-black uppercase tracking-[0.18em] text-muted-foreground mb-1">PDF resources · 学习资料</p>
               <p className="text-xl font-black text-foreground">Download and study offline</p>
             </div>
-            <button onClick={() => nav("resources")} className="text-xs font-bold text-primary flex items-center gap-0.5 hover:opacity-70 transition-opacity flex-shrink-0 mb-1">
+            <Link to="/resources" className="text-xs font-bold text-primary flex items-center gap-0.5 hover:opacity-70 transition-opacity flex-shrink-0 mb-1">
               View all <ChevronRight size={13} />
-            </button>
+            </Link>
           </div>
           <div className="border border-border rounded-2xl bg-card shadow-sm overflow-hidden">
             <div className="p-4 md:p-5 border-b border-border">
@@ -704,7 +716,7 @@ function HomePage({ nav }: { nav: (p: Page) => void }) {
               ))}
             </div>
             <div className="p-4 border-t border-border">
-              <Btn variant="primary" onClick={() => nav("resources")} className="w-full">
+              <Btn variant="primary" to="/resources" className="w-full">
                 <FileText size={14} />Browse all PDF resources
               </Btn>
             </div>
@@ -718,19 +730,19 @@ function HomePage({ nav }: { nav: (p: Page) => void }) {
       <footer style={{ backgroundColor: "#0F2E24" }} className="px-4 pt-10 pb-8">
         <div className="max-w-lg mx-auto md:max-w-5xl">
           {/* Logo */}
-          <button onClick={() => nav("home")} className="mb-1 block">
+          <Link to="/" className="mb-1 block">
             <ImageWithFallback
               src={yzEnglishLogo}
               alt="Yz English — Real English for Real Life"
               className="object-contain"
               style={{ height: "40px", width: "auto" }}
             />
-          </button>
+          </Link>
           {/* Smile-curve brand separator */}
           <SmileCurve width={64} opacity={0.35} className="mb-5" />
           <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs mb-6" style={{ color: "rgba(255,255,255,0.4)" }}>
-            {([["Home", "home"], ["Explore", "explore"], ["Resources", "resources"], ["About", "about"]] as [string, Page][]).map(([l, p]) => (
-              <button key={l} onClick={() => nav(p)} className="hover:text-white transition-colors">{l}</button>
+            {([["Home", "/"], ["Explore", "/explore"], ["Resources", "/resources"], ["About", "/about"]] as [string, string][]).map(([l, p]) => (
+              <Link key={l} to={p} className="hover:text-white transition-colors">{l}</Link>
             ))}
             <button className="hover:text-white transition-colors">Contact</button>
           </div>
@@ -745,11 +757,10 @@ function HomePage({ nav }: { nav: (p: Page) => void }) {
 
 function ExplorePage({
   activeCategory, setActiveCategory,
-  searchQuery, setSearchQuery, nav,
+  searchQuery, setSearchQuery,
 }: {
   activeCategory: string; setActiveCategory: (c: string) => void;
   searchQuery: string; setSearchQuery: (q: string) => void;
-  nav: (p: Page) => void;
 }) {
   const [activeDiff, setActiveDiff] = useState("All");
 
@@ -830,7 +841,7 @@ function ExplorePage({
         <div className="pb-10">
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {filtered.map(scene => <SceneCard key={scene.id} scene={scene} onClick={() => nav("scene")} />)}
+              {filtered.map(scene => <SceneCard key={scene.id} scene={scene} />)}
             </div>
           ) : (
             <div className="text-center py-16 border border-dashed border-border rounded-2xl text-muted-foreground">
@@ -847,10 +858,9 @@ function ExplorePage({
 
 // ─── Scene Detail page ────────────────────────────────────────────────────────
 
-function SceneDetailPage({ bilingualMode, setBilingualMode, nav }: {
+function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   bilingualMode: boolean;
   setBilingualMode: (v: boolean) => void;
-  nav: (p: Page) => void;
 }) {
   const [shadowLine, setShadowLine] = useState(0);
   const [activeChapter, setActiveChapter] = useState(0);
@@ -925,9 +935,9 @@ function SceneDetailPage({ bilingualMode, setBilingualMode, nav }: {
       {/* Breadcrumb */}
       <div className="bg-background border-b border-border">
         <div className="max-w-[1000px] mx-auto px-4 md:px-6 py-2.5 flex items-center gap-1 text-[10px] text-muted-foreground flex-wrap">
-          <button onClick={() => nav("home")} className="hover:text-primary transition-colors">Home</button>
+          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
           <ChevronRight size={9} />
-          <button onClick={() => nav("explore")} className="hover:text-primary transition-colors">Shopping & Returns</button>
+          <Link to="/explore" className="hover:text-primary transition-colors">Shopping & Returns</Link>
           <ChevronRight size={9} />
           <span className="text-foreground font-semibold">Returning Clothes at a Store</span>
         </div>
@@ -1361,7 +1371,7 @@ function SceneDetailPage({ bilingualMode, setBilingualMode, nav }: {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {RELATED.map(r => (
-                  <button key={r.id} onClick={() => nav("scene")}
+                  <Link key={r.id} to={`/scenes/${SCENES.find(s => s.id === r.id)?.slug ?? ""}`}
                     className="flex items-start gap-3 border border-border rounded-xl p-3.5 bg-card text-left hover:border-primary/30 hover:shadow-sm transition-all">
                     <div className={`w-10 h-10 rounded-lg flex-shrink-0 ${CATEGORY_BG[r.category] ?? "bg-secondary"}`} />
                     <div className="flex-1 min-w-0">
@@ -1372,27 +1382,27 @@ function SceneDetailPage({ bilingualMode, setBilingualMode, nav }: {
                       </div>
                     </div>
                     <ChevronRight size={13} className="text-muted-foreground flex-shrink-0 mt-0.5" />
-                  </button>
+                  </Link>
                 ))}
               </div>
             </div>
 
             {/* Prev / Next scene */}
             <div className="grid grid-cols-2 gap-3 pt-8 border-t border-border">
-              <button onClick={() => nav("scene")} className="border border-border rounded-xl p-4 text-left bg-card hover:border-primary/30 hover:shadow-sm transition-all">
+              <Link to={`/scenes/${SCENES.find(s => s.id === 5)?.slug ?? ""}`} className="border border-border rounded-xl p-4 text-left bg-card hover:border-primary/30 hover:shadow-sm transition-all">
                 <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-2">
                   <ChevronLeft size={10} />Previous scene
                 </div>
                 <p className="text-xs font-bold text-foreground leading-snug">Ordering at a Drive-Through</p>
                 <p className="text-[11px] text-primary mt-1">得来速点餐</p>
-              </button>
-              <button onClick={() => nav("scene")} className="border border-border rounded-xl p-4 text-right bg-card hover:border-primary/30 hover:shadow-sm transition-all">
+              </Link>
+              <Link to={`/scenes/${SCENES.find(s => s.id === 3)?.slug ?? ""}`} className="border border-border rounded-xl p-4 text-right bg-card hover:border-primary/30 hover:shadow-sm transition-all">
                 <div className="flex items-center gap-1 justify-end text-[10px] text-muted-foreground mb-2">
                   Next scene<ChevronRight size={10} />
                 </div>
                 <p className="text-xs font-bold text-foreground leading-snug">Booking a Dentist Appointment</p>
                 <p className="text-[11px] text-primary mt-1">预约牙医</p>
-              </button>
+              </Link>
             </div>
 
           </div>
@@ -1406,7 +1416,7 @@ function SceneDetailPage({ bilingualMode, setBilingualMode, nav }: {
 
 // ─── PDF Resources page ───────────────────────────────────────────────────────
 
-function PDFResourcesPage({ nav }: { nav: (p: Page) => void }) {
+function PDFResourcesPage() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [freeOnly, setFreeOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -1526,7 +1536,7 @@ function Swatch({ bg, label, value, style }: { bg: string; label: string; value:
   );
 }
 
-function AboutPage({ nav }: { nav: (p: Page) => void }) {
+function AboutPage() {
   const METHOD_STEPS = [
     { num: "01", en: "Watch the real-life scene", zh: "观看真实场景", desc: "See what actually happens — from the opening line to the final exchange." },
     { num: "02", en: "Read the complete dialogue", zh: "学习完整对话", desc: "Follow every line with bilingual support and natural conversation flow." },
@@ -1577,7 +1587,7 @@ function AboutPage({ nav }: { nav: (p: Page) => void }) {
                 Yz English 帮助成年英语学习者提前预演真实生活中的英语场景。通过真实视频、完整对话、实用表达和口语练习，让学习者了解接下来可能发生什么，并更有信心地回应。
               </p>
               <div className="flex items-center gap-4">
-                <Btn variant="accent" size="lg" onClick={() => nav("explore")}>
+                <Btn variant="accent" size="lg" to="/explore">
                   Explore Real-Life Scenes <ArrowRight size={15} />
                 </Btn>
                 {/* Speech-bubble brand accent — subtle outline */}
@@ -1796,10 +1806,10 @@ function AboutPage({ nav }: { nav: (p: Page) => void }) {
             在场景发生之前，先练一遍。
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Btn variant="accent" size="lg" onClick={() => nav("explore")}>
+            <Btn variant="accent" size="lg" to="/explore">
               Explore Scenes <ArrowRight size={15} />
             </Btn>
-            <Btn variant="ghost" size="lg" onClick={() => nav("resources")}
+            <Btn variant="ghost" size="lg" to="/resources"
               className="border border-white/20 text-white hover:bg-white/10">
               Browse Resources
             </Btn>
@@ -1813,36 +1823,44 @@ function AboutPage({ nav }: { nav: (p: Page) => void }) {
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [pathname]);
+  return null;
+}
+
 export default function App() {
-  const [page, setPage] = useState<Page>("home");
   const [bilingualMode, setBilingualMode] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const nav = (p: Page) => {
-    setPage(p);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <DesktopNav currentPage={page} nav={nav} />
+      <ScrollToTop />
+      <DesktopNav />
       <main className="pb-20 md:pb-0 md:pt-16">
-        {page === "home" && <HomePage nav={nav} />}
-        {page === "explore" && (
-          <ExplorePage
-            activeCategory={activeCategory} setActiveCategory={setActiveCategory}
-            searchQuery={searchQuery} setSearchQuery={setSearchQuery}
-            nav={nav}
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/explore"
+            element={
+              <ExplorePage
+                activeCategory={activeCategory} setActiveCategory={setActiveCategory}
+                searchQuery={searchQuery} setSearchQuery={setSearchQuery}
+              />
+            }
           />
-        )}
-        {page === "scene" && (
-          <SceneDetailPage bilingualMode={bilingualMode} setBilingualMode={setBilingualMode} nav={nav} />
-        )}
-        {page === "resources" && <PDFResourcesPage nav={nav} />}
-        {page === "about" && <AboutPage nav={nav} />}
+          <Route
+            path="/scenes/:slug"
+            element={<SceneDetailPage bilingualMode={bilingualMode} setBilingualMode={setBilingualMode} />}
+          />
+          <Route path="/resources" element={<PDFResourcesPage />} />
+          <Route path="/about" element={<AboutPage />} />
+        </Routes>
       </main>
-      <MobileNav currentPage={page} nav={nav} />
+      <MobileNav />
     </div>
   );
 }
