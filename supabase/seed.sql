@@ -2,6 +2,17 @@
 -- pre-Supabase mock data layer, so the site looks identical to today once
 -- the data layer is switched over. All rows are published so nothing here
 -- introduces a "hidden until reviewed" step that doesn't exist in the app now.
+--
+-- Idempotent + two-phase by design:
+--   1. Every insert below is an upsert (`on conflict ... do update`), so
+--      re-running this file — including after a partially-failed prior run —
+--      converges on the same state instead of erroring on duplicates.
+--   2. All 9 scenes are upserted first with prev_scene_id/next_scene_id left
+--      untouched (never included in an insert or its on-conflict SET list).
+--      Only after every scene row is guaranteed to exist do the separate
+--      UPDATE statements near the end of this file set those self-referencing
+--      columns. This avoids the FK ordering bug where scene 1 referenced
+--      scenes 3/5 before they'd been inserted.
 
 -- ---------------------------------------------------------------------------
 -- categories (matches CATEGORIES in src/data/scenes.ts)
@@ -17,10 +28,15 @@ insert into public.categories (slug, name_en, sort_order) values
   ('social-life', 'Social Life', 8),
   ('work', 'Work', 9),
   ('travel', 'Travel', 10),
-  ('emergencies', 'Emergencies', 11);
+  ('emergencies', 'Emergencies', 11)
+on conflict (slug) do update set
+  name_en = excluded.name_en,
+  sort_order = excluded.sort_order;
 
 -- ---------------------------------------------------------------------------
--- scenes: id 1 is the full "Returning Clothes at a Store" lesson
+-- scenes, phase 1: all 9 rows, prev_scene_id/next_scene_id/related_scene_ids
+-- deliberately omitted (left null on insert, left untouched on conflict).
+-- id 1 is the full "Returning Clothes at a Store" lesson.
 -- ---------------------------------------------------------------------------
 insert into public.scenes (
   id, slug, title_en, title_zh, category_id, region, level, duration,
@@ -74,13 +90,29 @@ insert into public.scenes (
     {"type":"Good to Know","title":"Refund timing depends on your bank","titleZh":"退款时间取决于您的银行","body":"When a store says '3 to 5 business days', the store has already processed it. The delay is on your bank's side — weekends and holidays don't count.","bodyZh":"当商店说「3至5个工作日」时，商店已经处理完毕。延迟来自您银行的处理时间——周末和节假日不计算在内。"}
   ]$t$::jsonb,
   1
-);
-
--- cross-references set after every scene row exists, to avoid ordering
--- dependencies on ids 3, 4, 5, 7 referenced below
-update public.scenes
-set related_scene_ids = array[4, 5, 7], prev_scene_id = 5, next_scene_id = 3
-where id = 1;
+)
+on conflict (id) do update set
+  slug = excluded.slug,
+  title_en = excluded.title_en,
+  title_zh = excluded.title_zh,
+  category_id = excluded.category_id,
+  region = excluded.region,
+  level = excluded.level,
+  duration = excluded.duration,
+  featured = excluded.featured,
+  is_new = excluded.is_new,
+  description = excluded.description,
+  photo_url = excluded.photo_url,
+  status = excluded.status,
+  scene_setup_en = excluded.scene_setup_en,
+  scene_setup_zh = excluded.scene_setup_zh,
+  learning_goal_en = excluded.learning_goal_en,
+  learning_goal_zh = excluded.learning_goal_zh,
+  dialogue = excluded.dialogue,
+  expressions = excluded.expressions,
+  vocabulary = excluded.vocabulary,
+  tips = excluded.tips,
+  sort_order = excluded.sort_order;
 
 -- remaining 8 scenes: base/list-view fields only. Content columns are left
 -- null, which is what the frontend already renders as a "coming soon"
@@ -134,9 +166,31 @@ insert into public.scenes (
     (select id from public.categories where slug = 'work'),
     'Universal', 'A2–B1', '3 min', false, false,
     'Learn the right words and tone to call your manager when you cannot come to work.',
-    null, 'published', 9);
+    null, 'published', 9)
+on conflict (id) do update set
+  slug = excluded.slug,
+  title_en = excluded.title_en,
+  title_zh = excluded.title_zh,
+  category_id = excluded.category_id,
+  region = excluded.region,
+  level = excluded.level,
+  duration = excluded.duration,
+  featured = excluded.featured,
+  is_new = excluded.is_new,
+  description = excluded.description,
+  photo_url = excluded.photo_url,
+  status = excluded.status,
+  sort_order = excluded.sort_order;
 
 select setval('scenes_id_seq', (select max(id) from public.scenes));
+
+-- ---------------------------------------------------------------------------
+-- scenes, phase 2: cross-references, only run now that ids 1, 3, 4, 5, 7 all
+-- exist (every scene row was upserted above).
+-- ---------------------------------------------------------------------------
+update public.scenes
+set related_scene_ids = array[4, 5, 7], prev_scene_id = 5, next_scene_id = 3
+where id = 1;
 
 -- ---------------------------------------------------------------------------
 -- pdf_resources (matches PDF_RESOURCES in src/data/resources.ts)
@@ -151,6 +205,16 @@ insert into public.pdf_resources (
   (5, 'Healthcare English Essentials', '医疗场景英语基础', 'free', 'Doctor appointments, describing symptoms, dental visits, and pharmacy conversations.', 6, true, 'Healthcare', 'published', 5),
   (6, 'Real English in Canada — Series 1', '加拿大真实英语系列一', 'country', 'Eight everyday Canadian scenarios with full dialogue, culture notes, and vocabulary.', 8, false, 'Canada', 'published', 6),
   (7, 'Travel Emergencies English', '旅行紧急情况英语', 'travel', 'Lost passport, medical emergency abroad, and reporting theft to local authorities.', 4, true, 'Travel', 'published', 7),
-  (8, 'Returning Clothes at a Store — PDF', '在商店退衣服学习资料', 'scene', 'Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.', 1, true, 'Shopping & Returns', 'published', 8);
+  (8, 'Returning Clothes at a Store — PDF', '在商店退衣服学习资料', 'scene', 'Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.', 1, true, 'Shopping & Returns', 'published', 8)
+on conflict (id) do update set
+  title = excluded.title,
+  title_zh = excluded.title_zh,
+  type = excluded.type,
+  description = excluded.description,
+  scene_count = excluded.scene_count,
+  is_free = excluded.is_free,
+  category = excluded.category,
+  status = excluded.status,
+  sort_order = excluded.sort_order;
 
 select setval('pdf_resources_id_seq', (select max(id) from public.pdf_resources));
