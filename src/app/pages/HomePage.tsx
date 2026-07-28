@@ -1,17 +1,26 @@
 import { Link } from "react-router";
 import { ChevronRight, Play, ArrowRight, FileText } from "lucide-react";
-import { CATEGORIES, CATEGORY_BG } from "@/data/scenes";
-import { PDF_RESOURCES } from "@/data/resources";
-import { getFeaturedScenes, getNewScenes } from "@/data/scenes-access";
+import { CATEGORY_BG } from "@/data/scenes";
+import { useFeaturedScenes, useNewScenes, useCategoryNames } from "@/data/scenes-access";
+import { useResources } from "@/data/resources-access";
 import { Btn } from "@/app/components/Btn";
 import { LimeLine } from "@/app/components/brand";
 import { SceneCard } from "@/app/components/SceneCard";
 import { LevelBadge, DurationLabel } from "@/app/components/badges";
 import { ImgBox } from "@/app/components/primitives";
 import { Footer } from "@/app/components/Footer";
+import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 
 export function HomePage() {
-  const recentScenes = getNewScenes();
+  const { data: featuredScenesData, loading: featuredLoading, error: featuredError } = useFeaturedScenes();
+  const { data: recentScenesData, loading: recentLoading, error: recentError } = useNewScenes();
+  const { data: categoriesData, loading: categoriesLoading, error: categoriesError } = useCategoryNames();
+  const { data: resourcesData, loading: resourcesLoading, error: resourcesError } = useResources();
+
+  const featuredScenes = featuredScenesData ?? [];
+  const recentScenes = recentScenesData ?? [];
+  const categories = categoriesData ?? [];
+  const freeResources = resourcesData?.filter(r => r.free).slice(0, 2) ?? [];
 
   return (
     <div>
@@ -218,9 +227,15 @@ export function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {getFeaturedScenes().map(scene => (
-              <SceneCard key={scene.id} scene={scene} />
-            ))}
+            {featuredLoading ? (
+              <LoadingState label="Loading featured scenes…" />
+            ) : featuredError ? (
+              <ErrorState message={featuredError} />
+            ) : featuredScenes.length > 0 ? (
+              featuredScenes.map(scene => <SceneCard key={scene.id} scene={scene} />)
+            ) : (
+              <EmptyState title="No featured scenes yet." />
+            )}
           </div>
         </div>
       </section>
@@ -237,12 +252,20 @@ export function HomePage() {
             </Link>
           </div>
           <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map(cat => (
-              <Link key={cat} to="/explore"
-                className="text-xs font-bold border border-border rounded-full px-4 py-2 bg-card hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-150 text-foreground">
-                {cat}
-              </Link>
-            ))}
+            {categoriesLoading ? (
+              <LoadingState label="Loading categories…" />
+            ) : categoriesError ? (
+              <ErrorState message={categoriesError} />
+            ) : categories.length > 0 ? (
+              categories.map(cat => (
+                <Link key={cat} to="/explore"
+                  className="text-xs font-bold border border-border rounded-full px-4 py-2 bg-card hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-150 text-foreground">
+                  {cat}
+                </Link>
+              ))
+            ) : (
+              <EmptyState title="No categories yet." />
+            )}
           </div>
         </div>
       </section>
@@ -262,30 +285,38 @@ export function HomePage() {
             </Link>
           </div>
           <div className="space-y-3">
-            {recentScenes.map(scene => (
-              <Link key={scene.id} to={`/scenes/${scene.slug}`}
-                className="w-full flex items-center gap-4 rounded-2xl p-3 bg-card border border-border text-left hover:border-primary/25 hover:shadow-md transition-all duration-150">
-                <div className={`w-16 h-16 rounded-xl flex-shrink-0 overflow-hidden ${scene.photo ? "" : (CATEGORY_BG[scene.category] ?? "bg-secondary")}`}>
-                  {scene.photo ? (
-                    <img src={scene.photo.replace("w=700&h=480", "w=128&h=128")} alt={scene.titleEn} className="w-full h-full object-cover" loading="lazy" />
-                  ) : (
-                    <ImgBox label="" className="w-full h-full" />
-                  )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-bold text-foreground leading-snug">{scene.titleEn}</p>
-                  <p className="text-xs text-muted-foreground font-medium mt-0.5">{scene.titleZh}</p>
-                  <div className="flex gap-1.5 mt-2">
-                    <span className="text-[10px] font-bold text-muted-foreground bg-secondary px-2 py-0.5 rounded-md">{scene.category}</span>
-                    <LevelBadge level={scene.level} />
+            {recentLoading ? (
+              <LoadingState label="Loading new scenes…" />
+            ) : recentError ? (
+              <ErrorState message={recentError} />
+            ) : recentScenes.length > 0 ? (
+              recentScenes.map(scene => (
+                <Link key={scene.id} to={`/scenes/${scene.slug}`}
+                  className="w-full flex items-center gap-4 rounded-2xl p-3 bg-card border border-border text-left hover:border-primary/25 hover:shadow-md transition-all duration-150">
+                  <div className={`w-16 h-16 rounded-xl flex-shrink-0 overflow-hidden ${scene.photo ? "" : (CATEGORY_BG[scene.category] ?? "bg-secondary")}`}>
+                    {scene.photo ? (
+                      <img src={scene.photo.replace("w=700&h=480", "w=128&h=128")} alt={scene.titleEn} className="w-full h-full object-cover" loading="lazy" />
+                    ) : (
+                      <ImgBox label="" className="w-full h-full" />
+                    )}
                   </div>
-                </div>
-                <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                  <span className="text-[10px] font-black px-2.5 py-1 rounded-full" style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}>New</span>
-                  <DurationLabel duration={scene.duration} />
-                </div>
-              </Link>
-            ))}
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-bold text-foreground leading-snug">{scene.titleEn}</p>
+                    <p className="text-xs text-muted-foreground font-medium mt-0.5">{scene.titleZh}</p>
+                    <div className="flex gap-1.5 mt-2">
+                      <span className="text-[10px] font-bold text-muted-foreground bg-secondary px-2 py-0.5 rounded-md">{scene.category}</span>
+                      <LevelBadge level={scene.level} />
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                    <span className="text-[10px] font-black px-2.5 py-1 rounded-full" style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}>New</span>
+                    <DurationLabel duration={scene.duration} />
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <EmptyState title="No new scenes this week." />
+            )}
           </div>
         </div>
       </section>
@@ -311,16 +342,24 @@ export function HomePage() {
               </p>
             </div>
             <div className="grid grid-cols-2 divide-x divide-border">
-              {PDF_RESOURCES.filter(r => r.free).slice(0, 2).map(r => (
-                <div key={r.id} className="p-4">
-                  <div className={`w-full h-20 rounded-xl mb-3 overflow-hidden ${CATEGORY_BG[r.category] ?? "bg-secondary"}`}>
-                    <ImgBox label={r.category} className="w-full h-full" />
+              {resourcesLoading ? (
+                <LoadingState label="Loading resources…" />
+              ) : resourcesError ? (
+                <ErrorState message={resourcesError} />
+              ) : freeResources.length > 0 ? (
+                freeResources.map(r => (
+                  <div key={r.id} className="p-4">
+                    <div className={`w-full h-20 rounded-xl mb-3 overflow-hidden ${CATEGORY_BG[r.category] ?? "bg-secondary"}`}>
+                      <ImgBox label={r.category} className="w-full h-full" />
+                    </div>
+                    <p className="text-xs font-bold text-foreground leading-snug mb-0.5">{r.title}</p>
+                    <p className="text-[10px] text-muted-foreground font-medium">{r.titleZh}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">{r.scenes} scenes · <span className="text-emerald-700 font-bold">Free</span></p>
                   </div>
-                  <p className="text-xs font-bold text-foreground leading-snug mb-0.5">{r.title}</p>
-                  <p className="text-[10px] text-muted-foreground font-medium">{r.titleZh}</p>
-                  <p className="text-[10px] text-muted-foreground mt-1">{r.scenes} scenes · <span className="text-emerald-700 font-bold">Free</span></p>
-                </div>
-              ))}
+                ))
+              ) : (
+                <EmptyState title="No free resources yet." />
+              )}
             </div>
             <div className="p-4 border-t border-border">
               <Btn variant="primary" to="/resources" className="w-full">

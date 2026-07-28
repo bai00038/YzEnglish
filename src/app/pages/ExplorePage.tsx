@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Search, X } from "lucide-react";
-import { CATEGORIES } from "@/data/scenes";
-import { getScenes } from "@/data/scenes-access";
+import { useScenes, useCategoryNames } from "@/data/scenes-access";
 import { SceneCard } from "@/app/components/SceneCard";
+import { LoadingState, ErrorState } from "@/app/components/DataState";
 
 export function ExplorePage({
   activeCategory, setActiveCategory,
@@ -12,7 +12,10 @@ export function ExplorePage({
   searchQuery: string; setSearchQuery: (q: string) => void;
 }) {
   const [activeDiff, setActiveDiff] = useState("All");
-  const scenes = getScenes();
+  const { data: scenesData, loading: scenesLoading, error: scenesError } = useScenes();
+  const { data: categoryNamesData } = useCategoryNames();
+  const scenes = scenesData ?? [];
+  const categories = categoryNamesData ?? [];
 
   const filtered = scenes.filter(s => {
     const cm = activeCategory === "All" || s.category === activeCategory;
@@ -26,7 +29,7 @@ export function ExplorePage({
       {/* Header + search */}
       <div className="bg-background max-w-lg mx-auto md:max-w-4xl px-4 pt-5 pb-4">
         <h1 className="text-xl font-black text-foreground mb-0.5">Explore Real-Life Scenes</h1>
-        <p className="text-xs text-muted-foreground mb-4">浏览真实生活场景 · {scenes.length} scenes available</p>
+        <p className="text-xs text-muted-foreground mb-4">浏览真实生活场景 · {scenesLoading ? "…" : scenes.length} scenes available</p>
         <div className="flex items-center gap-2.5 border border-border rounded-xl px-3.5 py-2.5 bg-card shadow-sm focus-within:border-primary/50 transition-colors">
           <Search size={15} className="text-muted-foreground flex-shrink-0" />
           <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
@@ -46,7 +49,7 @@ export function ExplorePage({
           <div>
             <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#184C3A" }}>Category · 分类</p>
             <div className="flex flex-wrap gap-1.5">
-              {["All", ...CATEGORIES].map(cat => (
+              {["All", ...categories].map(cat => (
                 <button key={cat} onClick={() => setActiveCategory(cat)}
                   className="text-xs font-semibold rounded-full px-3 py-1.5 border transition-all duration-150 whitespace-nowrap"
                   style={activeCategory === cat
@@ -89,7 +92,11 @@ export function ExplorePage({
           )}
         </div>
         <div className="pb-10">
-          {filtered.length > 0 ? (
+          {scenesLoading ? (
+            <LoadingState label="Loading scenes…" />
+          ) : scenesError ? (
+            <ErrorState message={scenesError} />
+          ) : filtered.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {filtered.map(scene => <SceneCard key={scene.id} scene={scene} />)}
             </div>

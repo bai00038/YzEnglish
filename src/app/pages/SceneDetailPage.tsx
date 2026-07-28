@@ -5,11 +5,12 @@ import {
   FileText, Download, Info,
 } from "lucide-react";
 import { CATEGORY_BG } from "@/data/scenes";
-import { getSceneBySlug, getSceneById, getRelatedScenes } from "@/data/scenes-access";
+import { useSceneDetail } from "@/data/scenes-access";
 import { Btn } from "@/app/components/Btn";
 import { SmileCurve, LimeLine, SpeechBubbleLabel } from "@/app/components/brand";
 import { LevelBadge, DurationLabel } from "@/app/components/badges";
 import { Collapsible } from "@/app/components/primitives";
+import { LoadingState, ErrorState } from "@/app/components/DataState";
 
 const CHAPTER_LABELS = [
   { num: "01", label: "Watch", sectionId: "section-watch" },
@@ -22,8 +23,12 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   setBilingualMode: (v: boolean) => void;
 }) {
   const { slug } = useParams<{ slug: string }>();
-  const scene = getSceneBySlug(slug ?? "");
+  const { data, loading, error } = useSceneDetail(slug ?? "");
+  const scene = data?.scene ?? null;
   const content = scene?.content;
+  const related = data?.related ?? [];
+  const prevScene = data?.prevScene ?? undefined;
+  const nextScene = data?.nextScene ?? undefined;
 
   const [shadowLine, setShadowLine] = useState(0);
   const [activeChapter, setActiveChapter] = useState(0);
@@ -77,6 +82,22 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     window.scrollTo({ top, behavior: "smooth" });
   };
 
+  if (loading) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-24">
+        <LoadingState label="Loading scene…" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-24">
+        <ErrorState message={error} />
+      </div>
+    );
+  }
+
   if (!scene) {
     return (
       <div className="max-w-lg mx-auto px-4 py-24 text-center">
@@ -88,10 +109,6 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       </div>
     );
   }
-
-  const related = getRelatedScenes(scene.slug);
-  const prevScene = content?.prevSceneId ? getSceneById(content.prevSceneId) : undefined;
-  const nextScene = content?.nextSceneId ? getSceneById(content.nextSceneId) : undefined;
 
   return (
     <div>

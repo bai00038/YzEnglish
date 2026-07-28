@@ -1,5 +1,13 @@
 import type { PdfResource } from "./types";
 
+// PDF_TYPE_LABELS is a presentation-only constant with no Supabase
+// equivalent — it stays as-is regardless of data source.
+//
+// PDF_RESOURCES below is now only the dev-only fallback data set, used by
+// src/data/resources-access.ts when Supabase isn't configured or
+// unreachable during local development. Production reads resources from
+// the pdf_resources table.
+
 export const PDF_RESOURCES: PdfResource[] = [
   { id: 1, title: "Shopping English Starter Pack", titleZh: "购物英语入门资料包", type: "free", desc: "Covers returns, price matching, and asking for help in stores.", scenes: 5, free: true, category: "Shopping & Returns" },
   { id: 2, title: "Airport & Hotels Travel Pack", titleZh: "机场与酒店旅行英语包", type: "travel", desc: "Airport check-in, hotel conversations, and emergency phrases for international travel.", scenes: 8, free: false, category: "Travel" },

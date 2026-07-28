@@ -9,14 +9,29 @@
 
   Run `npm run dev` to start the development server.
 
-  ## Supabase (schema prepared, not yet connected)
+  ## Supabase
 
-  The app currently reads all content from static mock data in `src/data/`
-  (`scenes.ts`, `resources.ts`). A Supabase schema has been prepared under
-  `supabase/` for a future migration to a real backend, but **the app does
-  not talk to Supabase yet** — `src/data/scenes-access.ts` and
-  `src/data/resources.ts` are still the only data source. Nothing below is
-  required to run the app today.
+  The app reads scenes, categories, and PDF resources from Supabase.
+  `src/data/scenes-access.ts` and `src/data/resources-access.ts` expose React
+  hooks (`useScenes`, `useFeaturedScenes`, `useSceneDetail`, `useCategoryNames`,
+  `useResources`) that query Supabase directly, returning `{ data, loading,
+  error }` so pages can render loading/error/empty states.
+
+  There is no authentication, no admin dashboard, and no write path from the
+  app — public visitors only ever `SELECT` published rows (enforced by RLS,
+  not just by the frontend). All content authoring happens in the Supabase
+  Dashboard.
+
+  ### Local development without a Supabase project
+
+  If `VITE_SUPABASE_URL`/`VITE_SUPABASE_PUBLISHABLE_KEY` are unset, or a
+  Supabase request fails, **and** you're running in dev (`npm run dev`), the
+  data layer falls back to the static mock data in `src/data/scenes.ts` and
+  `src/data/resources.ts` and logs a `console.warn` so it's never mistaken for
+  real data. This fallback is dev-only and isolated to that one branch in
+  `withDevFallback()` in `scenes-access.ts`/`resources-access.ts` — a
+  production build (`npm run build` output) never falls back; a missing or
+  broken Supabase connection surfaces as a real error state in the UI instead.
 
   ### What's in `supabase/`
 
@@ -44,10 +59,10 @@
   - **Storage buckets**: `scene-photos` and `pdf-resources`, both public-read,
     for scene cover images and downloadable PDFs respectively.
   - **`src/data/database.types.ts`**: hand-written TypeScript types matching
-    the schema above, for a typed `SupabaseClient<Database>` later. Not
-    imported anywhere yet.
+    the schema above, used by `src/lib/supabaseClient.ts` for a typed
+    `SupabaseClient<Database>`.
 
-  ### One-time setup (when you're ready to connect)
+  ### One-time setup
 
   1. Create a project at [supabase.com](https://supabase.com) if you don't
      already have one.
@@ -63,19 +78,19 @@
        `supabase db push` applies the migrations and `supabase db seed`
        (or `psql -f supabase/seed.sql`) loads the seed data.
   3. Copy `.env.example` to `.env.local` and fill in your project's URL and
-     anon public key from **Settings → API**:
+     publishable key from **Settings → API**:
      ```
      VITE_SUPABASE_URL=...
-     VITE_SUPABASE_ANON_KEY=...
+     VITE_SUPABASE_PUBLISHABLE_KEY=...
      ```
-     Never put the `service_role` key in `.env*` — it must never reach the
-     client bundle. All content authoring for now happens directly in the
-     Supabase Dashboard, which is already access-controlled at the account
-     level, so no service-role key or custom admin app is needed.
-  4. That's it for setup — there is no code yet that reads these env vars.
-     Swapping `src/data/scenes-access.ts` / `src/data/resources.ts` over to
-     query Supabase instead of the static arrays is a separate follow-up
-     task.
+     Never put the `service_role` (secret) key in `.env*` — it must never
+     reach the client bundle. The publishable key is safe in the browser: it
+     only grants what RLS allows, i.e. read-only access to published rows.
+     All content authoring happens directly in the Supabase Dashboard, which
+     is already access-controlled at the account level, so no service-role
+     key or custom admin app is needed.
+  4. Restart `npm run dev` after adding `.env.local` so Vite picks up the new
+     variables.
 
   ### Managing content via the Supabase Dashboard
 

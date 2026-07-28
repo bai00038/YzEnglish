@@ -1,5 +1,14 @@
 import type { Scene } from "./types";
 
+// CATEGORY_BG is a presentation-only design token (Tailwind bg class per
+// category name) with no Supabase equivalent — it stays a plain constant
+// regardless of data source.
+//
+// CATEGORIES and SCENES below are now only the dev-only fallback data set,
+// used by src/data/scenes-access.ts when Supabase isn't configured or
+// unreachable during local development (see isSupabaseConfigured in
+// src/lib/supabaseClient.ts). Production reads scenes from Supabase.
+
 export const CATEGORIES = [
   "Shopping & Returns", "Food & Restaurants", "School & Family",
   "Healthcare", "Banking & Services", "Housing",

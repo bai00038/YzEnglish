@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { Search, X, FileText, Download } from "lucide-react";
 import { CATEGORY_BG } from "@/data/scenes";
-import { PDF_RESOURCES, PDF_TYPE_LABELS } from "@/data/resources";
+import { PDF_TYPE_LABELS } from "@/data/resources";
+import { useResources } from "@/data/resources-access";
 import { Btn } from "@/app/components/Btn";
 import { CategoryPill } from "@/app/components/primitives";
+import { LoadingState, ErrorState } from "@/app/components/DataState";
 
 export function ResourcesPage() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [freeOnly, setFreeOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { data: resourcesData, loading, error } = useResources();
+  const resources = resourcesData ?? [];
 
   const TYPE_FILTERS = ["All", "Free", "Scene PDFs", "Topic Collections", "Travel", "Country-Specific"];
 
@@ -20,7 +24,7 @@ export function ResourcesPage() {
     free: "bg-emerald-100 text-emerald-800",
   };
 
-  const filtered = PDF_RESOURCES.filter(r => {
+  const filtered = resources.filter(r => {
     if (freeOnly && !r.free) return false;
     if (searchQuery && !r.title.toLowerCase().includes(searchQuery.toLowerCase()) && !r.titleZh.includes(searchQuery)) return false;
     if (activeFilter === "Free") return r.free;
@@ -67,11 +71,15 @@ export function ResourcesPage() {
           style={freeOnly ? { backgroundColor: "#B7F21D", borderColor: "#B7F21D", color: "#1E1F1C" } : {}}>
           Free only
         </button>
-        <span className="text-xs text-muted-foreground">{filtered.length} resource{filtered.length !== 1 ? "s" : ""}</span>
+        <span className="text-xs text-muted-foreground">{loading ? "…" : filtered.length} resource{filtered.length !== 1 ? "s" : ""}</span>
       </div>
 
       <div className="bg-background max-w-lg mx-auto md:max-w-4xl px-4 pb-10">
-        {filtered.length > 0 ? (
+        {loading ? (
+          <LoadingState label="Loading resources…" />
+        ) : error ? (
+          <ErrorState message={error} />
+        ) : filtered.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {filtered.map(r => (
               <div key={r.id} className="border border-border rounded-2xl overflow-hidden bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 transition-all duration-200">
