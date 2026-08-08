@@ -85,45 +85,69 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // and "highlight/auto-scroll to whichever line the video is on right
   // now" — one shared source of truth for both.
   //
-  // A Figma_Data dialogue line and its Dialogue_Lines cues aren't always
-  // 1:1 — a line is sometimes authored as several shorter timed cues
-  // there (e.g. "Excuse me. Do you have this in a small?" as two rows).
-  // Both lists are in the same chronological order, so this walks them
-  // together: for each dialogue line, greedily consume consecutive cues,
-  // concatenating their English text, until it exactly equals the line's
-  // English text. That run's first cue.start / last cue.end becomes the
-  // line's playable range. A line that never reaches an exact match
-  // (unexpected wording drift, or no Dialogue_Lines coverage at all) is
-  // left unmapped rather than guessing — no button/highlight, rather than
-  // a wrong audio range. This is also what "没有时间码的旧场景不会报错"
-  // falls back on: no dialogue and/or no subtitleCues -> empty Map, every
-  // line simply renders as plain, non-interactive text.
+  // Two structures can produce this map, and a scene is always entirely
+  // on one or the other (see applyDialogueLinesOverride in
+  // src/data/scenes-access.ts, which replaces the whole dialogue array
+  // atomically):
+  //
+  // - New: scenes migrated to the dialogue_lines table (see
+  //   supabase/migrations/0012_add_dialogue_lines.sql) carry start/end
+  //   directly on each line — one row there is already one dialogue line
+  //   AND one subtitle cue, so no matching is needed at all.
+  // - Legacy: scenes still on the old scenes.dialogue/subtitle_cues jsonb
+  //   pair, where a dialogue line and its Dialogue_Lines cues aren't
+  //   always 1:1 (a line was sometimes authored as several shorter timed
+  //   cues, e.g. "Excuse me. Do you have this in a small?" as two rows).
+  //   Both lists are in the same chronological order, so this walks them
+  //   together: for each dialogue line, greedily consume consecutive
+  //   cues, concatenating their English text, until it exactly equals the
+  //   line's English text. That run's first cue.start / last cue.end
+  //   becomes the line's playable range. A line that never reaches an
+  //   exact match (wording drift, or no Dialogue_Lines coverage at all)
+  //   is left unmapped rather than guessing — no button/highlight, rather
+  //   than a wrong audio range.
+  //
+  // Either way, a scene with neither structure populated ("没有时间码的
+  // 旧场景不会报错") just returns an empty Map — every line renders as
+  // plain, non-interactive text.
   const dialogueLineAudioRanges = useMemo(() => {
     const map = new Map<number, { start: number; end: number }>();
-    const cues = scene?.subtitleCues;
     const lines = content?.dialogue;
-    if (!cues || cues.length === 0 || !lines || lines.length === 0) return map;
+    if (!lines || lines.length === 0) return map;
 
-    const normalize = (s: string) => s.replace(/[‘’]/g, "'").replace(/\s+/g, " ").trim();
-    let cueIndex = 0;
+    const hasNativeTiming = lines.some(line => typeof line.start === "number" && typeof line.end === "number");
 
-    lines.forEach((line, lineIndex) => {
-      const target = normalize(line.en);
-      let acc = "";
-      let start: number | null = null;
-      let end: number | null = null;
-      let j = cueIndex;
-      while (j < cues.length && acc.length < target.length) {
-        acc = acc.length > 0 ? `${acc} ${normalize(cues[j].en)}` : normalize(cues[j].en);
-        if (start === null) start = cues[j].start;
-        end = cues[j].end;
-        j++;
+    if (hasNativeTiming) {
+      lines.forEach((line, lineIndex) => {
+        if (typeof line.start === "number" && typeof line.end === "number" && line.end > line.start) {
+          map.set(lineIndex, { start: line.start, end: line.end });
+        }
+      });
+    } else {
+      const cues = scene?.subtitleCues;
+      if (cues && cues.length > 0) {
+        const normalize = (s: string) => s.replace(/[‘’]/g, "'").replace(/\s+/g, " ").trim();
+        let cueIndex = 0;
+
+        lines.forEach((line, lineIndex) => {
+          const target = normalize(line.en);
+          let acc = "";
+          let start: number | null = null;
+          let end: number | null = null;
+          let j = cueIndex;
+          while (j < cues.length && acc.length < target.length) {
+            acc = acc.length > 0 ? `${acc} ${normalize(cues[j].en)}` : normalize(cues[j].en);
+            if (start === null) start = cues[j].start;
+            end = cues[j].end;
+            j++;
+          }
+          if (acc === target && start !== null && end !== null) {
+            map.set(lineIndex, { start, end });
+            cueIndex = j;
+          }
+        });
       }
-      if (acc === target && start !== null && end !== null) {
-        map.set(lineIndex, { start, end });
-        cueIndex = j;
-      }
-    });
+    }
 
     // Dialogue_Lines' timestamps aren't frame-accurate — clipped first
     // words and clips bleeding into the next line are both just the raw

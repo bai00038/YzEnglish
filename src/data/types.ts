@@ -7,6 +7,13 @@ export interface DialogueLine {
   speakerZh: string;
   en: string;
   zh: string;
+  // Present only for scenes migrated to the dialogue_lines table (see
+  // supabase/migrations/0012_add_dialogue_lines.sql) — seconds from video
+  // start, one line = one subtitle cue. Absent for scenes still on the
+  // legacy scenes.dialogue/subtitle_cues jsonb pair, where SceneDetailPage
+  // falls back to matching dialogue text against subtitle_cues instead.
+  start?: number;
+  end?: number;
 }
 
 export interface Expression {

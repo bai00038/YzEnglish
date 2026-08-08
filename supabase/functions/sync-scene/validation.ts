@@ -47,6 +47,24 @@ export interface SubtitleCueRow {
   zh: string;
 }
 
+// One row for the dialogue_lines table (see
+// supabase/migrations/0012_add_dialogue_lines.sql) — a scene migrated to
+// this structure has one row per spoken line, doing the job of both a
+// dialogue[] entry and a subtitle_cues[] entry at once. Independent of
+// both legacy fields: a scene can have this, the legacy pair, or (during
+// migration) both, with the frontend preferring this when present (see
+// applyDialogueLinesOverride in src/data/scenes-access.ts).
+export interface DialogueLineRowPayload {
+  line_order: number;
+  step: number | null;
+  speaker: string;
+  speaker_zh: string;
+  dialogue_en: string;
+  dialogue_zh: string;
+  start_time: number | null;
+  end_time: number | null;
+}
+
 // Fields ready to write to public.scenes, minus category_id (resolved
 // separately in db.ts) and the DB-managed id/created_at/updated_at.
 export interface ScenePayloadRow {
@@ -79,6 +97,9 @@ export interface ValidatedScenePayload {
   sceneIdLabel: string | null;
   categoryName: string;
   row: ScenePayloadRow;
+  // null means "don't touch dialogue_lines for this scene" — distinct
+  // from an empty array, which would mean "replace with zero lines".
+  dialogueLines: DialogueLineRowPayload[] | null;
 }
 
 function requireNonEmptyString(value: unknown, field: string): string {
@@ -227,6 +248,59 @@ function validateSubtitleCues(value: unknown): SubtitleCueRow[] | null {
   return cues.length > 0 ? cues : null;
 }
 
+// Optional, like subtitle_cues: omitted/null -> null, meaning "this scene
+// isn't migrated to dialogue_lines yet, leave its legacy dialogue/
+// subtitle_cues alone" (see index.ts — replace_dialogue_lines is only
+// called when this is non-null). A malformed individual row (blank
+// speaker/dialogue_en/dialogue_zh, non-integer line_order) is dropped,
+// not a thrown error — same reasoning as validateSubtitleCues: one bad
+// row for one scene must never block that scene's other fields from
+// syncing. start_time/end_time may be null (a line can exist before its
+// timing is known); when present they go through the same
+// normalizeTimecode as subtitle_cues.
+function validateDialogueLines(value: unknown): DialogueLineRowPayload[] | null {
+  if (value === undefined || value === null) return null;
+  if (!Array.isArray(value)) {
+    throw new SyncError(400, `Field "dialogue_lines" must be an array or null.`);
+  }
+
+  const lines: DialogueLineRowPayload[] = [];
+  value.forEach((raw, i) => {
+    const item = requireObjectItem(raw, "dialogue_lines", i);
+    const lineOrder = Number(item.line_order);
+    const speaker = typeof item.speaker === "string" ? item.speaker.trim() : "";
+    const speakerZh = typeof item.speaker_zh === "string" ? item.speaker_zh.trim() : "";
+    const dialogueEn = typeof item.dialogue_en === "string" ? item.dialogue_en.trim() : "";
+    const dialogueZh = typeof item.dialogue_zh === "string" ? item.dialogue_zh.trim() : "";
+    const isValid =
+      Number.isFinite(lineOrder) &&
+      Number.isInteger(lineOrder) &&
+      lineOrder > 0 &&
+      speaker.length > 0 &&
+      speakerZh.length > 0 &&
+      dialogueEn.length > 0 &&
+      dialogueZh.length > 0;
+    if (!isValid) return;
+
+    const start = normalizeTimecode(item.start_time);
+    const end = normalizeTimecode(item.end_time);
+    const step = item.step === null || item.step === undefined || item.step === "" ? null : Number(item.step);
+
+    lines.push({
+      line_order: lineOrder,
+      step: Number.isFinite(step) ? step : null,
+      speaker,
+      speaker_zh: speakerZh,
+      dialogue_en: dialogueEn,
+      dialogue_zh: dialogueZh,
+      start_time: start !== null && start >= 0 ? start : null,
+      end_time: end !== null && start !== null && start >= 0 && end > start ? end : null,
+    });
+  });
+
+  return lines.length > 0 ? lines : null;
+}
+
 function validateTips(value: unknown): TipRow[] {
   return requireArray(value, "tips").map((raw, i) => {
     const item = requireObjectItem(raw, "tips", i);
@@ -267,6 +341,7 @@ export function validateScenePayload(body: unknown): ValidatedScenePayload {
   return {
     sceneIdLabel,
     categoryName: requireNonEmptyString(payload.category, "category"),
+    dialogueLines: validateDialogueLines(payload.dialogue_lines),
     row: {
       slug: requireNonEmptyString(payload.slug, "slug"),
       title_en: requireNonEmptyString(payload.title_en, "title_en"),

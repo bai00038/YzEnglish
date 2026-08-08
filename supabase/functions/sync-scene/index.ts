@@ -1,7 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { SyncError, errorResponse } from "./errors.ts";
 import { validateScenePayload } from "./validation.ts";
-import { findCategoryIdByName, findSceneIdBySlug, insertScene, updateScene } from "./db.ts";
+import { findCategoryIdByName, findSceneIdBySlug, insertScene, updateScene, replaceDialogueLines } from "./db.ts";
 
 const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
       throw new SyncError(400, "Request body must be valid JSON.");
     }
 
-    const { sceneIdLabel, categoryName, row } = validateScenePayload(body);
+    const { sceneIdLabel, categoryName, row, dialogueLines } = validateScenePayload(body);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -82,6 +82,18 @@ Deno.serve(async (req) => {
     console.log(
       `[sync-scene] ${action} slug="${writeRow.slug}" database_id=${result.id} scene_id=${sceneIdLabel ?? "n/a"}`
     );
+
+    // Only touches dialogue_lines when the payload actually included it —
+    // dialogueLines is null for any scene not yet migrated to the new
+    // structure, and that scene's legacy dialogue/subtitle_cues jsonb is
+    // left completely alone (see ScenePayloadRow.dialogue/subtitle_cues
+    // above, which sync unconditionally either way).
+    if (dialogueLines !== null) {
+      await replaceDialogueLines(supabase, result.id, dialogueLines);
+      console.log(
+        `[sync-scene] replaced ${dialogueLines.length} dialogue_lines row(s) for database_id=${result.id}`
+      );
+    }
 
     return new Response(
       JSON.stringify({

@@ -143,6 +143,50 @@ export interface Database {
           updated_at?: string;
         };
       };
+      dialogue_lines: {
+        Row: {
+          id: number;
+          scene_id: number;
+          line_order: number;
+          step: number | null;
+          speaker: string;
+          speaker_zh: string;
+          dialogue_en: string;
+          dialogue_zh: string;
+          start_time: number | null;
+          end_time: number | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: number;
+          scene_id: number;
+          line_order: number;
+          step?: number | null;
+          speaker: string;
+          speaker_zh: string;
+          dialogue_en: string;
+          dialogue_zh: string;
+          start_time?: number | null;
+          end_time?: number | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: number;
+          scene_id?: number;
+          line_order?: number;
+          step?: number | null;
+          speaker?: string;
+          speaker_zh?: string;
+          dialogue_en?: string;
+          dialogue_zh?: string;
+          start_time?: number | null;
+          end_time?: number | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       pdf_resources: {
         Row: {
           id: number;
@@ -201,6 +245,7 @@ export interface Database {
 // Convenience row aliases for the future data-layer swap.
 export type CategoryRow = Database["public"]["Tables"]["categories"]["Row"];
 export type SceneRow = Database["public"]["Tables"]["scenes"]["Row"];
+export type DialogueLineRow = Database["public"]["Tables"]["dialogue_lines"]["Row"];
 export type PdfResourceRow = Database["public"]["Tables"]["pdf_resources"]["Row"];
 
 // The shape of scenes.dialogue / expressions / vocabulary / tips once parsed

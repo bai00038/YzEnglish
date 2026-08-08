@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { SyncError } from "./errors.ts";
-import type { ScenePayloadRow } from "./validation.ts";
+import type { DialogueLineRowPayload, ScenePayloadRow } from "./validation.ts";
 
 export type SceneWriteRow = ScenePayloadRow & { category_id: number };
 
@@ -84,4 +84,26 @@ export async function updateScene(
     throw new SyncError(500, "Database error while updating scene.");
   }
   return data;
+}
+
+// Delete-then-insert for one scene's dialogue_lines, done inside a single
+// Postgres function call (public.replace_dialogue_lines — see
+// supabase/migrations/0012_add_dialogue_lines.sql) so it's one atomic
+// transaction: if the insert half fails, the delete half is rolled back
+// too. A plain two-step client-side delete+insert here would risk leaving
+// a scene's dialogue_lines empty if the insert failed after the delete
+// already committed.
+export async function replaceDialogueLines(
+  supabase: SupabaseClient,
+  sceneId: number,
+  lines: DialogueLineRowPayload[]
+): Promise<void> {
+  const { error } = await supabase.rpc("replace_dialogue_lines", {
+    p_scene_id: sceneId,
+    p_lines: lines,
+  });
+  if (error) {
+    console.error("[sync-scene] replace_dialogue_lines failed", error);
+    throw new SyncError(500, "Database error while replacing dialogue_lines.");
+  }
 }

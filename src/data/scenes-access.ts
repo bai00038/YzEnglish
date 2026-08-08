@@ -4,6 +4,7 @@ import { CATEGORIES as MOCK_CATEGORIES, SCENES as MOCK_SCENES } from "./scenes";
 import type { Scene } from "./types";
 import type {
   SceneRow,
+  DialogueLineRow,
   SceneDialogueJson,
   SceneExpressionsJson,
   SceneVocabularyJson,
@@ -110,6 +111,50 @@ function mapSceneRow(row: SceneRowWithCategory): Scene {
   };
 }
 
+// Scenes migrated to the dialogue_lines table (see
+// supabase/migrations/0012_add_dialogue_lines.sql) get their
+// content.dialogue overridden here with the row-per-line, natively-timed
+// version — one row = one dialogue line = one subtitle cue (see the
+// scene detail page's dialogueLineAudioRanges, which uses line.start/end
+// directly when present instead of text-matching against subtitle_cues).
+// A scene with no dialogue_lines rows yet is returned unchanged, still
+// rendering from the legacy scenes.dialogue jsonb exactly as before —
+// this is the only place that decides which structure a scene is on,
+// nothing else in the data layer or UI needs to know.
+async function applyDialogueLinesOverride(scene: Scene, sceneId: number): Promise<Scene> {
+  const { data, error } = await supabase!
+    .from("dialogue_lines")
+    .select("*")
+    .eq("scene_id", sceneId)
+    .order("line_order", { ascending: true });
+  if (error) throw error;
+  if (!data || data.length === 0) return scene;
+
+  const dialogue = (data as DialogueLineRow[]).map(row => ({
+    speaker: row.speaker,
+    speakerZh: row.speaker_zh,
+    en: row.dialogue_en,
+    zh: row.dialogue_zh,
+    start: row.start_time ?? undefined,
+    end: row.end_time ?? undefined,
+  }));
+
+  return {
+    ...scene,
+    content: {
+      sceneSetup: scene.content?.sceneSetup ?? { en: "", zh: "" },
+      learningGoal: scene.content?.learningGoal ?? { en: "", zh: "" },
+      expressions: scene.content?.expressions ?? [],
+      vocabulary: scene.content?.vocabulary ?? [],
+      tips: scene.content?.tips ?? [],
+      relatedSceneIds: scene.content?.relatedSceneIds,
+      prevSceneId: scene.content?.prevSceneId,
+      nextSceneId: scene.content?.nextSceneId,
+      dialogue,
+    },
+  };
+}
+
 async function fetchScenes(): Promise<Scene[]> {
   return withDevFallback(
     async () => {
@@ -146,9 +191,8 @@ async function fetchFeaturedScenes(): Promise<Scene[]> {
 // Manually curated Home page "Featured Scenes" — stable slugs, in display
 // order. Update this list (not a `featured` flag) to change what's shown.
 const CURATED_FEATURED_SLUGS = [
-  "requesting-a-price-adjustment-at-costco", // 退差价
-  "dining-at-a-turkish-restaurant", // 土耳其餐厅
-  "checking-in-at-a-family-doctors-office", // 家庭医生
+  "shopping-for-clothes", // 买衣服 — has video + subtitles + dialogue_lines
+  "getting-a-dental-filling", // 补牙 — has video + subtitles
 ];
 
 async function fetchCuratedFeaturedScenes(): Promise<Scene[]> {
@@ -242,7 +286,7 @@ async function fetchSceneDetail(slug: string): Promise<SceneDetail> {
       if (!data) return { scene: null, related: [], prevScene: null, nextScene: null };
 
       const row = data as SceneRowWithCategory;
-      const scene = mapSceneRow(row);
+      const scene = await applyDialogueLinesOverride(mapSceneRow(row), row.id);
 
       let related: Scene[] = [];
       const relatedIds = row.related_scene_ids ?? [];
