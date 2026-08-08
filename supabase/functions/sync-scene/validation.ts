@@ -67,6 +67,19 @@ export interface DialogueLineRowPayload {
 
 // Fields ready to write to public.scenes, minus category_id (resolved
 // separately in db.ts) and the DB-managed id/created_at/updated_at.
+//
+// dialogue/expressions/vocabulary/subtitle_cues/tips are all OPTIONAL
+// KEYS, not just nullable values — db.ts's updateScene only sends the
+// keys actually present on this object to PostgREST, so an omitted key
+// leaves that column completely untouched in the database, while an
+// explicit `null` (or `[]`, for the array fields) still clears it. This
+// is what lets the new dialogue_lines-based sync pipeline (see
+// google-apps-script/scenes-sync/) update only the fields its Sheet
+// actually owns (Scenes tab scalars, tips) without wiping out
+// dialogue/expressions/vocabulary/subtitle_cues, which stay governed by
+// the original Figma_Data pipeline until (if ever) they get their own
+// migration. The Figma_Data pipeline is unaffected: Code.gs always sends
+// all of these keys explicitly, exactly as before.
 export interface ScenePayloadRow {
   slug: string;
   title_en: string;
@@ -78,17 +91,17 @@ export interface ScenePayloadRow {
   photo_url: string | null;
   pdf_url: string | null;
   video_url: string | null;
-  subtitle_cues: SubtitleCueRow[] | null;
   status: AllowedStatus;
   sort_order: number;
   scene_setup_en: string | null;
   scene_setup_zh: string | null;
   learning_goal_en: string | null;
   learning_goal_zh: string | null;
-  dialogue: DialogueRow[];
-  expressions: ExpressionRow[];
-  vocabulary: VocabularyRow[];
-  tips: TipRow[];
+  subtitle_cues?: SubtitleCueRow[] | null;
+  dialogue?: DialogueRow[];
+  expressions?: ExpressionRow[];
+  vocabulary?: VocabularyRow[];
+  tips?: TipRow[];
 }
 
 export interface ValidatedScenePayload {
@@ -144,13 +157,12 @@ function requireSortOrder(value: unknown): number {
   return value;
 }
 
+// Only called once the caller has already decided the field IS present
+// (see the `!== undefined` checks in validateScenePayload) — this just
+// enforces that, once present, it's actually an array (use [] to clear).
 function requireArray(value: unknown, field: string): unknown[] {
   if (!Array.isArray(value)) {
-    throw new SyncError(
-      400,
-      `Field "${field}" is required and must be an array (use [] if empty). ` +
-        `dialogue, expressions, vocabulary, and tips must all be present together.`
-    );
+    throw new SyncError(400, `Field "${field}" must be an array (use [] to clear it).`);
   }
   return value;
 }
@@ -217,9 +229,12 @@ function normalizeTimecode(value: unknown): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-// Unlike dialogue/expressions/vocabulary/tips, subtitle_cues is optional:
-// most scenes have no timed transcript yet. Omitted or null -> null
-// (frontend shows no subtitle option).
+// Omitted key (undefined) -> undefined, meaning "leave scenes.subtitle_cues
+// completely untouched" (the caller doesn't manage this field at all —
+// see ScenePayloadRow's field-level comment for why that distinction
+// matters). Explicit null, or an empty/all-invalid array -> null,
+// meaning "clear it" — that's what the Figma_Data pipeline sends for a
+// scene with no matching Dialogue_Lines rows.
 //
 // Individual malformed cues (bad timecode, end <= start, blank en/zh) are
 // dropped rather than failing the whole sync — one bad row in
@@ -227,8 +242,9 @@ function normalizeTimecode(value: unknown): number | null {
 // dialogue/etc. from syncing. A structurally wrong payload (not an array,
 // not an array of objects) still throws, since that indicates the caller
 // itself is broken, not a specific bad data row.
-function validateSubtitleCues(value: unknown): SubtitleCueRow[] | null {
-  if (value === undefined || value === null) return null;
+function validateSubtitleCues(value: unknown): SubtitleCueRow[] | null | undefined {
+  if (value === undefined) return undefined;
+  if (value === null) return null;
   if (!Array.isArray(value)) {
     throw new SyncError(400, `Field "subtitle_cues" must be an array or null.`);
   }
@@ -323,47 +339,43 @@ export function validateScenePayload(body: unknown): ValidatedScenePayload {
   const sceneIdLabel =
     payload.scene_id === undefined || payload.scene_id === null ? null : String(payload.scene_id);
 
-  // dialogue/expressions/vocabulary/tips must arrive as a bundle: this
-  // mirrors mapSceneRow()'s hasContent = (dialogue !== null) check in
-  // src/data/scenes-access.ts, which assumes all four are seeded together.
-  const hasAllFourJsonFields =
-    payload.dialogue !== undefined &&
-    payload.expressions !== undefined &&
-    payload.vocabulary !== undefined &&
-    payload.tips !== undefined;
-  if (!hasAllFourJsonFields) {
-    throw new SyncError(
-      400,
-      "dialogue, expressions, vocabulary, and tips must all be provided together (each an array, [] if empty)."
-    );
-  }
+  const row: ScenePayloadRow = {
+    slug: requireNonEmptyString(payload.slug, "slug"),
+    title_en: requireNonEmptyString(payload.title_en, "title_en"),
+    title_zh: requireNonEmptyString(payload.title_zh, "title_zh"),
+    region: requireNonEmptyString(payload.region, "region"),
+    level: requireNonEmptyString(payload.level, "level"),
+    duration: requireNonEmptyString(payload.duration, "duration"),
+    description: requireNonEmptyString(payload.description, "description"),
+    photo_url: optionalString(payload.photo_url, "photo_url"),
+    pdf_url: optionalString(payload.pdf_url, "pdf_url"),
+    video_url: optionalString(payload.video_url, "video_url"),
+    status: requireStatus(payload.status),
+    sort_order: requireSortOrder(payload.sort_order),
+    scene_setup_en: optionalString(payload.scene_setup_en, "scene_setup_en"),
+    scene_setup_zh: optionalString(payload.scene_setup_zh, "scene_setup_zh"),
+    learning_goal_en: optionalString(payload.learning_goal_en, "learning_goal_en"),
+    learning_goal_zh: optionalString(payload.learning_goal_zh, "learning_goal_zh"),
+  };
+
+  // Each of these five is independently optional — an omitted key means
+  // "this sync doesn't manage this field, leave whatever is already in
+  // the database alone" (see ScenePayloadRow's comment for why the key
+  // must be genuinely absent, not just undefined-valued). The Figma_Data
+  // pipeline (Code.gs) always sends all five explicitly, so its behavior
+  // is unchanged: every field it sends still fully replaces the column.
+  const subtitleCues = validateSubtitleCues(payload.subtitle_cues);
+  if (subtitleCues !== undefined) row.subtitle_cues = subtitleCues;
+
+  if (payload.dialogue !== undefined) row.dialogue = validateDialogue(payload.dialogue);
+  if (payload.expressions !== undefined) row.expressions = validateExpressions(payload.expressions);
+  if (payload.vocabulary !== undefined) row.vocabulary = validateVocabulary(payload.vocabulary);
+  if (payload.tips !== undefined) row.tips = validateTips(payload.tips);
 
   return {
     sceneIdLabel,
     categoryName: requireNonEmptyString(payload.category, "category"),
     dialogueLines: validateDialogueLines(payload.dialogue_lines),
-    row: {
-      slug: requireNonEmptyString(payload.slug, "slug"),
-      title_en: requireNonEmptyString(payload.title_en, "title_en"),
-      title_zh: requireNonEmptyString(payload.title_zh, "title_zh"),
-      region: requireNonEmptyString(payload.region, "region"),
-      level: requireNonEmptyString(payload.level, "level"),
-      duration: requireNonEmptyString(payload.duration, "duration"),
-      description: requireNonEmptyString(payload.description, "description"),
-      photo_url: optionalString(payload.photo_url, "photo_url"),
-      pdf_url: optionalString(payload.pdf_url, "pdf_url"),
-      video_url: optionalString(payload.video_url, "video_url"),
-      subtitle_cues: validateSubtitleCues(payload.subtitle_cues),
-      status: requireStatus(payload.status),
-      sort_order: requireSortOrder(payload.sort_order),
-      scene_setup_en: optionalString(payload.scene_setup_en, "scene_setup_en"),
-      scene_setup_zh: optionalString(payload.scene_setup_zh, "scene_setup_zh"),
-      learning_goal_en: optionalString(payload.learning_goal_en, "learning_goal_en"),
-      learning_goal_zh: optionalString(payload.learning_goal_zh, "learning_goal_zh"),
-      dialogue: validateDialogue(payload.dialogue),
-      expressions: validateExpressions(payload.expressions),
-      vocabulary: validateVocabulary(payload.vocabulary),
-      tips: validateTips(payload.tips),
-    },
+    row,
   };
 }
