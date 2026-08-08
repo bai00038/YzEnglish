@@ -40,6 +40,7 @@ function mapPdfResourceRow(row: PdfResourceRow): PdfResource {
     scenes: row.scene_count,
     free: row.is_free,
     category: row.category,
+    filePath: row.file_path ?? undefined,
   };
 }
 

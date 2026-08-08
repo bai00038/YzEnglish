@@ -69,11 +69,6 @@ export function AboutPage() {
                 <Btn variant="accent" size="lg" to="/explore">
                   Explore Real-Life Scenes <ArrowRight size={15} />
                 </Btn>
-                {/* Speech-bubble brand accent — subtle outline */}
-                <svg aria-hidden="true" width="32" height="28" viewBox="0 0 32 28" fill="none" opacity="0.3">
-                  <rect x="1" y="1" width="30" height="20" rx="8" stroke="#184C3A" strokeWidth="1.5" fill="none"/>
-                  <path d="M8 21 L5 27 L14 21" fill="#184C3A"/>
-                </svg>
               </div>
             </div>
             {/* Accent graphic — desktop only */}
@@ -132,9 +127,8 @@ export function AboutPage() {
           <p className="text-base font-semibold mb-10" style={{ color: "#184C3A" }}>观看、理解、练习</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {METHOD_STEPS.map((step, idx) => (
-              <div key={step.num} className="flex items-start gap-5 bg-card rounded-2xl border border-border px-5 py-5 shadow-sm relative overflow-hidden">
-                <span className="text-[40px] font-black leading-none flex-shrink-0 tabular-nums select-none"
-                  style={{ color: "rgba(24,76,58,0.1)" }}>{step.num}</span>
+              <div key={step.num} className="flex items-center gap-5 bg-card rounded-2xl border border-border px-5 py-5 shadow-sm relative overflow-hidden">
+                <span className="w-9 h-9 rounded-full border border-primary text-primary bg-transparent flex items-center justify-center flex-shrink-0 text-sm font-bold tabular-nums select-none">{step.num}</span>
                 <div className="pt-1 flex-1">
                   <p className="text-[15px] font-black text-foreground leading-snug">{step.en}</p>
                   <p className="text-sm font-semibold mt-0.5 mb-2" style={{ color: "#184C3A" }}>{step.zh}</p>
@@ -210,7 +204,7 @@ export function AboutPage() {
       {/* ══ CONTENT APPROACH ═══════════════════════════════════════════════════ */}
       <section className="bg-background border-b border-border">
         <div className="max-w-5xl mx-auto px-4 md:px-8 py-14 md:py-18">
-          <div className="md:grid md:grid-cols-2 md:gap-16">
+          <div className="md:grid md:grid-cols-[1.1fr_1fr] md:gap-14">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground mb-4">Content approach</p>
               <h2 className="text-[26px] md:text-[32px] font-black leading-tight text-foreground mb-1">
@@ -225,7 +219,7 @@ export function AboutPage() {
               </p>
             </div>
             <div className="mt-8 md:mt-0">
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {[
                   { en: "Real overseas experiences", zh: "真实的海外生活经历" },
                   { en: "Everyday problems learners face", zh: "学习者日常遇到的实际问题" },
@@ -233,13 +227,13 @@ export function AboutPage() {
                   { en: "Common travel and life situations", zh: "常见的旅行与生活场景" },
                   { en: "Situations people wish they had prepared for", zh: "那些人们事后希望自己提前准备过的情景" },
                 ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(183,242,29,0.15)" }}>
-                      <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><circle cx="4" cy="4" r="2.5" fill="#B7F21D"/></svg>
+                  <div key={i} className="flex items-start gap-3.5 px-4 py-3.5 rounded-xl border border-border bg-background">
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#B7F21D" }}>
+                      <span className="text-[11px] font-black" style={{ color: "#1E1F1C" }}>{String(i + 1).padStart(2, "0")}</span>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-foreground">{item.en}</p>
-                      <p className="text-xs" style={{ color: "rgba(24,76,58,0.55)" }}>{item.zh}</p>
+                      <p className="text-sm font-semibold text-foreground">{item.en}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{item.zh}</p>
                     </div>
                   </div>
                 ))}
@@ -250,7 +244,7 @@ export function AboutPage() {
       </section>
 
       {/* ══ VISION ════════════════════════════════════════════════════════════ */}
-      <section className="border-b border-border" style={{ backgroundColor: "#EFF4F1" }}>
+      <section className="border-b border-border" style={{ backgroundColor: "#ffffff" }}>
         <div className="max-w-5xl mx-auto px-4 md:px-8 py-14 md:py-18">
           <div className="max-w-2xl">
             <p className="text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground mb-4">Brand vision</p>
@@ -272,24 +266,20 @@ export function AboutPage() {
       </section>
 
       {/* ══ FINAL CTA ═════════════════════════════════════════════════════════ */}
-      <section style={{ backgroundColor: "#184C3A" }}>
+      <section className="border-t border-border" style={{ backgroundColor: "#f7f6f3" }}>
         <div className="max-w-5xl mx-auto px-4 md:px-8 py-16 md:py-20 text-center">
-          {/* Hand-drawn lime accent */}
-          <svg aria-hidden="true" className="mx-auto mb-6" width="60" height="20" viewBox="0 0 60 20" fill="none">
-            <path d="M4 14 C15 9, 30 7, 45 10 C50 11, 56 12, 58 11" stroke="#B7F21D" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.7"/>
-          </svg>
-          <h2 className="text-[28px] md:text-[38px] font-black leading-tight text-white mb-2">
+          <SmileCurve width={64} opacity={0.5} className="mx-auto mb-6" />
+          <h2 className="text-[28px] md:text-[38px] font-black leading-tight text-foreground mb-2">
             Prepare before it happens.
           </h2>
-          <p className="text-base font-semibold mb-10" style={{ color: "rgba(183,242,29,0.8)" }}>
+          <p className="text-base font-semibold mb-10" style={{ color: "#184C3A" }}>
             在场景发生之前，先练一遍。
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Btn variant="accent" size="lg" to="/explore">
               Explore Scenes <ArrowRight size={15} />
             </Btn>
-            <Btn variant="ghost" size="lg" to="/resources"
-              className="border border-white/20 text-white hover:bg-white/10">
+            <Btn variant="secondary" size="lg" to="/resources">
               Browse Resources
             </Btn>
           </div>

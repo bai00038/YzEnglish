@@ -180,3 +180,48 @@
     line-height: 1.5;
   }
 }
+
+/* ─────────────────────────────────────────────
+   Learn the Dialogue — transcript row layout
+   Fixed speaker column + fluid content column so every
+   role's English/Chinese lines share one left edge,
+   regardless of speaker-label length.
+   ───────────────────────────────────────────── */
+.dialogue-row {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  column-gap: 16px;
+  align-items: start;
+}
+
+.speaker-column {
+  grid-column: 1;
+}
+
+.dialogue-content {
+  grid-column: 2;
+  min-width: 0;
+}
+
+.dialogue-english,
+.dialogue-chinese {
+  margin-left: 0;
+  width: 100%;
+}
+
+/* Keeps the Dialogue transcript's own scroll region (see SceneDetailPage.tsx)
+   scrollable by wheel/touch/scrollIntoView without showing a scrollbar track. */
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+@media (max-width: 768px) {
+  .dialogue-row {
+    grid-template-columns: 120px minmax(0, 1fr);
+    column-gap: 10px;
+  }
+}

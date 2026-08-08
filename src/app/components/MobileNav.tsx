@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import { Home, Grid, FileText, Info } from "lucide-react";
+import { Home, Grid, FileText, Info, Mail } from "lucide-react";
 import { isNavActive } from "@/app/components/nav-utils";
 
 export function MobileNav() {
@@ -9,6 +9,7 @@ export function MobileNav() {
     { label: "Explore", path: "/explore", Icon: Grid },
     { label: "Resources", path: "/resources", Icon: FileText },
     { label: "About", path: "/about", Icon: Info },
+    { label: "Contact", path: "/contact", Icon: Mail },
   ];
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border h-16 flex shadow-lg">

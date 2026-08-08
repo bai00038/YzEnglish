@@ -1,22 +1,34 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useParams } from "react-router";
 import {
-  ChevronRight, Play, Volume2, Bookmark, Share2, ChevronLeft, Mic,
-  FileText, Download, Info,
+  ChevronRight, ChevronLeft, FileText, Download, Info, Play, Volume2,
 } from "lucide-react";
-import { CATEGORY_BG } from "@/data/scenes";
 import { useSceneDetail } from "@/data/scenes-access";
-import { Btn } from "@/app/components/Btn";
-import { SmileCurve, LimeLine, SpeechBubbleLabel } from "@/app/components/brand";
+import { SpeechBubbleLabel } from "@/app/components/brand";
 import { LevelBadge, DurationLabel } from "@/app/components/badges";
-import { Collapsible } from "@/app/components/primitives";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
+import { buildSceneSpeakers, normalizeSpeaker, SPEAKER_STYLES } from "@/data/speakerRoles";
+import type { SubtitleCue } from "@/data/types";
+
+// Dialogue_Lines cues have real gaps between lines (end of one line to the
+// start of the next, e.g. a pause before the reply). Rendered as-is, the
+// caption blinks off during every gap — reads as flicker/jumping rather
+// than a pause. Extending each cue's end to the next cue's start (only
+// when that's later than its own end) keeps a line on screen right up
+// until the next one begins, with no blank gap in between. The final
+// cue's end is left untouched.
+function fillCueGaps(cues: SubtitleCue[]): SubtitleCue[] {
+  return cues.map((cue, i) => {
+    const nextStart = cues[i + 1]?.start;
+    if (nextStart === undefined || nextStart <= cue.end) return cue;
+    return { ...cue, end: nextStart };
+  });
+}
 
 const CHAPTER_LABELS = [
   { num: "01", label: "Watch", sectionId: "section-watch" },
   { num: "02", label: "Dialogue", sectionId: "section-dialogue" },
   { num: "03", label: "Language", sectionId: "section-language" },
-  { num: "04", label: "Practise", sectionId: "section-practise" },
 ];
 export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   bilingualMode: boolean;
@@ -30,8 +42,193 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const prevScene = data?.prevScene ?? undefined;
   const nextScene = data?.nextScene ?? undefined;
 
-  const [shadowLine, setShadowLine] = useState(0);
+  // Unique speakers for this scene, in first-occurrence order, each with a
+  // stable color — shared by the legend and every dialogue row below.
+  const sceneSpeakers = useMemo(
+    () => buildSceneSpeakers(content?.dialogue ?? []),
+    [content?.dialogue]
+  );
+
   const [activeChapter, setActiveChapter] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoPaused, setVideoPaused] = useState(true);
+  const [subtitleLang, setSubtitleLang] = useState<"off" | "en" | "zh">("off");
+  const [videoCurrentTime, setVideoCurrentTime] = useState(0);
+
+  // Switching scenes re-renders this same component with new data (the
+  // route param changes, not the component identity) — without this, a
+  // stale videoCurrentTime from the previous scene would briefly compute
+  // an activeSubtitleCue/activeDialogueLineIndex against the NEW scene's
+  // cues before the new <video> element reports its own real position.
+  useEffect(() => {
+    setVideoCurrentTime(0);
+    setVideoPaused(true);
+  }, [scene?.id]);
+
+  // Rendered ourselves (not via native <track>/TextTrack) — the browser's
+  // own caption box repositions itself depending on whether the native
+  // control bar is currently visible, which reads as the subtitle jumping
+  // up and down during playback. A fixed-position div sidesteps that
+  // entirely, and doubles as the fix for gaps between cues (see
+  // fillCueGaps): each line stays on screen until the next one starts.
+  const subtitleCues = useMemo(
+    () => (scene?.subtitleCues && scene.subtitleCues.length > 0 ? fillCueGaps(scene.subtitleCues) : null),
+    [scene?.subtitleCues]
+  );
+  const activeSubtitleCue = useMemo(() => {
+    if (!subtitleCues) return null;
+    return subtitleCues.find(cue => videoCurrentTime >= cue.start && videoCurrentTime < cue.end) ?? null;
+  }, [subtitleCues, videoCurrentTime]);
+
+  // Maps a Learn-the-Dialogue line index -> its {start, end} window in the
+  // scene video, driving both "click this line to jump the video there"
+  // and "highlight/auto-scroll to whichever line the video is on right
+  // now" — one shared source of truth for both.
+  //
+  // A Figma_Data dialogue line and its Dialogue_Lines cues aren't always
+  // 1:1 — a line is sometimes authored as several shorter timed cues
+  // there (e.g. "Excuse me. Do you have this in a small?" as two rows).
+  // Both lists are in the same chronological order, so this walks them
+  // together: for each dialogue line, greedily consume consecutive cues,
+  // concatenating their English text, until it exactly equals the line's
+  // English text. That run's first cue.start / last cue.end becomes the
+  // line's playable range. A line that never reaches an exact match
+  // (unexpected wording drift, or no Dialogue_Lines coverage at all) is
+  // left unmapped rather than guessing — no button/highlight, rather than
+  // a wrong audio range. This is also what "没有时间码的旧场景不会报错"
+  // falls back on: no dialogue and/or no subtitleCues -> empty Map, every
+  // line simply renders as plain, non-interactive text.
+  const dialogueLineAudioRanges = useMemo(() => {
+    const map = new Map<number, { start: number; end: number }>();
+    const cues = scene?.subtitleCues;
+    const lines = content?.dialogue;
+    if (!cues || cues.length === 0 || !lines || lines.length === 0) return map;
+
+    const normalize = (s: string) => s.replace(/[‘’]/g, "'").replace(/\s+/g, " ").trim();
+    let cueIndex = 0;
+
+    lines.forEach((line, lineIndex) => {
+      const target = normalize(line.en);
+      let acc = "";
+      let start: number | null = null;
+      let end: number | null = null;
+      let j = cueIndex;
+      while (j < cues.length && acc.length < target.length) {
+        acc = acc.length > 0 ? `${acc} ${normalize(cues[j].en)}` : normalize(cues[j].en);
+        if (start === null) start = cues[j].start;
+        end = cues[j].end;
+        j++;
+      }
+      if (acc === target && start !== null && end !== null) {
+        map.set(lineIndex, { start, end });
+        cueIndex = j;
+      }
+    });
+
+    // Dialogue_Lines' timestamps aren't frame-accurate — clipped first
+    // words and clips bleeding into the next line are both just the raw
+    // start/end running a little late. Nudge start earlier and end later
+    // by a small pre/post-roll to recover the edges, but never past a
+    // neighboring line's OWN (un-padded) boundary — that clamp is what
+    // guarantees this can reduce clipping without ever reintroducing
+    // bleed into the next line, and keeps every line's window
+    // non-overlapping (required for activeDialogueLineIndex below to
+    // ever match at most one line at a time).
+    const PRE_ROLL = 0.15;
+    const POST_ROLL = 0.15;
+    const ordered = Array.from(map.entries()).sort((a, b) => a[0] - b[0]);
+    ordered.forEach(([lineIndex, range], i) => {
+      const prevEnd = i > 0 ? ordered[i - 1][1].end : 0;
+      const nextStart = i < ordered.length - 1 ? ordered[i + 1][1].start : Infinity;
+      map.set(lineIndex, {
+        start: Math.max(0, prevEnd, range.start - PRE_ROLL),
+        end: Math.min(nextStart, range.end + POST_ROLL),
+      });
+    });
+
+    return map;
+  }, [content?.dialogue, scene?.subtitleCues]);
+
+  // Whichever dialogue line's window currently contains the video's
+  // playhead — null between lines (a pause) or once playback runs past
+  // the last mapped line. This alone drives the Dialogue section's
+  // highlight, auto-scroll, and the "now playing" text treatment; there
+  // is no separate "which line did I click" state to keep in sync with
+  // it, since clicking a line seeks the video to that line's own start.
+  const activeDialogueLineIndex = useMemo(() => {
+    for (const [lineIndex, range] of dialogueLineAudioRanges) {
+      if (videoCurrentTime >= range.start && videoCurrentTime < range.end) return lineIndex;
+    }
+    return null;
+  }, [dialogueLineAudioRanges, videoCurrentTime]);
+
+  // Set only by clicking a dialogue line — "play just this line, then
+  // stop" — never by the big play button or the native control bar, so
+  // normal continuous playback never auto-pauses at every line boundary.
+  // Cleared the moment the video actually pauses for any reason (see the
+  // <video> element's onPause below), so a stale target from a
+  // previously-clicked line can never fire again after later, unrelated
+  // playback resumes past that same timestamp.
+  const singleLineModeEndRef = useRef<number | null>(null);
+
+  function playDialogueLine(range: { start: number; end: number }) {
+    const video = videoRef.current;
+    if (!video) return;
+    singleLineModeEndRef.current = range.end;
+    video.currentTime = range.start;
+    video.play();
+  }
+
+  // Auto-scrolls the Dialogue transcript to follow activeDialogueLineIndex,
+  // but only when it actually changes (not on every timeupdate tick), and
+  // only within the transcript's own scroll container — never the page.
+  // If the visitor scrolls that container themselves, auto-scroll backs
+  // off for a few seconds instead of immediately fighting them for
+  // control.
+  const dialogueListRef = useRef<HTMLDivElement>(null);
+  const dialogueRowRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const isProgrammaticDialogueScrollRef = useRef(false);
+  const userScrolledDialogueRef = useRef(false);
+  const userScrollResumeTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (activeDialogueLineIndex === null) return;
+    if (userScrolledDialogueRef.current) return;
+    const container = dialogueListRef.current;
+    const row = dialogueRowRefs.current[activeDialogueLineIndex];
+    if (!container || !row) return;
+
+    // Deliberately NOT row.scrollIntoView(...) — it walks every scrollable
+    // ancestor (including the page/<html> itself) to bring the target
+    // fully into view, which is exactly what was dragging the whole page
+    // down and pushing the video off-screen. getBoundingClientRect() +
+    // writing only this container's own scrollTop can never touch any
+    // other scroll container, page included — and centers the active
+    // line in the panel instead of just nudging it to the nearest edge.
+    const containerRect = container.getBoundingClientRect();
+    const rowRect = row.getBoundingClientRect();
+    const rowOffsetWithinContainer = rowRect.top - containerRect.top + container.scrollTop;
+    const targetScrollTop = rowOffsetWithinContainer - container.clientHeight / 2 + rowRect.height / 2;
+
+    isProgrammaticDialogueScrollRef.current = true;
+    container.scrollTo({ top: Math.max(0, targetScrollTop), behavior: "smooth" });
+    const t = window.setTimeout(() => { isProgrammaticDialogueScrollRef.current = false; }, 700);
+    return () => window.clearTimeout(t);
+  }, [activeDialogueLineIndex]);
+
+  function handleDialogueListScroll() {
+    if (isProgrammaticDialogueScrollRef.current) return;
+    userScrolledDialogueRef.current = true;
+    if (userScrollResumeTimeoutRef.current) window.clearTimeout(userScrollResumeTimeoutRef.current);
+    userScrollResumeTimeoutRef.current = window.setTimeout(() => {
+      userScrolledDialogueRef.current = false;
+    }, 3000);
+  }
+
+  // While true, a click-triggered smooth scroll is in flight — the
+  // scroll-spy observer must not overwrite the just-clicked chapter.
+  const isProgrammaticScrollRef = useRef(false);
+  const scrollEndTimeoutRef = useRef<number | null>(null);
 
   // Scroll-spy via IntersectionObserver
   useEffect(() => {
@@ -42,6 +239,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
     const observer = new IntersectionObserver(
       (entries) => {
+        if (isProgrammaticScrollRef.current) return;
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             visibleSections.add(entry.target.id);
@@ -73,9 +271,37 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content]);
 
-  const scrollToSection = (sectionId: string) => {
+  // Detect when a programmatic smooth scroll has settled, so scroll-spy
+  // tracking can safely resume.
+  useEffect(() => {
+    const onScroll = () => {
+      if (!isProgrammaticScrollRef.current) return;
+      if (scrollEndTimeoutRef.current) window.clearTimeout(scrollEndTimeoutRef.current);
+      scrollEndTimeoutRef.current = window.setTimeout(() => {
+        isProgrammaticScrollRef.current = false;
+      }, 150);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (scrollEndTimeoutRef.current) window.clearTimeout(scrollEndTimeoutRef.current);
+    };
+  }, []);
+
+  const scrollToSection = (sectionId: string, index: number) => {
     const el = document.getElementById(sectionId);
     if (!el) return;
+
+    // Reflect the clicked chapter immediately — don't wait for the scroll
+    // (or the scroll-spy observer) to catch up.
+    setActiveChapter(index);
+    isProgrammaticScrollRef.current = true;
+    if (scrollEndTimeoutRef.current) window.clearTimeout(scrollEndTimeoutRef.current);
+    // Fallback in case no further scroll events fire (e.g. already at target).
+    scrollEndTimeoutRef.current = window.setTimeout(() => {
+      isProgrammaticScrollRef.current = false;
+    }, 700);
+
     // Offset: main nav h-14 (56px) + sticky chapter nav (~44px) + 8px buffer
     const offset = 64 + 44 + 8;
     const top = el.getBoundingClientRect().top + window.scrollY - offset;
@@ -115,7 +341,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
       {/* Breadcrumb */}
       <div className="bg-background border-b border-border">
-        <div className="max-w-[1000px] mx-auto px-4 md:px-6 py-2.5 flex items-center gap-1 text-[10px] text-muted-foreground flex-wrap">
+        <div className="max-w-[1000px] mx-auto px-4 md:px-6 py-2.5 flex items-center gap-1 text-[13px] md:text-[14px] text-muted-foreground flex-wrap">
           <Link to="/" className="hover:text-primary transition-colors">Home</Link>
           <ChevronRight size={9} />
           <Link to="/explore" className="hover:text-primary transition-colors">{scene.category}</Link>
@@ -130,9 +356,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
           <h1 className="text-[32px] md:text-[38px] font-black leading-tight text-foreground mb-0.5">
             {scene.titleEn}
           </h1>
-          <p className="font-semibold mb-3" style={{ fontSize: "18px", color: "#184C3A" }}>{scene.titleZh}</p>
+          <p className="font-normal text-[#3A3B37] mb-3 text-[16px] md:text-[18px]">{scene.titleZh}</p>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[11px] font-bold text-primary bg-primary/10 px-2.5 py-0.5 rounded-md">{scene.category}</span>
+            <span className="text-[13px] md:text-[14px] font-bold text-primary bg-primary/10 px-2.5 py-0.5 rounded-md">{scene.category}</span>
             <LevelBadge level={scene.level} />
             <DurationLabel duration={scene.duration} />
           </div>
@@ -143,7 +369,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
         <div className="pb-24">
           <section className="max-w-[1000px] mx-auto px-4 md:px-6 pt-8 pb-20">
             <div className="flex items-start gap-4 mb-6">
-              <span className="text-[44px] md:text-[52px] font-black leading-none select-none flex-shrink-0 mt-0.5 tabular-nums" style={{ color: "rgba(24,76,58,0.1)" }}>01</span>
+              <span className="text-[44px] md:text-[52px] font-black leading-none select-none flex-shrink-0 mt-0.5 tabular-nums" style={{ color: "rgba(24,76,58,0.1)", WebkitTextStroke: "1px rgba(24,76,58,0.5)", paintOrder: "stroke fill" }}>01</span>
               <div className="pt-0.5">
                 <p className="text-[24px] md:text-[28px] font-black leading-tight text-foreground">Watch & Understand</p>
                 <p className="text-[15px] md:text-[16px] text-muted-foreground mt-1 leading-snug">Watch the scene, then read the setup and your goal.</p>
@@ -169,17 +395,17 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   return (
                     <button
                       key={i}
-                      onClick={() => scrollToSection(ch.sectionId)}
+                      onClick={() => scrollToSection(ch.sectionId, i)}
                       className="flex items-center gap-2 flex-shrink-0 pr-5 py-3 border-b-2 border-transparent transition-colors cursor-pointer bg-transparent"
                       style={isActive
                         ? { borderBottomColor: "#B7F21D", color: "#184C3A" }
                         : { color: "var(--muted-foreground)" }
                       }
                     >
-                      <span className="text-[9px] font-black" style={{ color: isActive ? "#184C3A" : undefined }}>
+                      <span className="text-[10px] md:text-[11px] font-black" style={{ color: isActive ? "#184C3A" : undefined }}>
                         {ch.num}
                       </span>
-                      <span className="text-[11px] font-bold whitespace-nowrap">{ch.label}</span>
+                      <span className="text-[14px] md:text-[16px] font-bold whitespace-nowrap">{ch.label}</span>
                     </button>
                   );
                 })}
@@ -190,7 +416,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
           {/* ═══════════════════════════════════════════
               CENTRED CONTENT LAYOUT (no sidebar)
               ═══════════════════════════════════════════ */}
-          <div className="pb-24">
+          <div>
 
             {/* ─────────────────────────────────────────────
                 STAGE 01 · Watch & Understand
@@ -199,75 +425,124 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
               {/* ── Section heading ── */}
               <div className="flex items-start gap-4 mb-6">
-                <span className="text-[44px] md:text-[52px] font-black leading-none select-none flex-shrink-0 mt-0.5 tabular-nums" style={{ color: "rgba(24,76,58,0.1)" }}>01</span>
+                <span className="text-[44px] md:text-[52px] font-black leading-none select-none flex-shrink-0 mt-0.5 tabular-nums" style={{ color: "rgba(24,76,58,0.1)", WebkitTextStroke: "1px rgba(24,76,58,0.5)", paintOrder: "stroke fill" }}>01</span>
                 <div className="pt-0.5">
-                  <p className="text-[24px] md:text-[28px] font-black leading-tight text-foreground">Watch & Understand</p>
-                  <p className="text-[15px] md:text-[16px] text-muted-foreground mt-1 leading-snug">Watch the scene, then read the setup and your goal.</p>
+                  <p className="text-[24px] md:text-[28px] font-black leading-tight text-primary">Watch & Understand</p>
+                  <p className="text-[15px] md:text-[16px] text-muted-foreground mt-1 leading-snug">Explore the scene before reading the dialogue.</p>
                 </div>
               </div>
 
-              {/* ── 16:9 video — primary action ── */}
-              <div className="rounded-2xl overflow-hidden bg-gray-900 mb-8" style={{ aspectRatio: "16/9" }}>
-                <div className="relative w-full h-full flex flex-col items-center justify-center">
-                  <button className="w-16 h-16 rounded-full border-2 flex items-center justify-center mb-4 transition-all hover:scale-105"
-                    style={{ borderColor: "rgba(183,242,29,0.5)", backgroundColor: "rgba(183,242,29,0.12)" }}>
-                    <Play size={22} className="ml-0.5" style={{ color: "#B7F21D" }} fill="currentColor" />
-                  </button>
-                  <p className="text-white/40 text-sm font-semibold">{scene.titleEn}</p>
-                  <p className="text-white/22 text-xs mt-1">16:9 · {scene.duration}</p>
-                  <div className="absolute bottom-0 left-0 right-0 px-6 pb-5">
-                    <div className="w-full h-0.5 rounded-full mb-3" style={{ backgroundColor: "rgba(255,255,255,0.12)" }}>
-                      <div className="h-full w-[28%] rounded-full" style={{ backgroundColor: "#B7F21D" }} />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-white/40 text-[11px]">0:34 / 2:00</span>
-                      <div className="flex items-center gap-3">
-                        <Volume2 size={13} style={{ color: "rgba(255,255,255,0.4)" }} />
-                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded" style={{ backgroundColor: "rgba(183,242,29,0.2)", color: "#B7F21D" }}>CC</span>
+              {/* ── Scene video area — always the same 16:9 video-shaped frame.
+                  scene.photo is only ever used as the <video> poster (cover
+                  image) or, before scene.video_url is synced from the Google
+                  Sheet, as a poster-style background — never shown as a bare
+                  standalone image. ── */}
+              <div className="w-full rounded-2xl overflow-hidden bg-black mb-8" style={{ aspectRatio: "16 / 9" }}>
+                {scene.video_url ? (
+                  <div className="relative w-full h-full">
+                    <video
+                      ref={videoRef}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      poster={scene.photo || undefined}
+                      className="w-full h-full object-cover"
+                      onPlay={() => setVideoPaused(false)}
+                      onPause={() => {
+                        setVideoPaused(true);
+                        // Any pause — manual, native-controls, or our own
+                        // single-line auto-stop just below — ends
+                        // single-line mode. Whatever resumes playback next
+                        // (big play button, native controls, another line
+                        // click) is never held to a stale line's end time.
+                        singleLineModeEndRef.current = null;
+                      }}
+                      onTimeUpdate={e => {
+                        const t = e.currentTarget.currentTime;
+                        setVideoCurrentTime(t);
+                        const stopAt = singleLineModeEndRef.current;
+                        if (stopAt !== null && t >= stopAt) {
+                          e.currentTarget.pause(); // triggers onPause above, which clears singleLineModeEndRef
+                        }
+                      }}
+                      onEnded={e => {
+                        e.currentTarget.currentTime = 0;
+                        setVideoCurrentTime(0);
+                      }}
+                    >
+                      <source src={scene.video_url} />
+                      Your browser does not support video playback.
+                    </video>
+                    {subtitleLang !== "off" && activeSubtitleCue && (
+                      <div className="absolute inset-x-0 bottom-14 md:bottom-16 flex justify-center px-6 pointer-events-none">
+                        <p className="max-w-[90%] text-center text-white text-base md:text-lg leading-snug px-3 py-1.5 rounded-lg bg-black/70" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
+                          {subtitleLang === "en" ? activeSubtitleCue.en : activeSubtitleCue.zh}
+                        </p>
                       </div>
+                    )}
+                    {subtitleCues && (
+                      <div className="absolute top-3 right-3 flex items-center gap-0.5 rounded-full bg-black/50 p-1 text-xs font-bold">
+                        <button
+                          type="button"
+                          onClick={() => setSubtitleLang("off")}
+                          aria-pressed={subtitleLang === "off"}
+                          className={`px-2.5 py-1 rounded-full transition-colors ${subtitleLang === "off" ? "bg-white text-black" : "text-white hover:bg-white/20"}`}
+                        >
+                          Off
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSubtitleLang("en")}
+                          aria-pressed={subtitleLang === "en"}
+                          className={`px-2.5 py-1 rounded-full transition-colors ${subtitleLang === "en" ? "bg-white text-black" : "text-white hover:bg-white/20"}`}
+                        >
+                          EN
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSubtitleLang("zh")}
+                          aria-pressed={subtitleLang === "zh"}
+                          className={`px-2.5 py-1 rounded-full transition-colors ${subtitleLang === "zh" ? "bg-white text-black" : "text-white hover:bg-white/20"}`}
+                        >
+                          中
+                        </button>
+                      </div>
+                    )}
+                    {videoPaused && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            singleLineModeEndRef.current = null; // resuming from the big button is always continuous playback
+                            videoRef.current?.play();
+                          }}
+                          aria-label="Play video"
+                          className="pointer-events-auto flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
+                        >
+                          <Play className="w-7 h-7 md:w-9 md:h-9 text-white fill-white ml-1" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : scene.photo ? (
+                  <div className="relative w-full h-full">
+                    <img
+                      src={scene.photo}
+                      alt={`${scene.titleEn} scene cover`}
+                      className="w-full h-full object-cover object-center"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/35">
+                      <p className="text-white text-xs font-bold px-3 py-1.5 rounded-full bg-black/40">Video coming soon · 视频准备中</p>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* ── Scene Setup + Learning Goal — below video ── */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-7">
-                {/* Scene Setup */}
-                <div className="rounded-xl border border-border bg-card px-4 py-4">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-primary mb-2.5">Scene Setup · 场景说明</p>
-                  <p className="text-sm leading-[1.65] text-foreground">
-                    {content.sceneSetup.en}
-                  </p>
-                  <p className="text-[13px] mt-2.5 leading-[1.7]" style={{ color: "#3A3B37" }}>
-                    {content.sceneSetup.zh}
-                  </p>
-                </div>
-                {/* Learning Goal — highlight card with speech-bubble corner detail */}
-                <div className="rounded-xl px-4 py-4 relative overflow-hidden" style={{ backgroundColor: "rgba(183,242,29,0.08)", border: "1px solid rgba(183,242,29,0.22)" }}>
-                  {/* Speech-bubble tail — bottom-left corner detail */}
-                  <svg aria-hidden="true" width="14" height="10" viewBox="0 0 14 10" fill="none"
-                    className="absolute bottom-2 left-4">
-                    <path d="M0 0 Q7 8 14 2" stroke="#B7F21D" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4" />
-                  </svg>
-                  <div className="flex items-center gap-2 mb-2.5">
-                    <p className="text-[9px] font-black uppercase tracking-widest" style={{ color: "#184C3A" }}>Learning Goal · 学习目标</p>
-                    <div className="w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: "#B7F21D" }} />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center px-6 text-center">
+                    <p className="text-white text-sm font-bold">{scene.titleEn}</p>
+                    <p className="text-white/70 text-xs mt-1">Video coming soon · 视频准备中</p>
                   </div>
-                  <p className="text-sm font-semibold leading-[1.55] text-foreground">
-                    {content.learningGoal.en}
-                  </p>
-                  <p className="text-[13px] mt-2.5 leading-[1.7]" style={{ color: "#3A3B37" }}>
-                    {content.learningGoal.zh}
-                  </p>
-                </div>
+                )}
               </div>
 
-              {/* ── Save / Share ── */}
-              <div className="flex items-center gap-2">
-                <Btn variant="secondary" size="sm" disabled><Bookmark size={12} />Save</Btn>
-                <Btn variant="secondary" size="sm" disabled><Share2 size={12} />Share</Btn>
-                <span className="text-[10px] text-muted-foreground/45 italic ml-1">Coming soon</span>
-              </div>
             </section>
 
             {/* ─────────────────────────────────────────────
@@ -275,22 +550,17 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 ───────────────────────────────────────────── */}
             <section id="section-dialogue" className="border-t border-border" style={{ backgroundColor: "#EFF4F1" }}>
               <div className="max-w-[960px] mx-auto px-4 md:px-6 py-12 md:py-16">
-              <div className="rounded-2xl px-5 py-8 md:py-10" style={{ backgroundColor: "#EFF4F1" }}>
+              <div className="px-0" style={{ backgroundColor: "#EFF4F1" }}>
                 <div className="flex items-start gap-5 mb-8">
-                  <span className="text-[56px] md:text-[64px] font-black leading-none select-none flex-shrink-0 mt-1 tabular-nums" style={{ color: "rgba(24,76,58,0.09)" }}>02</span>
+                  <span className="text-[56px] md:text-[64px] font-black leading-none select-none flex-shrink-0 mt-1 tabular-nums" style={{ color: "rgba(24,76,58,0.09)", WebkitTextStroke: "1px rgba(24,76,58,0.5)", paintOrder: "stroke fill" }}>02</span>
                   <div className="pt-1">
-                    <p className="text-[32px] md:text-[36px] font-black leading-tight text-foreground">Learn the Dialogue</p>
-                    <SmileCurve width={80} opacity={0.55} className="mt-1 mb-1" />
+                    <p className="text-[32px] md:text-[36px] font-black leading-tight text-primary">Learn the Dialogue</p>
                     <p className="text-[16px] md:text-[17px] text-muted-foreground mt-0.5 leading-snug">Read line by line. Toggle bilingual mode for Chinese translations.</p>
                   </div>
                 </div>
 
                 {/* Controls bar */}
                 <div className="flex flex-wrap items-center gap-3 mb-5 pb-5 border-b border-black/8">
-                  <button disabled className="flex items-center gap-2 text-xs font-bold rounded-xl px-4 py-2.5 opacity-50 cursor-default" style={{ backgroundColor: "#184C3A", color: "#F7F6F2" }}>
-                    <Play size={11} fill="currentColor" />Play full dialogue
-                  </button>
-
                   {/* EN / 双语 toggle */}
                   <div className="flex items-center border border-border rounded-full p-0.5 bg-white shadow-sm">
                     <button onClick={() => setBilingualMode(false)}
@@ -307,43 +577,77 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                   <span className="text-xs text-muted-foreground">{content.dialogue.length} lines · {scene.duration}</span>
 
-                  {/* Legend */}
-                  <div className="flex items-center gap-3 ml-auto">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-black px-2 py-0.5 rounded" style={{ backgroundColor: "rgba(183,242,29,0.22)", color: "#184C3A" }}>YOU</span>
-                      <span className="text-[10px] text-muted-foreground hidden sm:inline">Customer · 顾客</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-black px-2 py-0.5 rounded bg-white border border-border text-muted-foreground">STAFF</span>
-                      <span className="text-[10px] text-muted-foreground hidden sm:inline">Staff · 店员</span>
-                    </div>
+                  {/* Legend — every role that actually speaks in this scene, in first-occurrence order */}
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 ml-auto">
+                    {Array.from(sceneSpeakers.values()).map(sp => (
+                      <div key={sp.key} className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded whitespace-nowrap"
+                          style={{ backgroundColor: sp.style.bg, color: sp.style.color, border: sp.style.border }}>
+                          {sp.en.toUpperCase()}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground hidden sm:inline whitespace-nowrap">
+                          {sp.zh ? `${sp.en} · ${sp.zh}` : sp.en}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                {/* Transcript rows */}
-                <div>
+                {/* Transcript rows — its own scroll region (not the page) so the
+                    active-line auto-scroll (see the activeDialogueLineIndex
+                    effect above) never yanks the whole page around, only
+                    this panel. */}
+                <div ref={dialogueListRef} onScroll={handleDialogueListScroll} className="max-h-[520px] overflow-y-auto scroll-smooth pr-1 scrollbar-hide">
                   {content.dialogue.map((line, i) => {
-                    const isYou = line.speaker === "You";
+                    const speaker = sceneSpeakers.get(normalizeSpeaker(line.speaker));
+                    const style = speaker?.style ?? SPEAKER_STYLES[0];
+                    const label = (speaker?.en ?? line.speaker).toUpperCase();
+                    const audioRange = dialogueLineAudioRanges.get(i);
+                    const isActiveLine = activeDialogueLineIndex === i;
                     return (
                       <div key={i}
-                        className="flex items-start gap-4 py-4 border-b border-black/6 last:border-0 hover:bg-white/70 transition-colors rounded-lg px-3 -mx-3"
-                        style={{ borderLeft: `3px solid ${isYou ? "rgba(183,242,29,0.6)" : "transparent"}` }}>
+                        ref={el => { dialogueRowRefs.current[i] = el; }}
+                        className={`dialogue-row py-4 border-b border-black/6 last:border-0 hover:bg-white/70 transition-colors rounded-lg px-3 -mx-3 ${audioRange ? "cursor-pointer" : ""} ${isActiveLine ? "bg-primary/5" : ""}`}
+                        style={{ borderLeft: `3px solid ${style.accent}` }}
+                        role={audioRange ? "button" : undefined}
+                        tabIndex={audioRange ? 0 : undefined}
+                        aria-pressed={audioRange ? isActiveLine : undefined}
+                        aria-label={audioRange ? "Play English audio" : undefined}
+                        onClick={audioRange ? () => playDialogueLine(audioRange) : undefined}
+                        onKeyDown={audioRange ? e => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            playDialogueLine(audioRange);
+                          }
+                        } : undefined}
+                      >
 
-                        {/* Speech-bubble speaker label */}
-                        <SpeechBubbleLabel isYou={isYou} />
+                        {/* Speech-bubble speaker label — fixed-width column, same for every role */}
+                        <div className="speaker-column">
+                          <SpeechBubbleLabel label={label} style={style} />
+                        </div>
 
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-foreground leading-[1.65]" style={{ fontSize: "17px" }}>{line.en}</p>
+                        {/* English + Chinese lines — fluid column, same left edge for every role */}
+                        <div className="dialogue-content">
+                          <div className="flex items-start gap-2">
+                            <p
+                              className={`dialogue-english font-medium leading-[1.65] flex-1 transition-colors ${isActiveLine ? "text-primary" : "text-foreground"}`}
+                              style={{ fontSize: "17px", WebkitTextStroke: isActiveLine ? "0.5px currentColor" : "0px currentColor" }}
+                            >
+                              {line.en}
+                            </p>
+                            {/* Purely a state indicator now — the whole row is the click target (see onClick above) */}
+                            {audioRange && (
+                              <span aria-hidden="true" className={`flex-shrink-0 mt-0.5 flex items-center justify-center w-6 h-6 rounded-full transition-colors ${isActiveLine ? "bg-primary text-white" : "text-muted-foreground"}`}>
+                                <Volume2 className="w-3.5 h-3.5" />
+                              </span>
+                            )}
+                          </div>
                           {bilingualMode && (
-                            <p className="mt-2 leading-[1.75]" style={{ fontSize: "15px", color: "#3A3B37" }}>{line.zh}</p>
+                            <p className="dialogue-chinese mt-2 leading-[1.75]" style={{ fontSize: "15px", color: "#3A3B37" }}>{line.zh}</p>
                           )}
                         </div>
 
-                        {/* Audio */}
-                        <button disabled className="flex-shrink-0 w-7 h-7 rounded-full border border-border bg-white flex items-center justify-center opacity-25 cursor-default mt-1">
-                          <Volume2 size={10} />
-                        </button>
                       </div>
                     );
                   })}
@@ -359,11 +663,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               <div className="max-w-[960px] mx-auto px-4 md:px-6 py-12 md:py-16">
               <div className="bg-card px-0">
                 <div className="flex items-start gap-5 mb-8">
-                  <span className="text-[56px] md:text-[64px] font-black leading-none select-none flex-shrink-0 mt-1 tabular-nums" style={{ color: "rgba(24,76,58,0.06)" }}>03</span>
+                  <span className="text-[56px] md:text-[64px] font-black leading-none select-none flex-shrink-0 mt-1 tabular-nums" style={{ color: "rgba(24,76,58,0.06)", WebkitTextStroke: "1px rgba(24,76,58,0.5)", paintOrder: "stroke fill" }}>03</span>
                   <div className="pt-1">
-                    <p className="text-[32px] md:text-[36px] font-black leading-tight text-foreground">Learn the Language</p>
-                    <LimeLine width={56} opacity={0.6} className="mt-1.5 mb-1" />
-                    <p className="text-[16px] md:text-[17px] text-muted-foreground mt-0.5 leading-snug">Key expressions, vocabulary, and cultural notes from this scene.</p>
+                    <p className="text-[32px] md:text-[36px] font-black leading-tight text-primary">Learn the Language</p>
+                    <p className="text-[16px] md:text-[17px] text-muted-foreground mt-0.5 leading-snug">Key expressions and cultural notes from this scene.</p>
                   </div>
                 </div>
 
@@ -371,57 +674,26 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 <div className="mb-8">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-0.5 h-4 rounded-full bg-primary" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground">Key Expressions · 重点表达</span>
+                    <span className="text-xs font-black uppercase tracking-[0.14em] text-muted-foreground">Key Expressions · 重点表达</span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {content.expressions.map((exp, i) => (
                       <div key={i} className="border border-border rounded-xl overflow-hidden bg-background">
-                        <div className="px-4 pt-4 pb-3">
-                          <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded mb-2.5 inline-block" style={{ backgroundColor: "rgba(183,242,29,0.2)", color: "#184C3A" }}>
-                            {exp.label}
-                          </span>
-                          <p className="text-[15px] font-bold text-foreground leading-snug mt-1">{exp.en}</p>
-                          <p className="text-sm text-primary font-semibold mt-1">{exp.zh}</p>
-                        </div>
-                        <div className="px-4 py-2.5 border-t border-border flex items-center gap-3" style={{ backgroundColor: "rgba(183,242,29,0.07)" }}>
-                          <p className="text-[11px] text-muted-foreground italic flex-1 leading-relaxed">{exp.note}</p>
-                          <button disabled className="w-6 h-6 rounded-full border border-border bg-white flex items-center justify-center opacity-25 cursor-default flex-shrink-0">
-                            <Volume2 size={9} />
-                          </button>
+                        <div className="px-4 py-4">
+                          <p className="text-[16px] font-semibold text-primary leading-snug">{exp.en}</p>
+                          <p className="text-[14px] text-[#3A3B37] font-normal mt-1">{exp.zh}</p>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Vocabulary — collapsible */}
-                <div className="mb-4">
-                  <Collapsible label="Vocabulary · 重点词汇" defaultOpen={false}>
-                    <div className="mt-2 divide-y divide-border">
-                      {content.vocabulary.map((v, i) => (
-                        <div key={i} className="flex items-start gap-3 py-3 first:pt-1">
-                          <div className="flex-shrink-0 w-40">
-                            <span className="text-sm font-bold text-foreground">{v.word}</span>
-                            {v.phonetic && <span className="text-[10px] text-muted-foreground font-mono ml-1.5">{v.phonetic}</span>}
-                            <span className="text-[10px] text-muted-foreground italic ml-1">{v.pos}</span>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-foreground">{v.zh}</p>
-                            <p className="text-[11px] text-muted-foreground italic mt-0.5">"{v.example}"</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </Collapsible>
-                </div>
-
                 {/* Culture & Local Tips */}
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-0.5 h-4 rounded-full bg-primary" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground">Culture & Local Tips · 文化与本地提示</span>
+                    <span className="text-xs font-black uppercase tracking-[0.14em] text-muted-foreground">Culture & Local Tips · 文化与本地提示</span>
                   </div>
-                  <SmileCurve width={48} opacity={0.45} className="mb-4 -mt-1" />
                   <div className="space-y-3">
                     {content.tips.map((tip, i) => (
                       <div key={i} className="rounded-xl overflow-hidden border" style={{ borderColor: "rgba(24,76,58,0.13)", backgroundColor: "rgba(24,76,58,0.025)" }}>
@@ -429,17 +701,15 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                           <Info size={13} className="text-primary flex-shrink-0" />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <p className="text-xs font-bold text-foreground">{tip.title}</p>
-                              <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded" style={{ backgroundColor: "rgba(183,242,29,0.18)", color: "#184C3A" }}>
-                                {tip.type}
-                              </span>
+                              <p className="text-sm font-bold text-primary">{tip.title}</p>
                             </div>
-                            <p className="text-[14px] mt-0.5 leading-snug" style={{ color: "#184C3A", opacity: 0.75 }}>{tip.titleZh}</p>
                           </div>
                         </div>
                         <div className="px-4 py-4">
-                          <p className="text-sm leading-[1.7] text-foreground">{tip.body}</p>
-                          <p className="mt-3 leading-[1.75]" style={{ fontSize: "15.5px", color: "#3A3B37" }}>{tip.bodyZh}</p>
+                          <p className="text-sm leading-[1.7] text-primary" style={{ fontWeight: 600 }}>{tip.body}</p>
+                          {tip.bodyZh && (
+                            <p className="text-sm mt-1.5 text-[#3A3B37]" style={{ fontWeight: 400 }}>{tip.bodyZh}</p>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -450,119 +720,34 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             </section>
 
             {/* ─────────────────────────────────────────────
-                STAGE 04 · Practise & Continue
-                dark forest green — shadowing only
-                ───────────────────────────────────────────── */}
-            <section id="section-practise" className="border-t border-black/8" style={{ backgroundColor: "#184C3A" }}>
-              <div className="max-w-[960px] mx-auto px-4 md:px-6 py-12 md:py-16">
-
-                {/* Stage header */}
-                <div className="flex items-start gap-5 mb-10">
-                  <span className="text-[56px] md:text-[64px] font-black leading-none select-none flex-shrink-0 mt-1 tabular-nums" style={{ color: "rgba(183,242,29,0.12)" }}>04</span>
-                  <div className="pt-1">
-                    <p className="text-[32px] md:text-[36px] font-black text-white leading-tight">Practise & Continue</p>
-                    <SmileCurve width={96} opacity={0.45} className="mt-1 mb-1" />
-                    <p className="text-[16px] md:text-[17px] mt-0.5 leading-snug" style={{ color: "rgba(255,255,255,0.5)" }}>Say each line out loud. Match the rhythm and intonation.</p>
-                  </div>
-                </div>
-
-                {/* Shadowing label */}
-                <div className="flex items-center gap-2 mb-5">
-                  <div className="w-0.5 h-4 rounded-full" style={{ backgroundColor: "rgba(183,242,29,0.55)" }} />
-                  <span className="text-[10px] font-black uppercase tracking-[0.14em]" style={{ color: "rgba(183,242,29,0.6)" }}>Shadowing Practice · 跟读练习</span>
-                </div>
-
-                {/* Progress bar */}
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="text-xs font-bold flex-shrink-0" style={{ color: "rgba(183,242,29,0.8)" }}>
-                    Line {shadowLine + 1} of {content.dialogue.length}
-                  </span>
-                  <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.1)" }}>
-                    <div className="h-full rounded-full transition-all duration-300" style={{ width: `${((shadowLine + 1) / content.dialogue.length) * 100}%`, backgroundColor: "#B7F21D" }} />
-                  </div>
-                </div>
-
-                {/* Current line — hand-drawn left accent + speech-bubble label */}
-                <div className="rounded-xl p-5 mb-3 relative" style={{ backgroundColor: "rgba(183,242,29,0.07)", border: "1px solid rgba(183,242,29,0.18)" }}>
-                  {/* Hand-drawn active-line marker on left edge */}
-                  <div className="absolute left-0 top-4 bottom-4 w-0.5 rounded-full" style={{ backgroundColor: "#B7F21D", opacity: 0.7 }} />
-                  <div className="flex items-center gap-3 mb-3">
-                    <SpeechBubbleLabel isYou={content.dialogue[shadowLine].speaker === "You"} light />
-                    {/* Lime dot — pulse-like brand accent */}
-                    <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: "#B7F21D", opacity: 0.7 }} />
-                    <span className="text-[9px] font-semibold" style={{ color: "rgba(183,242,29,0.5)" }}>Say it out loud</span>
-                  </div>
-                  <p className="font-bold text-white leading-[1.65]" style={{ fontSize: "18px" }}>{content.dialogue[shadowLine].en}</p>
-                  {bilingualMode && (
-                    <p className="mt-2.5 leading-[1.75]" style={{ fontSize: "15px", color: "rgba(255,255,255,0.5)" }}>{content.dialogue[shadowLine].zh}</p>
-                  )}
-                </div>
-
-                {/* Next line preview */}
-                {shadowLine + 1 < content.dialogue.length && (
-                  <div className="rounded-xl px-5 py-3 mb-6" style={{ backgroundColor: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                    <p className="text-[9px] font-bold uppercase mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Next</p>
-                    <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.4)" }}>{content.dialogue[shadowLine + 1].en}</p>
-                  </div>
-                )}
-
-                {/* Controls */}
-                <div className="flex items-center gap-2 mb-5">
-                  <button disabled className="flex items-center gap-1.5 text-xs font-bold rounded-lg px-4 py-2 opacity-50 cursor-default" style={{ backgroundColor: "rgba(183,242,29,0.15)", color: "#B7F21D", border: "1px solid rgba(183,242,29,0.2)" }}>
-                    <Play size={11} fill="currentColor" />Listen
-                  </button>
-                  <button disabled className="flex items-center gap-1.5 text-xs font-bold rounded-lg px-4 py-2 opacity-40 cursor-default" style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                    Slow
-                  </button>
-                  <button disabled className="flex items-center gap-1.5 text-xs font-bold rounded-lg px-4 py-2 opacity-50 cursor-default ml-auto" style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                    <Mic size={11} />Practise
-                  </button>
-                </div>
-
-                {/* Prev / Next line */}
-                <div className="flex items-center justify-between pt-5 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-                  <button onClick={() => setShadowLine(l => Math.max(0, l - 1))}
-                    disabled={shadowLine === 0}
-                    className="flex items-center gap-1.5 text-xs font-bold rounded-lg px-4 py-2 transition-opacity disabled:opacity-25"
-                    style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                    <ChevronLeft size={13} />Previous
-                  </button>
-                  {/* Smile-curve completion feedback — visible on last line */}
-                  {shadowLine === content.dialogue.length - 1 && (
-                    <div className="flex flex-col items-center gap-1">
-                      <SmileCurve width={40} opacity={0.6} />
-                      <span className="text-[9px] font-bold" style={{ color: "rgba(183,242,29,0.6)" }}>Done!</span>
-                    </div>
-                  )}
-                  <button onClick={() => setShadowLine(l => Math.min(content.dialogue.length - 1, l + 1))}
-                    disabled={shadowLine === content.dialogue.length - 1}
-                    className="flex items-center gap-1.5 text-xs font-bold rounded-lg px-4 py-2 transition-opacity disabled:opacity-25"
-                    style={{ backgroundColor: "rgba(183,242,29,0.15)", color: "#B7F21D", border: "1px solid rgba(183,242,29,0.28)" }}>
-                    Next line <ChevronRight size={13} />
-                  </button>
-                </div>
-
-              </div>
-            </section>
-
-            {/* ─────────────────────────────────────────────
                 LIGHT SECTION: PDF · Related · Prev/Next
                 ───────────────────────────────────────────── */}
             <section className="border-t border-border bg-background">
               <div className="max-w-[960px] mx-auto px-4 md:px-6 py-12">
 
-                {/* PDF download */}
+                {/* PDF download — scene.pdfUrl comes straight from Supabase scenes.pdf_url;
+                    never hardcoded and never guessed from the scene id/slug. */}
                 <div className="flex items-center gap-4 border border-border rounded-2xl bg-card px-5 py-4 mb-10 shadow-sm">
                   <div className="w-10 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(183,242,29,0.15)" }}>
                     <FileText size={16} className="text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-foreground leading-snug">{scene.titleEn} — PDF</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Dialogue · Expressions · Vocabulary · Culture tips · Free</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Dialogue · Expressions · Culture tips · Free</p>
                   </div>
-                  <button className="flex items-center gap-1.5 text-xs font-black rounded-xl px-4 py-2.5 transition-opacity hover:opacity-90 flex-shrink-0" style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}>
-                    <Download size={11} />Download
-                  </button>
+                  {scene.pdfUrl ? (
+                    <a
+                      href={scene.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-xs font-black rounded-xl px-4 py-2.5 transition-opacity hover:opacity-90 flex-shrink-0"
+                      style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}
+                    >
+                      <Download size={11} />Download
+                    </a>
+                  ) : (
+                    <span className="text-xs font-bold text-muted-foreground italic flex-shrink-0">资料准备中</span>
+                  )}
                 </div>
 
                 {/* Related Scenes */}
@@ -576,10 +761,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       {related.map(r => (
                         <Link key={r.id} to={`/scenes/${r.slug}`}
                           className="flex items-start gap-3 border border-border rounded-xl p-3.5 bg-card text-left hover:border-primary/30 hover:shadow-sm transition-all">
-                          <div className={`w-10 h-10 rounded-lg flex-shrink-0 ${CATEGORY_BG[r.category] ?? "bg-secondary"}`} />
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-foreground leading-snug">{r.titleEn}</p>
-                            <p className="text-[11px] text-muted-foreground mt-0.5">{r.titleZh}</p>
+                            <p className="text-sm font-bold text-foreground leading-snug">{r.titleEn}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">{r.titleZh}</p>
                             <div className="flex items-center gap-1.5 mt-2">
                               <LevelBadge level={r.level} />
                             </div>
@@ -618,7 +802,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               </div>
             </section>
 
-          </div>{/* end pb-24 wrapper */}
+          </div>
         </>
       )}
     </div>

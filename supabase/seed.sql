@@ -55,20 +55,20 @@ insert into public.scenes (
   'Handle a two-item return with different receipt situations.',
   '学会在一张有收据、一张没有的情况下完成退货。',
   $d$[
-    {"speaker":"You","speakerZh":"顾客","en":"Hi, I'd like to return these two items, please.","zh":"你好，我想退这两件商品。"},
-    {"speaker":"Staff","speakerZh":"店员","en":"Of course! Do you have the receipts for both?","zh":"当然可以。请问两件都有收据吗？"},
-    {"speaker":"You","speakerZh":"顾客","en":"I have a receipt for the jacket, but I lost the receipt for the sweater.","zh":"夹克有收据，但毛衣的收据找不到了。"},
-    {"speaker":"Staff","speakerZh":"店员","en":"That's okay. For the jacket, I can refund to your original payment method. For the sweater, without a receipt, I can offer store credit.","zh":"没关系。夹克我可以退款到您的原始付款方式。毛衣没有收据的话，我可以给您店内购物积分。"},
-    {"speaker":"You","speakerZh":"顾客","en":"What exactly is store credit?","zh":"店内积分是什么意思？"},
-    {"speaker":"Staff","speakerZh":"店员","en":"It's a credit you can use toward any future purchase here in the store. It doesn't expire.","zh":"就是可以在本店用于任何未来购物的积分，没有使用期限。"},
-    {"speaker":"You","speakerZh":"顾客","en":"Okay, that works for me. Here's the receipt for the jacket.","zh":"好的，可以接受。这是夹克的收据。"},
-    {"speaker":"Staff","speakerZh":"店员","en":"Thank you. Did you pay by card?","zh":"谢谢。请问您是刷卡付款的吗？"},
-    {"speaker":"You","speakerZh":"顾客","en":"Yes, by credit card.","zh":"是的，用信用卡付的。"},
-    {"speaker":"Staff","speakerZh":"店员","en":"Please tap or insert your card. The refund for the jacket will appear within 3 to 5 business days.","zh":"请轻触或插入您的卡。夹克的退款将在3至5个工作日内到账。"},
-    {"speaker":"You","speakerZh":"顾客","en":"And the store credit for the sweater?","zh":"那毛衣的店内积分呢？"},
-    {"speaker":"Staff","speakerZh":"店员","en":"I'll add it to a store credit card right now. You can use it today if you like.","zh":"我现在就把积分存入购物积分卡，如果您愿意，今天就可以使用。"},
-    {"speaker":"You","speakerZh":"顾客","en":"Great, thank you so much.","zh":"太好了，非常感谢。"},
-    {"speaker":"Staff","speakerZh":"店员","en":"You're welcome! Have a great day.","zh":"不客气，祝您今天愉快！"}
+    {"speaker":"Customer","speakerZh":"顾客","en":"Hi, I'd like to return these two items, please.","zh":"你好，我想退这两件商品。"},
+    {"speaker":"Clerk","speakerZh":"店员","en":"Of course! Do you have the receipts for both?","zh":"当然可以。请问两件都有收据吗？"},
+    {"speaker":"Customer","speakerZh":"顾客","en":"I have a receipt for the jacket, but I lost the receipt for the sweater.","zh":"夹克有收据，但毛衣的收据找不到了。"},
+    {"speaker":"Clerk","speakerZh":"店员","en":"That's okay. For the jacket, I can refund to your original payment method. For the sweater, without a receipt, I can offer store credit.","zh":"没关系。夹克我可以退款到您的原始付款方式。毛衣没有收据的话，我可以给您店内购物积分。"},
+    {"speaker":"Customer","speakerZh":"顾客","en":"What exactly is store credit?","zh":"店内积分是什么意思？"},
+    {"speaker":"Clerk","speakerZh":"店员","en":"It's a credit you can use toward any future purchase here in the store. It doesn't expire.","zh":"就是可以在本店用于任何未来购物的积分，没有使用期限。"},
+    {"speaker":"Customer","speakerZh":"顾客","en":"Okay, that works for me. Here's the receipt for the jacket.","zh":"好的，可以接受。这是夹克的收据。"},
+    {"speaker":"Clerk","speakerZh":"店员","en":"Thank you. Did you pay by card?","zh":"谢谢。请问您是刷卡付款的吗？"},
+    {"speaker":"Customer","speakerZh":"顾客","en":"Yes, by credit card.","zh":"是的，用信用卡付的。"},
+    {"speaker":"Clerk","speakerZh":"店员","en":"Please tap or insert your card. The refund for the jacket will appear within 3 to 5 business days.","zh":"请轻触或插入您的卡。夹克的退款将在3至5个工作日内到账。"},
+    {"speaker":"Customer","speakerZh":"顾客","en":"And the store credit for the sweater?","zh":"那毛衣的店内积分呢？"},
+    {"speaker":"Clerk","speakerZh":"店员","en":"I'll add it to a store credit card right now. You can use it today if you like.","zh":"我现在就把积分存入购物积分卡，如果您愿意，今天就可以使用。"},
+    {"speaker":"Customer","speakerZh":"顾客","en":"Great, thank you so much.","zh":"太好了，非常感谢。"},
+    {"speaker":"Clerk","speakerZh":"店员","en":"You're welcome! Have a great day.","zh":"不客气，祝您今天愉快！"}
   ]$d$::jsonb,
   $e$[
     {"label":"OPENING","en":"I'd like to return these.","zh":"我想退这些商品。","note":"Natural opening — works for one or multiple items"},
@@ -194,18 +194,25 @@ where id = 1;
 
 -- ---------------------------------------------------------------------------
 -- pdf_resources (matches PDF_RESOURCES in src/data/resources.ts)
+--
+-- One free "scene" PDF per real scene, one row per row in the scenes insert
+-- above. No bundled/collection/travel/country packs exist yet, so none are
+-- seeded — those get added as their own rows once real combined packs are
+-- ready. file_path is left null (no upload yet); the frontend renders that
+-- as "materials coming soon", same as scenes.pdf_url = null.
 -- ---------------------------------------------------------------------------
 insert into public.pdf_resources (
   id, title, title_zh, type, description, scene_count, is_free, category, status, sort_order
 ) values
-  (1, 'Shopping English Starter Pack', '购物英语入门资料包', 'free', 'Covers returns, price matching, and asking for help in stores.', 5, true, 'Shopping & Returns', 'published', 1),
-  (2, 'Airport & Hotels Travel Pack', '机场与酒店旅行英语包', 'travel', 'Airport check-in, hotel conversations, and emergency phrases for international travel.', 8, false, 'Travel', 'published', 2),
-  (3, 'Canada Life: First 30 Days', '加拿大生活第一个月', 'collection', 'Bank account, SIM card, family doctor, school, and grocery store.', 12, false, 'Canada', 'published', 3),
-  (4, 'Canadian Parenting English', '加拿大家长沟通英语', 'collection', 'School absence calls, parent-teacher talks, and allergy form conversations.', 7, false, 'School & Family', 'published', 4),
-  (5, 'Healthcare English Essentials', '医疗场景英语基础', 'free', 'Doctor appointments, describing symptoms, dental visits, and pharmacy conversations.', 6, true, 'Healthcare', 'published', 5),
-  (6, 'Real English in Canada — Series 1', '加拿大真实英语系列一', 'country', 'Eight everyday Canadian scenarios with full dialogue, culture notes, and vocabulary.', 8, false, 'Canada', 'published', 6),
-  (7, 'Travel Emergencies English', '旅行紧急情况英语', 'travel', 'Lost passport, medical emergency abroad, and reporting theft to local authorities.', 4, true, 'Travel', 'published', 7),
-  (8, 'Returning Clothes at a Store — PDF', '在商店退衣服学习资料', 'scene', 'Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.', 1, true, 'Shopping & Returns', 'published', 8)
+  (1, 'Returning Clothes at a Store — PDF', '在商店退衣服学习资料', 'scene', 'Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.', 1, true, 'Shopping & Returns', 'published', 1),
+  (2, 'Picking Up a Child Early from School — PDF', '提前接孩子放学学习资料', 'scene', 'Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.', 1, true, 'School & Family', 'published', 2),
+  (3, 'Booking a Dentist Appointment — PDF', '预约牙医学习资料', 'scene', 'Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.', 1, true, 'Healthcare', 'published', 3),
+  (4, 'Asking for a Costco Price Adjustment — PDF', 'Costco价格调整申请学习资料', 'scene', 'Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.', 1, true, 'Shopping & Returns', 'published', 4),
+  (5, 'Ordering at a Drive-Through — PDF', '得来速点餐学习资料', 'scene', 'Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.', 1, true, 'Food & Restaurants', 'published', 5),
+  (6, 'Reporting a Repair Issue to Your Landlord — PDF', '向房东报修学习资料', 'scene', 'Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.', 1, true, 'Housing', 'published', 6),
+  (7, 'Checking In at a Hotel — PDF', '酒店入住学习资料', 'scene', 'Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.', 1, true, 'Travel', 'published', 7),
+  (8, 'Airport Check-In and Baggage Drop — PDF', '机场值机与行李托运学习资料', 'scene', 'Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.', 1, true, 'Travel', 'published', 8),
+  (9, 'Calling in Sick at Work — PDF', '打电话请病假学习资料', 'scene', 'Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.', 1, true, 'Work', 'published', 9)
 on conflict (id) do update set
   title = excluded.title,
   title_zh = excluded.title_zh,

@@ -59,6 +59,9 @@ export interface Database {
           is_new: boolean;
           description: string;
           photo_url: string | null;
+          pdf_url: string | null;
+          video_url: string | null;
+          subtitle_cues: Json | null;
           status: "draft" | "published";
           scene_setup_en: string | null;
           scene_setup_zh: string | null;
@@ -88,6 +91,9 @@ export interface Database {
           is_new?: boolean;
           description: string;
           photo_url?: string | null;
+          pdf_url?: string | null;
+          video_url?: string | null;
+          subtitle_cues?: Json | null;
           status?: "draft" | "published";
           scene_setup_en?: string | null;
           scene_setup_zh?: string | null;
@@ -117,6 +123,9 @@ export interface Database {
           is_new?: boolean;
           description?: string;
           photo_url?: string | null;
+          pdf_url?: string | null;
+          video_url?: string | null;
+          subtitle_cues?: Json | null;
           status?: "draft" | "published";
           scene_setup_en?: string | null;
           scene_setup_zh?: string | null;
@@ -199,7 +208,7 @@ export type PdfResourceRow = Database["public"]["Tables"]["pdf_resources"]["Row"
 // VocabularyEntry, CultureTip). Kept here (not imported) since this file
 // mirrors the database schema, not the frontend's runtime types.
 export type SceneDialogueJson = Array<{
-  speaker: "You" | "Staff";
+  speaker: string;
   speakerZh: string;
   en: string;
   zh: string;
@@ -226,4 +235,14 @@ export type SceneTipsJson = Array<{
   titleZh: string;
   body: string;
   bodyZh: string;
+}>;
+
+// One subtitle cue = one WebVTT-ready line, timed against the scene video.
+// start/end are seconds from video start. Synced from the "Dialogue_Lines"
+// Google Sheet tab (see google-apps-script/Code.gs), not from `dialogue`.
+export type SceneSubtitleCuesJson = Array<{
+  start: number;
+  end: number;
+  en: string;
+  zh: string;
 }>;

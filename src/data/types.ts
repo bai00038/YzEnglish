@@ -1,5 +1,9 @@
 export interface DialogueLine {
-  speaker: "You" | "Staff";
+  // Raw role name as authored on the sheet (e.g. "Teacher", "Dentist",
+  // "Parent A") — not a fixed enum. See src/data/speakerRoles.ts for how
+  // the UI derives a legend and per-line labels from whatever roles a
+  // scene's dialogue actually contains.
+  speaker: string;
   speakerZh: string;
   en: string;
   zh: string;
@@ -33,6 +37,16 @@ export interface BilingualText {
   zh: string;
 }
 
+// One WebVTT-ready subtitle line, timed against the scene video (seconds
+// from video start). Synced from the "Dialogue_Lines" Google Sheet tab —
+// independent of SceneContent.dialogue, which has no per-line timing.
+export interface SubtitleCue {
+  start: number;
+  end: number;
+  en: string;
+  zh: string;
+}
+
 export interface SceneContent {
   sceneSetup: BilingualText;
   learningGoal: BilingualText;
@@ -58,6 +72,9 @@ export interface Scene {
   isNew: boolean;
   desc: string;
   photo?: string;
+  pdfUrl?: string;
+  video_url?: string | null;
+  subtitleCues?: SubtitleCue[] | null;
   content?: SceneContent;
 }
 
@@ -70,4 +87,5 @@ export interface PdfResource {
   scenes: number;
   free: boolean;
   category: string;
+  filePath?: string;
 }

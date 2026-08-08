@@ -8,6 +8,7 @@ import type {
   SceneExpressionsJson,
   SceneVocabularyJson,
   SceneTipsJson,
+  SceneSubtitleCuesJson,
 } from "./database.types";
 
 // ---------------------------------------------------------------------------
@@ -46,6 +47,31 @@ type SceneRowWithCategory = SceneRow & { categories: { name_en: string } | null 
 
 const SCENE_SELECT = "*, categories(name_en)";
 
+// Defensive Number() coercion, same rule as the Edge Function's
+// normalizeTimecode (supabase/functions/sync-scene/validation.ts) and
+// Code.gs's hasValidTimecode: never trust that a JSONB number necessarily
+// deserializes as a JS number end-to-end, and never let one malformed
+// cue in scenes.subtitle_cues break the whole page — it's just dropped.
+function normalizeSubtitleCues(raw: unknown): SceneSubtitleCuesJson | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const cues = (raw as Array<Record<string, unknown>>)
+    .map(cue => ({
+      start: Number(cue.start),
+      end: Number(cue.end),
+      en: typeof cue.en === "string" ? cue.en : "",
+      zh: typeof cue.zh === "string" ? cue.zh : "",
+    }))
+    .filter(
+      cue =>
+        Number.isFinite(cue.start) &&
+        Number.isFinite(cue.end) &&
+        cue.end > cue.start &&
+        cue.en.length > 0 &&
+        cue.zh.length > 0
+    );
+  return cues.length > 0 ? cues : undefined;
+}
+
 function mapSceneRow(row: SceneRowWithCategory): Scene {
   // A scene "has content" (vs. the coming-soon placeholder) exactly when its
   // dialogue column is populated — expressions/vocabulary/tips/setup/goal are
@@ -65,6 +91,9 @@ function mapSceneRow(row: SceneRowWithCategory): Scene {
     isNew: row.is_new,
     desc: row.description,
     photo: row.photo_url ?? undefined,
+    pdfUrl: row.pdf_url ?? undefined,
+    video_url: row.video_url ?? undefined,
+    subtitleCues: normalizeSubtitleCues(row.subtitle_cues),
     content: hasContent
       ? {
           sceneSetup: { en: row.scene_setup_en ?? "", zh: row.scene_setup_zh ?? "" },
@@ -111,6 +140,53 @@ async function fetchFeaturedScenes(): Promise<Scene[]> {
     },
     () => MOCK_SCENES.filter(s => s.featured),
     "featured scenes"
+  );
+}
+
+// Manually curated Home page "Featured Scenes" — stable slugs, in display
+// order. Update this list (not a `featured` flag) to change what's shown.
+const CURATED_FEATURED_SLUGS = [
+  "requesting-a-price-adjustment-at-costco", // 退差价
+  "dining-at-a-turkish-restaurant", // 土耳其餐厅
+  "checking-in-at-a-family-doctors-office", // 家庭医生
+];
+
+async function fetchCuratedFeaturedScenes(): Promise<Scene[]> {
+  return withDevFallback(
+    async () => {
+      const { data, error } = await supabase!
+        .from("scenes")
+        .select(SCENE_SELECT)
+        .eq("status", "published")
+        .in("slug", CURATED_FEATURED_SLUGS);
+      if (error) throw error;
+      const scenes = ((data ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
+      return CURATED_FEATURED_SLUGS.map(slug => scenes.find(s => s.slug === slug)).filter(
+        (s): s is Scene => Boolean(s)
+      );
+    },
+    () =>
+      CURATED_FEATURED_SLUGS.map(slug => MOCK_SCENES.find(s => s.slug === slug)).filter(
+        (s): s is Scene => Boolean(s)
+      ),
+    "curated featured scenes"
+  );
+}
+
+async function fetchLatestScenes(limit: number): Promise<Scene[]> {
+  return withDevFallback(
+    async () => {
+      const { data, error } = await supabase!
+        .from("scenes")
+        .select(SCENE_SELECT)
+        .eq("status", "published")
+        .order("created_at", { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return ((data ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
+    },
+    () => [...MOCK_SCENES].sort((a, b) => b.id - a.id).slice(0, limit),
+    "latest scenes"
   );
 }
 
@@ -240,8 +316,16 @@ export function useFeaturedScenes() {
   return useAsyncData(fetchFeaturedScenes, []);
 }
 
+export function useCuratedFeaturedScenes() {
+  return useAsyncData(fetchCuratedFeaturedScenes, []);
+}
+
 export function useNewScenes() {
   return useAsyncData(fetchNewScenes, []);
+}
+
+export function useLatestScenes(limit = 3) {
+  return useAsyncData(() => fetchLatestScenes(limit), [limit]);
 }
 
 export function useCategoryNames() {

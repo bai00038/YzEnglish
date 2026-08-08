@@ -1,26 +1,31 @@
 import { Link } from "react-router";
 import { ChevronRight, Play, ArrowRight, FileText } from "lucide-react";
 import { CATEGORY_BG } from "@/data/scenes";
-import { useFeaturedScenes, useNewScenes, useCategoryNames } from "@/data/scenes-access";
+import { useCuratedFeaturedScenes, useLatestScenes, useCategoryNames } from "@/data/scenes-access";
 import { useResources } from "@/data/resources-access";
 import { Btn } from "@/app/components/Btn";
 import { LimeLine } from "@/app/components/brand";
 import { SceneCard } from "@/app/components/SceneCard";
 import { LevelBadge, DurationLabel } from "@/app/components/badges";
 import { ImgBox } from "@/app/components/primitives";
-import { Footer } from "@/app/components/Footer";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 
 export function HomePage() {
-  const { data: featuredScenesData, loading: featuredLoading, error: featuredError } = useFeaturedScenes();
-  const { data: recentScenesData, loading: recentLoading, error: recentError } = useNewScenes();
+  const { data: featuredScenesData, loading: featuredLoading, error: featuredError } = useCuratedFeaturedScenes();
+  const { data: latestScenesData, loading: latestLoading, error: latestError } = useLatestScenes(3);
   const { data: categoriesData, loading: categoriesLoading, error: categoriesError } = useCategoryNames();
   const { data: resourcesData, loading: resourcesLoading, error: resourcesError } = useResources();
 
   const featuredScenes = featuredScenesData ?? [];
-  const recentScenes = recentScenesData ?? [];
+  const latestScenes = latestScenesData ?? [];
   const categories = categoriesData ?? [];
   const freeResources = resourcesData?.filter(r => r.free).slice(0, 2) ?? [];
+
+  // Hero collage — reuses the curated featured scenes (matched by stable
+  // slug, not title) also shown in the Featured Scenes section below.
+  const heroPriceAdjustmentScene = featuredScenes.find(s => s.slug === "requesting-a-price-adjustment-at-costco");
+  const heroFamilyDoctorScene = featuredScenes.find(s => s.slug === "checking-in-at-a-family-doctors-office");
+  const heroTurkishRestaurantScene = featuredScenes.find(s => s.slug === "dining-at-a-turkish-restaurant");
 
   return (
     <div>
@@ -36,12 +41,7 @@ export function HomePage() {
             <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-3" style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}>
               Real English for Real Life · 真实生活英语
             </span>
-            {/* Subtle speech-bubble outline — brand DNA */}
             <div className="flex items-center gap-2 mb-4 opacity-30">
-              <svg aria-hidden="true" width="20" height="16" viewBox="0 0 20 16" fill="none">
-                <rect x="0.75" y="0.75" width="18.5" height="11.5" rx="5" stroke="#184C3A" strokeWidth="1.2" fill="none"/>
-                <path d="M4 12.25 L2.5 15.5 L8 12.25" fill="#184C3A"/>
-              </svg>
               <LimeLine width={28} opacity={1} />
             </div>
 
@@ -91,9 +91,6 @@ export function HomePage() {
               <Btn variant="accent" size="lg" to="/explore">
                 Explore Scenes <ArrowRight size={15} />
               </Btn>
-              <Btn variant="secondary" size="lg" to="/explore">
-                Browse Travel English
-              </Btn>
             </div>
           </div>
 
@@ -103,34 +100,46 @@ export function HomePage() {
             {/* ── Primary image — tall, left-anchored, slight clockwise tilt ── */}
             <div className="absolute overflow-hidden bg-secondary shadow-2xl"
               style={{ width: "210px", height: "300px", top: "16px", left: "0px", borderRadius: "20px", transform: "rotate(1.2deg)", boxShadow: "0 20px 48px rgba(24,76,58,0.18)" }}>
-              <img
-                src="https://images.unsplash.com/photo-1546213290-e1b492ab3eee?w=500&h=750&fit=crop&auto=format"
-                alt="A customer browsing clothing in a store"
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
+              {heroPriceAdjustmentScene?.photo ? (
+                <img
+                  src={heroPriceAdjustmentScene.photo}
+                  alt={heroPriceAdjustmentScene.titleEn}
+                  className="w-full h-full object-cover object-center"
+                  loading="lazy"
+                />
+              ) : (
+                <ImgBox label="Price Adjustment" className="w-full h-full" />
+              )}
             </div>
 
             {/* ── Secondary image — top-right, counter-tilt ── */}
             <div className="absolute overflow-hidden bg-secondary"
               style={{ width: "148px", height: "148px", top: "0px", right: "0px", borderRadius: "16px", transform: "rotate(-1.8deg)", boxShadow: "0 8px 24px rgba(24,76,58,0.13)" }}>
-              <img
-                src="https://images.unsplash.com/photo-1516901408257-500ed7566e6a?w=300&h=300&fit=crop&auto=format"
-                alt="Parent walking with child near school"
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
+              {heroFamilyDoctorScene?.photo ? (
+                <img
+                  src={heroFamilyDoctorScene.photo}
+                  alt={heroFamilyDoctorScene.titleEn}
+                  className="w-full h-full object-cover object-center"
+                  loading="lazy"
+                />
+              ) : (
+                <ImgBox label="Family Doctor" className="w-full h-full" />
+              )}
             </div>
 
             {/* ── Tertiary image — bottom-right, slightly overlapping secondary ── */}
             <div className="absolute overflow-hidden bg-secondary"
               style={{ width: "162px", height: "142px", top: "164px", right: "4px", borderRadius: "14px", transform: "rotate(0.6deg)", boxShadow: "0 10px 28px rgba(24,76,58,0.14)" }}>
-              <img
-                src="https://images.unsplash.com/photo-1629308993023-bb7ca078abdc?w=400&h=320&fit=crop&auto=format"
-                alt="Airport terminal travellers"
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
+              {heroTurkishRestaurantScene?.photo ? (
+                <img
+                  src={heroTurkishRestaurantScene.photo}
+                  alt={heroTurkishRestaurantScene.titleEn}
+                  className="w-full h-full object-cover object-center"
+                  loading="lazy"
+                />
+              ) : (
+                <ImgBox label="Turkish Restaurant" className="w-full h-full" />
+              )}
             </div>
 
             {/* ── Floating info badge ── */}
@@ -285,12 +294,12 @@ export function HomePage() {
             </Link>
           </div>
           <div className="space-y-3">
-            {recentLoading ? (
+            {latestLoading ? (
               <LoadingState label="Loading new scenes…" />
-            ) : recentError ? (
-              <ErrorState message={recentError} />
-            ) : recentScenes.length > 0 ? (
-              recentScenes.map(scene => (
+            ) : latestError ? (
+              <ErrorState message={latestError} />
+            ) : latestScenes.length > 0 ? (
+              latestScenes.map(scene => (
                 <Link key={scene.id} to={`/scenes/${scene.slug}`}
                   className="w-full flex items-center gap-4 rounded-2xl p-3 bg-card border border-border text-left hover:border-primary/25 hover:shadow-md transition-all duration-150">
                   <div className={`w-16 h-16 rounded-xl flex-shrink-0 overflow-hidden ${scene.photo ? "" : (CATEGORY_BG[scene.category] ?? "bg-secondary")}`}>
@@ -369,8 +378,6 @@ export function HomePage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }

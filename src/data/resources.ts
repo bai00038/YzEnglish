@@ -8,15 +8,20 @@ import type { PdfResource } from "./types";
 // unreachable during local development. Production reads resources from
 // the pdf_resources table.
 
+// One free "scene" PDF per real scene (see SCENES in src/data/scenes.ts) —
+// no bundled/collection packs exist yet, so none are listed here. Once
+// combined packs are ready they'll be added as their own (likely premium)
+// entries alongside these.
 export const PDF_RESOURCES: PdfResource[] = [
-  { id: 1, title: "Shopping English Starter Pack", titleZh: "购物英语入门资料包", type: "free", desc: "Covers returns, price matching, and asking for help in stores.", scenes: 5, free: true, category: "Shopping & Returns" },
-  { id: 2, title: "Airport & Hotels Travel Pack", titleZh: "机场与酒店旅行英语包", type: "travel", desc: "Airport check-in, hotel conversations, and emergency phrases for international travel.", scenes: 8, free: false, category: "Travel" },
-  { id: 3, title: "Canada Life: First 30 Days", titleZh: "加拿大生活第一个月", type: "collection", desc: "Bank account, SIM card, family doctor, school, and grocery store.", scenes: 12, free: false, category: "Canada" },
-  { id: 4, title: "Canadian Parenting English", titleZh: "加拿大家长沟通英语", type: "collection", desc: "School absence calls, parent-teacher talks, and allergy form conversations.", scenes: 7, free: false, category: "School & Family" },
-  { id: 5, title: "Healthcare English Essentials", titleZh: "医疗场景英语基础", type: "free", desc: "Doctor appointments, describing symptoms, dental visits, and pharmacy conversations.", scenes: 6, free: true, category: "Healthcare" },
-  { id: 6, title: "Real English in Canada — Series 1", titleZh: "加拿大真实英语系列一", type: "country", desc: "Eight everyday Canadian scenarios with full dialogue, culture notes, and vocabulary.", scenes: 8, free: false, category: "Canada" },
-  { id: 7, title: "Travel Emergencies English", titleZh: "旅行紧急情况英语", type: "travel", desc: "Lost passport, medical emergency abroad, and reporting theft to local authorities.", scenes: 4, free: true, category: "Travel" },
-  { id: 8, title: "Returning Clothes at a Store — PDF", titleZh: "在商店退衣服学习资料", type: "scene", desc: "Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.", scenes: 1, free: true, category: "Shopping & Returns" },
+  { id: 1, title: "Returning Clothes at a Store — PDF", titleZh: "在商店退衣服学习资料", type: "scene", desc: "Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.", scenes: 1, free: true, category: "Shopping & Returns" },
+  { id: 2, title: "Picking Up a Child Early from School — PDF", titleZh: "提前接孩子放学学习资料", type: "scene", desc: "Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.", scenes: 1, free: true, category: "School & Family" },
+  { id: 3, title: "Booking a Dentist Appointment — PDF", titleZh: "预约牙医学习资料", type: "scene", desc: "Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.", scenes: 1, free: true, category: "Healthcare" },
+  { id: 4, title: "Asking for a Costco Price Adjustment — PDF", titleZh: "Costco价格调整申请学习资料", type: "scene", desc: "Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.", scenes: 1, free: true, category: "Shopping & Returns" },
+  { id: 5, title: "Ordering at a Drive-Through — PDF", titleZh: "得来速点餐学习资料", type: "scene", desc: "Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.", scenes: 1, free: true, category: "Food & Restaurants" },
+  { id: 6, title: "Reporting a Repair Issue to Your Landlord — PDF", titleZh: "向房东报修学习资料", type: "scene", desc: "Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.", scenes: 1, free: true, category: "Housing" },
+  { id: 7, title: "Checking In at a Hotel — PDF", titleZh: "酒店入住学习资料", type: "scene", desc: "Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.", scenes: 1, free: true, category: "Travel" },
+  { id: 8, title: "Airport Check-In and Baggage Drop — PDF", titleZh: "机场值机与行李托运学习资料", type: "scene", desc: "Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.", scenes: 1, free: true, category: "Travel" },
+  { id: 9, title: "Calling in Sick at Work — PDF", titleZh: "打电话请病假学习资料", type: "scene", desc: "Full dialogue, key expressions, vocabulary, and culture tips for this specific scene.", scenes: 1, free: true, category: "Work" },
 ];
 
 export const PDF_TYPE_LABELS: Record<string, string> = {
@@ -26,3 +31,18 @@ export const PDF_TYPE_LABELS: Record<string, string> = {
   travel: "Travel Pack",
   country: "Country Pack",
 };
+
+// Multi-scene collection types shown on the Resources page. Single-scene
+// "scene" rows are excluded there — those PDFs stay downloadable from their
+// own Scene Detail page instead (SceneDetailPage.tsx uses scene.pdfUrl,
+// which is unrelated to this table).
+export const COLLECTION_TYPES = ["collection", "travel", "country"];
+
+// Presentation-only: several source titles (see PDF_RESOURCES above and the
+// pdf_resources table) were authored with a trailing "— PDF" / "PDF" /
+// ".pdf" marker. Users already know these are downloadable PDFs, so the
+// marker is stripped for display — this never touches the underlying title,
+// title_zh, or file_path/pdf_url data.
+export function displayResourceTitle(title: string): string {
+  return title.replace(/\s*[—–-]?\s*\.?pdf\s*$/i, "").trim();
+}

@@ -1,0 +1,14 @@
+# Minimal config: this repo has not run `supabase init`/`supabase link`, so
+# project_id and the usual default sections (api/db/studio/auth/...) are not
+# present here. The only thing this file exists for right now is the
+# per-function JWT-verification override below — deploying will still need a
+# project ref supplied via `supabase link` or
+# `supabase functions deploy sync-scene --project-ref <ref>`.
+
+[functions.sync-scene]
+# sync-scene is called by Google Apps Script with a custom
+# `Authorization: Bearer <SYNC_SECRET>` header, not a Supabase user/anon JWT.
+# With the platform default (verify_jwt = true), the API gateway rejects
+# every request with 401 before it ever reaches index.ts's own SYNC_SECRET
+# check, so this must be off for this function specifically.
+verify_jwt = false

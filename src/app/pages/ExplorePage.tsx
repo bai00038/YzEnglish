@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Search, X } from "lucide-react";
 import { useScenes, useCategoryNames } from "@/data/scenes-access";
 import { SceneCard } from "@/app/components/SceneCard";
@@ -6,12 +5,13 @@ import { LoadingState, ErrorState } from "@/app/components/DataState";
 
 export function ExplorePage({
   activeCategory, setActiveCategory,
+  activeDiff, setActiveDiff,
   searchQuery, setSearchQuery,
 }: {
   activeCategory: string; setActiveCategory: (c: string) => void;
+  activeDiff: string; setActiveDiff: (d: string) => void;
   searchQuery: string; setSearchQuery: (q: string) => void;
 }) {
-  const [activeDiff, setActiveDiff] = useState("All");
   const { data: scenesData, loading: scenesLoading, error: scenesError } = useScenes();
   const { data: categoryNamesData } = useCategoryNames();
   const scenes = scenesData ?? [];
