@@ -1,7 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { SyncError, errorResponse } from "./errors.ts";
 import { validateScenePayload } from "./validation.ts";
-import { findCategoryIdByName, findSceneIdBySlug, insertScene, updateScene, replaceDialogueLines } from "./db.ts";
+import { findCategoryIdByName, syncSceneWithDialogueLines } from "./db.ts";
 
 const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
       throw new SyncError(400, "Request body must be valid JSON.");
     }
 
-    const { sceneIdLabel, categoryName, row, dialogueLines } = validateScenePayload(body);
+    const { externalSceneId, categoryName, row, dialogueLines } = validateScenePayload(body);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -70,37 +70,32 @@ Deno.serve(async (req) => {
     });
 
     const categoryId = await findCategoryIdByName(supabase, categoryName);
-    const writeRow = { ...row, category_id: categoryId };
 
-    const existingId = await findSceneIdBySlug(supabase, writeRow.slug);
-    const action = existingId === null ? "inserted" : "updated";
-    const result =
-      existingId === null
-        ? await insertScene(supabase, writeRow)
-        : await updateScene(supabase, existingId, writeRow);
+    // Scene row write + dialogue_lines upsert/prune happen together, in
+    // one Postgres transaction, inside sync_scene_with_dialogue_lines —
+    // see db.ts and 0019_sync_scene_rpc.sql. There is no longer a
+    // separate write for dialogue_lines after this call: if any part of
+    // it fails (slug conflict, duplicate/cross-scene line_id, an empty
+    // dialogue_lines[] rejected for a published scene, ...), nothing at
+    // all is written — the scene row is not left half-updated.
+    const result = await syncSceneWithDialogueLines(supabase, {
+      externalSceneId,
+      categoryId,
+      row,
+      dialogueLines,
+    });
 
     console.log(
-      `[sync-scene] ${action} slug="${writeRow.slug}" database_id=${result.id} scene_id=${sceneIdLabel ?? "n/a"}`
+      `[sync-scene] ${result.action} external_scene_id="${externalSceneId}" slug="${row.slug}" database_id=${result.id}` +
+        (dialogueLines !== undefined ? ` dialogue_lines=${dialogueLines.length}` : "")
     );
-
-    // Only touches dialogue_lines when the payload actually included it —
-    // dialogueLines is null for any scene not yet migrated to the new
-    // structure, and that scene's legacy dialogue/subtitle_cues jsonb is
-    // left completely alone (see ScenePayloadRow.dialogue/subtitle_cues
-    // above, which sync unconditionally either way).
-    if (dialogueLines !== null) {
-      await replaceDialogueLines(supabase, result.id, dialogueLines);
-      console.log(
-        `[sync-scene] replaced ${dialogueLines.length} dialogue_lines row(s) for database_id=${result.id}`
-      );
-    }
 
     return new Response(
       JSON.stringify({
         success: true,
-        action,
-        scene_id: sceneIdLabel,
-        slug: writeRow.slug,
+        action: result.action,
+        scene_id: externalSceneId,
+        slug: row.slug,
         database_id: result.id,
         message: "Scene synced successfully",
       }),

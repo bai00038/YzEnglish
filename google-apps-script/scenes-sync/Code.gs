@@ -1,5 +1,5 @@
 /**
- * Yz English — Scenes / Dialogue_Lines / Tips → Supabase sync (v1)
+ * Yz English — Scenes / Dialogue_Lines / Tips → Supabase sync (v2, Phase A-0)
  *
  * A SEPARATE, independent script for the NEW Google Sheet (Scenes /
  * Dialogue_Lines / Tips / Validation / Sync_Log tabs) — not a
@@ -20,6 +20,19 @@
  * here never overwrites the legacy dialogue/expressions/vocabulary/
  * subtitle_cues content that may still exist from Figma_Data. See that
  * file's ScenePayloadRow comment for the full reasoning.
+ *
+ * Phase A-0 (permanent scene_id / line_id): the Scenes.scene_id column
+ * sent on every payload is no longer just a log label — it is now the
+ * REQUIRED, PERMANENT match key the Edge Function uses to find an
+ * existing scene (public.scenes.external_scene_id), replacing slug for
+ * that purpose. slug is still required, still unique, and is still what
+ * powers page URLs — it just no longer decides "is this the same scene
+ * as last time." Likewise every Dialogue_Lines row now requires a
+ * line_id (public.dialogue_lines.external_line_id) — see
+ * loadDialogueLinesBySceneId_'s comment for what happens when one is
+ * missing or duplicated. See
+ * supabase/migrations/0013_add_external_ids.sql and
+ * 0019_sync_scene_rpc.sql for the database side of this.
  *
  * Selecting a single Scenes row syncs just that scene (strict
  * preconditions, nothing written unless every check passes). Selecting
@@ -74,7 +87,12 @@ const SCENES_HEADERS = {
   SYNC_MESSAGE: "sync_message",
 };
 
+// Column order in the sheet is expected to lead with line_id, then
+// scene_id, then line_order (see scenes-sync/README.md Tab 2) — but since
+// every column here is read by header name, not position, that order is
+// only a documentation convention, never enforced by this script.
 const DIALOGUE_LINES_HEADERS = {
+  LINE_ID: "line_id",
   SCENE_ID: "scene_id",
   LINE_ORDER: "line_order",
   STEP: "step",
@@ -389,6 +407,20 @@ function readSyncConfig_() {
  * end_time are optional: a line can exist before its timing is filled
  * in, so a blank timecode does not exclude the row, only prevents it
  * from being used for subtitles/click-to-play until it's added.
+ *
+ * Phase A-0 change: every row must carry line_id — this is the row's
+ * PERMANENT identity (public.dialogue_lines.external_line_id), and it is
+ * never derived from this row's position, line_order, speaker, or text.
+ * A row with a blank line_id (or any other missing required field) is a
+ * hard stop for the whole sync, thrown here with the actual spreadsheet
+ * row number, not silently skipped — skipping would mean a line's
+ * identity gets silently dropped from what's sent, and re-adding it
+ * later (once someone notices) has no way to know it should have reused
+ * the same identity. See the "禁止静默跳过缺少ID的对白" requirement.
+ * Duplicate line_id values are rejected the same way, checked across the
+ * WHOLE tab (not just within one scene) because external_line_id must be
+ * globally unique — see dialogue_lines_external_line_id_key in
+ * supabase/migrations/0013_add_external_ids.sql.
  */
 function loadDialogueLinesBySceneId_() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(DIALOGUE_LINES_SHEET_NAME);
@@ -397,9 +429,9 @@ function loadDialogueLinesBySceneId_() {
   }
   const headerMap = getHeaderMap_(sheet);
   [
-    DIALOGUE_LINES_HEADERS.SCENE_ID, DIALOGUE_LINES_HEADERS.LINE_ORDER, DIALOGUE_LINES_HEADERS.SPEAKER,
-    DIALOGUE_LINES_HEADERS.SPEAKER_ZH, DIALOGUE_LINES_HEADERS.DIALOGUE_EN, DIALOGUE_LINES_HEADERS.DIALOGUE_ZH,
-    DIALOGUE_LINES_HEADERS.START_TIME, DIALOGUE_LINES_HEADERS.END_TIME,
+    DIALOGUE_LINES_HEADERS.LINE_ID, DIALOGUE_LINES_HEADERS.SCENE_ID, DIALOGUE_LINES_HEADERS.LINE_ORDER,
+    DIALOGUE_LINES_HEADERS.SPEAKER, DIALOGUE_LINES_HEADERS.SPEAKER_ZH, DIALOGUE_LINES_HEADERS.DIALOGUE_EN,
+    DIALOGUE_LINES_HEADERS.DIALOGUE_ZH, DIALOGUE_LINES_HEADERS.START_TIME, DIALOGUE_LINES_HEADERS.END_TIME,
   ].forEach(function (h) { getColumn_(headerMap, h); });
 
   const lastRow = sheet.getLastRow();
@@ -408,10 +440,28 @@ function loadDialogueLinesBySceneId_() {
 
   const rawRows = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
   const col = function (name) { return headerMap[name] - 1; };
+  const seenLineIds = {}; // line_id -> spreadsheet row number it was first seen on
 
-  rawRows.forEach(function (raw) {
+  rawRows.forEach(function (raw, i) {
+    const sheetRow = i + 2; // data starts at row 2 (row 1 is the header)
     const sceneId = String(raw[col(DIALOGUE_LINES_HEADERS.SCENE_ID)] || "").trim();
-    if (sceneId.length === 0) return;
+    if (sceneId.length === 0) return; // a fully scene-less row is still allowed to be blank/spacer
+
+    const lineId = String(raw[col(DIALOGUE_LINES_HEADERS.LINE_ID)] || "").trim();
+    if (lineId.length === 0) {
+      throw new ValidationError(
+        'Dialogue_Lines row ' + sheetRow + ' (scene_id "' + sceneId + '") has no line_id. ' +
+          "Every dialogue line needs a permanent line_id before it can sync — it is never generated " +
+          "automatically from the row number, line_order, or text. Fill it in, then sync again."
+      );
+    }
+    if (seenLineIds[lineId] !== undefined) {
+      throw new ValidationError(
+        'Dialogue_Lines row ' + sheetRow + ' uses line_id "' + lineId + '", which is already used by row ' +
+          seenLineIds[lineId] + ". line_id must be unique across the whole tab, not just within one scene."
+      );
+    }
+    seenLineIds[lineId] = sheetRow;
 
     const lineOrderRaw = raw[col(DIALOGUE_LINES_HEADERS.LINE_ORDER)];
     const lineOrder = Number(lineOrderRaw);
@@ -421,7 +471,10 @@ function loadDialogueLinesBySceneId_() {
     const dialogueZh = String(raw[col(DIALOGUE_LINES_HEADERS.DIALOGUE_ZH)] || "").trim();
     if (!Number.isFinite(lineOrder) || speaker.length === 0 || speakerZh.length === 0 ||
         dialogueEn.length === 0 || dialogueZh.length === 0) {
-      return; // incomplete row — skipped, not a hard error (see README)
+      throw new ValidationError(
+        'Dialogue_Lines row ' + sheetRow + ' (line_id "' + lineId + '") is missing a required field ' +
+          "(line_order, speaker, speaker_zh, dialogue_en, or dialogue_zh). Fill it in, then sync again."
+      );
     }
 
     // Number(), not parseInt — parseInt("2.023") truncates to 2 and drops
@@ -439,6 +492,7 @@ function loadDialogueLinesBySceneId_() {
 
     if (!bySceneId[sceneId]) bySceneId[sceneId] = [];
     bySceneId[sceneId].push({
+      line_id: lineId,
       line_order: lineOrder,
       step: Number.isFinite(step) ? step : null,
       speaker: speaker,

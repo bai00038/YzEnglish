@@ -48,13 +48,21 @@ export interface SubtitleCueRow {
 }
 
 // One row for the dialogue_lines table (see
-// supabase/migrations/0012_add_dialogue_lines.sql) — a scene migrated to
-// this structure has one row per spoken line, doing the job of both a
-// dialogue[] entry and a subtitle_cues[] entry at once. Independent of
-// both legacy fields: a scene can have this, the legacy pair, or (during
-// migration) both, with the frontend preferring this when present (see
-// applyDialogueLinesOverride in src/data/scenes-access.ts).
+// supabase/migrations/0012_add_dialogue_lines.sql and
+// 0019_sync_scene_rpc.sql) — a scene migrated to this structure has
+// one row per spoken line, doing the job of both a dialogue[] entry and a
+// subtitle_cues[] entry at once. Independent of both legacy fields: a
+// scene can have this, the legacy pair, or (during migration) both, with
+// the frontend preferring this when present (see applyDialogueLinesOverride
+// in src/data/scenes-access.ts).
+//
+// external_line_id (wire field: "line_id") is this line's permanent
+// identity — see the Phase A-0 header comment in
+// 0019_sync_scene_rpc.sql for the full reasoning. It is REQUIRED on
+// every row, never derived from line_order/speaker/text/timecode, and
+// never silently invented here.
 export interface DialogueLineRowPayload {
+  external_line_id: string;
   line_order: number;
   step: number | null;
   speaker: string;
@@ -66,20 +74,22 @@ export interface DialogueLineRowPayload {
 }
 
 // Fields ready to write to public.scenes, minus category_id (resolved
-// separately in db.ts) and the DB-managed id/created_at/updated_at.
+// separately in db.ts), external_scene_id (a top-level field on
+// ValidatedScenePayload, not on the row — see below), and the DB-managed
+// id/created_at/updated_at.
 //
 // dialogue/expressions/vocabulary/subtitle_cues/tips are all OPTIONAL
-// KEYS, not just nullable values — db.ts's updateScene only sends the
-// keys actually present on this object to PostgREST, so an omitted key
-// leaves that column completely untouched in the database, while an
-// explicit `null` (or `[]`, for the array fields) still clears it. This
-// is what lets the new dialogue_lines-based sync pipeline (see
-// google-apps-script/scenes-sync/) update only the fields its Sheet
-// actually owns (Scenes tab scalars, tips) without wiping out
-// dialogue/expressions/vocabulary/subtitle_cues, which stay governed by
-// the original Figma_Data pipeline until (if ever) they get their own
-// migration. The Figma_Data pipeline is unaffected: Code.gs always sends
-// all of these keys explicitly, exactly as before.
+// KEYS, not just nullable values — an omitted key leaves that column
+// completely untouched in the database (see p_optional_fields in
+// db.ts/0019_sync_scene_rpc.sql), while an explicit `null` (or `[]`,
+// for the array fields) still clears it. This is what lets the new
+// dialogue_lines-based sync pipeline (see google-apps-script/scenes-sync/)
+// update only the fields its Sheet actually owns (Scenes tab scalars,
+// tips) without wiping out dialogue/expressions/vocabulary/subtitle_cues,
+// which stay governed by the original Figma_Data pipeline until (if ever)
+// they get their own migration. The Figma_Data pipeline is unaffected:
+// Code.gs always sends all five of these keys explicitly, so its
+// behavior is unchanged.
 export interface ScenePayloadRow {
   slug: string;
   title_en: string;
@@ -105,14 +115,25 @@ export interface ScenePayloadRow {
 }
 
 export interface ValidatedScenePayload {
-  // scene_id is never matched against or written to scenes.id — it only
-  // travels through for logging and the response body.
-  sceneIdLabel: string | null;
+  // The permanent sync identity for this scene — REQUIRED, and the sole
+  // field the Edge Function matches an existing scene against (see
+  // findSceneIdByExternalId in db.ts). Wire field is still named
+  // "scene_id" (both Apps Script scripts already send it as a required,
+  // non-empty field before a sync can even start), but it is no longer
+  // treated as a cosmetic log-only label — it maps straight to
+  // scenes.external_scene_id. slug is still required and still unique,
+  // but is no longer the match key; see requireExternalSceneId below.
+  externalSceneId: string;
   categoryName: string;
   row: ScenePayloadRow;
-  // null means "don't touch dialogue_lines for this scene" — distinct
-  // from an empty array, which would mean "replace with zero lines".
-  dialogueLines: DialogueLineRowPayload[] | null;
+  // undefined means "this sync doesn't manage dialogue_lines for this
+  // scene at all" (the Figma_Data pipeline, which never sends this key) —
+  // leave whatever is already in the database alone. An array — including
+  // an empty one — means "this is the complete, authoritative set of
+  // dialogue lines for this scene right now"; an empty array is a
+  // deliberate "clear all lines" request, gated by scene status inside
+  // the sync RPC (see 0019_sync_scene_rpc.sql).
+  dialogueLines: DialogueLineRowPayload[] | undefined;
 }
 
 function requireNonEmptyString(value: unknown, field: string): string {
@@ -155,6 +176,17 @@ function requireSortOrder(value: unknown): number {
     throw new SyncError(400, `Field "sort_order" must be an integer.`);
   }
   return value;
+}
+
+// scenes.external_scene_id's wire counterpart. Both Apps Script scripts
+// (google-apps-script/Code.gs and scenes-sync/Code.gs) already require a
+// non-empty scene_id cell before a sync can start (requireSceneId_ in
+// each), so this was always effectively required at the point of sending
+// — this just makes the Edge Function enforce the same thing rather than
+// silently accepting a missing one and falling back to slug-based
+// matching (the old, now-removed behavior; see db.ts).
+function requireExternalSceneId(value: unknown): string {
+  return requireNonEmptyString(value, "scene_id");
 }
 
 // Only called once the caller has already decided the field IS present
@@ -242,6 +274,11 @@ function normalizeTimecode(value: unknown): number | null {
 // dialogue/etc. from syncing. A structurally wrong payload (not an array,
 // not an array of objects) still throws, since that indicates the caller
 // itself is broken, not a specific bad data row.
+//
+// This permissive-drop behavior is deliberately NOT shared with
+// validateDialogueLines below — subtitle_cues has no permanent-identity
+// requirement to enforce, so a malformed cue can still be safely and
+// silently skipped the way it always has been.
 function validateSubtitleCues(value: unknown): SubtitleCueRow[] | null | undefined {
   if (value === undefined) return undefined;
   if (value === null) return null;
@@ -264,57 +301,93 @@ function validateSubtitleCues(value: unknown): SubtitleCueRow[] | null | undefin
   return cues.length > 0 ? cues : null;
 }
 
-// Optional, like subtitle_cues: omitted/null -> null, meaning "this scene
-// isn't migrated to dialogue_lines yet, leave its legacy dialogue/
-// subtitle_cues alone" (see index.ts — replace_dialogue_lines is only
-// called when this is non-null). A malformed individual row (blank
-// speaker/dialogue_en/dialogue_zh, non-integer line_order) is dropped,
-// not a thrown error — same reasoning as validateSubtitleCues: one bad
-// row for one scene must never block that scene's other fields from
-// syncing. start_time/end_time may be null (a line can exist before its
-// timing is known); when present they go through the same
-// normalizeTimecode as subtitle_cues.
-function validateDialogueLines(value: unknown): DialogueLineRowPayload[] | null {
-  if (value === undefined || value === null) return null;
+// Phase A-0 change from the previous behavior: a malformed dialogue_lines[]
+// row — most importantly one missing external_line_id ("line_id" on the
+// wire) — now THROWS instead of being silently dropped. The whole request
+// is rejected before any database write happens, which combined with
+// every write living inside one transaction (see
+// sync_scene_with_dialogue_lines in 0019_sync_scene_rpc.sql) means a
+// bad row can never partially apply. This is a deliberate tightening: the
+// old validateSubtitleCues-style "drop bad rows, keep going" pattern was
+// appropriate when a cue was just display data with no identity to
+// protect; it is not appropriate for external_line_id, which is a
+// permanent identity contract that must never be silently skipped,
+// invented, or guessed (see the Phase A-0 requirements — "禁止根据行号、
+// 对白文字或line_order临时生成line_id" / "禁止静默跳过缺少ID的对白").
+//
+// undefined (key omitted from the payload entirely) still means "this
+// scene isn't managed by this pipeline, leave dialogue_lines alone" — the
+// same semantics as before, just now returning undefined instead of null
+// so ValidatedScenePayload.dialogueLines can distinguish "don't touch"
+// from "replace with this (possibly empty) set" without conflating them.
+// A payload that explicitly sends `dialogue_lines: null` is treated the
+// same as omitting the key — no current caller does this, but it avoids
+// an ambiguous three-way read on the wire.
+function validateDialogueLines(value: unknown): DialogueLineRowPayload[] | undefined {
+  if (value === undefined || value === null) return undefined;
   if (!Array.isArray(value)) {
-    throw new SyncError(400, `Field "dialogue_lines" must be an array or null.`);
+    throw new SyncError(400, `Field "dialogue_lines" must be an array.`);
   }
 
   const lines: DialogueLineRowPayload[] = [];
+  const seenExternalLineIds = new Set<string>();
+
   value.forEach((raw, i) => {
     const item = requireObjectItem(raw, "dialogue_lines", i);
+
+    const externalLineId = requireNonEmptyString(item.line_id, `dialogue_lines[${i}].line_id`);
+    if (seenExternalLineIds.has(externalLineId)) {
+      throw new SyncError(
+        400,
+        `Field "dialogue_lines" contains a duplicate line_id "${externalLineId}" (first seen earlier in the same request, also at index ${i}).`
+      );
+    }
+    seenExternalLineIds.add(externalLineId);
+
     const lineOrder = Number(item.line_order);
-    const speaker = typeof item.speaker === "string" ? item.speaker.trim() : "";
-    const speakerZh = typeof item.speaker_zh === "string" ? item.speaker_zh.trim() : "";
-    const dialogueEn = typeof item.dialogue_en === "string" ? item.dialogue_en.trim() : "";
-    const dialogueZh = typeof item.dialogue_zh === "string" ? item.dialogue_zh.trim() : "";
-    const isValid =
-      Number.isFinite(lineOrder) &&
-      Number.isInteger(lineOrder) &&
-      lineOrder > 0 &&
-      speaker.length > 0 &&
-      speakerZh.length > 0 &&
-      dialogueEn.length > 0 &&
-      dialogueZh.length > 0;
-    if (!isValid) return;
+    if (!Number.isFinite(lineOrder) || !Number.isInteger(lineOrder) || lineOrder <= 0) {
+      throw new SyncError(400, `Field "dialogue_lines[${i}].line_order" must be a positive integer. Got: ${JSON.stringify(item.line_order)}.`);
+    }
+
+    const speaker = requireNonEmptyString(item.speaker, `dialogue_lines[${i}].speaker`);
+    const speakerZh = requireNonEmptyString(item.speaker_zh, `dialogue_lines[${i}].speaker_zh`);
+    const dialogueEn = requireNonEmptyString(item.dialogue_en, `dialogue_lines[${i}].dialogue_en`);
+    const dialogueZh = requireNonEmptyString(item.dialogue_zh, `dialogue_lines[${i}].dialogue_zh`);
 
     const start = normalizeTimecode(item.start_time);
     const end = normalizeTimecode(item.end_time);
+    if ((item.start_time !== undefined && item.start_time !== null && item.start_time !== "" && start === null)) {
+      throw new SyncError(400, `Field "dialogue_lines[${i}].start_time" is not a valid number: ${JSON.stringify(item.start_time)}.`);
+    }
+    if ((item.end_time !== undefined && item.end_time !== null && item.end_time !== "" && end === null)) {
+      throw new SyncError(400, `Field "dialogue_lines[${i}].end_time" is not a valid number: ${JSON.stringify(item.end_time)}.`);
+    }
+    if (start !== null && start < 0) {
+      throw new SyncError(400, `Field "dialogue_lines[${i}].start_time" must be >= 0. Got: ${start}.`);
+    }
+    if (start !== null && end !== null && end <= start) {
+      throw new SyncError(400, `Field "dialogue_lines[${i}].end_time" (${end}) must be greater than start_time (${start}).`);
+    }
+
     const step = item.step === null || item.step === undefined || item.step === "" ? null : Number(item.step);
+    if (item.step !== null && item.step !== undefined && item.step !== "" && !Number.isFinite(step)) {
+      throw new SyncError(400, `Field "dialogue_lines[${i}].step" is not a valid number: ${JSON.stringify(item.step)}.`);
+    }
 
     lines.push({
+      external_line_id: externalLineId,
       line_order: lineOrder,
       step: Number.isFinite(step) ? step : null,
       speaker,
       speaker_zh: speakerZh,
       dialogue_en: dialogueEn,
       dialogue_zh: dialogueZh,
-      start_time: start !== null && start >= 0 ? start : null,
-      end_time: end !== null && start !== null && start >= 0 && end > start ? end : null,
+      start_time: start,
+      end_time: end,
     });
   });
 
-  return lines.length > 0 ? lines : null;
+  return lines;
 }
 
 function validateTips(value: unknown): TipRow[] {
@@ -336,8 +409,7 @@ export function validateScenePayload(body: unknown): ValidatedScenePayload {
   }
   const payload = body as Record<string, unknown>;
 
-  const sceneIdLabel =
-    payload.scene_id === undefined || payload.scene_id === null ? null : String(payload.scene_id);
+  const externalSceneId = requireExternalSceneId(payload.scene_id);
 
   const row: ScenePayloadRow = {
     slug: requireNonEmptyString(payload.slug, "slug"),
@@ -373,7 +445,7 @@ export function validateScenePayload(body: unknown): ValidatedScenePayload {
   if (payload.tips !== undefined) row.tips = validateTips(payload.tips);
 
   return {
-    sceneIdLabel,
+    externalSceneId,
     categoryName: requireNonEmptyString(payload.category, "category"),
     dialogueLines: validateDialogueLines(payload.dialogue_lines),
     row,

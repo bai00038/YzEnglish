@@ -37,8 +37,8 @@ touch" below for the field split.
 
 | Column | Notes |
 |---|---|
-| `scene_id` | Free-text label, e.g. `scene_001`. Logging only, never written to `scenes.id`. |
-| `slug` | Must match an existing `scenes.slug` to update that scene, or be new to insert one. |
+| `scene_id` | **Permanent identity, required.** e.g. `scene_001`. This is now the field the Edge Function uses to find "the same scene" across syncs (`public.scenes.external_scene_id`) — not a log label, and never written to `scenes.id`. Set it once when a scene is first created in this sheet and never change it; changing it will make the sync treat the row as a brand-new scene instead of updating the existing one. |
+| `slug` | Still required and still unique, but no longer the match key — it's what powers the page URL. Changing `slug` for an existing `scene_id` renames that scene's URL; it does not create a second scene. Submitting a `slug` that already belongs to a *different* `scene_id` fails the sync outright (never silently merged or overwritten). |
 | `title_en` / `title_zh` | |
 | `category_en` | Matched server-side against `categories.name_en`, case-sensitive exact. |
 | `region` / `level` / `duration` | |
@@ -62,19 +62,42 @@ subtitle cue. See `supabase/migrations/0012_add_dialogue_lines.sql` and
 `src/data/scenes-access.ts`'s `applyDialogueLinesOverride` for how the
 website consumes this.
 
+Recommended column order (any order actually works — every column is
+read by header name, not position):
+
+```
+line_id  scene_id  line_order  step  speaker  speaker_zh  dialogue_en  dialogue_zh  start_time  end_time
+```
+
 | Column | Notes |
 |---|---|
+| `line_id` | **Permanent identity, required.** This line's `public.dialogue_lines.external_line_id` — independent of `line_order`/`step`/`speaker`/the dialogue text/the timecodes, none of which should ever change it. Set it once when the line is first authored and never change it, even if you reorder, reword, retime, or reassign the speaker. Must be unique across the *entire* tab, not just within one scene — reusing a `line_id` on a different scene's row is rejected, not merged. **Never generate this from the sheet row number or from `line_order`** — if a line doesn't have one yet, leave the whole row out of this sync rather than inventing one. |
 | `scene_id` | Matched against `Scenes.scene_id` for the row being synced. |
-| `line_order` | Sort key within a scene. Whole number, starts at 1. |
+| `line_order` | Sort key within a scene. Whole number, starts at 1. Can change freely — reordering lines never changes their `line_id`. |
 | `step` | Optional grouping number, purely for future display — not required. |
 | `speaker` | Raw role name as it should render, e.g. `Dentist`, `Customer`. |
 | `speaker_zh` | Chinese role label, e.g. `牙医`, `顾客`. Typed directly here — unlike the Figma_Data script, there is no hardcoded speaker-name lookup table to maintain in code. |
 | `dialogue_en` / `dialogue_zh` | The line itself. |
 | `start_time` / `end_time` | **Plain decimal seconds**, e.g. `2.023`. Never a time string like `00:02.023`. Both may be left blank if the timing isn't known yet — the line still syncs as dialogue text, just without subtitle/click-to-play timing until filled in. |
 
-A row with a non-numeric or blank-inconsistent timecode, or missing
-speaker/dialogue text, is **skipped** (not a sync-blocking error) — see
-"Known limitations" below.
+**Phase A-0 change:** a row with a blank or duplicate `line_id`, or a
+missing required field (`line_order`/`speaker`/`speaker_zh`/
+`dialogue_en`/`dialogue_zh`), now **stops the whole sync** with a clear
+error naming the exact spreadsheet row — it is no longer silently
+skipped. This is deliberate: a dialogue line's identity is exactly the
+kind of thing that must never quietly disappear from what gets sent. Fix
+the named row, then sync again.
+
+A scene's `dialogue_lines[]` submission is *replace-the-complete-set*
+semantics: whatever set of `line_id`s you submit for a scene becomes
+that scene's complete dialogue, with any previously-synced line whose
+`line_id` is missing from this submission removed — but a line's
+internal identity is preserved across edits (the same `line_id` submitted
+again, even with different `line_order`/text/timing, updates the
+existing line in place rather than deleting and recreating it). Submitting
+zero lines for a scene is only accepted while that scene's `status` is
+`draft`; a `published` scene rejects an attempt to clear all of its
+dialogue outright.
 
 **Bubble granularity**: per an explicit decision during this migration,
 a dialogue line that used to be one merged sentence (e.g. "Excuse me. Do
@@ -162,3 +185,43 @@ script's changes. Once a scene lives in this Sheet, manage it here only.
   `Dialogue_Lines` before migrating it — don't guess at who says the
   missing lines.
 - `Validation` tab formulas aren't pre-built — see Tab 4 above.
+- **Phase A-0 migration gap (mapping confirmed, migration still not
+  run):** `shopping-for-clothes` already has 18 `dialogue_lines` rows in
+  Supabase from before `line_id` existed, so none of them have an
+  `external_line_id` yet. Their `line_000001`-`line_000018` mapping was
+  reviewed and approved by a human in the Phase A-0 sign-off round
+  (2026-08-08) and is now written into
+  `supabase/migrations/0015_adopt_dialogue_line_external_ids.sql` — but
+  that migration has not been executed against the database. Until it
+  runs, the sync RPC still refuses outright to touch this scene's
+  `dialogue_lines` at all — it raises `unmapped_legacy_dialogue_lines`,
+  naming the scene and how many rows are still unmapped, rather than
+  deleting the old rows and blindly inserting whatever the Sheet
+  currently says. See `supabase/migrations/0019_sync_scene_rpc.sql`'s
+  header for the full explanation. Of those 18, 13 carry forward into the
+  approved final script unchanged in meaning and 5 (`line_000001`,
+  `line_000005`, `line_000006`, `line_000011`, `line_000017`) were
+  confirmed as retired — merged into a neighboring line or dropped in the
+  final script — but 0015 still gives all 18 their permanent ID; removing
+  the 5 retired rows happens later, as an ordinary consequence of the
+  reviewed prune logic in `sync_scene_with_dialogue_lines` once the real
+  Sheet sync submits a set that no longer includes them, never by editing
+  0015 to add a DELETE. `getting-a-dental-filling` has zero existing
+  `dialogue_lines` rows, so it does not have this specific blocker (it is
+  still separately blocked by the missing-4-lines issue above).
+- **`Scenes.scene_id` adoption for the 13 existing scenes: mapping
+  confirmed, migration still not run.** There is no placeholder value of
+  any kind on any existing scene — `external_scene_id` is still `NULL`
+  on all 13. The full slug → `scene_id` mapping (database-id order,
+  `scene_001`-`scene_013`) was reviewed and approved by a human in the
+  Phase A-0 sign-off round (2026-08-08) and is now written into
+  `supabase/migrations/0014_adopt_scene_external_ids.sql` — but that
+  migration has not been executed against the database.
+  `supabase/migrations/data/scene_external_id_mapping.template.sql`
+  remains as a template for future scenes, not as the source the
+  confirmed mapping was copied from being kept in sync. 0014 also refuses
+  to ever change an `external_scene_id` that is already set to something
+  different — once adopted, a scene's `scene_id` is permanent, and
+  correcting a wrong one is a deliberate, separate, manually-reviewed
+  operation, never a side effect of editing the mapping and rerunning the
+  file.

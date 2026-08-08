@@ -628,8 +628,18 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     const label = (speaker?.en ?? line.speaker).toUpperCase();
                     const audioRange = dialogueLineAudioRanges.get(i);
                     const isActiveLine = activeDialogueLineIndex === i;
+                    // Prefer the permanent external_line_id (Phase A-0 —
+                    // see supabase/migrations/0013_add_external_ids.sql),
+                    // then the dialogue_lines row's own internal database
+                    // id, and only fall back to array index for scenes
+                    // still on the legacy scenes.dialogue jsonb (which has
+                    // no per-line identity at all). Playback/highlight
+                    // logic (dialogueLineAudioRanges, activeDialogueLineIndex)
+                    // stays index-keyed on purpose — it's positional state
+                    // scoped to one render, not a React reconciliation key.
+                    const rowKey = line.externalLineId ?? line.dialogueLineDbId ?? i;
                     return (
-                      <div key={i}
+                      <div key={rowKey}
                         ref={el => { dialogueRowRefs.current[i] = el; }}
                         className={`dialogue-row py-4 border-b border-black/6 last:border-0 hover:bg-white/70 transition-colors rounded-lg px-3 -mx-3 ${audioRange ? "cursor-pointer" : ""} ${isActiveLine ? "bg-primary/5" : ""}`}
                         style={{ borderLeft: `3px solid ${style.accent}` }}

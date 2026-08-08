@@ -1,0 +1,61 @@
+-- REFERENCE TEMPLATE — not a migration.
+--
+-- This file lives in supabase/migrations/data/, a subdirectory. The
+-- Supabase CLI's migration runner only picks up files directly in
+-- supabase/migrations/*.sql, so nothing in this subdirectory is ever
+-- auto-applied by `supabase db push` or any other migration command —
+-- it exists purely as a document for a human to fill in and copy from.
+--
+-- Purpose: list every scene currently in public.scenes (slug is a real,
+-- queried value) so a human can confirm each one's real
+-- external_scene_id against the Google Sheet and paste the confirmed
+-- VALUES list into
+-- supabase/migrations/0014_adopt_scene_external_ids.sql. Every
+-- external_scene_id below is the literal string 'TODO_CONFIRM' — this
+-- file does not guess, generate, or propose any business ID value.
+--
+-- Queried 2026-08-08 during the Phase A-0 follow-up (via
+-- `supabase db query --linked`, read-only). 13 rows: 2 published
+-- (shopping-for-clothes, getting-a-dental-filling), 11 draft.
+--
+-- How to use: for each row, replace 'TODO_CONFIRM' with the scene_id
+-- text exactly as it appears (or will appear) in the Google Sheet's
+-- Scenes.scene_id column for that slug. Do not invent a value if the
+-- Sheet doesn't have one yet for a given scene — leave that scene's row
+-- out of 0014's mapping entirely and 0014 will correctly refuse to run
+-- until every scenes row is covered (see that file's Stage D-adjacent
+-- validation).
+--
+-- database id | slug                                                    | external_scene_id
+-- ------------|---------------------------------------------------------|-------------------
+--          28 | shopping-for-clothes                                    | TODO_CONFIRM
+--          29 | mailing-a-passport-to-ircc                               | TODO_CONFIRM
+--          30 | checking-in-at-a-family-doctors-office                  | TODO_CONFIRM
+--          31 | requesting-a-price-adjustment-at-costco                 | TODO_CONFIRM
+--          32 | picking-up-a-mobile-order-at-tim-hortons                | TODO_CONFIRM
+--          33 | getting-dental-x-rays                                   | TODO_CONFIRM
+--          34 | checking-out-at-indigo                                  | TODO_CONFIRM
+--          35 | dining-at-a-turkish-restaurant                          | TODO_CONFIRM
+--          36 | renting-a-canoe                                         | TODO_CONFIRM
+--          37 | booking-an-appointment-with-rbc                         | TODO_CONFIRM
+--          38 | birthday-party-invitation                               | TODO_CONFIRM
+--          39 | parent-teacher-conference-supporting-a-childs-progress  | TODO_CONFIRM
+--          40 | getting-a-dental-filling                                | TODO_CONFIRM
+
+-- Copy-paste-ready VALUES list, same content as the table above, in the
+-- exact shape 0014_adopt_scene_external_ids.sql expects:
+--
+-- insert into _scene_external_id_mapping (slug, external_scene_id) values
+--   ('shopping-for-clothes', 'TODO_CONFIRM'),
+--   ('mailing-a-passport-to-ircc', 'TODO_CONFIRM'),
+--   ('checking-in-at-a-family-doctors-office', 'TODO_CONFIRM'),
+--   ('requesting-a-price-adjustment-at-costco', 'TODO_CONFIRM'),
+--   ('picking-up-a-mobile-order-at-tim-hortons', 'TODO_CONFIRM'),
+--   ('getting-dental-x-rays', 'TODO_CONFIRM'),
+--   ('checking-out-at-indigo', 'TODO_CONFIRM'),
+--   ('dining-at-a-turkish-restaurant', 'TODO_CONFIRM'),
+--   ('renting-a-canoe', 'TODO_CONFIRM'),
+--   ('booking-an-appointment-with-rbc', 'TODO_CONFIRM'),
+--   ('birthday-party-invitation', 'TODO_CONFIRM'),
+--   ('parent-teacher-conference-supporting-a-childs-progress', 'TODO_CONFIRM'),
+--   ('getting-a-dental-filling', 'TODO_CONFIRM');

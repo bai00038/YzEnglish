@@ -137,6 +137,8 @@ async function applyDialogueLinesOverride(scene: Scene, sceneId: number): Promis
     zh: row.dialogue_zh,
     start: row.start_time ?? undefined,
     end: row.end_time ?? undefined,
+    externalLineId: row.external_line_id ?? undefined,
+    dialogueLineDbId: row.id,
   }));
 
   return {

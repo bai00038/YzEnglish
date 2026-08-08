@@ -2,8 +2,6 @@ import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { SyncError } from "./errors.ts";
 import type { DialogueLineRowPayload, ScenePayloadRow } from "./validation.ts";
 
-export type SceneWriteRow = ScenePayloadRow & { category_id: number };
-
 export async function findCategoryIdByName(
   supabase: SupabaseClient,
   categoryName: string
@@ -34,76 +32,137 @@ export async function findCategoryIdByName(
   return data[0].id;
 }
 
-export async function findSceneIdBySlug(
-  supabase: SupabaseClient,
-  slug: string
-): Promise<number | null> {
-  const { data, error } = await supabase.from("scenes").select("id").eq("slug", slug);
+// Every machine-readable error prefix that
+// public.sync_scene_with_dialogue_lines (supabase/migrations/0019_sync_scene_rpc.sql)
+// can RAISE, mapped to the HTTP status a caller should see. Anything else
+// surfaces as a generic 500: an unrecognized prefix means the database
+// failed in a way this function doesn't specifically know how to
+// explain, not that it's safe to guess.
+//
+// Kept in lockstep with 0019 by hand — cross-check against that file
+// whenever a RAISE EXCEPTION prefix there changes. Full list, one row per
+// `raise exception '<prefix>: ...'` in 0019, as of this file's last
+// update:
+//
+//   missing_external_scene_id    400  external_scene_id absent/blank
+//   missing_slug                 400  slug absent/blank
+//   missing_line_id              400  a dialogue_lines[] entry has no line_id
+//   duplicate_line_id            400  same line_id twice in one request
+//   slug_conflict                409  slug already owned by a different scene (insert or update path)
+//   unmapped_legacy_dialogue_lines 409  scene still has dialogue_lines rows with no
+//                                      external_line_id — needs its own adoption
+//                                      migration (0015_adopt_dialogue_line_external_ids.sql)
+//                                      before this RPC will touch its dialogue_lines at all
+//   line_id_owned_by_other_scene  409  a submitted line_id already belongs to a
+//                                      different scene — raised either by the
+//                                      fast pre-check, or by the write-time
+//                                      RETURNING-based verification that closes
+//                                      the concurrent-request race (see 0019's
+//                                      header, bug 3, and the comment on the
+//                                      upsert itself)
+//   empty_dialogue_rejected       409  tried to clear all dialogue_lines on a
+//                                      published scene
+const RPC_ERROR_STATUS: Record<string, number> = {
+  missing_external_scene_id: 400,
+  missing_slug: 400,
+  missing_line_id: 400,
+  duplicate_line_id: 400,
+  slug_conflict: 409,
+  unmapped_legacy_dialogue_lines: 409,
+  line_id_owned_by_other_scene: 409,
+  empty_dialogue_rejected: 409,
+};
 
-  if (error) {
-    console.error("[sync-scene] scene lookup failed", error);
-    throw new SyncError(500, "Database error while looking up scene by slug.");
-  }
-  if (!data || data.length === 0) return null;
-  if (data.length > 1) {
-    throw new SyncError(
-      409,
-      `Slug "${slug}" matches ${data.length} rows in public.scenes — expected at most 1. Refusing to update arbitrarily.`
-    );
-  }
-  return data[0].id;
+function statusForRpcError(message: string): number {
+  const prefix = message.split(":", 1)[0];
+  return RPC_ERROR_STATUS[prefix] ?? 500;
 }
 
-export async function insertScene(
-  supabase: SupabaseClient,
-  row: SceneWriteRow
-): Promise<{ id: number }> {
-  // id/created_at/updated_at are intentionally absent from `row` — serial
-  // default and the scenes_set_updated_at trigger handle them.
-  const { data, error } = await supabase.from("scenes").insert(row).select("id").single();
-  if (error) {
-    console.error("[sync-scene] insert failed", error);
-    throw new SyncError(500, "Database error while inserting scene.");
-  }
-  return data;
+export interface SyncSceneParams {
+  externalSceneId: string;
+  categoryId: number;
+  row: ScenePayloadRow;
+  // undefined = don't touch dialogue_lines for this scene at all.
+  dialogueLines: DialogueLineRowPayload[] | undefined;
 }
 
-export async function updateScene(
-  supabase: SupabaseClient,
-  id: number,
-  row: SceneWriteRow
-): Promise<{ id: number }> {
-  const { data, error } = await supabase
-    .from("scenes")
-    .update(row)
-    .eq("id", id)
-    .select("id")
-    .single();
-  if (error) {
-    console.error("[sync-scene] update failed", error);
-    throw new SyncError(500, "Database error while updating scene.");
-  }
-  return data;
+export interface SyncSceneResult {
+  id: number;
+  action: "inserted" | "updated";
 }
 
-// Delete-then-insert for one scene's dialogue_lines, done inside a single
-// Postgres function call (public.replace_dialogue_lines — see
-// supabase/migrations/0012_add_dialogue_lines.sql) so it's one atomic
-// transaction: if the insert half fails, the delete half is rolled back
-// too. A plain two-step client-side delete+insert here would risk leaving
-// a scene's dialogue_lines empty if the insert failed after the delete
-// already committed.
-export async function replaceDialogueLines(
+// Single call into public.sync_scene_with_dialogue_lines — the scene row
+// write and the full dialogue_lines upsert/prune happen inside one
+// Postgres function body, i.e. one transaction (see that function's
+// header comment in 0019_sync_scene_rpc.sql for exactly what it
+// enforces: external_scene_id-based matching, slug-conflict rejection,
+// external_line_id upsert with cross-scene/duplicate rejection, and
+// status-gated empty-dialogue semantics). This replaces the previous
+// two-step flow (a plain `.update("scenes")` followed by a separate
+// `.rpc("replace_dialogue_lines")` call) specifically to close the gap
+// where the scene row could be written successfully and the dialogue
+// write could still fail afterward — see this file's git history before
+// Phase A-0 for the old shape.
+export async function syncSceneWithDialogueLines(
   supabase: SupabaseClient,
-  sceneId: number,
-  lines: DialogueLineRowPayload[]
-): Promise<void> {
-  const { error } = await supabase.rpc("replace_dialogue_lines", {
-    p_scene_id: sceneId,
-    p_lines: lines,
+  params: SyncSceneParams
+): Promise<SyncSceneResult> {
+  const { externalSceneId, categoryId, row, dialogueLines } = params;
+
+  // Only the keys actually present on `row` for the five legacy/shared
+  // jsonb fields — the RPC uses jsonb's `?` key-existence operator to
+  // decide "leave this column alone" vs "write (possibly null/[]) this
+  // value", so this object must NOT gain keys for fields that were never
+  // present in the original payload. See ScenePayloadRow's comment.
+  const optionalFields: Record<string, unknown> = {};
+  if ("subtitle_cues" in row) optionalFields.subtitle_cues = row.subtitle_cues;
+  if ("dialogue" in row) optionalFields.dialogue = row.dialogue;
+  if ("expressions" in row) optionalFields.expressions = row.expressions;
+  if ("vocabulary" in row) optionalFields.vocabulary = row.vocabulary;
+  if ("tips" in row) optionalFields.tips = row.tips;
+
+  const { data, error } = await supabase.rpc("sync_scene_with_dialogue_lines", {
+    p_external_scene_id: externalSceneId,
+    p_slug: row.slug,
+    p_title_en: row.title_en,
+    p_title_zh: row.title_zh,
+    p_category_id: categoryId,
+    p_region: row.region,
+    p_level: row.level,
+    p_duration: row.duration,
+    p_description: row.description,
+    p_photo_url: row.photo_url,
+    p_pdf_url: row.pdf_url,
+    p_video_url: row.video_url,
+    p_status: row.status,
+    p_sort_order: row.sort_order,
+    p_scene_setup_en: row.scene_setup_en,
+    p_scene_setup_zh: row.scene_setup_zh,
+    p_learning_goal_en: row.learning_goal_en,
+    p_learning_goal_zh: row.learning_goal_zh,
+    p_optional_fields: optionalFields,
+    p_dialogue_lines: dialogueLines ?? null,
   });
+
   if (error) {
-    console.error("[sync-scene] replace_dialogue_lines failed", error);
-    throw new SyncError(500, "Database error while replacing dialogue_lines.");
+    // Postgres RAISE EXCEPTION messages from the function body arrive
+    // here as error.message, prefixed with the machine-readable tag the
+    // function used (e.g. "slug_conflict: ...") — see RPC_ERROR_STATUS.
+    console.error("[sync-scene] sync_scene_with_dialogue_lines failed", error);
+    const status = statusForRpcError(error.message ?? "");
+    // Only the messages this function itself recognizes (and therefore
+    // authored deliberately, with no internal/driver detail in them) are
+    // safe to hand back to the caller. An unrecognized failure — a real
+    // constraint violation this RPC didn't anticipate, a connection
+    // error, etc. — stays server-side-only, same convention as every
+    // other 500 in this Edge Function (see errors.ts).
+    throw new SyncError(status, status === 500 ? "Database error while syncing scene." : error.message);
   }
+  if (!data || data.length === 0) {
+    console.error("[sync-scene] sync_scene_with_dialogue_lines returned no row", data);
+    throw new SyncError(500, "Database error while syncing scene: no result returned.");
+  }
+
+  const resultRow = data[0] as { scene_id: number; action: string };
+  return { id: resultRow.scene_id, action: resultRow.action as "inserted" | "updated" };
 }

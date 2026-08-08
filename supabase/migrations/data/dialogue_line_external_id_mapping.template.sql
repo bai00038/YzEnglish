@@ -1,0 +1,74 @@
+-- REFERENCE TEMPLATE — not a migration.
+--
+-- Same non-executable status as scene_external_id_mapping.template.sql —
+-- lives under supabase/migrations/data/, never picked up by the
+-- Supabase CLI's migration runner, exists purely for a human to fill in
+-- and copy from into
+-- supabase/migrations/0015_adopt_dialogue_line_external_ids.sql.
+--
+-- Purpose: list every dialogue_lines row that currently has
+-- external_line_id IS NULL, keyed by its internal database id (never by
+-- line_order, speaker, dialogue text, or timecode — see this project's
+-- explicit prohibition on deriving line_id from any of those). The
+-- dialogue_en text is included ONLY so a human can visually
+-- cross-reference each row against the Sheet; it is not part of the key
+-- and must never be used to auto-match.
+--
+-- Queried 2026-08-08 during the Phase A-0 follow-up (via
+-- `supabase db query --linked`, read-only). 18 rows, all scene_id=28
+-- (shopping-for-clothes). scene_id=40 (getting-a-dental-filling) has
+-- zero dialogue_lines rows and needs no entry here — it has no adoption
+-- burden for THIS step, though it is separately blocked from migrating
+-- at all by the still-unresolved missing-4-lines content issue tracked
+-- elsewhere.
+--
+-- How to use: for each row, replace 'TODO_CONFIRM' with the line_id text
+-- exactly as it appears (or will appear) in the Google Sheet's
+-- Dialogue_Lines.line_id column for that exact line. If a line doesn't
+-- have a Sheet-assigned line_id yet, leave it out of 0015's mapping and
+-- that migration will correctly refuse to run until every currently-NULL
+-- row is covered.
+--
+-- dialogue_lines.id | line_order | dialogue_en                          | external_line_id
+-- ------------------|------------|---------------------------------------|-------------------
+--                 1 |          1 | Excuse me.                             | TODO_CONFIRM
+--                 2 |          2 | Do you have this in a small?           | TODO_CONFIRM
+--                 3 |          3 | Let me check.                          | TODO_CONFIRM
+--                 4 |          4 | Yes, we do.                            | TODO_CONFIRM
+--                 5 |          5 | Here you go.                           | TODO_CONFIRM
+--                 6 |          6 | Perfect.                               | TODO_CONFIRM
+--                 7 |          7 | Thank you!                             | TODO_CONFIRM
+--                 8 |          8 | Where are the fitting rooms?           | TODO_CONFIRM
+--                 9 |          9 | They're right over there.              | TODO_CONFIRM
+--                10 |         10 | How did everything fit?                | TODO_CONFIRM
+--                11 |         11 | Great!                                 | TODO_CONFIRM
+--                12 |         12 | I'll take these two.                   | TODO_CONFIRM
+--                13 |         13 | Your total is $78.45.                  | TODO_CONFIRM
+--                14 |         14 | Credit, please.                        | TODO_CONFIRM
+--                15 |         15 | Perfect.                               | TODO_CONFIRM
+--                16 |         16 | All set.                               | TODO_CONFIRM
+--                17 |         17 | Have a great day!                      | TODO_CONFIRM
+--                18 |         18 | You too!                               | TODO_CONFIRM
+
+-- Copy-paste-ready VALUES list, same content as the table above, in the
+-- exact shape 0015_adopt_dialogue_line_external_ids.sql expects:
+--
+-- insert into _dialogue_line_external_id_mapping (dialogue_line_id, external_line_id) values
+--   (1,  'TODO_CONFIRM'),  -- 'Excuse me.'
+--   (2,  'TODO_CONFIRM'),  -- 'Do you have this in a small?'
+--   (3,  'TODO_CONFIRM'),  -- 'Let me check.'
+--   (4,  'TODO_CONFIRM'),  -- 'Yes, we do.'
+--   (5,  'TODO_CONFIRM'),  -- 'Here you go.'
+--   (6,  'TODO_CONFIRM'),  -- 'Perfect.'
+--   (7,  'TODO_CONFIRM'),  -- 'Thank you!'
+--   (8,  'TODO_CONFIRM'),  -- 'Where are the fitting rooms?'
+--   (9,  'TODO_CONFIRM'),  -- 'They''re right over there.'
+--   (10, 'TODO_CONFIRM'),  -- 'How did everything fit?'
+--   (11, 'TODO_CONFIRM'),  -- 'Great!'
+--   (12, 'TODO_CONFIRM'),  -- 'I''ll take these two.'
+--   (13, 'TODO_CONFIRM'),  -- 'Your total is $78.45.'
+--   (14, 'TODO_CONFIRM'),  -- 'Credit, please.'
+--   (15, 'TODO_CONFIRM'),  -- 'Perfect.'
+--   (16, 'TODO_CONFIRM'),  -- 'All set.'
+--   (17, 'TODO_CONFIRM'),  -- 'Have a great day!'
+--   (18, 'TODO_CONFIRM');  -- 'You too!'

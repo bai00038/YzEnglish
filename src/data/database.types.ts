@@ -63,6 +63,13 @@ export interface Database {
           video_url: string | null;
           subtitle_cues: Json | null;
           status: "draft" | "published";
+          // Permanent sync identity — see
+          // supabase/migrations/0013_add_external_ids.sql /
+          // 0014_adopt_scene_external_ids.sql. Nullable here because
+          // those migrations have not been run against live data yet
+          // (Phase A-0 is design-only); becomes NOT NULL once
+          // 0017_set_external_ids_not_null.sql runs.
+          external_scene_id: string | null;
           scene_setup_en: string | null;
           scene_setup_zh: string | null;
           learning_goal_en: string | null;
@@ -95,6 +102,7 @@ export interface Database {
           video_url?: string | null;
           subtitle_cues?: Json | null;
           status?: "draft" | "published";
+          external_scene_id?: string | null;
           scene_setup_en?: string | null;
           scene_setup_zh?: string | null;
           learning_goal_en?: string | null;
@@ -127,6 +135,7 @@ export interface Database {
           video_url?: string | null;
           subtitle_cues?: Json | null;
           status?: "draft" | "published";
+          external_scene_id?: string | null;
           scene_setup_en?: string | null;
           scene_setup_zh?: string | null;
           learning_goal_en?: string | null;
@@ -147,6 +156,13 @@ export interface Database {
         Row: {
           id: number;
           scene_id: number;
+          // Permanent line identity — see
+          // supabase/migrations/0013_add_external_ids.sql. Nullable here
+          // because it has not been backfilled against live data yet
+          // (Phase A-0 is design-only) — the 18 existing rows for
+          // shopping-for-clothes currently have NULL, see
+          // 0019_sync_scene_rpc.sql's header comment.
+          external_line_id: string | null;
           line_order: number;
           step: number | null;
           speaker: string;
@@ -161,6 +177,7 @@ export interface Database {
         Insert: {
           id?: number;
           scene_id: number;
+          external_line_id?: string | null;
           line_order: number;
           step?: number | null;
           speaker: string;
@@ -175,6 +192,7 @@ export interface Database {
         Update: {
           id?: number;
           scene_id?: number;
+          external_line_id?: string | null;
           line_order?: number;
           step?: number | null;
           speaker?: string;

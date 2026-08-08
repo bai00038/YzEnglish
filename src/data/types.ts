@@ -14,6 +14,24 @@ export interface DialogueLine {
   // falls back to matching dialogue text against subtitle_cues instead.
   start?: number;
   end?: number;
+  // Permanent line identity (public.dialogue_lines.external_line_id) —
+  // see supabase/migrations/0013_add_external_ids.sql. Present only for
+  // scenes migrated to dialogue_lines AND whose rows have already been
+  // backfilled with a real external_line_id (not yet true for any scene
+  // as of Phase A-0 — see 0019_sync_scene_rpc.sql's header
+  // comment). Prefer this as the React key when rendering dialogue lines;
+  // fall back to `id` (stable per scene, but not across a delete+reinsert
+  // sync — see dialogueLineDbId below) and finally array index only for
+  // scenes with neither.
+  externalLineId?: string;
+  // The dialogue_lines table's own internal database id — present for any
+  // scene migrated to dialogue_lines, regardless of external_line_id
+  // backfill status. NOT guaranteed stable across a sync for a scene that
+  // has not yet been cut over to the external_line_id-based upsert RPC
+  // (see 0019_sync_scene_rpc.sql) — the old replace_dialogue_lines
+  // path (0012) still deletes and reinserts every row, so this id changes
+  // on every sync until that cutover happens for a given scene.
+  dialogueLineDbId?: number;
 }
 
 export interface Expression {
