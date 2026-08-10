@@ -140,6 +140,21 @@ const RESOURCE_COLLECTIONS_HEADERS = {
   SYNC_MESSAGE: "sync_message",
 };
 
+// A DISTINCT set of Script Properties from SCRIPT_PROPERTY_KEYS above.
+// Resource_Collections must never be sent to the sync-scene Edge Function
+// Scenes uses (it requires scene_id and knows nothing about collection_id
+// or resource_collections) — it goes to its own sync-resource-collection
+// Edge Function instead, configured with its own URL and its own secret.
+// See supabase/functions/sync-resource-collection/index.ts, which reads a
+// distinct RESOURCE_COLLECTIONS_SYNC_SECRET project secret for exactly this
+// reason (Supabase project secrets are shared across every deployed Edge
+// Function, so reusing sync-scene's SYNC_SECRET name would hand this
+// function the exact same value).
+const RESOURCE_COLLECTIONS_SCRIPT_PROPERTY_KEYS = {
+  FUNCTION_URL: "RESOURCE_COLLECTIONS_SYNC_FUNCTION_URL",
+  SECRET: "RESOURCE_COLLECTIONS_SYNC_SECRET",
+};
+
 /** Local validation/precondition failure — message is always safe to show the user. */
 class ValidationError extends Error {
   constructor(message) {
@@ -744,20 +759,22 @@ function appendSyncLog_(sceneId, slug, action, result, message) {
 
 /**
  * Syncs the "Resource_Collections" tab (multi-scene PDF packs shown on the
- * Resources page) to public.resource_collections via the same sync
- * mechanics as syncSelectedScenes() above — readSyncConfig_/
- * callSyncFunction_/parseSyncResponse_/truncateMessage_/describeError_/
- * ValidationError are reused verbatim, so this hits the same Script
- * Properties (SYNC_FUNCTION_URL/SYNC_SECRET), the same request headers, the
- * same error handling, and the same ui.alert() toast conventions as the
- * Scenes sync.
+ * Resources page) to public.resource_collections via its OWN Edge Function
+ * (sync-resource-collection) and its OWN Script Properties
+ * (RESOURCE_COLLECTIONS_SCRIPT_PROPERTY_KEYS) — never the sync-scene
+ * function Scenes uses, which requires scene_id and would reject a
+ * collection_id-only payload. callSyncFunction_/parseSyncResponse_/
+ * truncateMessage_/describeError_/ValidationError are still reused
+ * verbatim from the Scenes sync above (same request headers, same error
+ * handling, same ui.alert() toast conventions) — only the config source
+ * (readResourceCollectionsSyncConfig_ instead of readSyncConfig_) differs.
  *
  * Unlike Scenes, there is no row-selection step and no sync_status
- * precondition: every data row in the sheet is walked, and a row with a
- * blank collection_id is treated as a spacer and silently skipped (not an
- * error). collection_id is the permanent identity the Edge Function upserts
- * against (resource_collections.external_collection_id), so re-running this
- * never creates duplicates.
+ * precondition: every row whose collection_id cell is non-blank is synced
+ * (see listResourceCollectionRows_ for how those rows are found).
+ * collection_id is the permanent identity the Edge Function upserts
+ * against (resource_collections.external_collection_id), so re-running
+ * this never creates duplicates.
  */
 function syncResourceCollections() {
   const ui = SpreadsheetApp.getUi();
@@ -766,30 +783,24 @@ function syncResourceCollections() {
   try {
     sheet = requireResourceCollectionsSheet_();
     headerMap = getHeaderMap_(sheet);
-    config = readSyncConfig_();
-    rowIndices = listResourceCollectionRows_(sheet);
+    config = readResourceCollectionsSyncConfig_();
+    rowIndices = listResourceCollectionRows_(sheet, headerMap);
   } catch (err) {
     ui.alert("Sync not started", describeError_(err), ui.ButtonSet.OK);
     return;
   }
 
   if (rowIndices.length === 0) {
-    ui.alert("Nothing to sync", 'No data rows found on "' + RESOURCE_COLLECTIONS_SHEET_NAME + '".', ui.ButtonSet.OK);
+    ui.alert("Nothing to sync", 'No row on "' + RESOURCE_COLLECTIONS_SHEET_NAME + '" has a collection_id.', ui.ButtonSet.OK);
     return;
   }
 
   let synced = 0;
-  let skipped = 0;
   let failed = 0;
   const failures = [];
 
   rowIndices.forEach(function (rowIndex) {
     const rowValues = getRowValues_(sheet, rowIndex, headerMap);
-    const collectionId = readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.COLLECTION_ID);
-    if (collectionId.length === 0) {
-      skipped++;
-      return;
-    }
 
     let payload;
     try {
@@ -819,8 +830,8 @@ function syncResourceCollections() {
   });
 
   const lines = [
-    rowIndices.length + " row(s) checked.",
-    synced + " synced, " + skipped + " skipped (blank collection_id), " + failed + " failed.",
+    rowIndices.length + " row(s) with a collection_id checked.",
+    synced + " synced, " + failed + " failed.",
   ];
   if (failures.length > 0) {
     lines.push("");
@@ -838,10 +849,48 @@ function requireResourceCollectionsSheet_() {
   return sheet;
 }
 
-function listResourceCollectionRows_(sheet) {
+/**
+ * Mirrors readSyncConfig_ above, but reads RESOURCE_COLLECTIONS_SCRIPT_
+ * PROPERTY_KEYS instead — a distinct URL/secret pair pointed at the
+ * sync-resource-collection Edge Function, never sync-scene's.
+ */
+function readResourceCollectionsSyncConfig_() {
+  const props = PropertiesService.getScriptProperties();
+  const url = (props.getProperty(RESOURCE_COLLECTIONS_SCRIPT_PROPERTY_KEYS.FUNCTION_URL) || "").trim();
+  const secret = (props.getProperty(RESOURCE_COLLECTIONS_SCRIPT_PROPERTY_KEYS.SECRET) || "").trim();
+  const missingKeys = [];
+  if (url.length === 0) missingKeys.push(RESOURCE_COLLECTIONS_SCRIPT_PROPERTY_KEYS.FUNCTION_URL);
+  if (secret.length === 0) missingKeys.push(RESOURCE_COLLECTIONS_SCRIPT_PROPERTY_KEYS.SECRET);
+  if (missingKeys.length > 0) {
+    throw new ValidationError("Resource Collections sync is not configured. Missing Script Properties: " + missingKeys.join(", ") + ".");
+  }
+  return { url: url, secret: secret };
+}
+
+/**
+ * Only rows whose collection_id cell has actual non-blank text are
+ * returned — read directly from just the collection_id column, not
+ * inferred from sheet.getLastRow()/getLastColumn() across the whole row.
+ * getLastRow() reports the last row touched by ANY cell in ANY column
+ * (data-validation dropdowns, formatting, a stray value in an unrelated
+ * column), so scanning every column of every row up to it — as the
+ * previous version did — could report far more "rows checked" than there
+ * are actual collection rows. Reading only the collection_id column and
+ * filtering on it avoids that entirely.
+ */
+function listResourceCollectionRows_(sheet, headerMap) {
   const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return [];
+
+  const collectionIdCol = getColumn_(headerMap, RESOURCE_COLLECTIONS_HEADERS.COLLECTION_ID);
+  const values = sheet.getRange(2, collectionIdCol, lastRow - 1, 1).getValues();
+
   const rows = [];
-  for (let row = 2; row <= lastRow; row++) rows.push(row);
+  values.forEach(function (row, i) {
+    const raw = row[0];
+    const text = raw === null || raw === undefined ? "" : String(raw).trim();
+    if (text.length > 0) rows.push(i + 2); // +2: data starts at row 2, i is 0-based
+  });
   return rows;
 }
 
