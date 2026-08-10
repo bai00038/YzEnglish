@@ -113,6 +113,33 @@ const TIPS_HEADERS = {
   BODY_ZH: "body_zh",
 };
 
+// Resource_Collections is a fifth, independent tab in this same spreadsheet
+// — multi-scene PDF packs shown on the Resources page (public.resource_
+// collections). It has no row-selection step and no sync_status precondition
+// like Scenes above; see syncResourceCollections() for its own semantics.
+const RESOURCE_COLLECTIONS_SHEET_NAME = "Resource_Collections";
+const RESOURCE_COLLECTIONS_HEADERS = {
+  COLLECTION_ID: "collection_id",
+  TITLE_EN: "title_en",
+  TITLE_ZH: "title_zh",
+  DESCRIPTION_EN: "description_en",
+  DESCRIPTION_ZH: "description_zh",
+  COLLECTION_TYPE: "collection_type",
+  PRICE_TYPE: "price_type",
+  PRICE: "price",
+  COVER_IMAGE_URL: "cover_image_url",
+  PDF_URL: "pdf_url",
+  SCENE_IDS: "scene_ids",
+  SCENE_COUNT: "scene_count",
+  STATUS: "status",
+  SORT_ORDER: "sort_order",
+  CREATED_AT: "created_at",
+  UPDATED_AT: "updated_at",
+  SYNC_STATUS: "sync_status",
+  LAST_SYNCED_AT: "last_synced_at",
+  SYNC_MESSAGE: "sync_message",
+};
+
 /** Local validation/precondition failure — message is always safe to show the user. */
 class ValidationError extends Error {
   constructor(message) {
@@ -129,6 +156,7 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu("Yz English Sync")
     .addItem("Sync Selected Row(s)", "syncSelectedScenes")
+    .addItem("Sync Resource Collections", "syncResourceCollections")
     .addItem("Check Sync Configuration", "checkSyncConfiguration")
     .addToUi();
 }
@@ -578,12 +606,22 @@ function loadTipsBySceneId_() {
  * keys that were never assigned, so the Edge Function sees them as
  * "omitted" and leaves those columns untouched (see the header comment
  * at the top of this file and ScenePayloadRow in validation.ts).
+ *
+ * tips follows the same "omit means leave alone" rule as of this fix: an
+ * earlier version always set `tips: tipsBySceneId[sceneId] || []`, so a
+ * scene with no rows yet in the Tips sheet synced an explicit empty
+ * array — which the Edge Function/RPC (at the time) treated as "clear
+ * it", silently wiping any real tips already in Supabase (this is
+ * exactly what happened to scene_001's 2 tips during the first
+ * scenes-sync run). Only include the key when the Tips sheet actually
+ * has at least one row for this scene_id.
  */
 function buildPayload_(rowValues, dialogueLinesBySceneId, tipsBySceneId) {
   const sceneId = readText_(rowValues, SCENES_HEADERS.SCENE_ID);
   const coverImage = readText_(rowValues, SCENES_HEADERS.COVER_IMAGE);
   const pdfUrl = readText_(rowValues, SCENES_HEADERS.PDF_URL);
   const videoUrl = readText_(rowValues, SCENES_HEADERS.VIDEO_URL);
+  const tipsForScene = tipsBySceneId[sceneId];
 
   const payload = {
     scene_id: sceneId,
@@ -604,9 +642,11 @@ function buildPayload_(rowValues, dialogueLinesBySceneId, tipsBySceneId) {
     scene_setup_zh: readText_(rowValues, SCENES_HEADERS.SCENE_SETUP_ZH) || null,
     learning_goal_en: readText_(rowValues, SCENES_HEADERS.LEARNING_GOAL_EN) || null,
     learning_goal_zh: readText_(rowValues, SCENES_HEADERS.LEARNING_GOAL_ZH) || null,
-    tips: tipsBySceneId[sceneId] || [],
     dialogue_lines: dialogueLinesBySceneId[sceneId] || [],
   };
+  if (tipsForScene && tipsForScene.length > 0) {
+    payload.tips = tipsForScene;
+  }
 
   return payload;
 }
@@ -696,4 +736,220 @@ function appendSyncLog_(sceneId, slug, action, result, message) {
   } catch (err) {
     console.error("appendSyncLog_ failed", err);
   }
+}
+
+// ---------------------------------------------------------------------------
+// Resource_Collections sync — separate tab, no row-selection step
+// ---------------------------------------------------------------------------
+
+/**
+ * Syncs the "Resource_Collections" tab (multi-scene PDF packs shown on the
+ * Resources page) to public.resource_collections via the same sync
+ * mechanics as syncSelectedScenes() above — readSyncConfig_/
+ * callSyncFunction_/parseSyncResponse_/truncateMessage_/describeError_/
+ * ValidationError are reused verbatim, so this hits the same Script
+ * Properties (SYNC_FUNCTION_URL/SYNC_SECRET), the same request headers, the
+ * same error handling, and the same ui.alert() toast conventions as the
+ * Scenes sync.
+ *
+ * Unlike Scenes, there is no row-selection step and no sync_status
+ * precondition: every data row in the sheet is walked, and a row with a
+ * blank collection_id is treated as a spacer and silently skipped (not an
+ * error). collection_id is the permanent identity the Edge Function upserts
+ * against (resource_collections.external_collection_id), so re-running this
+ * never creates duplicates.
+ */
+function syncResourceCollections() {
+  const ui = SpreadsheetApp.getUi();
+
+  let sheet, headerMap, config, rowIndices;
+  try {
+    sheet = requireResourceCollectionsSheet_();
+    headerMap = getHeaderMap_(sheet);
+    config = readSyncConfig_();
+    rowIndices = listResourceCollectionRows_(sheet);
+  } catch (err) {
+    ui.alert("Sync not started", describeError_(err), ui.ButtonSet.OK);
+    return;
+  }
+
+  if (rowIndices.length === 0) {
+    ui.alert("Nothing to sync", 'No data rows found on "' + RESOURCE_COLLECTIONS_SHEET_NAME + '".', ui.ButtonSet.OK);
+    return;
+  }
+
+  let synced = 0;
+  let skipped = 0;
+  let failed = 0;
+  const failures = [];
+
+  rowIndices.forEach(function (rowIndex) {
+    const rowValues = getRowValues_(sheet, rowIndex, headerMap);
+    const collectionId = readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.COLLECTION_ID);
+    if (collectionId.length === 0) {
+      skipped++;
+      return;
+    }
+
+    let payload;
+    try {
+      payload = buildResourceCollectionPayload_(headerMap, rowValues);
+    } catch (err) {
+      const message = describeError_(err);
+      failed++;
+      failures.push("Row " + rowIndex + ": " + message);
+      writeResourceCollectionStatus_(sheet, rowIndex, headerMap, { status: "Error", message: message });
+      return;
+    }
+
+    writeResourceCollectionStatus_(sheet, rowIndex, headerMap, { status: "Syncing", message: "Sync started" });
+    SpreadsheetApp.flush();
+
+    const outcome = callSyncFunction_(config, payload);
+    if (outcome.success) {
+      synced++;
+      const now = new Date();
+      writeResourceCollectionStatus_(sheet, rowIndex, headerMap, { status: "Synced", message: outcome.message, syncedAt: now });
+      writeResourceCollectionTimestamps_(sheet, rowIndex, headerMap, rowValues, now);
+    } else {
+      failed++;
+      failures.push("Row " + rowIndex + ": " + outcome.message);
+      writeResourceCollectionStatus_(sheet, rowIndex, headerMap, { status: "Error", message: outcome.message });
+    }
+  });
+
+  const lines = [
+    rowIndices.length + " row(s) checked.",
+    synced + " synced, " + skipped + " skipped (blank collection_id), " + failed + " failed.",
+  ];
+  if (failures.length > 0) {
+    lines.push("");
+    lines.push("Failures:");
+    failures.forEach(function (line) { lines.push(truncateMessage_(line)); });
+  }
+  ui.alert("Sync complete", lines.join("\n"), ui.ButtonSet.OK);
+}
+
+function requireResourceCollectionsSheet_() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(RESOURCE_COLLECTIONS_SHEET_NAME);
+  if (!sheet) {
+    throw new ValidationError('Sheet "' + RESOURCE_COLLECTIONS_SHEET_NAME + '" was not found in this spreadsheet.');
+  }
+  return sheet;
+}
+
+function listResourceCollectionRows_(sheet) {
+  const lastRow = sheet.getLastRow();
+  const rows = [];
+  for (let row = 2; row <= lastRow; row++) rows.push(row);
+  return rows;
+}
+
+/**
+ * Every field is read by header name (getColumn_ throws on a missing
+ * header, same "fail loud" convention as buildPayload_ above, not a fixed
+ * column position). price/scene_count/sort_order are converted to real JS
+ * numbers, never left as numeric strings; blank cover_image_url/pdf_url
+ * become null; created_at/updated_at, when present, are converted to ISO
+ * 8601 strings (blank -> null). scene_ids is passed through as the sheet
+ * cell's raw comma-separated text, never split into an array — see
+ * resource_collections.scene_ids (a plain text column) in
+ * supabase/migrations/0023_create_resource_collections.sql.
+ */
+function buildResourceCollectionPayload_(headerMap, rowValues) {
+  [
+    RESOURCE_COLLECTIONS_HEADERS.COLLECTION_ID, RESOURCE_COLLECTIONS_HEADERS.TITLE_EN,
+    RESOURCE_COLLECTIONS_HEADERS.TITLE_ZH, RESOURCE_COLLECTIONS_HEADERS.DESCRIPTION_EN,
+    RESOURCE_COLLECTIONS_HEADERS.DESCRIPTION_ZH, RESOURCE_COLLECTIONS_HEADERS.COLLECTION_TYPE,
+    RESOURCE_COLLECTIONS_HEADERS.PRICE_TYPE, RESOURCE_COLLECTIONS_HEADERS.PRICE,
+    RESOURCE_COLLECTIONS_HEADERS.COVER_IMAGE_URL, RESOURCE_COLLECTIONS_HEADERS.PDF_URL,
+    RESOURCE_COLLECTIONS_HEADERS.SCENE_IDS, RESOURCE_COLLECTIONS_HEADERS.SCENE_COUNT,
+    RESOURCE_COLLECTIONS_HEADERS.STATUS, RESOURCE_COLLECTIONS_HEADERS.SORT_ORDER,
+    RESOURCE_COLLECTIONS_HEADERS.CREATED_AT, RESOURCE_COLLECTIONS_HEADERS.UPDATED_AT,
+  ].forEach(function (h) { getColumn_(headerMap, h); });
+
+  const coverImageUrl = readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.COVER_IMAGE_URL);
+  const pdfUrl = readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.PDF_URL);
+
+  return {
+    collection_id: readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.COLLECTION_ID),
+    title_en: readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.TITLE_EN),
+    title_zh: readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.TITLE_ZH),
+    description_en: readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.DESCRIPTION_EN),
+    description_zh: readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.DESCRIPTION_ZH),
+    collection_type: readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.COLLECTION_TYPE),
+    price_type: readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.PRICE_TYPE),
+    price: readResourceCollectionNumber_(rowValues, RESOURCE_COLLECTIONS_HEADERS.PRICE, "price"),
+    cover_image_url: coverImageUrl.length === 0 ? null : coverImageUrl,
+    pdf_url: pdfUrl.length === 0 ? null : pdfUrl,
+    scene_ids: readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.SCENE_IDS),
+    scene_count: readResourceCollectionInt_(rowValues, RESOURCE_COLLECTIONS_HEADERS.SCENE_COUNT, "scene_count"),
+    status: readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.STATUS),
+    sort_order: readResourceCollectionInt_(rowValues, RESOURCE_COLLECTIONS_HEADERS.SORT_ORDER, "sort_order"),
+    created_at: readResourceCollectionIsoDate_(rowValues, RESOURCE_COLLECTIONS_HEADERS.CREATED_AT, "created_at"),
+    updated_at: readResourceCollectionIsoDate_(rowValues, RESOURCE_COLLECTIONS_HEADERS.UPDATED_AT, "updated_at"),
+  };
+}
+
+/** Blank -> null. Non-blank must be a real number (never coerced/clamped). */
+function readResourceCollectionNumber_(rowValues, headerName, fieldLabel) {
+  const raw = rowValues[headerName];
+  if (raw === null || raw === undefined || String(raw).trim().length === 0) return null;
+  const num = Number(raw);
+  if (!Number.isFinite(num)) {
+    throw new ValidationError('"' + fieldLabel + '" must be a number. Got: "' + raw + '".');
+  }
+  return num;
+}
+
+/** Blank -> 0. Non-blank must be a whole number. */
+function readResourceCollectionInt_(rowValues, headerName, fieldLabel) {
+  const num = readResourceCollectionNumber_(rowValues, headerName, fieldLabel);
+  if (num === null) return 0;
+  if (!Number.isInteger(num)) {
+    throw new ValidationError('"' + fieldLabel + '" must be a whole number. Got: "' + num + '".');
+  }
+  return num;
+}
+
+/**
+ * Blank -> null. A Date (as Sheets returns for a date-formatted cell) or a
+ * parseable date/timestamp string both convert to a proper ISO 8601 string
+ * — never sent through as a raw Sheets-formatted string.
+ */
+function readResourceCollectionIsoDate_(rowValues, headerName, fieldLabel) {
+  const raw = rowValues[headerName];
+  if (raw === null || raw === undefined || String(raw).trim().length === 0) return null;
+  const date = raw instanceof Date ? raw : new Date(raw);
+  if (isNaN(date.getTime())) {
+    throw new ValidationError('"' + fieldLabel + '" must be a valid date. Got: "' + raw + '".');
+  }
+  return date.toISOString();
+}
+
+/** Mirrors writeSyncStatus_ above, scoped to Resource_Collections' own sync_status/sync_message/last_synced_at columns. */
+function writeResourceCollectionStatus_(sheet, rowIndex, headerMap, update) {
+  const statusCol = getColumn_(headerMap, RESOURCE_COLLECTIONS_HEADERS.SYNC_STATUS);
+  const messageCol = getColumn_(headerMap, RESOURCE_COLLECTIONS_HEADERS.SYNC_MESSAGE);
+  sheet.getRange(rowIndex, statusCol).setValue(update.status);
+  sheet.getRange(rowIndex, messageCol).setValue(update.message);
+  if (update.syncedAt) {
+    const syncedAtCol = getColumn_(headerMap, RESOURCE_COLLECTIONS_HEADERS.LAST_SYNCED_AT);
+    sheet.getRange(rowIndex, syncedAtCol).setValue(update.syncedAt); // Date object, not a formatted string
+  }
+}
+
+/**
+ * Mirrors the database's own created_at/updated_at back into the sheet.
+ * created_at is only ever written once, the first time a row is
+ * successfully synced with that cell blank; updated_at is refreshed on
+ * every successful sync.
+ */
+function writeResourceCollectionTimestamps_(sheet, rowIndex, headerMap, rowValues, syncedAt) {
+  const createdAtCol = getColumn_(headerMap, RESOURCE_COLLECTIONS_HEADERS.CREATED_AT);
+  if (readText_(rowValues, RESOURCE_COLLECTIONS_HEADERS.CREATED_AT).length === 0) {
+    sheet.getRange(rowIndex, createdAtCol).setValue(syncedAt);
+  }
+  const updatedAtCol = getColumn_(headerMap, RESOURCE_COLLECTIONS_HEADERS.UPDATED_AT);
+  sheet.getRange(rowIndex, updatedAtCol).setValue(syncedAt);
 }
