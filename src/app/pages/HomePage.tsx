@@ -1,8 +1,12 @@
 import { Link } from "react-router";
+import { useState } from "react";
+import type { CSSProperties } from "react";
 import { ChevronRight, Play, ArrowRight, FileText } from "lucide-react";
 import { CATEGORY_BG } from "@/data/scenes";
 import { useCuratedFeaturedScenes, useLatestScenes, useCategoryNames } from "@/data/scenes-access";
-import { useResources } from "@/data/resources-access";
+import { useHomepageResourceCollections } from "@/data/resource-collections-access";
+import { COLLECTION_TYPE_BG } from "@/data/resource-collections";
+import type { Scene, ResourceCollection } from "@/data/types";
 import { Btn } from "@/app/components/Btn";
 import { LimeLine } from "@/app/components/brand";
 import { SceneCard } from "@/app/components/SceneCard";
@@ -10,22 +14,122 @@ import { LevelBadge, DurationLabel } from "@/app/components/badges";
 import { ImgBox } from "@/app/components/primitives";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 
+// $128 for a whole number, $128.50 for cents — never a bare $128.00. Mirrors
+// ResourcesPage.tsx's formatPrice; kept local since it's a one-line
+// presentation helper, not part of the shared data layer.
+function formatCollectionPrice(price: number): string {
+  return `$${Number.isInteger(price) ? price.toFixed(0) : price.toFixed(2)}`;
+}
+
+// One PDF Resources preview card — a complete standalone tile (own border,
+// rounded corners, white background) rather than a column in a shared grid
+// row, so it still looks finished when it's the only card on the page.
+// Owns its own cover-image load state so a broken cover_image_url falls
+// back to the neutral ImgBox placeholder instead of a broken-image glyph.
+// Clicking anywhere on the card opens pdf_url in a new tab; a missing
+// pdf_url makes the card inert instead of opening a blank page.
+function HomeResourceCard({ c, className = "" }: { c: ResourceCollection; className?: string }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const showImage = !!c.coverImageUrl && !imageFailed;
+  const canDownload = !!c.pdfUrl;
+
+  return (
+    <div
+      onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
+      className={`border border-border rounded-2xl bg-card p-4 transition-colors ${canDownload ? "cursor-pointer hover:bg-secondary/40" : ""} ${className}`}
+    >
+      <div className={`w-full aspect-[16/9] rounded-xl mb-3 overflow-hidden ${COLLECTION_TYPE_BG[c.collectionType] ?? "bg-secondary"}`}>
+        {showImage ? (
+          <img
+            src={c.coverImageUrl!}
+            alt=""
+            onError={() => setImageFailed(true)}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <ImgBox label={c.titleEn} className="w-full h-full" />
+        )}
+      </div>
+      <p className="text-xs font-bold text-foreground leading-snug mb-0.5 line-clamp-2">{c.titleEn}</p>
+      <p className="text-[10px] text-muted-foreground font-medium">{c.titleZh}</p>
+      <p className="text-[10px] text-muted-foreground mt-1">
+        {c.sceneCount} scene{c.sceneCount !== 1 ? "s" : ""} ·{" "}
+        <span className={c.priceType === "free" ? "text-emerald-700 font-bold" : "font-bold"}>
+          {c.priceType === "free" ? "Free" : c.price != null ? formatCollectionPrice(c.price) : "Premium"}
+        </span>
+      </p>
+    </div>
+  );
+}
+
+// Shared tile for the Hero collage — a whole-image link to the scene's
+// detail page with its English title over a dark gradient. Used for both
+// the desktop (absolutely-positioned) and mobile (stacked) layouts, which
+// only differ in the className/style passed in. `scene` is undefined only
+// for the brief window before the curated fetch resolves, in which case it
+// renders as a non-interactive placeholder instead of a dead link.
+function HeroSceneTile({ scene, className = "", style, titleClassName }: {
+  scene?: Scene;
+  className?: string;
+  style?: CSSProperties;
+  titleClassName?: string;
+}) {
+  const inner = (
+    <>
+      {scene?.photo ? (
+        <img
+          src={scene.photo}
+          alt={scene.titleEn}
+          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+          loading="lazy"
+        />
+      ) : (
+        <ImgBox label={scene?.titleEn ?? ""} className="w-full h-full" />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
+      {scene && (
+        <p className={titleClassName ?? "absolute bottom-3 left-3 right-3 text-sm font-black text-white leading-snug"}>
+          {scene.titleEn}
+        </p>
+      )}
+    </>
+  );
+
+  // No hardcoded position class here — the caller's className supplies
+  // either "absolute" (desktop collage, positioned within a relative
+  // parent) or "relative" (mobile stack, block layout). Tailwind's
+  // generated stylesheet order would let a hardcoded "relative" silently
+  // beat a caller's "absolute" of the same specificity regardless of
+  // class-string order, so don't combine both here.
+  const base = `block overflow-hidden bg-secondary group ${className}`;
+
+  if (!scene) {
+    return <div className={base} style={style}>{inner}</div>;
+  }
+  return (
+    <Link to={`/scenes/${scene.slug}`} className={base} style={style}>
+      {inner}
+    </Link>
+  );
+}
+
 export function HomePage() {
   const { data: featuredScenesData, loading: featuredLoading, error: featuredError } = useCuratedFeaturedScenes();
   const { data: latestScenesData, loading: latestLoading, error: latestError } = useLatestScenes(3);
   const { data: categoriesData, loading: categoriesLoading, error: categoriesError } = useCategoryNames();
-  const { data: resourcesData, loading: resourcesLoading, error: resourcesError } = useResources();
+  const { data: homepageCollectionsData, loading: collectionsLoading, error: collectionsError } = useHomepageResourceCollections();
 
   const featuredScenes = featuredScenesData ?? [];
   const latestScenes = latestScenesData ?? [];
   const categories = categoriesData ?? [];
-  const freeResources = resourcesData?.filter(r => r.free).slice(0, 2) ?? [];
+  const homepageCollections = homepageCollectionsData ?? [];
 
   // Hero collage — reuses the curated featured scenes (matched by stable
   // slug, not title) also shown in the Featured Scenes section below.
-  const heroPriceAdjustmentScene = featuredScenes.find(s => s.slug === "requesting-a-price-adjustment-at-costco");
-  const heroFamilyDoctorScene = featuredScenes.find(s => s.slug === "checking-in-at-a-family-doctors-office");
-  const heroTurkishRestaurantScene = featuredScenes.find(s => s.slug === "dining-at-a-turkish-restaurant");
+  const heroDiningScene = featuredScenes.find(s => s.slug === "dining-at-a-turkish-restaurant");
+  const heroShoppingScene = featuredScenes.find(s => s.slug === "shopping-for-clothes");
+  const heroDentalScene = featuredScenes.find(s => s.slug === "getting-a-dental-filling");
 
   return (
     <div>
@@ -98,49 +202,28 @@ export function HomePage() {
           <div className="hidden md:block flex-shrink-0 self-start mt-2" style={{ width: "380px", position: "relative", height: "420px" }}>
 
             {/* ── Primary image — tall, left-anchored, slight clockwise tilt ── */}
-            <div className="absolute overflow-hidden bg-secondary shadow-2xl"
-              style={{ width: "210px", height: "300px", top: "16px", left: "0px", borderRadius: "20px", transform: "rotate(1.2deg)", boxShadow: "0 20px 48px rgba(24,76,58,0.18)" }}>
-              {heroPriceAdjustmentScene?.photo ? (
-                <img
-                  src={heroPriceAdjustmentScene.photo}
-                  alt={heroPriceAdjustmentScene.titleEn}
-                  className="w-full h-full object-cover object-center"
-                  loading="lazy"
-                />
-              ) : (
-                <ImgBox label="Price Adjustment" className="w-full h-full" />
-              )}
-            </div>
+            <HeroSceneTile
+              scene={heroDiningScene}
+              className="absolute shadow-2xl"
+              style={{ width: "210px", height: "300px", top: "16px", left: "0px", borderRadius: "20px", transform: "rotate(1.2deg)", boxShadow: "0 20px 48px rgba(24,76,58,0.18)" }}
+              titleClassName="absolute bottom-3 left-3 right-3 text-sm font-black text-white leading-snug"
+            />
 
             {/* ── Secondary image — top-right, counter-tilt ── */}
-            <div className="absolute overflow-hidden bg-secondary"
-              style={{ width: "148px", height: "148px", top: "0px", right: "0px", borderRadius: "16px", transform: "rotate(-1.8deg)", boxShadow: "0 8px 24px rgba(24,76,58,0.13)" }}>
-              {heroFamilyDoctorScene?.photo ? (
-                <img
-                  src={heroFamilyDoctorScene.photo}
-                  alt={heroFamilyDoctorScene.titleEn}
-                  className="w-full h-full object-cover object-center"
-                  loading="lazy"
-                />
-              ) : (
-                <ImgBox label="Family Doctor" className="w-full h-full" />
-              )}
-            </div>
+            <HeroSceneTile
+              scene={heroShoppingScene}
+              className="absolute"
+              style={{ width: "148px", height: "148px", top: "0px", right: "0px", borderRadius: "16px", transform: "rotate(-1.8deg)", boxShadow: "0 8px 24px rgba(24,76,58,0.13)" }}
+              titleClassName="absolute bottom-2 left-2 right-2 text-[11px] font-black text-white leading-snug"
+            />
 
             {/* ── Tertiary image — bottom-right, slightly overlapping secondary ── */}
-            <div className="absolute overflow-hidden bg-secondary"
-              style={{ width: "162px", height: "142px", top: "164px", right: "4px", borderRadius: "14px", transform: "rotate(0.6deg)", boxShadow: "0 10px 28px rgba(24,76,58,0.14)" }}>
-              {heroTurkishRestaurantScene?.photo ? (
-                <img
-                  src={heroTurkishRestaurantScene.photo}
-                  alt={heroTurkishRestaurantScene.titleEn}
-                  className="w-full h-full object-cover object-center"
-                  loading="lazy"
-                />
-              ) : (
-                <ImgBox label="Turkish Restaurant" className="w-full h-full" />
-              )}
-            </div>
+            <HeroSceneTile
+              scene={heroDentalScene}
+              className="absolute"
+              style={{ width: "162px", height: "142px", top: "164px", right: "4px", borderRadius: "14px", transform: "rotate(0.6deg)", boxShadow: "0 10px 28px rgba(24,76,58,0.14)" }}
+              titleClassName="absolute bottom-2 left-2 right-2 text-[11px] font-black text-white leading-snug"
+            />
 
             {/* ── Floating info badge ── */}
             <div className="absolute flex items-center gap-2 bg-white rounded-2xl px-3.5 py-2.5"
@@ -174,21 +257,25 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* Mobile: horizontal scene photo strip */}
-        <div className="md:hidden flex gap-3 overflow-x-auto px-4 pb-8 pt-3" style={{ scrollbarWidth: "none" }}>
-          {[
-            { url: "https://images.unsplash.com/photo-1546213290-e1b492ab3eee?w=320&h=200&fit=crop&auto=format", alt: "Clothing store return counter", label: "Shopping & Returns" },
-            { url: "https://images.unsplash.com/photo-1516901408257-500ed7566e6a?w=320&h=200&fit=crop&auto=format", alt: "Parent with child at school", label: "School & Family" },
-            { url: "https://images.unsplash.com/photo-1629308993023-bb7ca078abdc?w=320&h=200&fit=crop&auto=format", alt: "Airport terminal", label: "Travel" },
-            { url: "https://images.unsplash.com/photo-1545575950-59f935d6521c?w=320&h=200&fit=crop&auto=format", alt: "Drive-through food counter", label: "Food & Restaurants" },
-          ].map(p => (
-            <Link key={p.url} to="/explore" className="flex-shrink-0 w-44 text-left group">
-              <div className="rounded-2xl overflow-hidden aspect-video mb-2 shadow-md bg-secondary">
-                <img src={p.url} alt={p.alt} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
-              </div>
-              <p className="text-xs font-bold text-foreground">{p.label}</p>
-            </Link>
-          ))}
+        {/* Mobile: one main scene image, with the two smaller ones below */}
+        <div className="md:hidden px-4 pb-8 pt-3 space-y-3">
+          <HeroSceneTile
+            scene={heroDiningScene}
+            className="relative rounded-2xl shadow-md aspect-[16/10]"
+            titleClassName="absolute bottom-3 left-3 right-3 text-sm font-black text-white leading-snug"
+          />
+          <div className="grid grid-cols-2 gap-3">
+            <HeroSceneTile
+              scene={heroShoppingScene}
+              className="relative rounded-2xl shadow-md aspect-square"
+              titleClassName="absolute bottom-2 left-2 right-2 text-xs font-black text-white leading-snug"
+            />
+            <HeroSceneTile
+              scene={heroDentalScene}
+              className="relative rounded-2xl shadow-md aspect-square"
+              titleClassName="absolute bottom-2 left-2 right-2 text-xs font-black text-white leading-snug"
+            />
+          </div>
         </div>
       </section>
 
@@ -344,38 +431,27 @@ export function HomePage() {
               View all <ChevronRight size={13} />
             </Link>
           </div>
-          <div className="border border-border rounded-2xl bg-card shadow-sm overflow-hidden">
-            <div className="p-4 md:p-5 border-b border-border">
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Scene PDFs, topic collections, and travel packs to study offline — no login required for free resources.
-              </p>
+          {collectionsLoading ? (
+            <LoadingState label="Loading resources…" />
+          ) : collectionsError ? (
+            <ErrorState message={collectionsError} />
+          ) : homepageCollections.length > 0 ? (
+            <div className={homepageCollections.length >= 2 ? "grid grid-cols-1 md:grid-cols-2 gap-4" : "flex flex-col md:flex-row"}>
+              {homepageCollections.map(c => (
+                <HomeResourceCard key={c.id} c={c} className={homepageCollections.length === 1 ? "w-full md:w-1/2" : ""} />
+              ))}
             </div>
-            <div className="grid grid-cols-2 divide-x divide-border">
-              {resourcesLoading ? (
-                <LoadingState label="Loading resources…" />
-              ) : resourcesError ? (
-                <ErrorState message={resourcesError} />
-              ) : freeResources.length > 0 ? (
-                freeResources.map(r => (
-                  <div key={r.id} className="p-4">
-                    <div className={`w-full h-20 rounded-xl mb-3 overflow-hidden ${CATEGORY_BG[r.category] ?? "bg-secondary"}`}>
-                      <ImgBox label={r.category} className="w-full h-full" />
-                    </div>
-                    <p className="text-xs font-bold text-foreground leading-snug mb-0.5">{r.title}</p>
-                    <p className="text-[10px] text-muted-foreground font-medium">{r.titleZh}</p>
-                    <p className="text-[10px] text-muted-foreground mt-1">{r.scenes} scenes · <span className="text-emerald-700 font-bold">Free</span></p>
-                  </div>
-                ))
-              ) : (
-                <EmptyState title="No free resources yet." />
-              )}
-            </div>
-            <div className="p-4 border-t border-border">
-              <Btn variant="primary" to="/resources" className="w-full">
+          ) : (
+            <EmptyState title="No resources yet." />
+          )}
+
+          {homepageCollections.length > 0 && (
+            <div className="mt-6">
+              <Btn variant="secondary" to="/resources">
                 <FileText size={14} />Browse all PDF resources
               </Btn>
             </div>
-          </div>
+          )}
         </div>
       </section>
     </div>

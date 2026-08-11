@@ -1,0 +1,10 @@
+requests>=2.31
+rapidfuzz>=3.6
+
+# WhisperX + its torch/torchaudio/pyannote stack -- only needed to actually
+# run transcription (not needed for --words-json mode or for running the
+# tests). Pinned loosely on purpose: install a torch build matching your
+# platform/CUDA version first, see README.md "Setup".
+whisperx>=3.1
+
+pytest>=7.4

@@ -114,3 +114,27 @@ export interface PdfResource {
   category: string;
   filePath?: string;
 }
+
+// A multi-scene PDF bundle pack shown on the Resources page — see
+// src/data/resource-collections-access.ts and
+// supabase/migrations/0023_create_resource_collections.sql. Independent of
+// PdfResource/pdf_resources above (single-scene downloads linked from a
+// Scene Detail page); this page never reads from that table.
+export interface ResourceCollection {
+  id: number;
+  collectionId: string;
+  titleEn: string;
+  titleZh: string;
+  descriptionEn: string;
+  descriptionZh: string;
+  collectionType: "topic" | "travel" | "country";
+  priceType: "free" | "paid";
+  price: number | null;
+  coverImageUrl: string | null;
+  pdfUrl: string | null;
+  // Raw comma-separated external scene ids, e.g. "scene01, scene08" — see
+  // ResourceCollectionRow.scene_ids. Display-only, never parsed here.
+  sceneIds: string;
+  sceneCount: number;
+  sortOrder: number;
+}

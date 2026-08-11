@@ -19,6 +19,7 @@
  * table: one row per subtitle cue with start_time/end_time, keyed by
  * scene_id — see loadSubtitleCuesBySceneId_). This is read once per sync
  * click regardless of how many Figma_Data rows are selected.
+ 
  *
  * Scope reminder: manually triggered from the menu only — no auto-trigger,
  * no vocabulary/hear/learn/step-title content, no admin UI. Do not extend

@@ -1,6 +1,11 @@
 import { SyncError } from "./errors.ts";
 
-const ALLOWED_STATUS = ["draft", "published"] as const;
+// Kept in sync with the scenes.status check constraint — see
+// supabase/migrations/0022_add_scene_status_workflow_states.sql.
+// "ready_to_review" and "hidden" are CMS review-workflow states; only
+// "published" is ever visible to public site visitors (enforced by RLS,
+// see 0004_rls_policies.sql).
+const ALLOWED_STATUS = ["draft", "ready_to_review", "hidden", "published"] as const;
 type AllowedStatus = (typeof ALLOWED_STATUS)[number];
 
 export interface DialogueRow {
@@ -90,6 +95,18 @@ export interface DialogueLineRowPayload {
 // they get their own migration. The Figma_Data pipeline is unaffected:
 // Code.gs always sends all five of these keys explicitly, so its
 // behavior is unchanged.
+//
+// EXCEPTION: tips does NOT follow "`[]` clears it" — see the guard around
+// validateTips(...) below and the matching one in
+// sync_scene_with_dialogue_lines. An empty tips[] is treated exactly like
+// an omitted key (leave the column alone), not a clear. This was found to
+// silently wipe real content (scene_001 lost its 2 tips this way) because
+// google-apps-script/scenes-sync/Code.gs used to send `tips: []`
+// whenever the Tips sheet had no rows yet for a scene_id — see that
+// file's buildPayload_ for the corresponding fix on the sending side.
+// dialogue/expressions/vocabulary/subtitle_cues do NOT have this
+// protection yet; they are a known, separate, not-yet-fixed risk (see the
+// Phase A-0 follow-up audit).
 export interface ScenePayloadRow {
   slug: string;
   title_en: string;
@@ -417,8 +434,19 @@ export function validateScenePayload(body: unknown): ValidatedScenePayload {
     title_zh: requireNonEmptyString(payload.title_zh, "title_zh"),
     region: requireNonEmptyString(payload.region, "region"),
     level: requireNonEmptyString(payload.level, "level"),
-    duration: requireNonEmptyString(payload.duration, "duration"),
-    description: requireNonEmptyString(payload.description, "description"),
+    // duration/description are content fields a freshly-populated Sheet
+    // row may not have filled in yet (e.g. a template scene mid-setup).
+    // Unlike slug/title/region/level (core identity, always required), a
+    // blank cell here means "no update from this sync" rather than "this
+    // scene has no duration/description" — see resolveWithExistingFallback
+    // in db.ts, which substitutes the scene's current DB value for either
+    // field when the submitted string is blank, and only errors (still a
+    // clear 400) when there is no existing scene row to fall back to
+    // (first-time insert with a blank cell). requireString (not
+    // requireNonEmptyString) so an empty string reaches that fallback
+    // instead of being rejected here.
+    duration: requireString(payload.duration, "duration"),
+    description: requireString(payload.description, "description"),
     photo_url: optionalString(payload.photo_url, "photo_url"),
     pdf_url: optionalString(payload.pdf_url, "pdf_url"),
     video_url: optionalString(payload.video_url, "video_url"),
@@ -442,7 +470,22 @@ export function validateScenePayload(body: unknown): ValidatedScenePayload {
   if (payload.dialogue !== undefined) row.dialogue = validateDialogue(payload.dialogue);
   if (payload.expressions !== undefined) row.expressions = validateExpressions(payload.expressions);
   if (payload.vocabulary !== undefined) row.vocabulary = validateVocabulary(payload.vocabulary);
-  if (payload.tips !== undefined) row.tips = validateTips(payload.tips);
+  // Defense-in-depth (not yet extended to dialogue/expressions/vocabulary
+  // above — see the risk note in this file's git history/PR description
+  // for why those are a separate, unfixed concern): tips[] does not yet
+  // support "clear via empty array". A caller sending `tips: []` most
+  // likely means "no tips data available right now" (e.g. the source
+  // Sheet's Tips tab has no rows yet for this scene_id), not "delete this
+  // scene's existing tips" — that ambiguity is exactly what wiped
+  // scene_001's 2 real tips down to [] on its first scenes-sync run. So
+  // an empty array here is treated the same as the key being omitted
+  // entirely: only a genuinely non-empty tips[] replaces the column. See
+  // the matching guard in sync_scene_with_dialogue_lines (0019/0022) for
+  // the second layer of this same protection.
+  if (payload.tips !== undefined) {
+    const validatedTips = validateTips(payload.tips);
+    if (validatedTips.length > 0) row.tips = validatedTips;
+  }
 
   return {
     externalSceneId,

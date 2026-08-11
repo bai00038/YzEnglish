@@ -192,9 +192,11 @@ async function fetchFeaturedScenes(): Promise<Scene[]> {
 
 // Manually curated Home page "Featured Scenes" — stable slugs, in display
 // order. Update this list (not a `featured` flag) to change what's shown.
+// As of 2026-08-10 these are the only three published scenes.
 const CURATED_FEATURED_SLUGS = [
-  "shopping-for-clothes", // 买衣服 — has video + subtitles + dialogue_lines
-  "getting-a-dental-filling", // 补牙 — has video + subtitles
+  "shopping-for-clothes", // Scene 01 — 买衣服
+  "dining-at-a-turkish-restaurant", // Scene 08 — 土耳其餐厅用餐
+  "getting-a-dental-filling", // Scene 13 — 补牙
 ];
 
 async function fetchCuratedFeaturedScenes(): Promise<Scene[]> {

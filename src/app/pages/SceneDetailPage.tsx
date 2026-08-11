@@ -8,22 +8,6 @@ import { SpeechBubbleLabel } from "@/app/components/brand";
 import { LevelBadge, DurationLabel } from "@/app/components/badges";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { buildSceneSpeakers, normalizeSpeaker, SPEAKER_STYLES } from "@/data/speakerRoles";
-import type { SubtitleCue } from "@/data/types";
-
-// Dialogue_Lines cues have real gaps between lines (end of one line to the
-// start of the next, e.g. a pause before the reply). Rendered as-is, the
-// caption blinks off during every gap — reads as flicker/jumping rather
-// than a pause. Extending each cue's end to the next cue's start (only
-// when that's later than its own end) keeps a line on screen right up
-// until the next one begins, with no blank gap in between. The final
-// cue's end is left untouched.
-function fillCueGaps(cues: SubtitleCue[]): SubtitleCue[] {
-  return cues.map((cue, i) => {
-    const nextStart = cues[i + 1]?.start;
-    if (nextStart === undefined || nextStart <= cue.end) return cue;
-    return { ...cue, end: nextStart };
-  });
-}
 
 const CHAPTER_LABELS = [
   { num: "01", label: "Watch", sectionId: "section-watch" },
@@ -54,31 +38,33 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const [videoPaused, setVideoPaused] = useState(true);
   const [subtitleLang, setSubtitleLang] = useState<"off" | "en" | "zh">("off");
   const [videoCurrentTime, setVideoCurrentTime] = useState(0);
+  // Set when a dialogue line is clicked, so it stays highlighted once
+  // single-line playback pauses at its end_time (at which point
+  // videoCurrentTime has moved past the line's own range, and
+  // activeDialogueLineIndex below would otherwise go null). Cleared as
+  // soon as normal continuous playback starts (see the <video> onPlay
+  // handler), so time-based tracking takes back over.
+  const [pinnedLineIndex, setPinnedLineIndex] = useState<number | null>(null);
 
   // Switching scenes re-renders this same component with new data (the
   // route param changes, not the component identity) — without this, a
   // stale videoCurrentTime from the previous scene would briefly compute
-  // an activeSubtitleCue/activeDialogueLineIndex against the NEW scene's
-  // cues before the new <video> element reports its own real position.
+  // an activeSubtitleLine/activeDialogueLineIndex against the NEW scene's
+  // lines before the new <video> element reports its own real position.
   useEffect(() => {
     setVideoCurrentTime(0);
     setVideoPaused(true);
+    setPinnedLineIndex(null);
   }, [scene?.id]);
 
   // Rendered ourselves (not via native <track>/TextTrack) — the browser's
   // own caption box repositions itself depending on whether the native
   // control bar is currently visible, which reads as the subtitle jumping
   // up and down during playback. A fixed-position div sidesteps that
-  // entirely, and doubles as the fix for gaps between cues (see
-  // fillCueGaps): each line stays on screen until the next one starts.
-  const subtitleCues = useMemo(
-    () => (scene?.subtitleCues && scene.subtitleCues.length > 0 ? fillCueGaps(scene.subtitleCues) : null),
-    [scene?.subtitleCues]
-  );
-  const activeSubtitleCue = useMemo(() => {
-    if (!subtitleCues) return null;
-    return subtitleCues.find(cue => videoCurrentTime >= cue.start && videoCurrentTime < cue.end) ?? null;
-  }, [subtitleCues, videoCurrentTime]);
+  // entirely. Text comes from content.dialogue via highlightedLineIndex
+  // below — the same Dialogue_Lines data and active-line calculation the
+  // Dialogue section itself highlights with, so the overlay can never show
+  // a different (stale) line than the transcript.
 
   // Maps a Learn-the-Dialogue line index -> its {start, end} window in the
   // scene video, driving both "click this line to jump the video there"
@@ -186,6 +172,16 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     return null;
   }, [dialogueLineAudioRanges, videoCurrentTime]);
 
+  // What the Dialogue section actually highlights/scrolls to: the clicked
+  // line while it's pinned (during and just after single-line playback),
+  // otherwise whichever line the video's own playhead is currently in.
+  const highlightedLineIndex = pinnedLineIndex !== null ? pinnedLineIndex : activeDialogueLineIndex;
+
+  // The video subtitle overlay's text — same line, same index, as whatever
+  // the Dialogue section highlights just above. No separate subtitle
+  // dataset or timing match: content.dialogue is the one source both read.
+  const activeSubtitleLine = highlightedLineIndex !== null ? content?.dialogue[highlightedLineIndex] ?? null : null;
+
   // Set only by clicking a dialogue line — "play just this line, then
   // stop" — never by the big play button or the native control bar, so
   // normal continuous playback never auto-pauses at every line boundary.
@@ -195,59 +191,19 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // playback resumes past that same timestamp.
   const singleLineModeEndRef = useRef<number | null>(null);
 
-  function playDialogueLine(range: { start: number; end: number }) {
+  function playDialogueLine(lineIndex: number, range: { start: number; end: number }) {
     const video = videoRef.current;
     if (!video) return;
     singleLineModeEndRef.current = range.end;
+    setPinnedLineIndex(lineIndex);
     video.currentTime = range.start;
     video.play();
   }
 
-  // Auto-scrolls the Dialogue transcript to follow activeDialogueLineIndex,
-  // but only when it actually changes (not on every timeupdate tick), and
-  // only within the transcript's own scroll container — never the page.
-  // If the visitor scrolls that container themselves, auto-scroll backs
-  // off for a few seconds instead of immediately fighting them for
-  // control.
-  const dialogueListRef = useRef<HTMLDivElement>(null);
+  // Intentionally no auto-scroll here: highlighting must follow
+  // video.currentTime / clicked-line state without ever moving the page's
+  // scroll position. See SceneDetailPage playback-scroll fix.
   const dialogueRowRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const isProgrammaticDialogueScrollRef = useRef(false);
-  const userScrolledDialogueRef = useRef(false);
-  const userScrollResumeTimeoutRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (activeDialogueLineIndex === null) return;
-    if (userScrolledDialogueRef.current) return;
-    const container = dialogueListRef.current;
-    const row = dialogueRowRefs.current[activeDialogueLineIndex];
-    if (!container || !row) return;
-
-    // Deliberately NOT row.scrollIntoView(...) — it walks every scrollable
-    // ancestor (including the page/<html> itself) to bring the target
-    // fully into view, which is exactly what was dragging the whole page
-    // down and pushing the video off-screen. getBoundingClientRect() +
-    // writing only this container's own scrollTop can never touch any
-    // other scroll container, page included — and centers the active
-    // line in the panel instead of just nudging it to the nearest edge.
-    const containerRect = container.getBoundingClientRect();
-    const rowRect = row.getBoundingClientRect();
-    const rowOffsetWithinContainer = rowRect.top - containerRect.top + container.scrollTop;
-    const targetScrollTop = rowOffsetWithinContainer - container.clientHeight / 2 + rowRect.height / 2;
-
-    isProgrammaticDialogueScrollRef.current = true;
-    container.scrollTo({ top: Math.max(0, targetScrollTop), behavior: "smooth" });
-    const t = window.setTimeout(() => { isProgrammaticDialogueScrollRef.current = false; }, 700);
-    return () => window.clearTimeout(t);
-  }, [activeDialogueLineIndex]);
-
-  function handleDialogueListScroll() {
-    if (isProgrammaticDialogueScrollRef.current) return;
-    userScrolledDialogueRef.current = true;
-    if (userScrollResumeTimeoutRef.current) window.clearTimeout(userScrollResumeTimeoutRef.current);
-    userScrollResumeTimeoutRef.current = window.setTimeout(() => {
-      userScrolledDialogueRef.current = false;
-    }, 3000);
-  }
 
   // While true, a click-triggered smooth scroll is in flight — the
   // scroll-spy observer must not overwrite the just-clicked chapter.
@@ -348,11 +304,19 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     );
   }
 
+  // Covers two cases the client can't (and shouldn't be able to)
+  // distinguish: a slug that never existed, and a real scene whose status
+  // isn't "published" — Row Level Security (see
+  // supabase/migrations/0004_rls_policies.sql) already hides
+  // draft/ready_to_review/hidden scenes from anon/authenticated queries
+  // entirely, so both cases surface here as scene === null. One friendly
+  // message for both avoids leaking which slugs correspond to real,
+  // not-yet-public scenes.
   if (!scene) {
     return (
       <div className="max-w-lg mx-auto px-4 py-24 text-center">
-        <p className="text-sm font-semibold text-foreground">Scene not found</p>
-        <p className="text-xs text-muted-foreground mt-1">This scene may have been moved or no longer exists.</p>
+        <p className="text-sm font-semibold text-foreground">This scene is being prepared</p>
+        <p className="text-xs text-muted-foreground mt-1">该场景正在准备中，敬请期待。</p>
         <Link to="/explore" className="text-xs font-bold text-primary inline-flex items-center gap-0.5 mt-4 hover:opacity-70 transition-opacity">
           Back to Explore <ChevronRight size={12} />
         </Link>
@@ -471,7 +435,19 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       preload="metadata"
                       poster={scene.photo || undefined}
                       className="w-full h-full object-cover"
-                      onPlay={() => setVideoPaused(false)}
+                      onPlay={() => {
+                        setVideoPaused(false);
+                        // singleLineModeEndRef is set (before video.play()
+                        // is called) only by playDialogueLine — so a play
+                        // event with it still null means this is normal
+                        // continuous playback (big button or native
+                        // controls), which should track the video's own
+                        // time again rather than stay pinned to whichever
+                        // line was last clicked.
+                        if (singleLineModeEndRef.current === null) {
+                          setPinnedLineIndex(null);
+                        }
+                      }}
                       onPause={() => {
                         setVideoPaused(true);
                         // Any pause — manual, native-controls, or our own
@@ -497,14 +473,14 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       <source src={scene.video_url} />
                       Your browser does not support video playback.
                     </video>
-                    {subtitleLang !== "off" && activeSubtitleCue && (
+                    {subtitleLang !== "off" && activeSubtitleLine && (
                       <div className="absolute inset-x-0 bottom-14 md:bottom-16 flex justify-center px-6 pointer-events-none">
                         <p className="max-w-[90%] text-center text-white text-base md:text-lg leading-snug px-3 py-1.5 rounded-lg bg-black/70" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
-                          {subtitleLang === "en" ? activeSubtitleCue.en : activeSubtitleCue.zh}
+                          {subtitleLang === "en" ? activeSubtitleLine.en : activeSubtitleLine.zh}
                         </p>
                       </div>
                     )}
-                    {subtitleCues && (
+                    {dialogueLineAudioRanges.size > 0 && (
                       <div className="absolute top-3 right-3 flex items-center gap-0.5 rounded-full bg-black/50 p-1 text-xs font-bold">
                         <button
                           type="button"
@@ -617,17 +593,16 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   </div>
                 </div>
 
-                {/* Transcript rows — its own scroll region (not the page) so the
-                    active-line auto-scroll (see the activeDialogueLineIndex
-                    effect above) never yanks the whole page around, only
-                    this panel. */}
-                <div ref={dialogueListRef} onScroll={handleDialogueListScroll} className="max-h-[520px] overflow-y-auto scroll-smooth pr-1 scrollbar-hide">
+                {/* Transcript rows — no scroll container of its own; the
+                    lines expand naturally and only the page scrollbar
+                    applies. Highlighting never triggers scrolling. */}
+                <div>
                   {content.dialogue.map((line, i) => {
                     const speaker = sceneSpeakers.get(normalizeSpeaker(line.speaker));
                     const style = speaker?.style ?? SPEAKER_STYLES[0];
                     const label = (speaker?.en ?? line.speaker).toUpperCase();
                     const audioRange = dialogueLineAudioRanges.get(i);
-                    const isActiveLine = activeDialogueLineIndex === i;
+                    const isActiveLine = highlightedLineIndex === i;
                     // Prefer the permanent external_line_id (Phase A-0 —
                     // see supabase/migrations/0013_add_external_ids.sql),
                     // then the dialogue_lines row's own internal database
@@ -647,11 +622,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         tabIndex={audioRange ? 0 : undefined}
                         aria-pressed={audioRange ? isActiveLine : undefined}
                         aria-label={audioRange ? "Play English audio" : undefined}
-                        onClick={audioRange ? () => playDialogueLine(audioRange) : undefined}
+                        onClick={audioRange ? () => playDialogueLine(i, audioRange) : undefined}
                         onKeyDown={audioRange ? e => {
                           if (e.key === "Enter" || e.key === " ") {
                             e.preventDefault();
-                            playDialogueLine(audioRange);
+                            playDialogueLine(i, audioRange);
                           }
                         } : undefined}
                       >

@@ -1,49 +1,117 @@
 import { useState } from "react";
 import { Search, X, FileText, Download } from "lucide-react";
-import { CATEGORY_BG } from "@/data/scenes";
-import { PDF_TYPE_LABELS, COLLECTION_TYPES, displayResourceTitle } from "@/data/resources";
-import { useResources } from "@/data/resources-access";
+import { displayResourceTitle } from "@/data/resources";
+import { COLLECTION_TYPE_LABELS, COLLECTION_TYPE_BADGE_STYLE, COLLECTION_TYPE_BG } from "@/data/resource-collections";
+import { useResourceCollections } from "@/data/resource-collections-access";
+import type { ResourceCollection } from "@/data/types";
 import { Btn } from "@/app/components/Btn";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 
 // Type-filter pills shown on the Resources page. "All" has no `type` and
-// matches every collection; the rest map a display label to the `type`
-// column on pdf_resources (the same field used to exclude single-scene
-// rows — see COLLECTION_TYPES in src/data/resources.ts). Never inferred
-// from the title.
+// matches every collection; the rest map a display label to the
+// `collection_type` column on resource_collections (topic/travel/country —
+// see supabase/migrations/0023_create_resource_collections.sql). Never
+// inferred from the title.
 const TYPE_FILTERS: { label: string; type?: string }[] = [
   { label: "All" },
-  { label: "Topic Collections", type: "collection" },
-  { label: "Travel", type: "travel" },
-  { label: "Country-Specific", type: "country" },
+  { label: "Topic Packs", type: "topic" },
+  { label: "Travel Series", type: "travel" },
+  { label: "By Country", type: "country" },
 ];
 
-const PDF_TYPE_STYLE: Record<string, string> = {
-  collection: "bg-purple-100 text-purple-800",
-  travel: "bg-amber-100 text-amber-800",
-  country: "bg-emerald-100 text-emerald-800",
-};
+// Maps to price_type on resource_collections (free/paid). "All" has no
+// `type` and matches every collection regardless of price.
+const PRICE_FILTERS: { label: string; type?: "free" | "paid" }[] = [
+  { label: "All" },
+  { label: "Free", type: "free" },
+  { label: "Paid", type: "paid" },
+];
 
 const PILL_ACTIVE = { backgroundColor: "#B7F21D", color: "#1E1F1C", borderColor: "#B7F21D" };
 const PILL_INACTIVE = { backgroundColor: "white", color: "#3A3B37", borderColor: "rgba(24,76,58,0.18)" };
 
+// $128 for a whole number, $128.50 for cents — never a bare $128.00.
+function formatPrice(price: number): string {
+  return `$${Number.isInteger(price) ? price.toFixed(0) : price.toFixed(2)}`;
+}
+
+// One resource card. Owns its own cover-image load state so a broken
+// cover_image_url (missing/expired asset) falls back to the plain icon
+// placeholder instead of rendering a broken-image glyph — see task
+// requirement "do not show broken images".
+function CollectionCard({ c }: { c: ResourceCollection }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const showImage = !!c.coverImageUrl && !imageFailed;
+  const canDownload = !!c.pdfUrl;
+
+  return (
+    <div
+      onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
+      className={`h-full flex flex-col border border-border rounded-2xl overflow-hidden bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 transition-all duration-200 ${canDownload ? "cursor-pointer" : ""}`}
+    >
+      {/* Card header */}
+      <div className={`relative h-28 flex-shrink-0 flex flex-col items-center justify-center gap-2 overflow-hidden ${COLLECTION_TYPE_BG[c.collectionType] ?? "bg-secondary"}`}>
+        {showImage && (
+          <img
+            src={c.coverImageUrl!}
+            alt=""
+            onError={() => setImageFailed(true)}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+        {!showImage && <FileText size={26} className="relative z-10 text-foreground/15" />}
+        <span className={`relative z-10 text-[9px] font-black uppercase tracking-wide px-2.5 py-1 rounded-full ${COLLECTION_TYPE_BADGE_STYLE[c.collectionType] ?? "bg-secondary text-muted-foreground"}`}>
+          {COLLECTION_TYPE_LABELS[c.collectionType]}
+        </span>
+        <span className={`absolute z-10 top-2.5 right-2.5 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-sm ${
+          c.priceType === "free" ? "" : "bg-card text-muted-foreground border border-border"
+        }`}
+        style={c.priceType === "free" ? { backgroundColor: "#B7F21D", color: "#1E1F1C" } : {}}>
+          {c.priceType === "free" ? "Free" : c.price != null ? formatPrice(c.price) : "Premium"}
+        </span>
+      </div>
+      {/* Card body — flex column so the footer can pin to the bottom
+          regardless of how many lines the title/desc take */}
+      <div className="p-3.5 flex flex-col flex-1">
+        <p className="text-sm font-bold text-foreground leading-snug line-clamp-2">{displayResourceTitle(c.titleEn)}</p>
+        <p className="text-xs text-muted-foreground font-medium mt-0.5 line-clamp-2">{displayResourceTitle(c.titleZh)}</p>
+        <p className="text-[11px] text-muted-foreground mt-2 leading-relaxed line-clamp-3">{c.descriptionEn}</p>
+        <div className="flex items-center justify-between mt-auto pt-3 border-t border-border">
+          <span className="text-[10px] text-muted-foreground">{c.sceneCount} scene{c.sceneCount !== 1 ? "s" : ""}</span>
+          {/* stopPropagation so this doesn't also trigger the card's own
+              onClick (same action — would otherwise open two tabs) */}
+          <div onClick={e => e.stopPropagation()}>
+            <Btn
+              variant="accent"
+              size="sm"
+              disabled={!canDownload}
+              onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
+            >
+              <Download size={11} />Download
+            </Btn>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ResourcesPage() {
   const [activeFilter, setActiveFilter] = useState("All");
-  const [priceFilter, setPriceFilter] = useState<"All" | "Free">("All");
+  const [priceFilter, setPriceFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: resourcesData, loading, error } = useResources();
-  const resources = resourcesData ?? [];
+  // Already filtered to status = "published" and ordered by sort_order by
+  // the hook itself — see src/data/resource-collections-access.ts. Never
+  // reads from the Scenes table.
+  const { data: collectionsData, loading, error } = useResourceCollections();
+  const collections = collectionsData ?? [];
 
-  // Base data set for this page: multi-scene collections only. Single-scene
-  // PDFs (type "scene") are downloadable from their own Scene Detail page
-  // and never shown here.
-  const collections = resources.filter(r => COLLECTION_TYPES.includes(r.type));
-
-  const filtered = collections.filter(r => {
-    if (priceFilter === "Free" && !r.free) return false;
+  const filtered = collections.filter(c => {
+    const priceType = PRICE_FILTERS.find(f => f.label === priceFilter)?.type;
+    if (priceType && c.priceType !== priceType) return false;
     const typeFilter = TYPE_FILTERS.find(f => f.label === activeFilter);
-    if (typeFilter?.type && r.type !== typeFilter.type) return false;
-    if (searchQuery && !r.title.toLowerCase().includes(searchQuery.toLowerCase()) && !r.titleZh.includes(searchQuery)) return false;
+    if (typeFilter?.type && c.collectionType !== typeFilter.type) return false;
+    if (searchQuery && !c.titleEn.toLowerCase().includes(searchQuery.toLowerCase()) && !c.titleZh.includes(searchQuery)) return false;
     return true;
   });
 
@@ -88,11 +156,11 @@ export function ResourcesPage() {
           <div>
             <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#184C3A" }}>Price · 价格</p>
             <div className="flex flex-wrap gap-1.5">
-              {(["All", "Free"] as const).map(p => (
-                <button key={p} onClick={() => setPriceFilter(p)}
+              {PRICE_FILTERS.map(p => (
+                <button key={p.label} onClick={() => setPriceFilter(p.label)}
                   className="text-xs font-semibold rounded-full px-3 py-1.5 border transition-all duration-150 whitespace-nowrap"
-                  style={priceFilter === p ? PILL_ACTIVE : PILL_INACTIVE}>
-                  {p}
+                  style={priceFilter === p.label ? PILL_ACTIVE : PILL_INACTIVE}>
+                  {p.label}
                 </button>
               ))}
             </div>
@@ -122,45 +190,7 @@ export function ResourcesPage() {
             <EmptyState title="More resource collections are coming soon." subtitle="更多主题合集正在整理中" />
           ) : filtered.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-stretch">
-              {filtered.map(r => (
-                <div key={r.id} className="h-full flex flex-col border border-border rounded-2xl overflow-hidden bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 transition-all duration-200">
-                  {/* Card header */}
-                  <div className={`relative h-28 flex-shrink-0 flex flex-col items-center justify-center gap-2 ${CATEGORY_BG[r.category] ?? "bg-secondary"}`}>
-                    <FileText size={26} className="text-foreground/15" />
-                    <span className={`text-[9px] font-black uppercase tracking-wide px-2.5 py-1 rounded-full ${PDF_TYPE_STYLE[r.type] ?? "bg-secondary text-muted-foreground"}`}>
-                      {PDF_TYPE_LABELS[r.type]}
-                    </span>
-                    <span className={`absolute top-2.5 right-2.5 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-sm ${
-                      r.free ? "" : "bg-card text-muted-foreground border border-border"
-                    }`}
-                    style={r.free ? { backgroundColor: "#B7F21D", color: "#1E1F1C" } : {}}>
-                      {r.free ? "Free" : "Premium"}
-                    </span>
-                  </div>
-                  {/* Card body — flex column so the footer can pin to the
-                      bottom regardless of how many lines the title/desc take */}
-                  <div className="p-3.5 flex flex-col flex-1">
-                    <p className="text-sm font-bold text-foreground leading-snug line-clamp-2">{displayResourceTitle(r.title)}</p>
-                    <p className="text-xs text-muted-foreground font-medium mt-0.5 line-clamp-2">{displayResourceTitle(r.titleZh)}</p>
-                    <p className="text-[11px] text-muted-foreground mt-2 leading-relaxed line-clamp-3">{r.desc}</p>
-                    <div className="flex items-center justify-between mt-auto pt-3 border-t border-border">
-                      {r.scenes > 1 ? (
-                        <span className="text-[10px] text-muted-foreground">{r.scenes} scenes</span>
-                      ) : <span />}
-                      {r.free && !r.filePath ? (
-                        <span className="text-[11px] font-bold text-muted-foreground italic">资料准备中</span>
-                      ) : r.free ? (
-                        <a href={r.filePath} target="_blank" rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center gap-1.5 font-semibold rounded-xl transition-all duration-150 text-xs px-3 py-1.5 bg-accent text-accent-foreground hover:opacity-90 active:scale-95">
-                          <Download size={11} />Download
-                        </a>
-                      ) : (
-                        <Btn variant="secondary" size="sm"><Download size={11} />Get Access</Btn>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
+              {filtered.map(c => <CollectionCard key={c.id} c={c} />)}
             </div>
           ) : (
             <div className="text-center py-16 border border-dashed border-border rounded-2xl text-muted-foreground">

@@ -12,3 +12,8 @@
 # every request with 401 before it ever reaches index.ts's own SYNC_SECRET
 # check, so this must be off for this function specifically.
 verify_jwt = false
+
+[functions.sync-resource-collection]
+# Same reasoning as sync-scene above — called by the Resource_Collections
+# Google Apps Script with a custom Authorization header, not a Supabase JWT.
+verify_jwt = false

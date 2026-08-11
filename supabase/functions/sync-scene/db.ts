@@ -91,6 +91,43 @@ export interface SyncSceneResult {
   action: "inserted" | "updated";
 }
 
+// scenes.duration and scenes.description are `not null` at the DB level
+// (0002_create_scenes.sql), so they can never simply be left blank — but
+// a freshly-populated Sheet row may not have that content filled in yet.
+// Rather than reject the whole sync (blocking every other field on this
+// scene) or write an empty string over real existing content, a blank
+// submitted value falls back to whatever is already stored for this
+// external_scene_id, making the write a no-op for that one column. Only
+// a scene with no existing row at all (a genuine first-time insert) still
+// requires the field outright, since there's nothing to fall back to and
+// the column cannot be left null.
+async function resolveWithExistingFallback(
+  supabase: SupabaseClient,
+  externalSceneId: string,
+  field: "duration" | "description",
+  submitted: string
+): Promise<string> {
+  if (submitted.length > 0) return submitted;
+
+  const { data, error } = await supabase
+    .from("scenes")
+    .select(field)
+    .eq("external_scene_id", externalSceneId)
+    .maybeSingle();
+
+  if (error) {
+    console.error(`[sync-scene] ${field} fallback lookup failed`, error);
+    throw new SyncError(500, `Database error while resolving "${field}".`);
+  }
+  if (!data || typeof (data as Record<string, unknown>)[field] !== "string") {
+    throw new SyncError(
+      400,
+      `Field "${field}" is required and must be a non-empty string (no existing scene found for scene_id "${externalSceneId}" to preserve a prior value).`
+    );
+  }
+  return (data as Record<string, string>)[field];
+}
+
 // Single call into public.sync_scene_with_dialogue_lines — the scene row
 // write and the full dialogue_lines upsert/prune happen inside one
 // Postgres function body, i.e. one transaction (see that function's
@@ -108,6 +145,9 @@ export async function syncSceneWithDialogueLines(
   params: SyncSceneParams
 ): Promise<SyncSceneResult> {
   const { externalSceneId, categoryId, row, dialogueLines } = params;
+
+  const duration = await resolveWithExistingFallback(supabase, externalSceneId, "duration", row.duration);
+  const description = await resolveWithExistingFallback(supabase, externalSceneId, "description", row.description);
 
   // Only the keys actually present on `row` for the five legacy/shared
   // jsonb fields — the RPC uses jsonb's `?` key-existence operator to
@@ -129,8 +169,8 @@ export async function syncSceneWithDialogueLines(
     p_category_id: categoryId,
     p_region: row.region,
     p_level: row.level,
-    p_duration: row.duration,
-    p_description: row.description,
+    p_duration: duration,
+    p_description: description,
     p_photo_url: row.photo_url,
     p_pdf_url: row.pdf_url,
     p_video_url: row.video_url,

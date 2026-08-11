@@ -1,0 +1,5 @@
+line_id,scene_id,line_order,speaker,dialogue_en
+line_000001,demo,1,Waiter,"Good evening, welcome to our restaurant."
+line_000002,demo,2,Customer,"Thank you, do you have a table for two?"
+line_000003,demo,3,Waiter,"Of course, right this way please."
+line_000004,demo,4,Customer,"This is completely unrelated text that was never spoken."

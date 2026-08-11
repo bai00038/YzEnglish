@@ -1,0 +1,19 @@
+[
+  {"text": "good", "start": 0.50, "end": 0.75, "score": 0.95},
+  {"text": "evening", "start": 0.80, "end": 1.20, "score": 0.96},
+  {"text": "welcome", "start": 1.30, "end": 1.70, "score": 0.94},
+  {"text": "to", "start": 1.75, "end": 1.85, "score": 0.98},
+  {"text": "our", "start": 1.90, "end": 2.05, "score": 0.97},
+  {"text": "restaurant", "start": 2.10, "end": 2.60, "score": 0.93},
+  {"text": "thank", "start": 3.00, "end": 3.25, "score": 0.95},
+  {"text": "you", "start": 3.30, "end": 3.45, "score": 0.96},
+  {"text": "do", "start": 3.50, "end": 3.60, "score": 0.94},
+  {"text": "you", "start": 3.65, "end": 3.80, "score": 0.95},
+  {"text": "have", "start": 3.85, "end": 4.05, "score": 0.96},
+  {"text": "a", "start": 4.10, "end": 4.15, "score": 0.90},
+  {"text": "table", "start": 4.20, "end": 4.55, "score": 0.97},
+  {"text": "for", "start": 4.60, "end": 4.75, "score": 0.96},
+  {"text": "two", "start": 4.80, "end": 5.10, "score": 0.95},
+  {"text": "of", "start": 5.50, "end": 5.60, "score": 0.90},
+  {"text": "please", "start": 6.80, "end": 7.10, "score": 0.60}
+]
