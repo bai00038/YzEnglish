@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Search, X, FileText, Download } from "lucide-react";
 import { displayResourceTitle } from "@/data/resources";
-import { COLLECTION_TYPE_LABELS, COLLECTION_TYPE_BADGE_STYLE, COLLECTION_TYPE_BG } from "@/data/resource-collections";
+import { COLLECTION_TYPE_LABELS } from "@/data/resource-collections";
 import { useResourceCollections } from "@/data/resource-collections-access";
 import type { ResourceCollection } from "@/data/types";
 import { Btn } from "@/app/components/Btn";
@@ -35,63 +35,52 @@ function formatPrice(price: number): string {
   return `$${Number.isInteger(price) ? price.toFixed(0) : price.toFixed(2)}`;
 }
 
-// One resource card. Owns its own cover-image load state so a broken
-// cover_image_url (missing/expired asset) falls back to the plain icon
-// placeholder instead of rendering a broken-image glyph — see task
-// requirement "do not show broken images".
+// One resource-library row. Deliberately never reads cover_image_url — the
+// goal is a document-library card (icon + metadata + download button), not
+// another Explore-style photo tile. Only the Download PDF button opens
+// pdf_url; the row itself is inert so a missing pdf_url can disable just the
+// button ("Coming soon") without the whole card looking clickable.
 function CollectionCard({ c }: { c: ResourceCollection }) {
-  const [imageFailed, setImageFailed] = useState(false);
-  const showImage = !!c.coverImageUrl && !imageFailed;
   const canDownload = !!c.pdfUrl;
 
   return (
-    <div
-      onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
-      className={`h-full flex flex-col border border-border rounded-2xl overflow-hidden bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 transition-all duration-200 ${canDownload ? "cursor-pointer" : ""}`}
-    >
-      {/* Card header */}
-      <div className={`relative h-28 flex-shrink-0 flex flex-col items-center justify-center gap-2 overflow-hidden ${COLLECTION_TYPE_BG[c.collectionType] ?? "bg-secondary"}`}>
-        {showImage && (
-          <img
-            src={c.coverImageUrl!}
-            alt=""
-            onError={() => setImageFailed(true)}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        )}
-        {!showImage && <FileText size={26} className="relative z-10 text-foreground/15" />}
-        <span className={`relative z-10 text-[9px] font-black uppercase tracking-wide px-2.5 py-1 rounded-full ${COLLECTION_TYPE_BADGE_STYLE[c.collectionType] ?? "bg-secondary text-muted-foreground"}`}>
-          {COLLECTION_TYPE_LABELS[c.collectionType]}
-        </span>
-        <span className={`absolute z-10 top-2.5 right-2.5 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-sm ${
-          c.priceType === "free" ? "" : "bg-card text-muted-foreground border border-border"
-        }`}
-        style={c.priceType === "free" ? { backgroundColor: "#B7F21D", color: "#1E1F1C" } : {}}>
-          {c.priceType === "free" ? "Free" : c.price != null ? formatPrice(c.price) : "Premium"}
-        </span>
-      </div>
-      {/* Card body — flex column so the footer can pin to the bottom
-          regardless of how many lines the title/desc take */}
-      <div className="p-3.5 flex flex-col flex-1">
-        <p className="text-sm font-bold text-foreground leading-snug line-clamp-2">{displayResourceTitle(c.titleEn)}</p>
-        <p className="text-xs text-muted-foreground font-medium mt-0.5 line-clamp-2">{displayResourceTitle(c.titleZh)}</p>
-        <p className="text-[11px] text-muted-foreground mt-2 leading-relaxed line-clamp-3">{c.descriptionEn}</p>
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-border">
-          <span className="text-[10px] text-muted-foreground">{c.sceneCount} scene{c.sceneCount !== 1 ? "s" : ""}</span>
-          {/* stopPropagation so this doesn't also trigger the card's own
-              onClick (same action — would otherwise open two tabs) */}
-          <div onClick={e => e.stopPropagation()}>
-            <Btn
-              variant="accent"
-              size="sm"
-              disabled={!canDownload}
-              onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
+    <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-5 border border-border rounded-2xl bg-card p-4 md:px-5 md:py-4 transition-all duration-150 hover:border-primary/30 hover:shadow-sm">
+      {/* Icon + title/metadata block — icon stays beside the title on
+          mobile (items-start) and centers against the whole block on
+          desktop, where it sits to the left of one continuous row. */}
+      <div className="flex items-start md:items-center gap-3 flex-1 min-w-0">
+        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex flex-col items-center justify-center">
+          <FileText size={20} className="text-primary" />
+          <span className="text-[7px] font-black text-primary tracking-wide mt-0.5">PDF</span>
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="text-sm md:text-base font-bold text-foreground leading-snug truncate">{displayResourceTitle(c.titleEn)}</h3>
+            <span
+              className={`flex-shrink-0 text-[9px] font-black px-2 py-0.5 rounded-full ${c.priceType === "free" ? "" : "bg-secondary text-muted-foreground border border-border"}`}
+              style={c.priceType === "free" ? { backgroundColor: "#B7F21D", color: "#1E1F1C" } : {}}
             >
-              <Download size={11} />Download
-            </Btn>
+              {c.priceType === "free" ? "Free" : c.price != null ? formatPrice(c.price) : "Premium"}
+            </span>
           </div>
+          <p className="text-xs text-muted-foreground font-medium truncate mt-0.5">{displayResourceTitle(c.titleZh)}</p>
+          <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed line-clamp-2">{c.descriptionEn}</p>
+          <p className="text-[11px] text-muted-foreground mt-1.5">
+            {COLLECTION_TYPE_LABELS[c.collectionType] ?? c.collectionType} · {c.sceneCount} scene{c.sceneCount !== 1 ? "s" : ""}
+          </p>
         </div>
       </div>
+
+      <Btn
+        variant="accent"
+        size="md"
+        disabled={!canDownload}
+        onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
+        className="w-full md:w-auto flex-shrink-0"
+      >
+        <Download size={14} />{canDownload ? "Download PDF" : "Coming soon"}
+      </Btn>
     </div>
   );
 }
@@ -189,7 +178,7 @@ export function ResourcesPage() {
           ) : collections.length === 0 ? (
             <EmptyState title="More resource collections are coming soon." subtitle="更多主题合集正在整理中" />
           ) : filtered.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-stretch">
+            <div className="flex flex-col gap-3">
               {filtered.map(c => <CollectionCard key={c.id} c={c} />)}
             </div>
           ) : (
