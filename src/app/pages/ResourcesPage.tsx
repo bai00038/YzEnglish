@@ -21,11 +21,11 @@ import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState
 // pill (other than "All") with zero matching collections in the current
 // published data.
 const TOPIC_FILTERS: { label: string; type?: string }[] = [
-  { label: "All · 全部" },
-  { label: "Daily Life · 日常生活", type: "daily_life" },
-  { label: "Tests & Guides · 考试指南", type: "tests_licences" },
-  { label: "Essential Services · 生活办事", type: "essential_services" },
-  { label: "Travel · 出行旅游", type: "travel" },
+  { label: "All" },
+  { label: "Daily Life", type: "daily_life" },
+  { label: "Tests & Guides", type: "tests_licences" },
+  { label: "Essential Services", type: "essential_services" },
+  { label: "Travel", type: "travel" },
 ];
 
 // Maps to price_type on resource_collections (free/paid). "All" has no
@@ -56,16 +56,19 @@ function CollectionCard({ c }: { c: ResourceCollection }) {
     <div className="flex flex-col gap-3 border border-border rounded-2xl bg-card p-4 md:px-5 md:py-4 transition-all duration-150 hover:border-primary/30 hover:shadow-sm">
       {/* Icon + title/metadata block. Card now always stacks vertically
           (icon/text block, then footer) so it reads well at half page
-          width in the 2-column grid, not just as a full-width row. */}
-      <div className="flex items-start gap-3 flex-1 min-w-0">
-        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex flex-col items-center justify-center">
-          <FileText size={20} className="text-primary" />
-          <span className="text-[7px] font-black text-primary tracking-wide mt-0.5">PDF</span>
+          width in the 2-column grid, not just as a full-width row.
+          items-start + the icon's own small margin-top keep the icon
+          pinned to the first title line instead of centering against
+          the whole title+subtitle+description block. */}
+      <div className="flex items-start gap-5 flex-1 min-w-0">
+        <div className="flex-shrink-0 mt-0.5 w-[60px] h-[60px] md:w-[72px] md:h-[72px] rounded-[16px] md:rounded-[20px] bg-primary/10 flex flex-col items-center justify-center">
+          <FileText className="w-5 h-5 md:w-7 md:h-7 text-primary" />
+          <span className="text-[7px] md:text-[9px] font-black text-primary tracking-wide mt-0.5">PDF</span>
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="text-sm md:text-base font-bold text-foreground leading-snug truncate">{displayResourceTitle(c.titleEn)}</h3>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h3 className="text-sm md:text-base font-bold text-foreground leading-snug">{displayResourceTitle(c.titleEn)}</h3>
             <span
               className={`flex-shrink-0 text-[9px] font-black px-2 py-0.5 rounded-full ${c.priceType === "free" ? "" : "bg-secondary text-muted-foreground border border-border"}`}
               style={c.priceType === "free" ? { backgroundColor: "#B7F21D", color: "#1E1F1C" } : {}}
@@ -73,8 +76,8 @@ function CollectionCard({ c }: { c: ResourceCollection }) {
               {c.priceType === "free" ? "Free" : c.price != null ? formatPrice(c.price) : "Premium"}
             </span>
           </div>
-          <p className="text-xs text-muted-foreground font-medium truncate mt-0.5">{displayResourceTitle(c.titleZh)}</p>
-          <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed line-clamp-2">{c.descriptionEn}</p>
+          <p className="text-xs text-muted-foreground font-medium truncate mt-1.5">{displayResourceTitle(c.titleZh)}</p>
+          <p className="text-xs text-muted-foreground mt-3 leading-relaxed line-clamp-2">{c.descriptionEn}</p>
         </div>
       </div>
 
@@ -100,7 +103,7 @@ function CollectionCard({ c }: { c: ResourceCollection }) {
 }
 
 export function ResourcesPage() {
-  const [activeFilter, setActiveFilter] = useState("All · 全部");
+  const [activeFilter, setActiveFilter] = useState("All");
   const [priceFilter, setPriceFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   // Already filtered to status = "published" and ordered by sort_order by
@@ -123,7 +126,7 @@ export function ResourcesPage() {
     return true;
   });
 
-  const hasActiveFilters = activeFilter !== "All · 全部" || priceFilter !== "All" || !!searchQuery;
+  const hasActiveFilters = activeFilter !== "All" || priceFilter !== "All" || !!searchQuery;
 
   return (
     <div>
@@ -182,7 +185,7 @@ export function ResourcesPage() {
         <div className="py-3 flex items-center gap-3">
           <p className="text-xs font-semibold text-foreground">{loading ? "…" : filtered.length} collection{filtered.length !== 1 ? "s" : ""} found</p>
           {hasActiveFilters && (
-            <button onClick={() => { setActiveFilter("All · 全部"); setPriceFilter("All"); setSearchQuery(""); }}
+            <button onClick={() => { setActiveFilter("All"); setPriceFilter("All"); setSearchQuery(""); }}
               className="text-[11px] text-muted-foreground hover:text-primary transition-colors underline underline-offset-2">
               Clear all
             </button>
