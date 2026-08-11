@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Search, X, FileText, Download } from "lucide-react";
 import { displayResourceTitle } from "@/data/resources";
-import { COLLECTION_TYPE_LABELS } from "@/data/resource-collections";
+import { COLLECTION_TYPE_LABELS, formatRmbPrice } from "@/data/resource-collections";
 import { useResourceCollections } from "@/data/resource-collections-access";
 import type { ResourceCollection } from "@/data/types";
 import { Btn } from "@/app/components/Btn";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
+import { PurchaseModal } from "@/app/components/PurchaseModal";
 
 // Topic-filter pills shown on the Resources page. "All" has no `type` and
 // matches every collection; the rest map a display label to the
@@ -39,19 +40,15 @@ const PRICE_FILTERS: { label: string; type?: "free" | "paid" }[] = [
 const PILL_ACTIVE = { backgroundColor: "#B7F21D", color: "#1E1F1C", borderColor: "#B7F21D" };
 const PILL_INACTIVE = { backgroundColor: "white", color: "#3A3B37", borderColor: "rgba(24,76,58,0.18)" };
 
-// $128 for a whole number, $128.50 for cents — never a bare $128.00.
-function formatPrice(price: number): string {
-  return `$${Number.isInteger(price) ? price.toFixed(0) : price.toFixed(2)}`;
-}
-
 // One resource-library row. Deliberately never reads cover_image_url — the
 // goal is a document-library card (icon + metadata + download button), not
 // another Explore-style photo tile. Only the Download PDF button opens
-// pdf_url; the row itself is inert so a missing pdf_url can disable just the
-// button ("Coming soon") without the whole card looking clickable.
-function CollectionCard({ c }: { c: ResourceCollection }) {
-  const canDownload = !!c.pdfUrl;
-
+// pdf_url, and only for free collections — paid collections never read or
+// open pdf_url from the browser (the file lives in the private
+// paid-resources Storage bucket); they open PurchaseModal instead via
+// onGetAccess.
+function CollectionCard({ c, onGetAccess }: { c: ResourceCollection; onGetAccess: (c: ResourceCollection) => void }) {
+  const canDownload = c.priceType === "free" && !!c.pdfUrl;
   return (
     <div className="flex flex-col gap-3 border border-border rounded-2xl bg-card p-4 md:px-5 md:py-4 transition-all duration-150 hover:border-primary/30 hover:shadow-sm">
       {/* Icon + title/metadata block. Card now always stacks vertically
@@ -73,7 +70,7 @@ function CollectionCard({ c }: { c: ResourceCollection }) {
               className={`flex-shrink-0 text-[9px] font-black px-2 py-0.5 rounded-full ${c.priceType === "free" ? "" : "bg-secondary text-muted-foreground border border-border"}`}
               style={c.priceType === "free" ? { backgroundColor: "#B7F21D", color: "#1E1F1C" } : {}}
             >
-              {c.priceType === "free" ? "Free" : c.price != null ? formatPrice(c.price) : "Premium"}
+              {c.priceType === "free" ? "Free" : c.price != null ? formatRmbPrice(c.price) : "Premium"}
             </span>
           </div>
           <p className="text-xs text-muted-foreground font-medium truncate mt-1.5">{displayResourceTitle(c.titleZh)}</p>
@@ -88,15 +85,26 @@ function CollectionCard({ c }: { c: ResourceCollection }) {
         <p className="text-[11px] text-muted-foreground">
           {COLLECTION_TYPE_LABELS[c.collectionType] ?? c.collectionType} · {c.sceneCount} scene{c.sceneCount !== 1 ? "s" : ""}
         </p>
-        <Btn
-          variant="accent"
-          size="sm"
-          disabled={!canDownload}
-          onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
-          className="rounded-full flex-shrink-0"
-        >
-          <Download size={13} />{canDownload ? "Download" : "Coming soon"}
-        </Btn>
+        {c.priceType === "paid" ? (
+          <Btn
+            variant="accent"
+            size="sm"
+            onClick={() => onGetAccess(c)}
+            className="rounded-full flex-shrink-0"
+          >
+            Get Access
+          </Btn>
+        ) : (
+          <Btn
+            variant="accent"
+            size="sm"
+            disabled={!canDownload}
+            onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
+            className="rounded-full flex-shrink-0"
+          >
+            <Download size={13} />{canDownload ? "Download" : "Coming soon"}
+          </Btn>
+        )}
       </div>
     </div>
   );
@@ -106,6 +114,7 @@ export function ResourcesPage() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [priceFilter, setPriceFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [purchaseCollection, setPurchaseCollection] = useState<ResourceCollection | null>(null);
   // Already filtered to status = "published" and ordered by sort_order by
   // the hook itself — see src/data/resource-collections-access.ts. Never
   // reads from the Scenes table.
@@ -201,7 +210,7 @@ export function ResourcesPage() {
             <EmptyState title="More resource collections are coming soon." subtitle="更多主题合集正在整理中" />
           ) : filtered.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {filtered.map(c => <CollectionCard key={c.id} c={c} />)}
+              {filtered.map(c => <CollectionCard key={c.id} c={c} onGetAccess={setPurchaseCollection} />)}
             </div>
           ) : (
             <div className="text-center py-16 border border-dashed border-border rounded-2xl text-muted-foreground">
@@ -211,6 +220,8 @@ export function ResourcesPage() {
           )}
         </div>
       </div>
+
+      <PurchaseModal collection={purchaseCollection} onClose={() => setPurchaseCollection(null)} />
     </div>
   );
 }

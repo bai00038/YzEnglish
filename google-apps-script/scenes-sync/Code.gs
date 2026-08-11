@@ -146,13 +146,15 @@ const RESOURCE_COLLECTIONS_HEADERS = {
 // or resource_collections) — it goes to its own sync-resource-collection
 // Edge Function instead, configured with its own URL and its own secret.
 // See supabase/functions/sync-resource-collection/index.ts, which reads a
-// distinct RESOURCE_COLLECTIONS_SYNC_SECRET project secret for exactly this
+// distinct RESOURCE_COLLECTION_SYNC_SECRET project secret for exactly this
 // reason (Supabase project secrets are shared across every deployed Edge
 // Function, so reusing sync-scene's SYNC_SECRET name would hand this
-// function the exact same value).
+// function the exact same value). The Script Property value here MUST be
+// set to the exact same secret as the Supabase Edge Function Secret of the
+// same name — never store it in a sheet cell.
 const RESOURCE_COLLECTIONS_SCRIPT_PROPERTY_KEYS = {
   FUNCTION_URL: "RESOURCE_COLLECTIONS_SYNC_FUNCTION_URL",
-  SECRET: "RESOURCE_COLLECTIONS_SYNC_SECRET",
+  SECRET: "RESOURCE_COLLECTION_SYNC_SECRET",
 };
 
 /** Local validation/precondition failure — message is always safe to show the user. */

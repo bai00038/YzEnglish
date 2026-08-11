@@ -2,6 +2,10 @@
 
 :root {
   --font-size: 16px;
+  /* Shared height for the fixed mobile bottom nav (MobileNav.tsx) — also
+     drives the bottom padding App.tsx adds so page content/footer can
+     scroll fully clear of it. Keep both reads of this in sync. */
+  --mobile-nav-height: 76px;
   --background: #F7F6F2;
   --foreground: #1E1F1C;
   --card: #FFFFFF;
@@ -223,5 +227,48 @@
   .dialogue-row {
     grid-template-columns: 120px minmax(0, 1fr);
     column-gap: 10px;
+  }
+}
+
+/* Mobile (<=640px): the two-column speaker/content grid collapses to a
+   single stacked column — no reserved speaker-column width, so English/
+   Chinese text gets the card's full available width. The audio icon
+   (.dialogue-audio, set on the <span> in SceneDetailPage.tsx) is pulled
+   out of flow and pinned to the row's top-right corner, aligned with the
+   speaker badge instead of sitting inline with the English text. Placed
+   after the 768px block so it wins in the <=640 overlap. */
+@media (max-width: 640px) {
+  .dialogue-row {
+    display: block;
+    grid-template-columns: none;
+    column-gap: 0;
+    position: relative;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .speaker-column {
+    padding-right: 44px; /* keeps a long label clear of the audio icon's corner */
+    margin-bottom: 12px;
+  }
+
+  .dialogue-audio {
+    position: absolute;
+    top: 24px;
+    right: 20px;
+  }
+}
+
+/* Reserves room above the fixed mobile bottom nav (MobileNav.tsx) so page
+   content/footer can scroll fully clear of it. Threshold matches
+   MobileNav's own visibility breakpoint (<=640px) — keep both in sync. */
+.mobile-nav-page-padding {
+  padding-bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom) + 16px);
+}
+@media (min-width: 641px) {
+  .mobile-nav-page-padding {
+    padding-bottom: 0;
   }
 }

@@ -12,7 +12,13 @@ export function MobileNav() {
     { label: "Contact", path: "/contact", Icon: Mail },
   ];
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border h-16 flex shadow-lg">
+    <nav
+      className="min-[641px]:hidden fixed bottom-0 left-0 right-0 z-50 flex w-full bg-card border-t border-border"
+      style={{
+        height: "var(--mobile-nav-height)",
+        paddingBottom: "env(safe-area-inset-bottom)",
+      }}
+    >
       {items.map(({ label, path, Icon }) => {
         const active = isNavActive(pathname, path);
         return (

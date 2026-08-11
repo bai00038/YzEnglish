@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Link } from "react-router";
 import type { CSSProperties } from "react";
 import { ChevronRight, Play, ArrowRight, FileText, Download } from "lucide-react";
 import { CATEGORY_BG } from "@/data/scenes";
 import { useCuratedFeaturedScenes, useLatestScenes, useCategoryNames } from "@/data/scenes-access";
 import { useHomepageResourceCollections } from "@/data/resource-collections-access";
+import { formatRmbPrice } from "@/data/resource-collections";
 import type { Scene, ResourceCollection } from "@/data/types";
 import { Btn } from "@/app/components/Btn";
 import { LimeLine } from "@/app/components/brand";
@@ -11,25 +13,19 @@ import { SceneCard } from "@/app/components/SceneCard";
 import { LevelBadge, DurationLabel } from "@/app/components/badges";
 import { ImgBox } from "@/app/components/primitives";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
-
-// $128 for a whole number, $128.50 for cents — never a bare $128.00. Mirrors
-// ResourcesPage.tsx's formatPrice; kept local since it's a one-line
-// presentation helper, not part of the shared data layer.
-function formatCollectionPrice(price: number): string {
-  return `$${Number.isInteger(price) ? price.toFixed(0) : price.toFixed(2)}`;
-}
+import { PurchaseModal } from "@/app/components/PurchaseModal";
 
 // One PDF Resources preview card — a compact horizontal "download card",
 // deliberately not the cover-image tile ResourcesPage.tsx's CollectionCard
 // uses on the full Resources page. Never reads cover_image_url: on the
 // homepage the goal is to read as a downloadable document at a glance, not
 // another scene thumbnail (cover_image_url stays in the data model/query
-// for the full Resources page). Only the Download PDF button opens pdf_url
-// — the card body itself is inert — so a missing pdf_url can disable just
-// the button ("Coming soon") without making the whole row falsely
-// clickable or opening a blank tab.
-function HomeResourceCard({ c }: { c: ResourceCollection }) {
-  const canDownload = !!c.pdfUrl;
+// for the full Resources page). Only the Download PDF button opens pdf_url,
+// and only for free collections — paid collections never read or open
+// pdf_url from the browser (the file lives in the private paid-resources
+// Storage bucket); they open PurchaseModal instead via onGetAccess.
+function HomeResourceCard({ c, onGetAccess }: { c: ResourceCollection; onGetAccess: (c: ResourceCollection) => void }) {
+  const canDownload = c.priceType === "free" && !!c.pdfUrl;
 
   return (
     <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 border border-border rounded-2xl bg-card px-4 py-3.5 md:px-5 transition-all duration-150 hover:border-primary/25 hover:shadow-sm">
@@ -46,7 +42,7 @@ function HomeResourceCard({ c }: { c: ResourceCollection }) {
               className={`flex-shrink-0 text-[9px] font-black px-2 py-0.5 rounded-full ${c.priceType === "free" ? "" : "bg-secondary text-muted-foreground border border-border"}`}
               style={c.priceType === "free" ? { backgroundColor: "#B7F21D", color: "#1E1F1C" } : {}}
             >
-              {c.priceType === "free" ? "Free" : c.price != null ? formatCollectionPrice(c.price) : "Premium"}
+              {c.priceType === "free" ? "Free" : c.price != null ? formatRmbPrice(c.price) : "Premium"}
             </span>
           </div>
           <p className="text-xs text-muted-foreground font-medium truncate">{c.titleZh}</p>
@@ -54,15 +50,26 @@ function HomeResourceCard({ c }: { c: ResourceCollection }) {
           <p className="text-[10px] text-muted-foreground mt-1">{c.sceneCount} scene{c.sceneCount !== 1 ? "s" : ""}</p>
         </div>
       </div>
-      <Btn
-        variant="accent"
-        size="sm"
-        disabled={!canDownload}
-        onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
-        className="w-full md:w-auto flex-shrink-0"
-      >
-        <Download size={13} />{canDownload ? "Download PDF" : "Coming soon"}
-      </Btn>
+      {c.priceType === "paid" ? (
+        <Btn
+          variant="accent"
+          size="sm"
+          onClick={() => onGetAccess(c)}
+          className="w-full md:w-auto flex-shrink-0"
+        >
+          Get Access
+        </Btn>
+      ) : (
+        <Btn
+          variant="accent"
+          size="sm"
+          disabled={!canDownload}
+          onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
+          className="w-full md:w-auto flex-shrink-0"
+        >
+          <Download size={13} />{canDownload ? "Download PDF" : "Coming soon"}
+        </Btn>
+      )}
     </div>
   );
 }
@@ -123,6 +130,7 @@ export function HomePage() {
   const { data: latestScenesData, loading: latestLoading, error: latestError } = useLatestScenes(3);
   const { data: categoriesData, loading: categoriesLoading, error: categoriesError } = useCategoryNames();
   const { data: homepageCollectionsData, loading: collectionsLoading, error: collectionsError } = useHomepageResourceCollections();
+  const [purchaseCollection, setPurchaseCollection] = useState<ResourceCollection | null>(null);
 
   const featuredScenes = featuredScenesData ?? [];
   const latestScenes = latestScenesData ?? [];
@@ -442,7 +450,7 @@ export function HomePage() {
           ) : homepageCollections.length > 0 ? (
             <div className="flex flex-col gap-3">
               {homepageCollections.map(c => (
-                <HomeResourceCard key={c.id} c={c} />
+                <HomeResourceCard key={c.id} c={c} onGetAccess={setPurchaseCollection} />
               ))}
             </div>
           ) : (
@@ -450,6 +458,8 @@ export function HomePage() {
           )}
         </div>
       </section>
+
+      <PurchaseModal collection={purchaseCollection} onClose={() => setPurchaseCollection(null)} />
     </div>
   );
 }

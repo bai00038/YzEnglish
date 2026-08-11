@@ -31,9 +31,12 @@ async function timingSafeEqual(a: string, b: string): Promise<boolean> {
 // here would mean both functions read the exact same value, and rotating
 // one for this function would silently break sync-scene's already-working
 // Apps Script credentials. Set via `supabase secrets set
-// RESOURCE_COLLECTIONS_SYNC_SECRET=...` — see README.md.
+// RESOURCE_COLLECTION_SYNC_SECRET=...` — must match the
+// RESOURCE_COLLECTION_SYNC_SECRET Script Property in the Resource_Collections
+// Apps Script project exactly (see google-apps-script/scenes-sync/Code.gs's
+// RESOURCE_COLLECTIONS_SCRIPT_PROPERTY_KEYS).
 async function authorize(req: Request): Promise<void> {
-  const syncSecret = Deno.env.get("RESOURCE_COLLECTIONS_SYNC_SECRET");
+  const syncSecret = Deno.env.get("RESOURCE_COLLECTION_SYNC_SECRET");
   if (!syncSecret) {
     throw new SyncError(500, "Server is not configured for sync requests.");
   }

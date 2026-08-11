@@ -7,7 +7,7 @@ import { isNavActive } from "@/app/components/nav-utils";
 export function DesktopNav() {
   const { pathname } = useLocation();
   return (
-    <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 h-16 items-center" style={{ backgroundColor: "#184C3A" }}>
+    <nav className="hidden min-[641px]:flex fixed top-0 left-0 right-0 z-50 h-16 items-center" style={{ backgroundColor: "#184C3A" }}>
       <div className="max-w-lg mx-auto md:max-w-5xl w-full px-4 flex items-center gap-10">
         <Link to="/" className="flex-shrink-0 flex items-center">
           <ImageWithFallback

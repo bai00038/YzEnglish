@@ -631,7 +631,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         } : undefined}
                       >
 
-                        {/* Speech-bubble speaker label — fixed-width column, same for every role */}
+                        {/* Speech-bubble speaker label — fixed-width column on desktop/tablet,
+                            stacked above the text with no reserved column on mobile (<=640px) */}
                         <div className="speaker-column">
                           <SpeechBubbleLabel label={label} style={style} />
                         </div>
@@ -647,7 +648,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                             </p>
                             {/* Purely a state indicator now — the whole row is the click target (see onClick above) */}
                             {audioRange && (
-                              <span aria-hidden="true" className={`flex-shrink-0 mt-0.5 flex items-center justify-center w-6 h-6 rounded-full transition-colors ${isActiveLine ? "bg-primary text-white" : "text-muted-foreground"}`}>
+                              <span aria-hidden="true" className={`dialogue-audio flex-shrink-0 mt-0.5 flex items-center justify-center w-6 h-6 rounded-full transition-colors ${isActiveLine ? "bg-primary text-white" : "text-muted-foreground"}`}>
                                 <Volume2 className="w-3.5 h-3.5" />
                               </span>
                             )}
