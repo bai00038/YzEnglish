@@ -1,11 +1,9 @@
 import { Link } from "react-router";
-import { useState } from "react";
 import type { CSSProperties } from "react";
-import { ChevronRight, Play, ArrowRight, FileText } from "lucide-react";
+import { ChevronRight, Play, ArrowRight, FileText, Download } from "lucide-react";
 import { CATEGORY_BG } from "@/data/scenes";
 import { useCuratedFeaturedScenes, useLatestScenes, useCategoryNames } from "@/data/scenes-access";
 import { useHomepageResourceCollections } from "@/data/resource-collections-access";
-import { COLLECTION_TYPE_BG } from "@/data/resource-collections";
 import type { Scene, ResourceCollection } from "@/data/types";
 import { Btn } from "@/app/components/Btn";
 import { LimeLine } from "@/app/components/brand";
@@ -21,44 +19,50 @@ function formatCollectionPrice(price: number): string {
   return `$${Number.isInteger(price) ? price.toFixed(0) : price.toFixed(2)}`;
 }
 
-// One PDF Resources preview card — a complete standalone tile (own border,
-// rounded corners, white background) rather than a column in a shared grid
-// row, so it still looks finished when it's the only card on the page.
-// Owns its own cover-image load state so a broken cover_image_url falls
-// back to the neutral ImgBox placeholder instead of a broken-image glyph.
-// Clicking anywhere on the card opens pdf_url in a new tab; a missing
-// pdf_url makes the card inert instead of opening a blank page.
-function HomeResourceCard({ c, className = "" }: { c: ResourceCollection; className?: string }) {
-  const [imageFailed, setImageFailed] = useState(false);
-  const showImage = !!c.coverImageUrl && !imageFailed;
+// One PDF Resources preview card — a compact horizontal "download card",
+// deliberately not the cover-image tile ResourcesPage.tsx's CollectionCard
+// uses on the full Resources page. Never reads cover_image_url: on the
+// homepage the goal is to read as a downloadable document at a glance, not
+// another scene thumbnail (cover_image_url stays in the data model/query
+// for the full Resources page). Only the Download PDF button opens pdf_url
+// — the card body itself is inert — so a missing pdf_url can disable just
+// the button ("Coming soon") without making the whole row falsely
+// clickable or opening a blank tab.
+function HomeResourceCard({ c }: { c: ResourceCollection }) {
   const canDownload = !!c.pdfUrl;
 
   return (
-    <div
-      onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
-      className={`border border-border rounded-2xl bg-card p-4 transition-colors ${canDownload ? "cursor-pointer hover:bg-secondary/40" : ""} ${className}`}
-    >
-      <div className={`w-full aspect-[16/9] rounded-xl mb-3 overflow-hidden ${COLLECTION_TYPE_BG[c.collectionType] ?? "bg-secondary"}`}>
-        {showImage ? (
-          <img
-            src={c.coverImageUrl!}
-            alt=""
-            onError={() => setImageFailed(true)}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-        ) : (
-          <ImgBox label={c.titleEn} className="w-full h-full" />
-        )}
+    <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 border border-border rounded-2xl bg-card px-4 py-3.5 md:px-5 transition-all duration-150 hover:border-primary/25 hover:shadow-sm">
+      <div className="flex items-center gap-3 flex-1 min-w-0">
+        {/* PDF icon — subtle light-green (primary-tinted) square */}
+        <div className="w-11 h-11 rounded-xl bg-primary/10 flex flex-col items-center justify-center flex-shrink-0">
+          <FileText size={16} className="text-primary" />
+          <span className="text-[7px] font-black text-primary tracking-wide mt-0.5">PDF</span>
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-bold text-foreground leading-snug truncate">{c.titleEn}</p>
+            <span
+              className={`flex-shrink-0 text-[9px] font-black px-2 py-0.5 rounded-full ${c.priceType === "free" ? "" : "bg-secondary text-muted-foreground border border-border"}`}
+              style={c.priceType === "free" ? { backgroundColor: "#B7F21D", color: "#1E1F1C" } : {}}
+            >
+              {c.priceType === "free" ? "Free" : c.price != null ? formatCollectionPrice(c.price) : "Premium"}
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground font-medium truncate">{c.titleZh}</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{c.descriptionEn}</p>
+          <p className="text-[10px] text-muted-foreground mt-1">{c.sceneCount} scene{c.sceneCount !== 1 ? "s" : ""}</p>
+        </div>
       </div>
-      <p className="text-xs font-bold text-foreground leading-snug mb-0.5 line-clamp-2">{c.titleEn}</p>
-      <p className="text-[10px] text-muted-foreground font-medium">{c.titleZh}</p>
-      <p className="text-[10px] text-muted-foreground mt-1">
-        {c.sceneCount} scene{c.sceneCount !== 1 ? "s" : ""} ·{" "}
-        <span className={c.priceType === "free" ? "text-emerald-700 font-bold" : "font-bold"}>
-          {c.priceType === "free" ? "Free" : c.price != null ? formatCollectionPrice(c.price) : "Premium"}
-        </span>
-      </p>
+      <Btn
+        variant="accent"
+        size="sm"
+        disabled={!canDownload}
+        onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
+        className="w-full md:w-auto flex-shrink-0"
+      >
+        <Download size={13} />{canDownload ? "Download PDF" : "Coming soon"}
+      </Btn>
     </div>
   );
 }
@@ -436,21 +440,13 @@ export function HomePage() {
           ) : collectionsError ? (
             <ErrorState message={collectionsError} />
           ) : homepageCollections.length > 0 ? (
-            <div className={homepageCollections.length >= 2 ? "grid grid-cols-1 md:grid-cols-2 gap-4" : "flex flex-col md:flex-row"}>
+            <div className="flex flex-col gap-3">
               {homepageCollections.map(c => (
-                <HomeResourceCard key={c.id} c={c} className={homepageCollections.length === 1 ? "w-full md:w-1/2" : ""} />
+                <HomeResourceCard key={c.id} c={c} />
               ))}
             </div>
           ) : (
             <EmptyState title="No resources yet." />
-          )}
-
-          {homepageCollections.length > 0 && (
-            <div className="mt-6">
-              <Btn variant="secondary" to="/resources">
-                <FileText size={14} />Browse all PDF resources
-              </Btn>
-            </div>
           )}
         </div>
       </section>
