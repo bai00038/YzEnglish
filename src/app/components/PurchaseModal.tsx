@@ -31,7 +31,12 @@ export function PurchaseModal({ collection, onClose }: { collection: ResourceCol
         {collection && (
           <>
             <DialogHeader>
-              <DialogTitle>Get the {displayResourceTitle(collection.titleEn)}</DialogTitle>
+              <DialogTitle>
+                Get the {displayResourceTitle(collection.titleEn)}
+                <span className="block text-base font-semibold text-muted-foreground mt-0.5">
+                  获取{displayResourceTitle(collection.titleZh)}
+                </span>
+              </DialogTitle>
               <DialogDescription>{collection.descriptionEn}</DialogDescription>
             </DialogHeader>
 
@@ -58,9 +63,9 @@ export function PurchaseModal({ collection, onClose }: { collection: ResourceCol
                   <span className="font-semibold text-foreground">{displayResourceTitle(collection.titleEn)}</span>
                 </p>
                 <p className="text-xs text-muted-foreground leading-relaxed mt-2">
-                  Scan the QR code to add me on WeChat.
+                  扫描二维码添加我的微信。
                   <br />
-                  When adding me, please include the name of the guide you'd like to purchase.
+                  添加时请备注您想购买的资料名称。
                 </p>
               </div>
             </div>
