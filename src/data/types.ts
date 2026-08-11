@@ -127,7 +127,7 @@ export interface ResourceCollection {
   titleZh: string;
   descriptionEn: string;
   descriptionZh: string;
-  collectionType: "topic" | "travel" | "country";
+  collectionType: "daily_life" | "tests_licences" | "essential_services" | "travel";
   priceType: "free" | "paid";
   price: number | null;
   coverImageUrl: string | null;

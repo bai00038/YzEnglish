@@ -267,7 +267,7 @@ export interface Database {
           title_zh: string;
           description_en: string;
           description_zh: string;
-          collection_type: "topic" | "travel" | "country";
+          collection_type: "daily_life" | "tests_licences" | "essential_services" | "travel";
           price_type: "free" | "paid";
           price: number | null;
           cover_image_url: string | null;
@@ -289,7 +289,7 @@ export interface Database {
           title_zh: string;
           description_en?: string;
           description_zh?: string;
-          collection_type: "topic" | "travel" | "country";
+          collection_type: "daily_life" | "tests_licences" | "essential_services" | "travel";
           price_type: "free" | "paid";
           price?: number | null;
           cover_image_url?: string | null;
@@ -308,7 +308,7 @@ export interface Database {
           title_zh?: string;
           description_en?: string;
           description_zh?: string;
-          collection_type?: "topic" | "travel" | "country";
+          collection_type?: "daily_life" | "tests_licences" | "essential_services" | "travel";
           price_type?: "free" | "paid";
           price?: number | null;
           cover_image_url?: string | null;

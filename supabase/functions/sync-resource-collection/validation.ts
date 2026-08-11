@@ -1,11 +1,12 @@
 import { SyncError } from "./errors.ts";
 
 // Kept in sync with the resource_collections check constraints — see
-// supabase/migrations/0023_create_resource_collections.sql.
+// supabase/migrations/0023_create_resource_collections.sql and
+// 0024_resource_collections_topic_taxonomy.sql.
 const ALLOWED_STATUS = ["draft", "published"] as const;
 type AllowedStatus = (typeof ALLOWED_STATUS)[number];
 
-const ALLOWED_COLLECTION_TYPE = ["topic", "travel", "country"] as const;
+const ALLOWED_COLLECTION_TYPE = ["daily_life", "tests_licences", "essential_services", "travel"] as const;
 type AllowedCollectionType = (typeof ALLOWED_COLLECTION_TYPE)[number];
 
 const ALLOWED_PRICE_TYPE = ["free", "paid"] as const;

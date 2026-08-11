@@ -7,16 +7,25 @@ import type { ResourceCollection } from "@/data/types";
 import { Btn } from "@/app/components/Btn";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 
-// Type-filter pills shown on the Resources page. "All" has no `type` and
+// Topic-filter pills shown on the Resources page. "All" has no `type` and
 // matches every collection; the rest map a display label to the
-// `collection_type` column on resource_collections (topic/travel/country —
-// see supabase/migrations/0023_create_resource_collections.sql). Never
+// `collection_type` column on resource_collections — a single, consistent
+// topic-based taxonomy (not format/topic/geography mixed together like the
+// old topic/travel/country values). See
+// supabase/migrations/0024_resource_collections_topic_taxonomy.sql. Never
 // inferred from the title.
-const TYPE_FILTERS: { label: string; type?: string }[] = [
-  { label: "All" },
-  { label: "Topic Packs", type: "topic" },
-  { label: "Travel Series", type: "travel" },
-  { label: "By Country", type: "country" },
+//
+// essential_services and travel are listed here so they're ready to go the
+// moment a published collection uses them, but the MVP has none yet — see
+// the `visibleTopicFilters` filtering in ResourcesPage below, which drops any
+// pill (other than "All") with zero matching collections in the current
+// published data.
+const TOPIC_FILTERS: { label: string; type?: string }[] = [
+  { label: "All · 全部" },
+  { label: "Daily Life · 日常生活", type: "daily_life" },
+  { label: "Tests & Guides · 考试指南", type: "tests_licences" },
+  { label: "Essential Services · 生活办事", type: "essential_services" },
+  { label: "Travel · 出行旅游", type: "travel" },
 ];
 
 // Maps to price_type on resource_collections (free/paid). "All" has no
@@ -44,11 +53,11 @@ function CollectionCard({ c }: { c: ResourceCollection }) {
   const canDownload = !!c.pdfUrl;
 
   return (
-    <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-5 border border-border rounded-2xl bg-card p-4 md:px-5 md:py-4 transition-all duration-150 hover:border-primary/30 hover:shadow-sm">
-      {/* Icon + title/metadata block — icon stays beside the title on
-          mobile (items-start) and centers against the whole block on
-          desktop, where it sits to the left of one continuous row. */}
-      <div className="flex items-start md:items-center gap-3 flex-1 min-w-0">
+    <div className="flex flex-col gap-3 border border-border rounded-2xl bg-card p-4 md:px-5 md:py-4 transition-all duration-150 hover:border-primary/30 hover:shadow-sm">
+      {/* Icon + title/metadata block. Card now always stacks vertically
+          (icon/text block, then footer) so it reads well at half page
+          width in the 2-column grid, not just as a full-width row. */}
+      <div className="flex items-start gap-3 flex-1 min-w-0">
         <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex flex-col items-center justify-center">
           <FileText size={20} className="text-primary" />
           <span className="text-[7px] font-black text-primary tracking-wide mt-0.5">PDF</span>
@@ -66,27 +75,32 @@ function CollectionCard({ c }: { c: ResourceCollection }) {
           </div>
           <p className="text-xs text-muted-foreground font-medium truncate mt-0.5">{displayResourceTitle(c.titleZh)}</p>
           <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed line-clamp-2">{c.descriptionEn}</p>
-          <p className="text-[11px] text-muted-foreground mt-1.5">
-            {COLLECTION_TYPE_LABELS[c.collectionType] ?? c.collectionType} · {c.sceneCount} scene{c.sceneCount !== 1 ? "s" : ""}
-          </p>
         </div>
       </div>
 
-      <Btn
-        variant="accent"
-        size="md"
-        disabled={!canDownload}
-        onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
-        className="w-full md:w-auto flex-shrink-0"
-      >
-        <Download size={14} />{canDownload ? "Download PDF" : "Coming soon"}
-      </Btn>
+      {/* Footer — divider + scene count on the left, compact pill download
+          button on the right (not a full-width button; matches the
+          document-library row style, not a call-to-action banner). */}
+      <div className="flex items-center justify-between gap-3 pt-3 border-t border-border">
+        <p className="text-[11px] text-muted-foreground">
+          {COLLECTION_TYPE_LABELS[c.collectionType] ?? c.collectionType} · {c.sceneCount} scene{c.sceneCount !== 1 ? "s" : ""}
+        </p>
+        <Btn
+          variant="accent"
+          size="sm"
+          disabled={!canDownload}
+          onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
+          className="rounded-full flex-shrink-0"
+        >
+          <Download size={13} />{canDownload ? "Download" : "Coming soon"}
+        </Btn>
+      </div>
     </div>
   );
 }
 
 export function ResourcesPage() {
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeFilter, setActiveFilter] = useState("All · 全部");
   const [priceFilter, setPriceFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   // Already filtered to status = "published" and ordered by sort_order by
@@ -95,23 +109,28 @@ export function ResourcesPage() {
   const { data: collectionsData, loading, error } = useResourceCollections();
   const collections = collectionsData ?? [];
 
+  // Drop any topic pill (besides "All") with zero matching collections in
+  // the currently published data, so essential_services/travel stay hidden
+  // until a collection actually uses them — never a hard-coded MVP allowlist.
+  const visibleTopicFilters = TOPIC_FILTERS.filter(f => !f.type || collections.some(c => c.collectionType === f.type));
+
   const filtered = collections.filter(c => {
     const priceType = PRICE_FILTERS.find(f => f.label === priceFilter)?.type;
     if (priceType && c.priceType !== priceType) return false;
-    const typeFilter = TYPE_FILTERS.find(f => f.label === activeFilter);
+    const typeFilter = TOPIC_FILTERS.find(f => f.label === activeFilter);
     if (typeFilter?.type && c.collectionType !== typeFilter.type) return false;
     if (searchQuery && !c.titleEn.toLowerCase().includes(searchQuery.toLowerCase()) && !c.titleZh.includes(searchQuery)) return false;
     return true;
   });
 
-  const hasActiveFilters = activeFilter !== "All" || priceFilter !== "All" || !!searchQuery;
+  const hasActiveFilters = activeFilter !== "All · 全部" || priceFilter !== "All" || !!searchQuery;
 
   return (
     <div>
       {/* Header */}
       <div className="bg-background max-w-lg mx-auto md:max-w-4xl px-4 pt-5 pb-4">
         <h1 className="text-xl font-black text-foreground mb-0.5">PDF Resources</h1>
-        <p className="text-sm text-muted-foreground mb-1">学习资料下载 · Topic Collections · Travel Packs · Country Packs</p>
+        <p className="text-sm text-muted-foreground mb-1">学习资料下载 · Curated PDF Collections by Topic</p>
         <p className="text-xs text-muted-foreground leading-relaxed mb-4">Download curated collections to study offline. Free resources need no login.</p>
         <div className="flex items-center gap-2.5 border border-border rounded-xl px-3.5 py-2.5 bg-card shadow-sm focus-within:border-primary/50 transition-colors">
           <Search size={15} className="text-muted-foreground flex-shrink-0" />
@@ -126,11 +145,11 @@ export function ResourcesPage() {
       <div style={{ backgroundColor: "#EDF3EE" }} className="border-b border-black/8">
         <div className="max-w-lg mx-auto md:max-w-4xl px-4 pt-5 pb-4 space-y-4">
 
-          {/* Collection type */}
+          {/* Browse by topic */}
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#184C3A" }}>Collection Type · 合集类型</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#184C3A" }}>Browse by Topic · 按主题浏览</p>
             <div className="flex flex-wrap gap-1.5">
-              {TYPE_FILTERS.map(f => (
+              {visibleTopicFilters.map(f => (
                 <button key={f.label} onClick={() => setActiveFilter(f.label)}
                   className="text-xs font-semibold rounded-full px-3 py-1.5 border transition-all duration-150 whitespace-nowrap"
                   style={activeFilter === f.label ? PILL_ACTIVE : PILL_INACTIVE}>
@@ -163,7 +182,7 @@ export function ResourcesPage() {
         <div className="py-3 flex items-center gap-3">
           <p className="text-xs font-semibold text-foreground">{loading ? "…" : filtered.length} collection{filtered.length !== 1 ? "s" : ""} found</p>
           {hasActiveFilters && (
-            <button onClick={() => { setActiveFilter("All"); setPriceFilter("All"); setSearchQuery(""); }}
+            <button onClick={() => { setActiveFilter("All · 全部"); setPriceFilter("All"); setSearchQuery(""); }}
               className="text-[11px] text-muted-foreground hover:text-primary transition-colors underline underline-offset-2">
               Clear all
             </button>
@@ -178,7 +197,7 @@ export function ResourcesPage() {
           ) : collections.length === 0 ? (
             <EmptyState title="More resource collections are coming soon." subtitle="更多主题合集正在整理中" />
           ) : filtered.length > 0 ? (
-            <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {filtered.map(c => <CollectionCard key={c.id} c={c} />)}
             </div>
           ) : (
