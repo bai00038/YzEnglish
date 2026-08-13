@@ -24,7 +24,7 @@ export function SceneCard({ scene }: { scene: Scene }) {
       </div>
       <div className="flex flex-col flex-1 p-4">
         <p className="text-sm font-bold leading-snug text-foreground group-hover:text-primary transition-colors">{scene.titleEn}</p>
-        <p className="text-xs text-muted-foreground font-medium mt-0.5">{scene.titleZh}</p>
+        <p className="text-xs text-muted-foreground font-medium mt-0.5 mb-2">{scene.titleZh}</p>
         <div className="flex flex-wrap items-center gap-1.5 mt-auto pt-3 border-t border-border">
           <LevelBadge level={scene.level} />
           <span className="ml-auto"><DurationLabel duration={scene.duration} /></span>
