@@ -1,10 +1,12 @@
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { useAsyncData } from "./useAsyncData";
 import { CATEGORIES as MOCK_CATEGORIES, SCENES as MOCK_SCENES } from "./scenes";
-import type { Scene } from "./types";
+import type { CultureTip, CultureTipItem, KeyExpressionItem, Scene, TipType } from "./types";
 import type {
   SceneRow,
   DialogueLineRow,
+  KeyExpressionRow,
+  CultureTipRow,
   SceneDialogueJson,
   SceneExpressionsJson,
   SceneVocabularyJson,
@@ -73,11 +75,33 @@ function normalizeSubtitleCues(raw: unknown): SceneSubtitleCuesJson | undefined 
   return cues.length > 0 ? cues : undefined;
 }
 
+// Missing/unrecognized tipType -> "key_expression" — same compat default
+// as the Edge Function's requireTipType (supabase/functions/sync-scene/
+// validation.ts) and Code.gs's loadTipsBySceneId_, for tips synced before
+// tip_type existed. Never throws: a malformed tip here must not break the
+// whole scene page.
+function normalizeTipType(raw: unknown): TipType {
+  return raw === "culture_tip" ? "culture_tip" : "key_expression";
+}
+
+function normalizeTips(raw: SceneTipsJson | null | undefined): CultureTip[] {
+  if (!raw) return [];
+  return raw.map(tip => ({ ...tip, tipType: normalizeTipType(tip.tipType) }));
+}
+
 function mapSceneRow(row: SceneRowWithCategory): Scene {
-  // A scene "has content" (vs. the coming-soon placeholder) exactly when its
-  // dialogue column is populated — expressions/vocabulary/tips/setup/goal are
-  // always seeded together with it.
-  const hasContent = row.dialogue !== null;
+  // A scene "has content" (vs. the coming-soon placeholder) when EITHER of
+  // two independent pipelines has populated it:
+  //  - Figma_Data (legacy): dialogue jsonb populated, and expressions/
+  //    vocabulary/tips/setup/goal always seeded together with it.
+  //  - scenes-sync (current): dialogue jsonb is deliberately NEVER set (see
+  //    the header comment in google-apps-script/scenes-sync/Code.gs) — this
+  //    pipeline's scenes are fully on dialogue_lines instead, but still
+  //    seed scene_setup_en/learning_goal_en/tips, so dialogue alone can't be
+  //    the signal or a scenes-sync-only scene (e.g. scene_030) would wrongly
+  //    render as "coming soon" with its real tips/setup/goal silently
+  //    dropped by applyDialogueLinesOverride below.
+  const hasContent = row.dialogue !== null || row.scene_setup_en !== null;
 
   return {
     id: row.id,
@@ -102,7 +126,7 @@ function mapSceneRow(row: SceneRowWithCategory): Scene {
           dialogue: (row.dialogue as unknown as SceneDialogueJson) ?? [],
           expressions: (row.expressions as unknown as SceneExpressionsJson) ?? [],
           vocabulary: (row.vocabulary as unknown as SceneVocabularyJson) ?? [],
-          tips: (row.tips as unknown as SceneTipsJson) ?? [],
+          tips: normalizeTips(row.tips as unknown as SceneTipsJson),
           relatedSceneIds: row.related_scene_ids ?? undefined,
           prevSceneId: row.prev_scene_id ?? undefined,
           nextSceneId: row.next_scene_id ?? undefined,
@@ -130,16 +154,24 @@ async function applyDialogueLinesOverride(scene: Scene, sceneId: number): Promis
   if (error) throw error;
   if (!data || data.length === 0) return scene;
 
-  const dialogue = (data as DialogueLineRow[]).map(row => ({
-    speaker: row.speaker,
-    speakerZh: row.speaker_zh,
-    en: row.dialogue_en,
-    zh: row.dialogue_zh,
-    start: row.start_time ?? undefined,
-    end: row.end_time ?? undefined,
-    externalLineId: row.external_line_id ?? undefined,
-    dialogueLineDbId: row.id,
-  }));
+  const dialogue = (data as DialogueLineRow[]).map(row => {
+    // Defensive Number() coercion, same rule as normalizeSubtitleCues
+    // above — dialogue_lines.start_time/end_time are already seconds
+    // (see 0012_add_dialogue_lines.sql and Code.gs's hasValidTimecode),
+    // never milliseconds, so this must never divide by 1000.
+    const start = row.start_time === null || row.start_time === undefined ? undefined : Number(row.start_time);
+    const end = row.end_time === null || row.end_time === undefined ? undefined : Number(row.end_time);
+    return {
+      speaker: row.speaker,
+      speakerZh: row.speaker_zh,
+      en: row.dialogue_en,
+      zh: row.dialogue_zh,
+      start: start !== undefined && Number.isFinite(start) ? start : undefined,
+      end: end !== undefined && Number.isFinite(end) ? end : undefined,
+      externalLineId: row.external_line_id ?? undefined,
+      dialogueLineDbId: row.id,
+    };
+  });
 
   return {
     ...scene,
@@ -156,6 +188,90 @@ async function applyDialogueLinesOverride(scene: Scene, sceneId: number): Promis
     },
   };
 }
+
+// Reads one child table for a scene, never throwing — a failed query for
+// key_expressions must not take down culture_tips or the rest of the
+// page. Returning [] on error also correctly triggers this module's own
+// legacy-tips fallback below, the same as a genuinely-empty table would.
+async function fetchChildRows<T>(table: "key_expressions" | "culture_tips", sceneId: number): Promise<T[]> {
+  try {
+    const { data, error } = await supabase!
+      .from(table)
+      .select("*")
+      .eq("scene_id", sceneId)
+      .order("sort_order", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as T[];
+  } catch (err) {
+    console.error(`[scenes-access] failed to load ${table} for scene_id=${sceneId}`, err);
+    return [];
+  }
+}
+
+// ─── Temporary legacy Tips fallback ─────────────────────────────────────
+//
+// public.key_expressions/public.culture_tips (see
+// supabase/migrations/0025_create_key_expressions_and_culture_tips.sql)
+// are the new, primary source for the scene detail page's "Learn the
+// Language" module. Until every scene has been re-authored into them,
+// though, most scenes still only have data in the legacy scenes.tips
+// jsonb column (already loaded onto scene.content.tips by mapSceneRow).
+//
+// Fallback is decided independently per module, never both-or-nothing:
+// if key_expressions has any rows for this scene, those rows are used
+// exclusively for the Key Expressions module (legacy key_expression-type
+// tips are ignored); otherwise the legacy tips are used for that module
+// alone. Same independent rule for culture_tips. This guarantees the two
+// sources are never combined for the same module (no duplicates), while
+// still letting a partially-migrated scene (e.g. only Key_Expressions
+// authored so far) render correctly.
+//
+// DELETE THIS WHOLE FUNCTION (and its one call site in fetchSceneDetail
+// below) once every scene has real key_expressions/culture_tips rows and
+// scenes.tips/the old Tips sheet are retired — nothing else needs to
+// change at that point, SceneContent.tips can stay or go independently.
+function deriveKeyExpressionsFromLegacyTips(tips: CultureTip[]): KeyExpressionItem[] {
+  return tips
+    .filter(tip => tip.tipType === "key_expression")
+    .map(tip => ({ expressionEn: tip.title, expressionZh: tip.titleZh }));
+}
+
+function deriveCultureTipsFromLegacyTips(tips: CultureTip[]): CultureTipItem[] {
+  return tips
+    .filter(tip => tip.tipType === "culture_tip")
+    .map(tip => ({ bodyEn: tip.body, bodyZh: tip.bodyZh }));
+}
+
+async function applyKeyExpressionsAndCultureTips(scene: Scene, sceneId: number): Promise<Scene> {
+  const [keyExpressionRows, cultureTipRows] = await Promise.all([
+    fetchChildRows<KeyExpressionRow>("key_expressions", sceneId),
+    fetchChildRows<CultureTipRow>("culture_tips", sceneId),
+  ]);
+
+  const legacyTips = scene.content?.tips ?? [];
+
+  const keyExpressions: KeyExpressionItem[] =
+    keyExpressionRows.length > 0
+      ? keyExpressionRows.map(row => ({
+          expressionEn: row.expression_en,
+          expressionZh: row.expression_zh,
+        }))
+      : deriveKeyExpressionsFromLegacyTips(legacyTips);
+
+  const cultureTips: CultureTipItem[] =
+    cultureTipRows.length > 0
+      ? cultureTipRows.map(row => ({
+          bodyEn: row.body_en,
+          bodyZh: row.body_zh,
+        }))
+      : deriveCultureTipsFromLegacyTips(legacyTips);
+
+  return {
+    ...scene,
+    content: scene.content ? { ...scene.content, keyExpressions, cultureTips } : scene.content,
+  };
+}
+// ─── End temporary legacy Tips fallback ─────────────────────────────────
 
 async function fetchScenes(): Promise<Scene[]> {
   return withDevFallback(
@@ -290,7 +406,8 @@ async function fetchSceneDetail(slug: string): Promise<SceneDetail> {
       if (!data) return { scene: null, related: [], prevScene: null, nextScene: null };
 
       const row = data as SceneRowWithCategory;
-      const scene = await applyDialogueLinesOverride(mapSceneRow(row), row.id);
+      let scene = await applyDialogueLinesOverride(mapSceneRow(row), row.id);
+      scene = await applyKeyExpressionsAndCultureTips(scene, row.id);
 
       let related: Scene[] = [];
       const relatedIds = row.related_scene_ids ?? [];
@@ -332,8 +449,24 @@ async function fetchSceneDetail(slug: string): Promise<SceneDetail> {
       return { scene, related, prevScene, nextScene };
     },
     () => {
-      const scene = MOCK_SCENES.find(s => s.slug === slug) ?? null;
-      if (!scene) return { scene: null, related: [], prevScene: null, nextScene: null };
+      const mockScene = MOCK_SCENES.find(s => s.slug === slug) ?? null;
+      if (!mockScene) return { scene: null, related: [], prevScene: null, nextScene: null };
+
+      // Dev-only mock fallback has no database to query key_expressions/
+      // culture_tips from — derive them from the mock's own tips[] so the
+      // Language module still renders locally without Supabase. See
+      // "Temporary legacy Tips fallback" above.
+      const legacyTips = mockScene.content?.tips ?? [];
+      const scene: Scene = {
+        ...mockScene,
+        content: mockScene.content
+          ? {
+              ...mockScene.content,
+              keyExpressions: deriveKeyExpressionsFromLegacyTips(legacyTips),
+              cultureTips: deriveCultureTipsFromLegacyTips(legacyTips),
+            }
+          : mockScene.content,
+      };
 
       const relatedIds = scene.content?.relatedSceneIds;
       const related = relatedIds

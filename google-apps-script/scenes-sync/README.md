@@ -1,10 +1,17 @@
-# Yz English — Scenes / Dialogue_Lines / Tips sync (Google Apps Script)
+# Yz English — Scenes / Dialogue_Lines / Key_Expressions / Culture_Tips sync (Google Apps Script)
 
 Syncs a **new, separate** Google Sheet to the same `sync-scene` Supabase
 Edge Function used by the original Figma_Data pipeline
 (`google-apps-script/Code.gs`, one level up) — but this script is
 independent and bound to a different spreadsheet. It does not read or
 write Figma_Data at all, and Figma_Data's own sync script is untouched.
+
+The `Tips` tab that `Key_Expressions`/`Culture_Tips` originally replaced
+has been **deleted from this spreadsheet** and this script no longer reads
+it, references it, or sends a `tips` payload key at all — see "Tab 3:
+Key_Expressions" and "Tab 3b: Culture_Tips" below for the two tabs that
+remain, and "What this script does NOT touch" for what stays untouched as
+a result.
 
 Only two scenes exist in this structure so far, migrated by hand as
 templates: `shopping-for-clothes` and (deferred, see below)
@@ -22,9 +29,12 @@ touch" below for the field split.
 
 1. Create a **new** Google Sheet (a new file, not a tab in the existing
    Figma PDF Data Template).
-2. Add five tabs, named exactly as below, each with a header row (row 1)
+2. Add tabs named exactly as below, each with a header row (row 1)
    containing exactly the column names listed — order doesn't matter,
-   columns are read by header name.
+   columns are read by header name: `Scenes`, `Dialogue_Lines`,
+   `Resource_Collections`, `Key_Expressions`, `Culture_Tips`,
+   `Validation`, `Sync_Log`. (No `Tips` tab — see the note at the top of
+   this file.)
 3. `Extensions → Apps Script`, delete the boilerplate, paste in the full
    contents of `Code.gs` from this folder, save.
 4. Set the two Script Properties (`Project Settings → Script
@@ -104,16 +114,52 @@ a dialogue line that used to be one merged sentence (e.g. "Excuse me. Do
 you have this in a small?") is now **two separate rows** here — bubbles
 match subtitle cues 1:1, not merged. Keep authoring new scenes this way.
 
-## Tab 3: `Tips` — one row per tip
+## Tab 3: `Key_Expressions` — one row per key expression
+
+The structured replacement for the old `Tips` tab's `tip_type =
+"key_expression"` rows. `Tips` has been deleted from this spreadsheet —
+this is the only source for the scene detail page's "Key Expressions"
+grid now.
 
 | Column | Notes |
 |---|---|
 | `scene_id` | Matched against `Scenes.scene_id`. |
-| `sort_order` | Determines Tip 1 / Tip 2 / Tip N order. Blank → `0`. |
-| `title_en` / `title_zh` | |
-| `body_en` / `body_zh` | |
+| `sort_order` | Determines display order within the scene. Blank → `0`. Must be unique per `scene_id` — two rows for the same scene with the same `sort_order` (blank counts as `0`) fail the sync. |
+| `expression_en` / `expression_zh` | The expression itself. Required. This is the only content the card shows — see `KeyExpressionCard` in `src/app/pages/SceneDetailPage.tsx`. |
 
-A row missing any of the four text fields is skipped, not an error.
+A row with a blank `scene_id` is a spacer and is skipped silently. A row
+with a non-blank `scene_id` but a blank `expression_en`/`expression_zh`
+**stops the whole sync** with the offending row number.
+
+(Earlier versions of this tab also had `usage_en`/`usage_zh`/
+`example_en`/`example_zh` columns. Those columns — and the matching
+`key_expressions.usage_en`/`usage_zh`/`example_en`/`example_zh` database
+columns — were dropped entirely; see
+`supabase/migrations/0026_simplify_key_expressions_and_culture_tips.sql`.
+Do not re-add them to this tab.)
+
+## Tab 3b: `Culture_Tips` — one row per culture/local note
+
+The structured replacement for the old `Tips` tab's `tip_type =
+"culture_tip"` rows.
+
+| Column | Notes |
+|---|---|
+| `scene_id` | Matched against `Scenes.scene_id`. |
+| `sort_order` | Determines display order within the scene — also what the website's "Tip 1" / "Tip 2" card headers are generated from (`sort_order = 1` → "Tip 1", etc.; see `CultureTipCard` in `src/app/pages/SceneDetailPage.tsx`). Blank → `0`. Must be unique per `scene_id`, same rule as `Key_Expressions` above. |
+| `body_en` / `body_zh` | Required. The only content the card shows. |
+
+Same blank-row and missing-required-field rules as `Key_Expressions`
+above: a blank `scene_id` is a silently-skipped spacer; a non-blank
+`scene_id` with `body_en`/`body_zh` blank stops the whole sync, naming
+the row.
+
+(Earlier versions of this tab also had `title_en`/`title_zh` columns.
+Those columns — and the matching `culture_tips.title_en`/`title_zh`
+database columns — were dropped entirely; the website never displays a
+stored title, only the generated "Tip N" label. See
+`supabase/migrations/0026_simplify_key_expressions_and_culture_tips.sql`.
+Do not re-add them to this tab.)
 
 ## Tab 4: `Validation` — Sheet-only, not read by this script
 
@@ -148,11 +194,45 @@ Same as the Figma_Data script: click a cell in one `Scenes` row and
 or select multiple rows to batch-sync every one of them whose
 `sync_status` is exactly `Ready` (others are silently skipped).
 
+## How Key_Expressions/Culture_Tips sync (upsert + scoped delete)
+
+Both tabs are read in full on every sync click (like `Dialogue_Lines`),
+then filtered down to the rows for whichever `scene_id`(s) are actually
+being synced. For each scene being synced whose tab has at least one row:
+
+- Every row is **upserted** by `(scene_id, sort_order)` — editing a row
+  in the sheet and re-syncing updates that same database row in place,
+  it never creates a duplicate.
+- The submission is **scoped-authoritative for that one scene**: any
+  existing `public.key_expressions`/`public.culture_tips` row for that
+  `scene_id` whose `sort_order` is *not* present in this sync's rows is
+  deleted. Deleting a row from the sheet (say, dropping from 6 Key
+  Expressions to 5) and re-syncing that scene removes the corresponding
+  database row — nothing else. Rows belonging to *other* scenes are
+  never touched by this, no matter how many scenes are batch-synced at
+  once.
+- A scene with **zero** rows in a tab is not sent for that tab at all —
+  the payload key is omitted, and the Edge Function/RPC leave whatever
+  is already in the database alone (same "omit means don't touch" rule
+  the deleted `Tips` tab used to follow — see `buildPayload_`'s comment
+  in `Code.gs`).
+  **This means clearing every row for a scene down to zero is not
+  something a sync can do** — only individual rows within an otherwise
+  non-empty sync can be removed this way. That's a deliberate,
+  defense-in-depth choice (mirrors `0021_protect_tips_from_empty_
+  overwrite.sql`), not a limitation anyone hit in practice; see
+  `0025_create_key_expressions_and_culture_tips.sql`'s header for the
+  full reasoning.
+- Two rows for the same scene sharing a `sort_order` (including two
+  blank cells, which both read as `0`) fail the sync with a clear
+  `duplicate_key_expression_sort_order`/`duplicate_culture_tip_sort_order`
+  error before anything is written.
+
 ## What this script does NOT touch
 
 This is the important part. Every sync from this script **omits**
-`dialogue`, `expressions`, `vocabulary`, and `subtitle_cues` from the
-payload entirely — not even sending them as `null`. The `sync-scene`
+`dialogue`, `expressions`, `vocabulary`, `subtitle_cues`, and `tips` from
+the payload entirely — not even sending them as `null`. The `sync-scene`
 Edge Function treats an omitted field as "leave this column exactly as
 it is" (see the `ScenePayloadRow` comment in
 `supabase/functions/sync-scene/validation.ts`), so:
@@ -165,11 +245,18 @@ it is" (see the `ScenePayloadRow` comment in
   alone — superseded by `dialogue_lines`, not overwritten by it. The
   website already prefers `dialogue_lines` over these legacy columns
   whenever rows exist for a scene.
+- `scenes.tips` is left alone too, now that the `Tips` tab is gone —
+  whatever it held from an earlier sync or from Figma_Data just sits
+  there unused. `src/data/scenes-access.ts` only ever reads it as a
+  fallback for a scene that still has zero `key_expressions`/
+  `culture_tips` rows; once a scene has real rows there (as
+  `scene_001`/`scene_008`/`scene_013`/`scene_030` now do), `tips` is
+  never consulted for it again regardless of what's in the column.
 
 **Do not run the Figma_Data script's sync on a scene that has already
-been migrated here** — it would overwrite `tips` (and everything else it
-owns) with whatever is in Figma_Data for that scene, undoing this
-script's changes. Once a scene lives in this Sheet, manage it here only.
+been migrated here** — it would overwrite `dialogue`/`expressions`/
+`vocabulary`/`subtitle_cues`/`tips` with whatever is in Figma_Data for
+that scene. Once a scene lives in this Sheet, manage it here only.
 
 ## Known limitations / open items
 

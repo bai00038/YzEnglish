@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
       throw new SyncError(400, "Request body must be valid JSON.");
     }
 
-    const { externalSceneId, categoryName, row, dialogueLines } = validateScenePayload(body);
+    const { externalSceneId, categoryName, row, dialogueLines, keyExpressions, cultureTips } = validateScenePayload(body);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -83,11 +83,15 @@ Deno.serve(async (req) => {
       categoryId,
       row,
       dialogueLines,
+      keyExpressions,
+      cultureTips,
     });
 
     console.log(
       `[sync-scene] ${result.action} external_scene_id="${externalSceneId}" slug="${row.slug}" database_id=${result.id}` +
-        (dialogueLines !== undefined ? ` dialogue_lines=${dialogueLines.length}` : "")
+        (dialogueLines !== undefined ? ` dialogue_lines=${dialogueLines.length}` : "") +
+        (keyExpressions !== undefined ? ` key_expressions=${keyExpressions.length}` : "") +
+        (cultureTips !== undefined ? ` culture_tips=${cultureTips.length}` : "")
     );
 
     return new Response(

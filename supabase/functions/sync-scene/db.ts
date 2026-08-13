@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { SyncError } from "./errors.ts";
-import type { DialogueLineRowPayload, ScenePayloadRow } from "./validation.ts";
+import type { CultureTipRowPayload, DialogueLineRowPayload, KeyExpressionRowPayload, ScenePayloadRow } from "./validation.ts";
 
 export async function findCategoryIdByName(
   supabase: SupabaseClient,
@@ -62,6 +62,10 @@ export async function findCategoryIdByName(
 //                                      upsert itself)
 //   empty_dialogue_rejected       409  tried to clear all dialogue_lines on a
 //                                      published scene
+//   duplicate_key_expression_sort_order 400  two key_expressions[] entries in the
+//                                      same request share a sort_order
+//                                      (see 0025_create_key_expressions_and_culture_tips.sql)
+//   duplicate_culture_tip_sort_order    400  same, for culture_tips[]
 const RPC_ERROR_STATUS: Record<string, number> = {
   missing_external_scene_id: 400,
   missing_slug: 400,
@@ -71,6 +75,8 @@ const RPC_ERROR_STATUS: Record<string, number> = {
   unmapped_legacy_dialogue_lines: 409,
   line_id_owned_by_other_scene: 409,
   empty_dialogue_rejected: 409,
+  duplicate_key_expression_sort_order: 400,
+  duplicate_culture_tip_sort_order: 400,
 };
 
 function statusForRpcError(message: string): number {
@@ -84,6 +90,10 @@ export interface SyncSceneParams {
   row: ScenePayloadRow;
   // undefined = don't touch dialogue_lines for this scene at all.
   dialogueLines: DialogueLineRowPayload[] | undefined;
+  // undefined = don't touch key_expressions/culture_tips for this scene at
+  // all — see ValidatedScenePayload's comment in validation.ts.
+  keyExpressions: KeyExpressionRowPayload[] | undefined;
+  cultureTips: CultureTipRowPayload[] | undefined;
 }
 
 export interface SyncSceneResult {
@@ -144,7 +154,7 @@ export async function syncSceneWithDialogueLines(
   supabase: SupabaseClient,
   params: SyncSceneParams
 ): Promise<SyncSceneResult> {
-  const { externalSceneId, categoryId, row, dialogueLines } = params;
+  const { externalSceneId, categoryId, row, dialogueLines, keyExpressions, cultureTips } = params;
 
   const duration = await resolveWithExistingFallback(supabase, externalSceneId, "duration", row.duration);
   const description = await resolveWithExistingFallback(supabase, externalSceneId, "description", row.description);
@@ -182,6 +192,8 @@ export async function syncSceneWithDialogueLines(
     p_learning_goal_zh: row.learning_goal_zh,
     p_optional_fields: optionalFields,
     p_dialogue_lines: dialogueLines ?? null,
+    p_key_expressions: keyExpressions ?? null,
+    p_culture_tips: cultureTips ?? null,
   });
 
   if (error) {

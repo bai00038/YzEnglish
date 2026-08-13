@@ -1,25 +1,40 @@
 /**
- * Yz English — Scenes / Dialogue_Lines / Tips → Supabase sync (v2, Phase A-0)
+ * Yz English — Scenes / Dialogue_Lines / Key_Expressions / Culture_Tips →
+ * Supabase sync (v3, Phase A-0 + Key/Culture split, Tips tab retired)
  *
  * A SEPARATE, independent script for the NEW Google Sheet (Scenes /
- * Dialogue_Lines / Tips / Validation / Sync_Log tabs) — not a
- * modification of google-apps-script/Code.gs, which stays exactly as-is
- * for the original Figma_Data spreadsheet (Figma PDF export only, no
- * longer the website's data source). Bind this file to the NEW
- * spreadsheet's own Apps Script project — see README.md in this folder
- * for setup.
+ * Dialogue_Lines / Resource_Collections / Key_Expressions / Culture_Tips /
+ * Validation / Sync_Log tabs) — not a modification of
+ * google-apps-script/Code.gs, which stays exactly as-is for the original
+ * Figma_Data spreadsheet (Figma PDF export only, no longer the website's
+ * data source). Bind this file to the NEW spreadsheet's own Apps Script
+ * project — see README.md in this folder for setup.
  *
  * This script owns a DIFFERENT set of scenes.* fields than Figma_Data's
  * script: it sends slug/title/category/region/level/duration/status/
  * photo_url/pdf_url/video_url/description/scene_setup/learning_goal/
- * sort_order/tips[]/dialogue_lines[] — and deliberately OMITS
- * dialogue/expressions/vocabulary/subtitle_cues from every payload
- * (never sends those keys at all, not even null). The sync-scene Edge
- * Function (supabase/functions/sync-scene/validation.ts) treats an
- * omitted key as "don't touch this column" — so a scene synced from
- * here never overwrites the legacy dialogue/expressions/vocabulary/
- * subtitle_cues content that may still exist from Figma_Data. See that
- * file's ScenePayloadRow comment for the full reasoning.
+ * sort_order/dialogue_lines[]/key_expressions[]/culture_tips[] — and
+ * deliberately OMITS dialogue/expressions/vocabulary/subtitle_cues/tips
+ * from every payload (never sends those keys at all, not even null). The
+ * sync-scene Edge Function (supabase/functions/sync-scene/validation.ts)
+ * treats an omitted key as "don't touch this column" — so a scene synced
+ * from here never overwrites the legacy dialogue/expressions/vocabulary/
+ * subtitle_cues/tips content that may still exist from Figma_Data. See
+ * that file's ScenePayloadRow comment for the full reasoning.
+ *
+ * Key_Expressions/Culture_Tips are the structured replacement for the old
+ * Tips tab's tip_type split (public.key_expressions/public.culture_tips —
+ * see supabase/migrations/0025_create_key_expressions_and_culture_tips.sql,
+ * further simplified to expression_en/expression_zh and body_en/body_zh
+ * only by 0026_simplify_key_expressions_and_culture_tips.sql once the
+ * Google Sheet's Key_Expressions/Culture_Tips tabs were finalized down to
+ * those columns). The "Tips" sheet tab has been DELETED from this
+ * spreadsheet — this script no longer reads it, references it, or sends a
+ * `tips` payload key at all. scenes.tips (the jsonb column it used to
+ * populate) is left as dead weight on already-synced rows, still read as a
+ * fallback by src/data/scenes-access.ts for any OTHER scene that hasn't
+ * been migrated into Key_Expressions/Culture_Tips yet, but this script
+ * itself never touches it again.
  *
  * Phase A-0 (permanent scene_id / line_id): the Scenes.scene_id column
  * sent on every payload is no longer just a log label — it is now the
@@ -50,9 +65,23 @@
 
 const SCENES_SHEET_NAME = "Scenes";
 const DIALOGUE_LINES_SHEET_NAME = "Dialogue_Lines";
-const TIPS_SHEET_NAME = "Tips";
+// Key_Expressions/Culture_Tips — see
+// supabase/migrations/0025_create_key_expressions_and_culture_tips.sql and
+// 0026_simplify_key_expressions_and_culture_tips.sql. The old "Tips" sheet
+// tab these replaced has been deleted from this spreadsheet entirely —
+// there is no TIPS_SHEET_NAME/loadTipsBySceneId_ in this file anymore.
+const KEY_EXPRESSIONS_SHEET_NAME = "Key_Expressions";
+const CULTURE_TIPS_SHEET_NAME = "Culture_Tips";
 const SYNC_LOG_SHEET_NAME = "Sync_Log";
 const READY_STATUS = "Ready";
+
+// A Symbol, not a string, so it can never collide with a real column
+// header name (however unlikely "getHeaderMap_ sheetName" as an actual
+// header would be) — used to stash the owning sheet's name on the
+// header-map object itself, so getColumn_ below can name it in error
+// messages without every one of its ~14 call sites having to thread a
+// sheet/sheetName argument through by hand.
+const HEADER_MAP_SHEET_NAME_KEY = Symbol("sheetName");
 
 const SCRIPT_PROPERTY_KEYS = {
   FUNCTION_URL: "SYNC_FUNCTION_URL",
@@ -104,11 +133,26 @@ const DIALOGUE_LINES_HEADERS = {
   END_TIME: "end_time",
 };
 
-const TIPS_HEADERS = {
+// Key_Expressions — sourced from public.key_expressions
+// (supabase/migrations/0025_create_key_expressions_and_culture_tips.sql,
+// trimmed to exactly these four columns by
+// 0026_simplify_key_expressions_and_culture_tips.sql — this sheet tab has
+// no usage_en/usage_zh/example_en/example_zh columns at all anymore).
+const KEY_EXPRESSIONS_HEADERS = {
   SCENE_ID: "scene_id",
   SORT_ORDER: "sort_order",
-  TITLE_EN: "title_en",
-  TITLE_ZH: "title_zh",
+  EXPRESSION_EN: "expression_en",
+  EXPRESSION_ZH: "expression_zh",
+};
+
+// Culture_Tips — sourced from public.culture_tips (same two migrations as
+// Key_Expressions above). No title_en/title_zh column — the frontend's
+// card header is always a generated "Tip N" from this row's position
+// (sort_order), never a stored title (see
+// src/app/pages/SceneDetailPage.tsx).
+const CULTURE_TIPS_HEADERS = {
+  SCENE_ID: "scene_id",
+  SORT_ORDER: "sort_order",
   BODY_EN: "body_en",
   BODY_ZH: "body_zh",
 };
@@ -216,7 +260,7 @@ function getMissingScriptProperties_() {
 function syncSelectedScenes() {
   const ui = SpreadsheetApp.getUi();
 
-  let sheet, rowIndices, headerMap, config, dialogueLinesBySceneId, tipsBySceneId;
+  let sheet, rowIndices, headerMap, config, dialogueLinesBySceneId, keyExpressionsBySceneId, cultureTipsBySceneId;
   try {
     sheet = requireScenesSheet_();
     rowIndices = requireSelectedDataRows_(sheet);
@@ -226,26 +270,27 @@ function syncSelectedScenes() {
     // selected, same reasoning as the Figma_Data script's
     // loadSubtitleCuesBySceneId_: avoid re-reading a whole tab per row.
     dialogueLinesBySceneId = loadDialogueLinesBySceneId_();
-    tipsBySceneId = loadTipsBySceneId_();
+    keyExpressionsBySceneId = loadKeyExpressionsBySceneId_();
+    cultureTipsBySceneId = loadCultureTipsBySceneId_();
   } catch (err) {
     ui.alert("Sync not started", describeError_(err), ui.ButtonSet.OK);
     return;
   }
 
   if (rowIndices.length === 1) {
-    syncSingleRow_(ui, sheet, rowIndices[0], headerMap, config, dialogueLinesBySceneId, tipsBySceneId);
+    syncSingleRow_(ui, sheet, rowIndices[0], headerMap, config, dialogueLinesBySceneId, keyExpressionsBySceneId, cultureTipsBySceneId);
   } else {
-    syncMultipleRows_(ui, sheet, rowIndices, headerMap, config, dialogueLinesBySceneId, tipsBySceneId);
+    syncMultipleRows_(ui, sheet, rowIndices, headerMap, config, dialogueLinesBySceneId, keyExpressionsBySceneId, cultureTipsBySceneId);
   }
 }
 
-function syncSingleRow_(ui, sheet, rowIndex, headerMap, config, dialogueLinesBySceneId, tipsBySceneId) {
+function syncSingleRow_(ui, sheet, rowIndex, headerMap, config, dialogueLinesBySceneId, keyExpressionsBySceneId, cultureTipsBySceneId) {
   let rowValues, payload;
   try {
     rowValues = getRowValues_(sheet, rowIndex, headerMap);
     requireSceneId_(headerMap, rowValues);
     requireReadyStatus_(headerMap, rowValues);
-    payload = buildPayload_(rowValues, dialogueLinesBySceneId, tipsBySceneId);
+    payload = buildPayload_(rowValues, dialogueLinesBySceneId, keyExpressionsBySceneId, cultureTipsBySceneId);
   } catch (err) {
     ui.alert("Sync not started", describeError_(err), ui.ButtonSet.OK);
     return;
@@ -267,7 +312,7 @@ function syncSingleRow_(ui, sheet, rowIndex, headerMap, config, dialogueLinesByS
 }
 
 /** Same permissive batch semantics as the Figma_Data script: not-Ready rows are skipped, not errors. */
-function syncMultipleRows_(ui, sheet, rowIndices, headerMap, config, dialogueLinesBySceneId, tipsBySceneId) {
+function syncMultipleRows_(ui, sheet, rowIndices, headerMap, config, dialogueLinesBySceneId, keyExpressionsBySceneId, cultureTipsBySceneId) {
   let synced = 0;
   let skipped = 0;
   let failed = 0;
@@ -284,7 +329,7 @@ function syncMultipleRows_(ui, sheet, rowIndices, headerMap, config, dialogueLin
     let payload;
     try {
       requireSceneId_(headerMap, rowValues);
-      payload = buildPayload_(rowValues, dialogueLinesBySceneId, tipsBySceneId);
+      payload = buildPayload_(rowValues, dialogueLinesBySceneId, keyExpressionsBySceneId, cultureTipsBySceneId);
     } catch (err) {
       const message = describeError_(err);
       failed++;
@@ -376,13 +421,44 @@ function getHeaderMap_(sheet) {
     if (header.length === 0) return;
     map[header] = i + 1;
   });
+  // Stashed under a Symbol key (see HEADER_MAP_SHEET_NAME_KEY above) so it
+  // can never collide with, or be enumerated alongside, a real header
+  // name — getColumn_ reads this back purely to name the sheet in its
+  // error messages.
+  map[HEADER_MAP_SHEET_NAME_KEY] = sheet.getName();
   return map;
 }
 
+// Two distinct failure modes, deliberately not conflated:
+//
+// 1. `headerName` itself isn't a real, non-empty string — this can ONLY
+//    happen when a caller passed a *_HEADERS constant property that
+//    doesn't exist (e.g. `KEY_EXPRESSIONS_HEADERS.USAGE_EN` after
+//    USAGE_EN was removed from that object — see
+//    0026_simplify_key_expressions_and_culture_tips.sql and the matching
+//    Code.gs cleanup). This is a bug in THIS FILE, not a spreadsheet
+//    problem, so it throws a plain Error (which describeError_ below
+//    surfaces as "Unexpected error: ..." rather than a clean
+//    ValidationError message) naming the sheet and the exact invalid
+//    value, so it's never mistaken for "the sheet is missing a column
+//    literally named undefined."
+// 2. `headerName` is a valid string but genuinely isn't one of the
+//    sheet's real column headers — this IS a spreadsheet problem, kept
+//    as the existing ValidationError, now also naming the sheet.
 function getColumn_(headerMap, headerName) {
+  const sheetName = headerMap[HEADER_MAP_SHEET_NAME_KEY] || "(unknown sheet)";
+  if (typeof headerName !== "string" || headerName.trim().length === 0) {
+    throw new Error(
+      'Internal configuration error: getColumn_ was called for sheet "' + sheetName + '" with an invalid header name (' +
+        JSON.stringify(headerName) + '). This means a *_HEADERS constant in Code.gs is missing a property that some ' +
+        "other part of this file still references (a required-headers list, a col()/readText_ call, etc.) — check the " +
+        '*_HEADERS object for sheet "' + sheetName + '" for a property that was removed but is still used elsewhere. ' +
+        "This is a code bug, not something fixable from the spreadsheet."
+    );
+  }
   const col = headerMap[headerName];
   if (!col) {
-    throw new ValidationError('Sheet is missing an expected column header: "' + headerName + '".');
+    throw new ValidationError('Sheet "' + sheetName + '" is missing an expected column header: "' + headerName + '".');
   }
   return col;
 }
@@ -557,18 +633,31 @@ function loadDialogueLinesBySceneId_() {
 }
 
 // ---------------------------------------------------------------------------
-// Tips — read once, indexed by scene_id
+// Key_Expressions / Culture_Tips — read once each, indexed by scene_id
+//
+// A Key_Expressions/Culture_Tips row with a non-blank scene_id but a
+// missing required field is a hard stop, naming the real sheet row — same
+// "fail loud, name the row" convention as loadDialogueLinesBySceneId_ uses
+// for line_id/line_order/speaker/etc. A row whose scene_id cell is blank
+// is still just a spacer, skipped with no error either way ("空白行不应写入
+// Supabase").
+//
+// sort_order is kept on the object sent to the Edge Function, not
+// stripped — public.key_expressions/culture_tips have a real sort_order
+// column and upsert by (scene_id, sort_order), so the wire payload must
+// carry it explicitly (see 0025_create_key_expressions_and_culture_tips.sql
+// and 0026_simplify_key_expressions_and_culture_tips.sql).
 // ---------------------------------------------------------------------------
 
-function loadTipsBySceneId_() {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(TIPS_SHEET_NAME);
+function loadKeyExpressionsBySceneId_() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(KEY_EXPRESSIONS_SHEET_NAME);
   if (!sheet) {
-    throw new ValidationError('Sheet "' + TIPS_SHEET_NAME + '" was not found in this spreadsheet.');
+    throw new ValidationError('Sheet "' + KEY_EXPRESSIONS_SHEET_NAME + '" was not found in this spreadsheet.');
   }
   const headerMap = getHeaderMap_(sheet);
   [
-    TIPS_HEADERS.SCENE_ID, TIPS_HEADERS.SORT_ORDER, TIPS_HEADERS.TITLE_EN,
-    TIPS_HEADERS.TITLE_ZH, TIPS_HEADERS.BODY_EN, TIPS_HEADERS.BODY_ZH,
+    KEY_EXPRESSIONS_HEADERS.SCENE_ID, KEY_EXPRESSIONS_HEADERS.SORT_ORDER,
+    KEY_EXPRESSIONS_HEADERS.EXPRESSION_EN, KEY_EXPRESSIONS_HEADERS.EXPRESSION_ZH,
   ].forEach(function (h) { getColumn_(headerMap, h); });
 
   const lastRow = sheet.getLastRow();
@@ -578,36 +667,93 @@ function loadTipsBySceneId_() {
   const rawRows = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
   const col = function (name) { return headerMap[name] - 1; };
 
-  rawRows.forEach(function (raw) {
-    const sceneId = String(raw[col(TIPS_HEADERS.SCENE_ID)] || "").trim();
+  rawRows.forEach(function (raw, i) {
+    const sheetRow = i + 2;
+    const sceneId = String(raw[col(KEY_EXPRESSIONS_HEADERS.SCENE_ID)] || "").trim();
     if (sceneId.length === 0) return;
 
-    const sortOrderRaw = raw[col(TIPS_HEADERS.SORT_ORDER)];
+    const sortOrderRaw = raw[col(KEY_EXPRESSIONS_HEADERS.SORT_ORDER)];
     const sortOrder = sortOrderRaw === "" || sortOrderRaw === null ? 0 : Number(sortOrderRaw);
-    const titleEn = String(raw[col(TIPS_HEADERS.TITLE_EN)] || "").trim();
-    const titleZh = String(raw[col(TIPS_HEADERS.TITLE_ZH)] || "").trim();
-    const bodyEn = String(raw[col(TIPS_HEADERS.BODY_EN)] || "").trim();
-    const bodyZh = String(raw[col(TIPS_HEADERS.BODY_ZH)] || "").trim();
-    if (titleEn.length === 0 || titleZh.length === 0 || bodyEn.length === 0 || bodyZh.length === 0) return;
+    if (!Number.isFinite(sortOrder)) {
+      throw new ValidationError(
+        'Key_Expressions row ' + sheetRow + ' (scene_id "' + sceneId + '") has a non-numeric sort_order.'
+      );
+    }
+
+    const expressionEn = String(raw[col(KEY_EXPRESSIONS_HEADERS.EXPRESSION_EN)] || "").trim();
+    const expressionZh = String(raw[col(KEY_EXPRESSIONS_HEADERS.EXPRESSION_ZH)] || "").trim();
+    if (expressionEn.length === 0 || expressionZh.length === 0) {
+      throw new ValidationError(
+        'Key_Expressions row ' + sheetRow + ' (scene_id "' + sceneId + '") is missing a required field ' +
+          "(expression_en or expression_zh). Fill it in, then sync again."
+      );
+    }
 
     if (!bySceneId[sceneId]) bySceneId[sceneId] = [];
-    // type/title/titleZh/body/bodyZh matches the Edge Function's existing
-    // TipRow shape (supabase/functions/sync-scene/validation.ts) — "tip"
-    // is a fixed literal there's no dedicated column for, same as the
-    // Figma_Data script's convention.
     bySceneId[sceneId].push({
-      sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
-      type: "tip",
-      title: titleEn,
-      titleZh: titleZh,
-      body: bodyEn,
-      bodyZh: bodyZh,
+      sort_order: sortOrder,
+      expression_en: expressionEn,
+      expression_zh: expressionZh,
     });
   });
 
   Object.keys(bySceneId).forEach(function (sceneId) {
-    bySceneId[sceneId].sort(function (a, b) { return a.sortOrder - b.sortOrder; });
-    bySceneId[sceneId].forEach(function (tip) { delete tip.sortOrder; });
+    bySceneId[sceneId].sort(function (a, b) { return a.sort_order - b.sort_order; });
+  });
+
+  return bySceneId;
+}
+
+function loadCultureTipsBySceneId_() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CULTURE_TIPS_SHEET_NAME);
+  if (!sheet) {
+    throw new ValidationError('Sheet "' + CULTURE_TIPS_SHEET_NAME + '" was not found in this spreadsheet.');
+  }
+  const headerMap = getHeaderMap_(sheet);
+  [
+    CULTURE_TIPS_HEADERS.SCENE_ID, CULTURE_TIPS_HEADERS.SORT_ORDER,
+    CULTURE_TIPS_HEADERS.BODY_EN, CULTURE_TIPS_HEADERS.BODY_ZH,
+  ].forEach(function (h) { getColumn_(headerMap, h); });
+
+  const lastRow = sheet.getLastRow();
+  const bySceneId = {};
+  if (lastRow < 2) return bySceneId;
+
+  const rawRows = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
+  const col = function (name) { return headerMap[name] - 1; };
+
+  rawRows.forEach(function (raw, i) {
+    const sheetRow = i + 2;
+    const sceneId = String(raw[col(CULTURE_TIPS_HEADERS.SCENE_ID)] || "").trim();
+    if (sceneId.length === 0) return;
+
+    const sortOrderRaw = raw[col(CULTURE_TIPS_HEADERS.SORT_ORDER)];
+    const sortOrder = sortOrderRaw === "" || sortOrderRaw === null ? 0 : Number(sortOrderRaw);
+    if (!Number.isFinite(sortOrder)) {
+      throw new ValidationError(
+        'Culture_Tips row ' + sheetRow + ' (scene_id "' + sceneId + '") has a non-numeric sort_order.'
+      );
+    }
+
+    const bodyEn = String(raw[col(CULTURE_TIPS_HEADERS.BODY_EN)] || "").trim();
+    const bodyZh = String(raw[col(CULTURE_TIPS_HEADERS.BODY_ZH)] || "").trim();
+    if (bodyEn.length === 0 || bodyZh.length === 0) {
+      throw new ValidationError(
+        'Culture_Tips row ' + sheetRow + ' (scene_id "' + sceneId + '") is missing a required field ' +
+          "(body_en or body_zh). Fill it in, then sync again."
+      );
+    }
+
+    if (!bySceneId[sceneId]) bySceneId[sceneId] = [];
+    bySceneId[sceneId].push({
+      sort_order: sortOrder,
+      body_en: bodyEn,
+      body_zh: bodyZh,
+    });
+  });
+
+  Object.keys(bySceneId).forEach(function (sceneId) {
+    bySceneId[sceneId].sort(function (a, b) { return a.sort_order - b.sort_order; });
   });
 
   return bySceneId;
@@ -618,27 +764,33 @@ function loadTipsBySceneId_() {
 // ---------------------------------------------------------------------------
 
 /**
- * Deliberately does NOT set dialogue/expressions/vocabulary/subtitle_cues
- * on the payload object at all — not even to null. JSON.stringify drops
- * keys that were never assigned, so the Edge Function sees them as
- * "omitted" and leaves those columns untouched (see the header comment
- * at the top of this file and ScenePayloadRow in validation.ts).
+ * Deliberately does NOT set dialogue/expressions/vocabulary/subtitle_cues/
+ * tips on the payload object at all — not even to null. JSON.stringify
+ * drops keys that were never assigned, so the Edge Function sees them as
+ * "omitted" and leaves those columns untouched (see the header comment at
+ * the top of this file and ScenePayloadRow in validation.ts). tips is
+ * never sent at all now that the "Tips" sheet tab has been deleted — this
+ * scene's scenes.tips column, if it has any value from an earlier sync or
+ * from the Figma_Data pipeline, is simply left alone.
  *
- * tips follows the same "omit means leave alone" rule as of this fix: an
- * earlier version always set `tips: tipsBySceneId[sceneId] || []`, so a
- * scene with no rows yet in the Tips sheet synced an explicit empty
- * array — which the Edge Function/RPC (at the time) treated as "clear
- * it", silently wiping any real tips already in Supabase (this is
- * exactly what happened to scene_001's 2 tips during the first
- * scenes-sync run). Only include the key when the Tips sheet actually
- * has at least one row for this scene_id.
+ * key_expressions/culture_tips follow the same "omit means leave alone"
+ * rule for the empty case: an earlier version always set e.g.
+ * `key_expressions: keyExpressionsBySceneId[sceneId] || []`, so a scene
+ * with no rows yet synced an explicit empty array — which the Edge
+ * Function/RPC (at the time) could treat as "clear it", silently wiping
+ * real data already in Supabase (this is exactly what happened to
+ * scene_001's 2 legacy tips during an early scenes-sync run — see
+ * 0021_protect_tips_from_empty_overwrite.sql). Only include either key
+ * when its sheet tab actually has at least one row for this scene_id — see
+ * 0025_create_key_expressions_and_culture_tips.sql.
  */
-function buildPayload_(rowValues, dialogueLinesBySceneId, tipsBySceneId) {
+function buildPayload_(rowValues, dialogueLinesBySceneId, keyExpressionsBySceneId, cultureTipsBySceneId) {
   const sceneId = readText_(rowValues, SCENES_HEADERS.SCENE_ID);
   const coverImage = readText_(rowValues, SCENES_HEADERS.COVER_IMAGE);
   const pdfUrl = readText_(rowValues, SCENES_HEADERS.PDF_URL);
   const videoUrl = readText_(rowValues, SCENES_HEADERS.VIDEO_URL);
-  const tipsForScene = tipsBySceneId[sceneId];
+  const keyExpressionsForScene = keyExpressionsBySceneId[sceneId];
+  const cultureTipsForScene = cultureTipsBySceneId[sceneId];
 
   const payload = {
     scene_id: sceneId,
@@ -661,8 +813,11 @@ function buildPayload_(rowValues, dialogueLinesBySceneId, tipsBySceneId) {
     learning_goal_zh: readText_(rowValues, SCENES_HEADERS.LEARNING_GOAL_ZH) || null,
     dialogue_lines: dialogueLinesBySceneId[sceneId] || [],
   };
-  if (tipsForScene && tipsForScene.length > 0) {
-    payload.tips = tipsForScene;
+  if (keyExpressionsForScene && keyExpressionsForScene.length > 0) {
+    payload.key_expressions = keyExpressionsForScene;
+  }
+  if (cultureTipsForScene && cultureTipsForScene.length > 0) {
+    payload.culture_tips = cultureTipsForScene;
   }
 
   return payload;

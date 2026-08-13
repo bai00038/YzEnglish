@@ -8,6 +8,48 @@ import { SpeechBubbleLabel } from "@/app/components/brand";
 import { LevelBadge, DurationLabel } from "@/app/components/badges";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { buildSceneSpeakers, normalizeSpeaker, SPEAKER_STYLES } from "@/data/speakerRoles";
+import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
+
+// Key Expressions card — expressionEn/expressionZh, the only two fields
+// KeyExpressionItem has (public.key_expressions.usage_en/usage_zh/
+// example_en/example_zh were dropped entirely — see
+// supabase/migrations/0026_simplify_key_expressions_and_culture_tips.sql).
+// Fixed short height, two per row on desktop.
+function KeyExpressionCard({ item }: { item: KeyExpressionItem }) {
+  return (
+    <div
+      className="rounded-xl border px-5 py-4 min-h-[88px] flex flex-col justify-center"
+      style={{ borderColor: "rgba(24,76,58,0.13)", backgroundColor: "rgba(24,76,58,0.025)" }}
+    >
+      <p className="text-base font-bold text-primary leading-snug">{item.expressionEn}</p>
+      <p className="text-sm text-[#3A3B37] mt-1 leading-snug">{item.expressionZh}</p>
+    </div>
+  );
+}
+
+// Culture & Local Tips card — bodyEn/bodyZh, the only two fields
+// CultureTipItem has (public.culture_tips.title_en/title_zh were dropped
+// entirely — see
+// supabase/migrations/0026_simplify_key_expressions_and_culture_tips.sql).
+// The card header is always "Tip N", generated from this item's 1-based
+// position in the already sort_order-ascending array (see
+// cultureTipItems in SceneDetailPage below).
+function CultureTipCard({ item, tipNumber }: { item: CultureTipItem; tipNumber: number }) {
+  return (
+    <div className="rounded-xl overflow-hidden border" style={{ borderColor: "rgba(24,76,58,0.13)", backgroundColor: "rgba(24,76,58,0.025)" }}>
+      <div className="flex items-center gap-2 px-4 py-3 border-b" style={{ borderColor: "rgba(24,76,58,0.09)" }}>
+        <Info size={13} className="text-primary flex-shrink-0" />
+        <p className="text-sm font-bold text-primary leading-snug">Tip {tipNumber}</p>
+      </div>
+      <div className="px-4 py-4">
+        <p className="text-sm leading-[1.7] font-semibold text-foreground">{item.bodyEn}</p>
+        {item.bodyZh && (
+          <p className="text-sm mt-1.5 leading-[1.7] text-muted-foreground">{item.bodyZh}</p>
+        )}
+      </div>
+    </div>
+  );
+}
 
 const CHAPTER_LABELS = [
   { num: "01", label: "Watch", sectionId: "section-watch" },
@@ -23,6 +65,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const scene = data?.scene ?? null;
   const content = scene?.content;
   const related = data?.related ?? [];
+  // Language module data — sourced from public.key_expressions/
+  // public.culture_tips (falling back to legacy scenes.tips only when a
+  // scene has no rows in the new tables yet; see "Temporary legacy Tips
+  // fallback" in src/data/scenes-access.ts). Already sort_order-ascending
+  // as fetched/derived there — never re-sorted or filtered by title here.
+  const keyExpressionItems = content?.keyExpressions ?? [];
+  const cultureTipItems = content?.cultureTips ?? [];
   const prevScene = data?.prevScene ?? undefined;
   const nextScene = data?.nextScene ?? undefined;
 
@@ -55,7 +104,18 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     setVideoCurrentTime(0);
     setVideoPaused(true);
     setPinnedLineIndex(null);
+    cancelRangePlayback();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene?.id]);
+
+  // True unmount (navigating away from this page entirely) — the
+  // scene-switch effect above only fires on a scene?.id change, not on
+  // unmount, so a single-line frame watcher still in flight needs its
+  // own cleanup here or it keeps polling a detached <video> element.
+  useEffect(() => {
+    return () => cancelRangePlayback();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Rendered ourselves (not via native <track>/TextTrack) — the browser's
   // own caption box repositions itself depending on whether the native
@@ -96,7 +156,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // Either way, a scene with neither structure populated ("没有时间码的
   // 旧场景不会报错") just returns an empty Map — every line renders as
   // plain, non-interactive text.
-  const dialogueLineAudioRanges = useMemo(() => {
+  // Exact, human-calibrated start/end for each line — straight from
+  // dialogue_lines (or, for legacy scenes, matched verbatim against
+  // subtitle_cues) with NO padding whatsoever. This is the only range
+  // ever used to control actual playback (see playDialogueLine) — a
+  // line's audio must stop exactly at its own end_time, never bleeding
+  // even a fraction of a second into the next line.
+  const dialogueLineRawRanges = useMemo(() => {
     const map = new Map<number, { start: number; end: number }>();
     const lines = content?.dialogue;
     if (!lines || lines.length === 0) return map;
@@ -135,18 +201,24 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       }
     }
 
-    // Dialogue_Lines' timestamps aren't frame-accurate — clipped first
-    // words and clips bleeding into the next line are both just the raw
-    // start/end running a little late. Nudge start earlier and end later
-    // by a small pre/post-roll to recover the edges, but never past a
-    // neighboring line's OWN (un-padded) boundary — that clamp is what
-    // guarantees this can reduce clipping without ever reintroducing
-    // bleed into the next line, and keeps every line's window
-    // non-overlapping (required for activeDialogueLineIndex below to
-    // ever match at most one line at a time).
+    return map;
+  }, [content?.dialogue, scene?.subtitleCues]);
+
+  // Padded copy of dialogueLineRawRanges, used ONLY to decide which line
+  // to highlight/auto-scroll to while the video is playing continuously
+  // (see activeDialogueLineIndex below) — NEVER to control playback.
+  // Dialogue_Lines' timestamps aren't frame-accurate for *display*
+  // purposes — clipped first words and a highlight that drops out a beat
+  // early both come from the raw start/end running a little tight. Nudge
+  // start earlier and end later by a small pre/post-roll to recover the
+  // edges, but never past a neighboring line's OWN (un-padded) boundary —
+  // that clamp keeps every line's window non-overlapping (required for
+  // activeDialogueLineIndex to ever match at most one line at a time).
+  const dialogueLineAudioRanges = useMemo(() => {
+    const map = new Map<number, { start: number; end: number }>();
     const PRE_ROLL = 0.15;
     const POST_ROLL = 0.15;
-    const ordered = Array.from(map.entries()).sort((a, b) => a[0] - b[0]);
+    const ordered = Array.from(dialogueLineRawRanges.entries()).sort((a, b) => a[0] - b[0]);
     ordered.forEach(([lineIndex, range], i) => {
       const prevEnd = i > 0 ? ordered[i - 1][1].end : 0;
       const nextStart = i < ordered.length - 1 ? ordered[i + 1][1].start : Infinity;
@@ -157,7 +229,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     });
 
     return map;
-  }, [content?.dialogue, scene?.subtitleCues]);
+  }, [dialogueLineRawRanges]);
 
   // Whichever dialogue line's window currently contains the video's
   // playhead — null between lines (a pause) or once playback runs past
@@ -188,16 +260,165 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // Cleared the moment the video actually pauses for any reason (see the
   // <video> element's onPause below), so a stale target from a
   // previously-clicked line can never fire again after later, unrelated
-  // playback resumes past that same timestamp.
-  const singleLineModeEndRef = useRef<number | null>(null);
+  // playback resumes past that same timestamp. This is also what the
+  // frame watcher below checks each tick to know single-line mode is
+  // still (still means: not superseded, not manually paused) in effect.
+  const activeEndRef = useRef<number | null>(null);
+
+  // Frame-accurate end-of-line watcher. video.currentTime as read from a
+  // requestAnimationFrame poll is the browser's best-effort estimate of
+  // playback position, not the timestamp of the frame actually on
+  // screen — HTMLVideoElement.requestVideoFrameCallback's mediaTime IS
+  // that timestamp, straight from the compositor, so it's the most
+  // accurate stop signal script can get. Used when available; rAF
+  // polling currentTime directly is the fallback for browsers without
+  // rVFC. Deliberately no early-stop margin subtracted from end_time
+  // here — stopping a fixed amount early doesn't fix imprecision, it
+  // just trades "bleeds into the next line" for "clips this line's own
+  // ending," and end_time must play in full.
+  const frameRequestRef = useRef<number | null>(null);
+  const videoFrameRequestRef = useRef<number | null>(null);
+  // The 'seeked' listener currently pending after a click set currentTime
+  // but before the browser finished the seek — must be individually
+  // removable so a second line click while the first seek is still in
+  // flight cancels the stale one instead of both firing play().
+  const pendingSeekedHandlerRef = useRef<(() => void) | null>(null);
+  // Bumped on every playDialogueLine call. Captured by each async step
+  // (the 'seeked' handler, the frame-watcher loop) so a step that
+  // finishes after a *later* click has already moved on to a different
+  // line recognizes itself as stale and no-ops instead of acting on an
+  // outdated end_time or restarting playback the user has moved past.
+  const playRequestRef = useRef(0);
+
+  // Opt-in evidence dump for diagnosing single-line playback boundaries —
+  // off by default so it never ships noisy. Flip on from devtools with
+  // `window.__DEBUG_DIALOGUE_TIMING = true` before clicking a line, no
+  // code change needed.
+  const isDialogueTimingDebugEnabled = () =>
+    typeof window !== "undefined" && (window as unknown as Record<string, unknown>).__DEBUG_DIALOGUE_TIMING === true;
+
+  function cancelRangePlayback() {
+    if (frameRequestRef.current !== null) {
+      cancelAnimationFrame(frameRequestRef.current);
+      frameRequestRef.current = null;
+    }
+    const video = videoRef.current;
+    if (
+      video &&
+      videoFrameRequestRef.current !== null &&
+      typeof video.cancelVideoFrameCallback === "function"
+    ) {
+      video.cancelVideoFrameCallback(videoFrameRequestRef.current);
+    }
+    videoFrameRequestRef.current = null;
+    if (video && pendingSeekedHandlerRef.current) {
+      video.removeEventListener("seeked", pendingSeekedHandlerRef.current);
+      pendingSeekedHandlerRef.current = null;
+    }
+    activeEndRef.current = null;
+  }
+
+  // Polls playback position every rendered frame and pauses the instant
+  // it reaches (never before) endTime — the ONLY thing that pauses
+  // single-line playback; onTimeUpdate below is display-only. requestId
+  // is this call's playRequestRef snapshot: if a newer line click has
+  // since bumped playRequestRef, this loop stops touching the video
+  // instead of fighting the new playback.
+  function watchForLineEnd(requestId: number, endTime: number) {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const stopAt = (t: number) => {
+      video.pause(); // triggers onPause below, which clears activeEndRef
+      video.currentTime = endTime;
+      setVideoCurrentTime(t);
+      if (isDialogueTimingDebugEnabled()) {
+        console.table({ expectedEnd: endTime, actualPauseTime: t, overrun: t - endTime });
+      }
+    };
+
+    if (typeof video.requestVideoFrameCallback === "function") {
+      const tick = (_now: number, metadata: { mediaTime: number }) => {
+        if (playRequestRef.current !== requestId || activeEndRef.current === null) return;
+        if (metadata.mediaTime >= endTime) {
+          stopAt(metadata.mediaTime);
+          return;
+        }
+        setVideoCurrentTime(metadata.mediaTime);
+        videoFrameRequestRef.current = video.requestVideoFrameCallback(tick);
+      };
+      videoFrameRequestRef.current = video.requestVideoFrameCallback(tick);
+    } else {
+      const tick = () => {
+        if (playRequestRef.current !== requestId || activeEndRef.current === null) return;
+        const t = video.currentTime;
+        if (t >= endTime) {
+          stopAt(t);
+          return;
+        }
+        setVideoCurrentTime(t);
+        frameRequestRef.current = requestAnimationFrame(tick);
+      };
+      frameRequestRef.current = requestAnimationFrame(tick);
+    }
+  }
 
   function playDialogueLine(lineIndex: number, range: { start: number; end: number }) {
     const video = videoRef.current;
     if (!video) return;
-    singleLineModeEndRef.current = range.end;
+    // Cancel whatever the previous click left in flight — a stale
+    // frame-watcher loop still polling toward the OLD line's end_time,
+    // or a still-pending 'seeked' listener from a seek that hasn't
+    // landed yet — before starting this one.
+    cancelRangePlayback();
+    const requestId = ++playRequestRef.current;
+    activeEndRef.current = range.end;
     setPinnedLineIndex(lineIndex);
+
+    if (isDialogueTimingDebugEnabled()) {
+      const line = content?.dialogue[lineIndex];
+      const nextLine = content?.dialogue[lineIndex + 1];
+      console.table({
+        lineIndex,
+        rawStart: line?.start,
+        rawEnd: line?.end,
+        parsedStart: range.start,
+        parsedEnd: range.end,
+        videoCurrentTimeBeforeSeek: video.currentTime,
+        nextLineStart: nextLine?.start ?? null,
+      });
+    }
+
+    const beginPlayback = () => {
+      if (playRequestRef.current !== requestId) return; // superseded by a later click
+      video.play();
+      watchForLineEnd(requestId, range.end);
+    };
+
+    // Setting currentTime to (near) its current value seeks nowhere, so
+    // no 'seeked' event would ever fire — play immediately in that case
+    // rather than hanging.
+    if (Math.abs(video.currentTime - range.start) < 0.005) {
+      beginPlayback();
+      return;
+    }
+
+    video.pause();
+    const onSeeked = () => {
+      pendingSeekedHandlerRef.current = null;
+      // video.currentTime is only updated to the seek target once this
+      // event fires — beginPlayback (and so the frame watcher) must
+      // never run before it, or it starts measuring against the
+      // pre-seek position.
+      if (playRequestRef.current !== requestId) return; // superseded by a later click
+      if (isDialogueTimingDebugEnabled()) {
+        console.table({ requestedStart: range.start, actualSeekedTime: video.currentTime });
+      }
+      beginPlayback();
+    };
+    pendingSeekedHandlerRef.current = onSeeked;
+    video.addEventListener("seeked", onSeeked, { once: true });
     video.currentTime = range.start;
-    video.play();
   }
 
   // Intentionally no auto-scroll here: highlighting must follow
@@ -282,8 +503,12 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       isProgrammaticScrollRef.current = false;
     }, 700);
 
-    // Offset: main nav h-14 (56px) + sticky chapter nav (~44px) + 8px buffer
-    const offset = 64 + 44 + 8;
+    // Offset: sticky chapter nav (~44px) + 8px buffer, plus the fixed
+    // desktop header (64px) only when it's actually rendered — below the
+    // 641px breakpoint DesktopNav is hidden (see App.tsx), so there's
+    // nothing to offset for there.
+    const desktopHeaderOffset = window.innerWidth >= 641 ? 64 : 0;
+    const offset = desktopHeaderOffset + 44 + 8;
     const top = el.getBoundingClientRect().top + window.scrollY - offset;
     window.scrollTo({ top, behavior: "smooth" });
   };
@@ -374,8 +599,12 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
         </div>
       ) : (
         <>
-          {/* ─── Sticky chapter nav ─── */}
-          <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
+          {/* ─── Sticky chapter nav ───
+              Below 641px there's no fixed top nav (DesktopNav hides there,
+              see App.tsx's `min-[641px]:pt-16`), so this must stick to the
+              real viewport top — not the desktop header's 64px offset, or
+              it floats mid-screen over the video on mobile. */}
+          <div className="sticky top-[env(safe-area-inset-top,0px)] min-[641px]:top-16 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
             <div className="max-w-[1000px] mx-auto px-4 md:px-6">
               <div className="flex items-center gap-0 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
                 {CHAPTER_LABELS.map((ch, i) => {
@@ -431,41 +660,50 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     <video
                       ref={videoRef}
                       controls
+                      controlsList="nodownload noremoteplayback"
+                      disablePictureInPicture
                       playsInline
                       preload="metadata"
                       poster={scene.photo || undefined}
                       className="w-full h-full object-cover"
+                      draggable={false}
+                      onContextMenu={(event) => event.preventDefault()}
+                      onDragStart={(event) => event.preventDefault()}
                       onPlay={() => {
                         setVideoPaused(false);
-                        // singleLineModeEndRef is set (before video.play()
-                        // is called) only by playDialogueLine — so a play
+                        // activeEndRef is set (before video.play() is
+                        // called) only by playDialogueLine — so a play
                         // event with it still null means this is normal
                         // continuous playback (big button or native
                         // controls), which should track the video's own
                         // time again rather than stay pinned to whichever
                         // line was last clicked.
-                        if (singleLineModeEndRef.current === null) {
+                        if (activeEndRef.current === null) {
                           setPinnedLineIndex(null);
                         }
                       }}
                       onPause={() => {
                         setVideoPaused(true);
-                        // Any pause — manual, native-controls, or our own
-                        // single-line auto-stop just below — ends
-                        // single-line mode. Whatever resumes playback next
-                        // (big play button, native controls, another line
-                        // click) is never held to a stale line's end time.
-                        singleLineModeEndRef.current = null;
+                        // Any pause — manual, native-controls, or the
+                        // frame watcher's own auto-stop (see
+                        // watchForLineEnd) — ends single-line mode.
+                        // Whatever resumes playback next (big play
+                        // button, native controls, another line click) is
+                        // never held to a stale line's end time.
+                        cancelRangePlayback();
                       }}
+                      // Display-only: keeps videoCurrentTime (and so the
+                      // highlight/subtitle) in sync during ordinary
+                      // continuous playback, i.e. whenever the frame
+                      // watcher isn't already doing that at a much higher
+                      // resolution for single-line playback. Never pauses
+                      // the video itself — see watchForLineEnd for why
+                      // timeupdate's firing rate is too coarse for that.
                       onTimeUpdate={e => {
-                        const t = e.currentTarget.currentTime;
-                        setVideoCurrentTime(t);
-                        const stopAt = singleLineModeEndRef.current;
-                        if (stopAt !== null && t >= stopAt) {
-                          e.currentTarget.pause(); // triggers onPause above, which clears singleLineModeEndRef
-                        }
+                        setVideoCurrentTime(e.currentTarget.currentTime);
                       }}
                       onEnded={e => {
+                        cancelRangePlayback();
                         e.currentTarget.currentTime = 0;
                         setVideoCurrentTime(0);
                       }}
@@ -513,7 +751,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         <button
                           type="button"
                           onClick={() => {
-                            singleLineModeEndRef.current = null; // resuming from the big button is always continuous playback
+                            cancelRangePlayback(); // resuming from the big button is always continuous playback
                             videoRef.current?.play();
                           }}
                           aria-label="Play video"
@@ -622,11 +860,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         tabIndex={audioRange ? 0 : undefined}
                         aria-pressed={audioRange ? isActiveLine : undefined}
                         aria-label={audioRange ? "Play English audio" : undefined}
-                        onClick={audioRange ? () => playDialogueLine(i, audioRange) : undefined}
+                        onClick={audioRange ? () => playDialogueLine(i, dialogueLineRawRanges.get(i)!) : undefined}
                         onKeyDown={audioRange ? e => {
                           if (e.key === "Enter" || e.key === " ") {
                             e.preventDefault();
-                            playDialogueLine(i, audioRange);
+                            playDialogueLine(i, dialogueLineRawRanges.get(i)!);
                           }
                         } : undefined}
                       >
@@ -680,51 +918,35 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   </div>
                 </div>
 
-                {/* Key Expressions — 2-col grid */}
-                <div className="mb-8">
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-0.5 h-4 rounded-full bg-primary" />
-                    <span className="text-xs font-black uppercase tracking-[0.14em] text-muted-foreground">Key Expressions · 重点表达</span>
+                {/* Key Expressions — from public.key_expressions (or its legacy-tips fallback) */}
+                {keyExpressionItems.length > 0 && (
+                  <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-0.5 h-4 rounded-full bg-primary" />
+                      <span className="text-xs font-black uppercase tracking-[0.14em] text-muted-foreground">Key Expressions · 重点表达</span>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {keyExpressionItems.map((item, i) => (
+                        <KeyExpressionCard key={i} item={item} />
+                      ))}
+                    </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {content.expressions.map((exp, i) => (
-                      <div key={i} className="border border-border rounded-xl overflow-hidden bg-background">
-                        <div className="px-4 py-4">
-                          <p className="text-[16px] font-semibold text-primary leading-snug">{exp.en}</p>
-                          <p className="text-[14px] text-[#3A3B37] font-normal mt-1">{exp.zh}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                )}
 
-                {/* Culture & Local Tips */}
-                <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-0.5 h-4 rounded-full bg-primary" />
-                    <span className="text-xs font-black uppercase tracking-[0.14em] text-muted-foreground">Culture & Local Tips · 文化与本地提示</span>
+                {/* Culture & Local Tips — from public.culture_tips (or its legacy-tips fallback) */}
+                {cultureTipItems.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-0.5 h-4 rounded-full bg-primary" />
+                      <span className="text-xs font-black uppercase tracking-[0.14em] text-muted-foreground">Culture & Local Tips · 文化与本地提示</span>
+                    </div>
+                    <div className="space-y-3">
+                      {cultureTipItems.map((item, i) => (
+                        <CultureTipCard key={i} item={item} tipNumber={i + 1} />
+                      ))}
+                    </div>
                   </div>
-                  <div className="space-y-3">
-                    {content.tips.map((tip, i) => (
-                      <div key={i} className="rounded-xl overflow-hidden border" style={{ borderColor: "rgba(24,76,58,0.13)", backgroundColor: "rgba(24,76,58,0.025)" }}>
-                        <div className="flex items-center gap-2.5 px-4 py-3 border-b" style={{ borderColor: "rgba(24,76,58,0.09)" }}>
-                          <Info size={13} className="text-primary flex-shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <p className="text-sm font-bold text-primary">{tip.title}</p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="px-4 py-4">
-                          <p className="text-sm leading-[1.7] text-primary" style={{ fontWeight: 600 }}>{tip.body}</p>
-                          {tip.bodyZh && (
-                            <p className="text-sm mt-1.5 text-[#3A3B37]" style={{ fontWeight: 400 }}>{tip.bodyZh}</p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                )}
               </div>{/* inner card */}
               </div>{/* inner container */}
             </section>

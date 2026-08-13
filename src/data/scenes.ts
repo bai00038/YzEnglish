@@ -88,9 +88,9 @@ export const SCENES: Scene[] = [
         { word: "expire", phonetic: "/ɪkˈspaɪər/", pos: "v.", zh: "过期", example: "The store credit doesn't expire." },
       ],
       tips: [
-        { type: "Must Know", title: "No receipt? Store credit is normal", titleZh: "没有收据？店内积分是正常解决方案", body: "In North America, stores are not required to accept returns without a receipt. Most will offer store credit as a compromise — it's common and not a punishment. Don't be surprised or offended.", bodyZh: "在北美，商店没有义务接受无收据退货。大多数商店会提供店内积分作为折中方案——这很常见，并非惩罚。不必感到惊讶或不满。" },
-        { type: "Practical Tip", title: "Keep receipts, even small ones", titleZh: "保留收据，哪怕是小额购物", body: "A photo of your receipt on your phone is usually accepted. Some stores can look up purchases made by credit card if you've lost the paper receipt.", bodyZh: "手机里的收据照片通常也可被接受。如果纸质收据丢失，有些商店可以通过信用卡记录查询购买历史。" },
-        { type: "Good to Know", title: "Refund timing depends on your bank", titleZh: "退款时间取决于您的银行", body: "When a store says '3 to 5 business days', the store has already processed it. The delay is on your bank's side — weekends and holidays don't count.", bodyZh: "当商店说「3至5个工作日」时，商店已经处理完毕。延迟来自您银行的处理时间——周末和节假日不计算在内。" },
+        { type: "Must Know", tipType: "culture_tip", title: "No receipt? Store credit is normal", titleZh: "没有收据？店内积分是正常解决方案", body: "In North America, stores are not required to accept returns without a receipt. Most will offer store credit as a compromise — it's common and not a punishment. Don't be surprised or offended.", bodyZh: "在北美，商店没有义务接受无收据退货。大多数商店会提供店内积分作为折中方案——这很常见，并非惩罚。不必感到惊讶或不满。" },
+        { type: "Practical Tip", tipType: "culture_tip", title: "Keep receipts, even small ones", titleZh: "保留收据，哪怕是小额购物", body: "A photo of your receipt on your phone is usually accepted. Some stores can look up purchases made by credit card if you've lost the paper receipt.", bodyZh: "手机里的收据照片通常也可被接受。如果纸质收据丢失，有些商店可以通过信用卡记录查询购买历史。" },
+        { type: "Good to Know", tipType: "culture_tip", title: "Refund timing depends on your bank", titleZh: "退款时间取决于您的银行", body: "When a store says '3 to 5 business days', the store has already processed it. The delay is on your bank's side — weekends and holidays don't count.", bodyZh: "当商店说「3至5个工作日」时，商店已经处理完毕。延迟来自您银行的处理时间——周末和节假日不计算在内。" },
       ],
       relatedSceneIds: [4, 5, 7],
       prevSceneId: 5,

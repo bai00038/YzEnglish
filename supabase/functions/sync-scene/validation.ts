@@ -34,8 +34,19 @@ export interface VocabularyRow {
   example: string;
 }
 
+// tip_type splits the scene detail page's Language module into two
+// sections (see src/app/pages/SceneDetailPage.tsx) — "key_expression" for
+// the Key Expressions grid, "culture_tip" for Culture & Local Tips. Any
+// other pipeline sending tips (e.g. the legacy Figma_Data script, whose
+// buildTips_ has no concept of tip_type at all) omits this field, which
+// requireTipType below defaults to "key_expression" rather than rejecting
+// — see that function's comment.
+const TIP_TYPES = ["key_expression", "culture_tip"] as const;
+type TipType = (typeof TIP_TYPES)[number];
+
 export interface TipRow {
   type: string;
+  tipType: TipType;
   title: string;
   titleZh: string;
   body: string;
@@ -50,6 +61,30 @@ export interface SubtitleCueRow {
   end: number;
   en: string;
   zh: string;
+}
+
+// One row for the key_expressions table (see
+// supabase/migrations/0025_create_key_expressions_and_culture_tips.sql,
+// simplified down to just these four fields by
+// 0026_simplify_key_expressions_and_culture_tips.sql once usage_en/usage_zh/
+// example_en/example_zh proved unused — the Google Sheet's Key_Expressions
+// tab has no columns for them either). Upserted by (scene_id, sort_order),
+// not a permanent external id like dialogue_lines — see 0025's header for
+// why no cross-scene identity is needed here.
+export interface KeyExpressionRowPayload {
+  sort_order: number;
+  expression_en: string;
+  expression_zh: string;
+}
+
+// One row for the culture_tips table — simplified the same way as
+// KeyExpressionRowPayload above (0026 dropped title_en/title_zh; the
+// frontend's card header is always a generated "Tip N" from sort_order,
+// see src/app/pages/SceneDetailPage.tsx, never a stored title).
+export interface CultureTipRowPayload {
+  sort_order: number;
+  body_en: string;
+  body_zh: string;
 }
 
 // One row for the dialogue_lines table (see
@@ -151,6 +186,14 @@ export interface ValidatedScenePayload {
   // deliberate "clear all lines" request, gated by scene status inside
   // the sync RPC (see 0019_sync_scene_rpc.sql).
   dialogueLines: DialogueLineRowPayload[] | undefined;
+  // undefined means "leave public.key_expressions/culture_tips for this
+  // scene untouched" — same as tips above (see validateKeyExpressions/
+  // validateCultureTips below), NOT the same "empty array clears it"
+  // semantics as dialogueLines: an empty key_expressions[]/culture_tips[]
+  // is treated exactly like the key being omitted, never a clear. See
+  // 0025_create_key_expressions_and_culture_tips.sql's header for why.
+  keyExpressions: KeyExpressionRowPayload[] | undefined;
+  cultureTips: CultureTipRowPayload[] | undefined;
 }
 
 function requireNonEmptyString(value: unknown, field: string): string {
@@ -407,17 +450,87 @@ function validateDialogueLines(value: unknown): DialogueLineRowPayload[] | undef
   return lines;
 }
 
+// Missing/blank tipType -> "key_expression" (compat default for old rows
+// and pipelines that predate tip_type — see this file's TIP_TYPES comment
+// and the matching default in google-apps-script/scenes-sync/Code.gs's
+// loadTipsBySceneId_). A tipType that IS present but isn't one of
+// TIP_TYPES is a real data error (most likely a typo), so that still
+// throws rather than silently defaulting.
+function requireTipType(value: unknown, field: string): TipType {
+  if (value === undefined || value === null) return "key_expression";
+  if (typeof value !== "string") {
+    throw new SyncError(400, `Field "${field}" must be a string. Got: ${JSON.stringify(value)}.`);
+  }
+  const trimmed = value.trim();
+  if (trimmed.length === 0) return "key_expression";
+  if (!(TIP_TYPES as readonly string[]).includes(trimmed)) {
+    throw new SyncError(400, `Field "${field}" must be one of: ${TIP_TYPES.join(", ")} (or omitted). Got "${trimmed}".`);
+  }
+  return trimmed as TipType;
+}
+
 function validateTips(value: unknown): TipRow[] {
   return requireArray(value, "tips").map((raw, i) => {
     const item = requireObjectItem(raw, "tips", i);
     return {
       type: requireNonEmptyString(item.type, `tips[${i}].type`),
+      tipType: requireTipType(item.tipType, `tips[${i}].tipType`),
       title: requireNonEmptyString(item.title, `tips[${i}].title`),
       titleZh: requireNonEmptyString(item.titleZh, `tips[${i}].titleZh`),
       body: requireNonEmptyString(item.body, `tips[${i}].body`),
       bodyZh: requireNonEmptyString(item.bodyZh, `tips[${i}].bodyZh`),
     };
   });
+}
+
+function requireSortOrderField(value: unknown, field: string): number {
+  if (typeof value !== "number" || !Number.isInteger(value)) {
+    throw new SyncError(400, `Field "${field}" is required and must be an integer.`);
+  }
+  return value;
+}
+
+// Both throw duplicate_sort_order-style errors up front (matching the
+// duplicate_line_id check on dialogue_lines) — the same check also exists
+// inside sync_scene_with_dialogue_lines as defense-in-depth for any future
+// caller that bypasses this Edge Function, see that migration's header.
+function requireNoDuplicateSortOrder(items: Array<{ sort_order: number }>, field: string, externalSceneIdHint: string): void {
+  const seen = new Set<number>();
+  for (const item of items) {
+    if (seen.has(item.sort_order)) {
+      throw new SyncError(
+        400,
+        `Field "${field}" contains a duplicate sort_order ${item.sort_order} for scene_id "${externalSceneIdHint}" — every row must have a unique sort_order within the same scene.`
+      );
+    }
+    seen.add(item.sort_order);
+  }
+}
+
+function validateKeyExpressions(value: unknown, externalSceneIdHint: string): KeyExpressionRowPayload[] {
+  const items = requireArray(value, "key_expressions").map((raw, i) => {
+    const item = requireObjectItem(raw, "key_expressions", i);
+    return {
+      sort_order: requireSortOrderField(item.sort_order, `key_expressions[${i}].sort_order`),
+      expression_en: requireNonEmptyString(item.expression_en, `key_expressions[${i}].expression_en`),
+      expression_zh: requireNonEmptyString(item.expression_zh, `key_expressions[${i}].expression_zh`),
+    };
+  });
+  requireNoDuplicateSortOrder(items, "key_expressions", externalSceneIdHint);
+  return items;
+}
+
+function validateCultureTips(value: unknown, externalSceneIdHint: string): CultureTipRowPayload[] {
+  const items = requireArray(value, "culture_tips").map((raw, i) => {
+    const item = requireObjectItem(raw, "culture_tips", i);
+    return {
+      sort_order: requireSortOrderField(item.sort_order, `culture_tips[${i}].sort_order`),
+      body_en: requireNonEmptyString(item.body_en, `culture_tips[${i}].body_en`),
+      body_zh: requireNonEmptyString(item.body_zh, `culture_tips[${i}].body_zh`),
+    };
+  });
+  requireNoDuplicateSortOrder(items, "culture_tips", externalSceneIdHint);
+  return items;
 }
 
 export function validateScenePayload(body: unknown): ValidatedScenePayload {
@@ -487,10 +600,28 @@ export function validateScenePayload(body: unknown): ValidatedScenePayload {
     if (validatedTips.length > 0) row.tips = validatedTips;
   }
 
+  // key_expressions/culture_tips are top-level (like dialogue_lines), not
+  // scenes-table columns — see KeyExpressionRowPayload/CultureTipRowPayload
+  // above. Same "empty array means don't touch" guard as tips just above,
+  // for the same reason (see 0025_create_key_expressions_and_culture_tips.sql).
+  let keyExpressions: KeyExpressionRowPayload[] | undefined;
+  if (payload.key_expressions !== undefined) {
+    const validated = validateKeyExpressions(payload.key_expressions, externalSceneId);
+    if (validated.length > 0) keyExpressions = validated;
+  }
+
+  let cultureTips: CultureTipRowPayload[] | undefined;
+  if (payload.culture_tips !== undefined) {
+    const validated = validateCultureTips(payload.culture_tips, externalSceneId);
+    if (validated.length > 0) cultureTips = validated;
+  }
+
   return {
     externalSceneId,
     categoryName: requireNonEmptyString(payload.category, "category"),
     dialogueLines: validateDialogueLines(payload.dialogue_lines),
+    keyExpressions,
+    cultureTips,
     row,
   };
 }

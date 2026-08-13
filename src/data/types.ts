@@ -49,11 +49,38 @@ export interface VocabularyEntry {
   example: string;
 }
 
+// Splits the scene detail page's Language module into two sections (see
+// SceneDetailPage.tsx): "key_expression" for the Key Expressions grid,
+// "culture_tip" for Culture & Local Tips. Never inferred from array
+// position/sort_order — always read from this field.
+export type TipType = "key_expression" | "culture_tip";
+
 export interface CultureTip {
   type: string;
+  tipType: TipType;
   title: string;
   titleZh: string;
   body: string;
+  bodyZh: string;
+}
+
+// Structured replacement for CultureTip entries whose tipType was
+// "key_expression" — sourced from public.key_expressions (see
+// supabase/migrations/0025_create_key_expressions_and_culture_tips.sql,
+// trimmed to just these two fields by
+// 0026_simplify_key_expressions_and_culture_tips.sql), not scenes.tips.
+export interface KeyExpressionItem {
+  expressionEn: string;
+  expressionZh: string;
+}
+
+// Structured replacement for CultureTip entries whose tipType was
+// "culture_tip" — sourced from public.culture_tips. No title field: the
+// scene detail page's card header is always a generated "Tip N" from this
+// item's position in the (already sort_order-ascending) array, never a
+// stored title — see CultureTipCard in src/app/pages/SceneDetailPage.tsx.
+export interface CultureTipItem {
+  bodyEn: string;
   bodyZh: string;
 }
 
@@ -78,7 +105,18 @@ export interface SceneContent {
   dialogue: DialogueLine[];
   expressions: Expression[];
   vocabulary: VocabularyEntry[];
+  // Legacy source — see [[tip-type-split]]. Kept populated (for the PDF
+  // pipeline and as a fallback source) but no longer read directly by
+  // SceneDetailPage.tsx; keyExpressions/cultureTips below are what the
+  // Learn the Language section actually renders.
   tips: CultureTip[];
+  // Populated only by the scene detail page fetch (src/data/scenes-
+  // access.ts's applyKeyExpressionsAndCultureTips) — undefined for any
+  // scene fetched through a list view. Optional (not defaulted to []
+  // here) so mock scenes in src/data/scenes.ts don't all need updating;
+  // read as `content?.keyExpressions ?? []` at render time.
+  keyExpressions?: KeyExpressionItem[];
+  cultureTips?: CultureTipItem[];
   relatedSceneIds?: number[];
   prevSceneId?: number;
   nextSceneId?: number;

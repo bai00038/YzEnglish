@@ -38,12 +38,14 @@ function HomeResourceCard({ c, onGetAccess }: { c: ResourceCollection; onGetAcce
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <p className="text-sm font-bold text-foreground leading-snug truncate">{c.titleEn}</p>
-            <span
-              className={`flex-shrink-0 text-[9px] font-black px-2 py-0.5 rounded-full ${c.priceType === "free" ? "" : "bg-secondary text-muted-foreground border border-border"}`}
-              style={c.priceType === "free" ? { backgroundColor: "#B7F21D", color: "#1E1F1C" } : {}}
-            >
-              {c.priceType === "free" ? "Free" : c.price != null ? formatRmbPrice(c.price) : "Premium"}
-            </span>
+            {c.priceType === "free" && (
+              <span
+                className="flex-shrink-0 text-[9px] font-black px-2 py-0.5 rounded-full"
+                style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}
+              >
+                Free
+              </span>
+            )}
           </div>
           <p className="text-xs text-muted-foreground font-medium truncate">{c.titleZh}</p>
           <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{c.descriptionEn}</p>
@@ -51,14 +53,17 @@ function HomeResourceCard({ c, onGetAccess }: { c: ResourceCollection; onGetAcce
         </div>
       </div>
       {c.priceType === "paid" ? (
-        <Btn
-          variant="accent"
-          size="sm"
-          onClick={() => onGetAccess(c)}
-          className="w-full md:w-auto flex-shrink-0"
-        >
-          Get Access
-        </Btn>
+        <div className="flex items-center gap-3 flex-shrink-0 justify-end">
+          {c.price != null && <span className="text-sm font-bold text-primary">{formatRmbPrice(c.price)}</span>}
+          <Btn
+            variant="accent"
+            size="sm"
+            onClick={() => onGetAccess(c)}
+            className="w-full md:w-auto flex-shrink-0"
+          >
+            Get Access
+          </Btn>
+        </div>
       ) : (
         <Btn
           variant="accent"

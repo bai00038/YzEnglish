@@ -256,6 +256,77 @@ export interface Database {
           updated_at?: string;
         };
       };
+      // Structured replacement for scenes.tips rows whose tip_type was
+      // "key_expression" — see
+      // supabase/migrations/0025_create_key_expressions_and_culture_tips.sql,
+      // trimmed to just these four columns by
+      // 0026_simplify_key_expressions_and_culture_tips.sql (usage_en/
+      // usage_zh/example_en/example_zh dropped — never had a Sheet source
+      // and were never displayed). scenes.tips stays populated as a
+      // fallback until every scene has rows here (see "Temporary legacy
+      // Tips fallback" in src/data/scenes-access.ts).
+      key_expressions: {
+        Row: {
+          id: number;
+          scene_id: number;
+          sort_order: number;
+          expression_en: string;
+          expression_zh: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: number;
+          scene_id: number;
+          sort_order?: number;
+          expression_en: string;
+          expression_zh: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: number;
+          scene_id?: number;
+          sort_order?: number;
+          expression_en?: string;
+          expression_zh?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      // Structured replacement for scenes.tips rows whose tip_type was
+      // "culture_tip" — same two migrations as key_expressions above
+      // (title_en/title_zh dropped by 0026; the frontend's card header is
+      // always a generated "Tip N" from sort_order, never a stored title).
+      culture_tips: {
+        Row: {
+          id: number;
+          scene_id: number;
+          sort_order: number;
+          body_en: string;
+          body_zh: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: number;
+          scene_id: number;
+          sort_order?: number;
+          body_en: string;
+          body_zh: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: number;
+          scene_id?: number;
+          sort_order?: number;
+          body_en?: string;
+          body_zh?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       resource_collections: {
         Row: {
           id: number;
@@ -333,6 +404,8 @@ export interface Database {
 export type CategoryRow = Database["public"]["Tables"]["categories"]["Row"];
 export type SceneRow = Database["public"]["Tables"]["scenes"]["Row"];
 export type DialogueLineRow = Database["public"]["Tables"]["dialogue_lines"]["Row"];
+export type KeyExpressionRow = Database["public"]["Tables"]["key_expressions"]["Row"];
+export type CultureTipRow = Database["public"]["Tables"]["culture_tips"]["Row"];
 export type PdfResourceRow = Database["public"]["Tables"]["pdf_resources"]["Row"];
 export type ResourceCollectionRow = Database["public"]["Tables"]["resource_collections"]["Row"];
 
@@ -364,6 +437,10 @@ export type SceneVocabularyJson = Array<{
 
 export type SceneTipsJson = Array<{
   type: string;
+  // Optional: rows synced before tip_type existed have no such key. See
+  // normalizeTipType in scenes-access.ts for the "missing -> key_expression"
+  // default applied when this is read.
+  tipType?: string;
   title: string;
   titleZh: string;
   body: string;
