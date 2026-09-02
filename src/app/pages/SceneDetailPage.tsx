@@ -7,6 +7,7 @@ import { useSceneDetail } from "@/data/scenes-access";
 import { SpeechBubbleLabel } from "@/app/components/brand";
 import { LevelBadge, DurationLabel } from "@/app/components/badges";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
+import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
 import { buildSceneSpeakers, normalizeSpeaker, SPEAKER_STYLES } from "@/data/speakerRoles";
 import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
 
@@ -51,11 +52,19 @@ function CultureTipCard({ item, tipNumber }: { item: CultureTipItem; tipNumber: 
   );
 }
 
-const CHAPTER_LABELS = [
-  { num: "01", label: "Watch", sectionId: "section-watch" },
-  { num: "02", label: "Dialogue", sectionId: "section-dialogue" },
-  { num: "03", label: "Language", sectionId: "section-language" },
-];
+// Playback-speed control — the same rate applies to normal continuous
+// playback, single-line playback, repeat playback, and any future
+// dictation mode, since they all drive the one shared <video> element
+// (see the playbackRate effect below). 1 is always the default.
+const PLAYBACK_RATES = [0.8, 1, 1.2] as const;
+const PLAYBACK_RATE_STORAGE_KEY = "yzenglish:playbackRate";
+
+const STUDY_TABS = [
+  { key: "listening", num: "01", en: "Sentence Listening", zh: "单句精听" },
+  { key: "dictation", num: "02", en: "Dictation", zh: "听写" },
+] as const;
+type StudyTabKey = (typeof STUDY_TABS)[number]["key"];
+
 export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   bilingualMode: boolean;
   setBilingualMode: (v: boolean) => void;
@@ -82,11 +91,25 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     [content?.dialogue]
   );
 
-  const [activeChapter, setActiveChapter] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoPaused, setVideoPaused] = useState(true);
   const [subtitleLang, setSubtitleLang] = useState<"off" | "en" | "zh">("off");
   const [videoCurrentTime, setVideoCurrentTime] = useState(0);
+  const [studyTab, setStudyTab] = useState<StudyTabKey>("listening");
+  // Selected playback speed — applies to the one shared <video> element no
+  // matter which mode is driving it (continuous play, single-line play,
+  // repeat, future dictation), so it lives here rather than per-mode.
+  // Restored from localStorage so a user's chosen speed survives reloads;
+  // never derived from/applied to start_time or end_time.
+  const [playbackRate, setPlaybackRate] = useState<number>(() => {
+    if (typeof window === "undefined") return 1;
+    try {
+      const saved = Number(window.localStorage.getItem(PLAYBACK_RATE_STORAGE_KEY));
+      return (PLAYBACK_RATES as readonly number[]).includes(saved) ? saved : 1;
+    } catch {
+      return 1;
+    }
+  });
   // Set when a dialogue line is clicked, so it stays highlighted once
   // single-line playback pauses at its end_time (at which point
   // videoCurrentTime has moved past the line's own range, and
@@ -105,8 +128,26 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     setVideoPaused(true);
     setPinnedLineIndex(null);
     cancelRangePlayback();
+    // A freshly-loaded <video> element defaults to 1× — reapply the
+    // user's selected speed so switching scenes doesn't silently reset it.
+    if (videoRef.current) videoRef.current.playbackRate = playbackRate;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene?.id]);
+
+  // Applies the selected speed to the live <video> element immediately on
+  // change, and persists it — this is the ONLY place playbackRate is
+  // written to the element outside of the scene-switch/loadedmetadata
+  // safety nets below, so continuous play, single-line play, repeat, and
+  // seeking all inherit it without any per-mode handling.
+  useEffect(() => {
+    if (videoRef.current) videoRef.current.playbackRate = playbackRate;
+    try {
+      window.localStorage.setItem(PLAYBACK_RATE_STORAGE_KEY, String(playbackRate));
+    } catch {
+      // localStorage unavailable (e.g. private browsing) — speed still
+      // applies for this session, just isn't remembered next time.
+    }
+  }, [playbackRate]);
 
   // True unmount (navigating away from this page entirely) — the
   // scene-switch effect above only fires on a scene?.id change, not on
@@ -426,92 +467,58 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // scroll position. See SceneDetailPage playback-scroll fix.
   const dialogueRowRefs = useRef<Array<HTMLDivElement | null>>([]);
 
-  // While true, a click-triggered smooth scroll is in flight — the
-  // scroll-spy observer must not overwrite the just-clicked chapter.
-  const isProgrammaticScrollRef = useRef(false);
-  const scrollEndTimeoutRef = useRef<number | null>(null);
+  // Switching between "单句精听"/Sentence Listening and "听写"/Dictation
+  // never touches the <video> element itself (no unmount/remount, no
+  // second instance) — it only needs to stop whatever playback mode was
+  // active so the two tabs don't fight over the same video, while keeping
+  // the user's selected playbackRate untouched.
+  function switchStudyTab(tab: StudyTabKey) {
+    if (tab === studyTab) return;
+    videoRef.current?.pause();
+    cancelRangePlayback();
+    setStudyTab(tab);
+  }
 
-  // Scroll-spy via IntersectionObserver
-  useEffect(() => {
-    if (!content) return;
-    const ids = CHAPTER_LABELS.map(ch => ch.sectionId);
-    // Track which sections are currently intersecting
-    const visibleSections = new Set<string>();
+  // Lines the Dictation tab can practice: only ones with an exact,
+  // unpadded playable range (dialogueLineRawRanges — never the padded
+  // dialogueLineAudioRanges, which exists solely for continuous-playback
+  // highlighting) AND actual English text. `index` is each line's
+  // position in content.dialogue — the stable id DictationPractice keys
+  // its localStorage records by and passes back to playDictationLine.
+  const dictationLines: DictationLineInput[] = useMemo(() => {
+    const lines = content?.dialogue;
+    if (!lines) return [];
+    return lines
+      .map((line, index) => ({ line, index }))
+      .filter(({ line, index }) => dialogueLineRawRanges.has(index) && line.en.trim().length > 0)
+      .map(({ line, index }) => {
+        const speaker = sceneSpeakers.get(normalizeSpeaker(line.speaker));
+        return {
+          index,
+          en: line.en,
+          zh: line.zh,
+          speakerLabel: (speaker?.en ?? line.speaker).toUpperCase(),
+          speakerStyle: speaker?.style ?? SPEAKER_STYLES[0],
+        };
+      });
+  }, [content?.dialogue, dialogueLineRawRanges, sceneSpeakers]);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (isProgrammaticScrollRef.current) return;
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            visibleSections.add(entry.target.id);
-          } else {
-            visibleSections.delete(entry.target.id);
-          }
-        });
-        // Set active to the first visible section in order
-        for (let i = 0; i < ids.length; i++) {
-          if (visibleSections.has(ids[i])) {
-            setActiveChapter(i);
-            return;
-          }
-        }
-      },
-      {
-        // Trigger when section enters the upper ~40% of the viewport
-        rootMargin: "-100px 0px -55% 0px",
-        threshold: 0,
-      }
-    );
+  // Reuses the exact same single-line player used by "单句精听" (see
+  // playDialogueLine above) with the line's own exact start/end — no
+  // second playback path, no padding/offset/tolerance of any kind.
+  function playDictationLine(lineIndex: number) {
+    const range = dialogueLineRawRanges.get(lineIndex);
+    if (!range) return;
+    playDialogueLine(lineIndex, range);
+  }
 
-    ids.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [content]);
-
-  // Detect when a programmatic smooth scroll has settled, so scroll-spy
-  // tracking can safely resume.
-  useEffect(() => {
-    const onScroll = () => {
-      if (!isProgrammaticScrollRef.current) return;
-      if (scrollEndTimeoutRef.current) window.clearTimeout(scrollEndTimeoutRef.current);
-      scrollEndTimeoutRef.current = window.setTimeout(() => {
-        isProgrammaticScrollRef.current = false;
-      }, 150);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (scrollEndTimeoutRef.current) window.clearTimeout(scrollEndTimeoutRef.current);
-    };
-  }, []);
-
-  const scrollToSection = (sectionId: string, index: number) => {
-    const el = document.getElementById(sectionId);
-    if (!el) return;
-
-    // Reflect the clicked chapter immediately — don't wait for the scroll
-    // (or the scroll-spy observer) to catch up.
-    setActiveChapter(index);
-    isProgrammaticScrollRef.current = true;
-    if (scrollEndTimeoutRef.current) window.clearTimeout(scrollEndTimeoutRef.current);
-    // Fallback in case no further scroll events fire (e.g. already at target).
-    scrollEndTimeoutRef.current = window.setTimeout(() => {
-      isProgrammaticScrollRef.current = false;
-    }, 700);
-
-    // Offset: sticky chapter nav (~44px) + 8px buffer, plus the fixed
-    // desktop header (64px) only when it's actually rendered — below the
-    // 641px breakpoint DesktopNav is hidden (see App.tsx), so there's
-    // nothing to offset for there.
-    const desktopHeaderOffset = window.innerWidth >= 641 ? 64 : 0;
-    const offset = desktopHeaderOffset + 44 + 8;
-    const top = el.getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({ top, behavior: "smooth" });
-  };
+  // video.pause() itself triggers the <video>'s onPause handler above,
+  // which already calls cancelRangePlayback() — so this alone is enough
+  // to immediately stop whatever the dictation tab's frame watcher was
+  // still polling toward, with no separate cleanup path to keep in sync.
+  function stopDictationPlayback() {
+    videoRef.current?.pause();
+  }
 
   if (loading) {
     return (
@@ -599,62 +606,22 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
         </div>
       ) : (
         <>
-          {/* ─── Sticky chapter nav ───
-              Below 641px there's no fixed top nav (DesktopNav hides there,
-              see App.tsx's `min-[641px]:pt-16`), so this must stick to the
-              real viewport top — not the desktop header's 64px offset, or
-              it floats mid-screen over the video on mobile. */}
-          <div className="sticky top-[env(safe-area-inset-top,0px)] min-[641px]:top-16 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
-            <div className="max-w-[1000px] mx-auto px-4 md:px-6">
-              <div className="flex items-center gap-0 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-                {CHAPTER_LABELS.map((ch, i) => {
-                  const isActive = activeChapter === i;
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => scrollToSection(ch.sectionId, i)}
-                      className="flex items-center gap-2 flex-shrink-0 pr-5 py-3 border-b-2 border-transparent transition-colors cursor-pointer bg-transparent"
-                      style={isActive
-                        ? { borderBottomColor: "#B7F21D", color: "#184C3A" }
-                        : { color: "var(--muted-foreground)" }
-                      }
-                    >
-                      <span className="text-[10px] md:text-[11px] font-black" style={{ color: isActive ? "#184C3A" : undefined }}>
-                        {ch.num}
-                      </span>
-                      <span className="text-[14px] md:text-[16px] font-bold whitespace-nowrap">{ch.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
           {/* ═══════════════════════════════════════════
               CENTRED CONTENT LAYOUT (no sidebar)
               ═══════════════════════════════════════════ */}
           <div>
 
             {/* ─────────────────────────────────────────────
-                STAGE 01 · Watch & Understand
+                Video + playback speed + study tabs
                 ───────────────────────────────────────────── */}
-            <section id="section-watch" className="max-w-[1000px] mx-auto px-4 md:px-6 pt-8 pb-14">
-
-              {/* ── Section heading ── */}
-              <div className="flex items-start gap-4 mb-6">
-                <span className="text-[44px] md:text-[52px] font-black leading-none select-none flex-shrink-0 mt-0.5 tabular-nums" style={{ color: "rgba(24,76,58,0.1)", WebkitTextStroke: "1px rgba(24,76,58,0.5)", paintOrder: "stroke fill" }}>01</span>
-                <div className="pt-0.5">
-                  <p className="text-[24px] md:text-[28px] font-black leading-tight text-primary">Watch & Understand</p>
-                  <p className="text-[15px] md:text-[16px] text-muted-foreground mt-1 leading-snug">Explore the scene before reading the dialogue.</p>
-                </div>
-              </div>
+            <section id="section-watch" className="max-w-[1000px] mx-auto px-4 md:px-6 pt-6 pb-14">
 
               {/* ── Scene video area — always the same 16:9 video-shaped frame.
                   scene.photo is only ever used as the <video> poster (cover
                   image) or, before scene.video_url is synced from the Google
                   Sheet, as a poster-style background — never shown as a bare
                   standalone image. ── */}
-              <div className="w-full rounded-2xl overflow-hidden bg-black mb-8" style={{ aspectRatio: "16 / 9" }}>
+              <div className="w-full rounded-2xl overflow-hidden bg-black" style={{ aspectRatio: "16 / 9" }}>
                 {scene.video_url ? (
                   <div className="relative w-full h-full">
                     <video
@@ -706,6 +673,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         cancelRangePlayback();
                         e.currentTarget.currentTime = 0;
                         setVideoCurrentTime(0);
+                      }}
+                      // Some browsers reset playbackRate to 1 when a new
+                      // <source> finishes loading — reapply the selected
+                      // speed once metadata is ready, same value as the
+                      // playbackRate effect above.
+                      onLoadedMetadata={e => {
+                        e.currentTarget.playbackRate = playbackRate;
                       }}
                     >
                       <source src={scene.video_url} />
@@ -781,22 +755,62 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 )}
               </div>
 
-            </section>
-
-            {/* ─────────────────────────────────────────────
-                STAGE 02 · Learn the Dialogue
-                ───────────────────────────────────────────── */}
-            <section id="section-dialogue" className="border-t border-border" style={{ backgroundColor: "#EFF4F1" }}>
-              <div className="max-w-[960px] mx-auto px-4 md:px-6 py-12 md:py-16">
-              <div className="px-0" style={{ backgroundColor: "#EFF4F1" }}>
-                <div className="flex items-start gap-5 mb-8">
-                  <span className="text-[56px] md:text-[64px] font-black leading-none select-none flex-shrink-0 mt-1 tabular-nums" style={{ color: "rgba(24,76,58,0.09)", WebkitTextStroke: "1px rgba(24,76,58,0.5)", paintOrder: "stroke fill" }}>02</span>
-                  <div className="pt-1">
-                    <p className="text-[32px] md:text-[36px] font-black leading-tight text-primary">Learn the Dialogue</p>
-                    <p className="text-[16px] md:text-[17px] text-muted-foreground mt-0.5 leading-snug">Read line by line. Toggle bilingual mode for Chinese translations.</p>
-                  </div>
+              {/* ── Playback speed ── */}
+              <div className="flex flex-wrap items-center gap-3 mt-4">
+                <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">Playback Speed · 播放速度</span>
+                <div className="flex items-center gap-0.5 rounded-full border border-border bg-white p-0.5">
+                  {PLAYBACK_RATES.map(rate => {
+                    const isActive = playbackRate === rate;
+                    return (
+                      <button
+                        key={rate}
+                        type="button"
+                        onClick={() => setPlaybackRate(rate)}
+                        aria-pressed={isActive}
+                        className="text-xs font-bold px-2.5 py-1 rounded-full transition-colors"
+                        style={isActive ? { backgroundColor: "#184C3A", color: "#F7F6F2" } : { color: "var(--muted-foreground)" }}
+                      >
+                        {rate}×
+                      </button>
+                    );
+                  })}
                 </div>
+              </div>
 
+              {/* ── Study mode tabs ── */}
+              <div className="flex items-center gap-5 md:gap-8 border-b border-border mt-6 mb-6">
+                {STUDY_TABS.map(tab => {
+                  const isActive = studyTab === tab.key;
+                  return (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      onClick={() => switchStudyTab(tab.key)}
+                      className="flex items-center gap-1.5 md:gap-2 pb-3 border-b-2 transition-colors cursor-pointer bg-transparent"
+                      style={isActive
+                        ? { borderBottomColor: "#B7F21D", color: "#184C3A" }
+                        : { borderBottomColor: "transparent", color: "var(--muted-foreground)" }
+                      }
+                    >
+                      <span className="text-[10px] md:text-[11px] font-black">{tab.num}</span>
+                      <span className="text-[13px] md:text-[16px] font-bold whitespace-nowrap">
+                        <span className="sm:hidden">{tab.zh}</span>
+                        <span className="hidden sm:inline">{tab.en} · {tab.zh}</span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {studyTab === "dictation" ? (
+                <DictationPractice
+                  sceneId={scene.id}
+                  lines={dictationLines}
+                  onPlayLine={playDictationLine}
+                  onStopPlayback={stopDictationPlayback}
+                />
+              ) : (
+              <div className="rounded-2xl px-4 py-6 md:px-6 md:py-7" style={{ backgroundColor: "#EFF4F1" }}>
                 {/* Controls bar */}
                 <div className="flex flex-wrap items-center gap-3 mb-5 pb-5 border-b border-black/8">
                   {/* EN / 双语 toggle */}
@@ -900,8 +914,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     );
                   })}
                 </div>
-              </div>{/* inner card */}
-              </div>{/* inner container */}
+              </div>
+              )}
+
             </section>
 
             {/* ─────────────────────────────────────────────
@@ -910,14 +925,6 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             <section id="section-language" className="border-t border-border bg-card">
               <div className="max-w-[960px] mx-auto px-4 md:px-6 py-12 md:py-16">
               <div className="bg-card px-0">
-                <div className="flex items-start gap-5 mb-8">
-                  <span className="text-[56px] md:text-[64px] font-black leading-none select-none flex-shrink-0 mt-1 tabular-nums" style={{ color: "rgba(24,76,58,0.06)", WebkitTextStroke: "1px rgba(24,76,58,0.5)", paintOrder: "stroke fill" }}>03</span>
-                  <div className="pt-1">
-                    <p className="text-[32px] md:text-[36px] font-black leading-tight text-primary">Learn the Language</p>
-                    <p className="text-[16px] md:text-[17px] text-muted-foreground mt-0.5 leading-snug">Key expressions and cultural notes from this scene.</p>
-                  </div>
-                </div>
-
                 {/* Key Expressions — from public.key_expressions (or its legacy-tips fallback) */}
                 {keyExpressionItems.length > 0 && (
                   <div className="mb-8">
