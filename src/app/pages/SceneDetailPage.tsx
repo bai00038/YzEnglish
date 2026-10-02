@@ -840,9 +840,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     applies. Highlighting never triggers scrolling. */}
                 <div>
                   {content.dialogue.map((line, i) => {
-                    const speaker = sceneSpeakers.get(normalizeSpeaker(line.speaker));
-                    const speakerIndex = Array.from(sceneSpeakers.keys()).indexOf(normalizeSpeaker(line.speaker));
-                    const isLearnerSpeaker = speakerIndex <= 0;
+                    const speakerKey = normalizeSpeaker(line.speaker);
+                    const speaker = sceneSpeakers.get(speakerKey);
+                    const isLearnerSpeaker = ["you", "aria", "customer", "patient", "parent", "guest", "shopper"].includes(speakerKey);
                     const label = isLearnerSpeaker ? "You" : (speaker?.en ?? line.speaker);
                     const avatarColor = isLearnerSpeaker ? "#0F3A2B" : "#9A7533";
                     const audioRange = dialogueLineAudioRanges.get(i);
