@@ -122,7 +122,7 @@ export function HomePage() {
             <p className="mt-4 max-w-[480px] text-[15px] leading-[1.75] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄——每一个场景都聚焦真实生活，做成视频、点读和跟读。学完，就能用在下一次真实交流里。</p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link to="/explore" className="rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90">进入场景库</Link>
-              <a href="#learn" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-bold text-foreground">先试学一课 ↓</a>
+              <Link to="/scenes/ordering-a-pizza-by-phone-for-pickup" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-bold text-foreground">先试学一课 ↓</Link>
             </div>
           </div>
 
