@@ -34,10 +34,10 @@ export function ExplorePage({
       {/* Header + search */}
       <div className="mx-auto max-w-[1180px] bg-background px-5 pb-10 pt-12 md:px-8 md:pb-12 md:pt-16">
         <p className="editorial-kicker mb-4">Scene library · 场景库</p>
-        <h1 className="display-serif mb-4 text-[44px] font-semibold leading-[1.04] tracking-[-0.01em] text-primary md:text-[68px]">
+        <h1 className="display-serif mb-4 text-[40px] font-semibold leading-[1.04] tracking-[-0.01em] text-primary md:text-[60px]">
           Explore <em className="font-normal">real-life</em> scenes
         </h1>
-        <p className="mb-8 text-[15px] text-foreground md:text-[17px]">
+        <p className="mb-8 text-[14px] text-foreground md:text-base">
           浏览真实生活场景 · 共 {scenesLoading ? "…" : scenes.length} 个场景
           <span className="display-serif ml-2 hidden text-[15px] italic text-muted-foreground sm:inline">real scenes for real life</span>
         </p>
