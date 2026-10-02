@@ -91,7 +91,7 @@ function SceneTicker() {
             className="scene-ticker-copy display-serif whitespace-nowrap px-5 text-[15px] italic text-secondary-foreground md:px-8 md:text-[16px]"
           >
             {TICKER_ITEMS.map((item) => (
-              <span key={item} className="inline-flex items-center gap-4">
+              <span key={item} className="inline-flex items-center gap-10">
                 <span>{item}</span>
                 <span aria-hidden="true">✦</span>
               </span>
