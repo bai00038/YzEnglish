@@ -1,11 +1,8 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useParams } from "react-router";
-import {
-  ChevronRight, ChevronLeft, FileText, Download, Info, Play, Volume2,
-} from "lucide-react";
+import { ChevronRight, ChevronLeft, Download, Info, Play } from "lucide-react";
 import { useSceneDetail } from "@/data/scenes-access";
-import { SpeechBubbleLabel } from "@/app/components/brand";
-import { LevelBadge, DurationLabel } from "@/app/components/badges";
+import { LevelBadge } from "@/app/components/badges";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
 import { buildSceneSpeakers, normalizeSpeaker, SPEAKER_STYLES } from "@/data/speakerRoles";
@@ -18,12 +15,9 @@ import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
 // Fixed short height, two per row on desktop.
 function KeyExpressionCard({ item }: { item: KeyExpressionItem }) {
   return (
-    <div
-      className="rounded-xl border px-5 py-4 min-h-[88px] flex flex-col justify-center"
-      style={{ borderColor: "rgba(15,53,39,0.13)", backgroundColor: "rgba(15,53,39,0.025)" }}
-    >
-      <p className="text-base font-bold text-primary leading-snug">{item.expressionEn}</p>
-      <p className="text-sm text-[#3A4A42] mt-1 leading-snug">{item.expressionZh}</p>
+    <div className="border-b border-dashed border-primary/15 py-4 first:pt-0 last:border-0 last:pb-0">
+      <p className="font-serif text-[20px] leading-snug text-primary">{item.expressionEn}</p>
+      <p className="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">{item.expressionZh}</p>
     </div>
   );
 }
@@ -37,19 +31,32 @@ function KeyExpressionCard({ item }: { item: KeyExpressionItem }) {
 // cultureTipItems in SceneDetailPage below).
 function CultureTipCard({ item, tipNumber }: { item: CultureTipItem; tipNumber: number }) {
   return (
-    <div className="rounded-xl overflow-hidden border" style={{ borderColor: "rgba(15,53,39,0.13)", backgroundColor: "rgba(15,53,39,0.025)" }}>
-      <div className="flex items-center gap-2 px-4 py-3 border-b" style={{ borderColor: "rgba(15,53,39,0.09)" }}>
-        <Info size={13} className="text-primary flex-shrink-0" />
-        <p className="text-sm font-bold text-primary leading-snug">Tip {tipNumber}</p>
+    <div className="border-b border-dashed border-primary/15 py-4 first:pt-0 last:border-0 last:pb-0">
+      <div className="flex items-start gap-2">
+        <Info size={14} className="mt-1 flex-shrink-0 text-primary" />
+        <p className="font-serif text-[19px] leading-snug text-primary">Local note {tipNumber}</p>
       </div>
-      <div className="px-4 py-4">
-        <p className="text-sm leading-[1.7] font-semibold text-foreground">{item.bodyEn}</p>
-        {item.bodyZh && (
-          <p className="text-sm mt-1.5 leading-[1.7] text-muted-foreground">{item.bodyZh}</p>
-        )}
-      </div>
+      <p className="mt-2 text-[14px] font-semibold leading-relaxed text-foreground">{item.bodyEn}</p>
+      {item.bodyZh && <p className="mt-1 text-[14px] leading-relaxed text-muted-foreground">{item.bodyZh}</p>}
     </div>
   );
+}
+
+function StepHeading({ number, title, hint }: { number: string; title: string; hint: string }) {
+  return (
+    <div className="mb-5 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+      <span className="font-serif text-[29px] italic leading-none text-primary/55">{number}</span>
+      <h2 className="text-[20px] font-black tracking-tight text-primary md:text-[22px]">{title}</h2>
+      <p className="text-[13px] font-medium text-muted-foreground md:text-[14px]">{hint}</p>
+    </div>
+  );
+}
+
+function formatTimestamp(seconds?: number) {
+  if (seconds === undefined || Number.isNaN(seconds)) return "";
+  const minutes = Math.floor(seconds / 60);
+  const remainder = Math.max(0, Math.floor(seconds % 60));
+  return `${minutes}:${String(remainder).padStart(2, "0")}`;
 }
 
 // Playback-speed control — the same rate applies to normal continuous
@@ -557,45 +564,49 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   }
 
   return (
-    <div>
+    <div className="bg-background px-3 py-4 md:px-6 md:py-8">
+      <div className="mx-auto max-w-[1240px] overflow-hidden rounded-[28px] border border-primary/15 bg-card shadow-[0_12px_40px_rgba(15,53,39,0.04)]">
 
       {/* Breadcrumb */}
-      <div className="bg-background border-b border-border">
-        <div className="max-w-[1000px] mx-auto px-4 md:px-6 py-2.5 flex items-center gap-1 text-[13px] md:text-[14px] text-muted-foreground flex-wrap">
-          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-          <ChevronRight size={9} />
-          <Link to="/explore" className="hover:text-primary transition-colors">{scene.category}</Link>
-          <ChevronRight size={9} />
-          <span className="text-foreground font-semibold">{scene.titleEn}</span>
+      <div className="px-5 pt-6 md:px-10 md:pt-8">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-5 text-[13px] font-semibold text-muted-foreground md:text-[14px]">
+          <Link to="/explore" className="inline-flex items-center gap-1 text-primary transition-opacity hover:opacity-65">
+            <ChevronLeft size={15} /> 返回场景库
+          </Link>
+          <div className="flex items-center gap-1">
+            <span>场景库</span><span>/</span><span>{scene.category}</span><span>/</span>
+            <span className="text-primary">{scene.titleZh}</span>
+          </div>
         </div>
       </div>
 
       {/* ─── Lesson identity block (sits between breadcrumb and chapter nav) ─── */}
-      <div className="bg-background border-b border-border">
-        <div className="max-w-[1000px] mx-auto px-4 md:px-6 pt-8 md:pt-12 pb-7 md:pb-10">
-          <p className="editorial-kicker mb-3">Scene lesson · 场景课程</p>
-          <h1 className="display-serif text-[40px] md:text-[58px] font-semibold leading-[1.02] text-foreground mb-2 max-w-[820px]">
-            {scene.titleEn}
-          </h1>
-          <p className="font-normal text-[#3A4A42] mb-3 text-[16px] md:text-[18px]">{scene.titleZh}</p>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[13px] md:text-[14px] font-bold text-primary bg-primary/10 px-2.5 py-0.5 rounded-md">{scene.category}</span>
-            <LevelBadge level={scene.level} />
-            <DurationLabel duration={scene.duration} />
+      <div className="px-5 pb-8 pt-7 md:px-10 md:pb-10 md:pt-8">
+        <span className="inline-flex rounded-full bg-primary px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-white">
+          {scene.category} · {scene.region || "Real life"}
+        </span>
+        <div className="mt-5 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-[760px]">
+            <h1 className="font-serif text-[40px] font-semibold leading-[1.08] tracking-[-0.025em] text-primary md:text-[58px]">
+              {scene.titleZh}
+            </h1>
+            <p className="mt-3 max-w-[690px] text-[15px] leading-relaxed text-[#3A4A42] md:text-[17px]">
+              {scene.desc || scene.titleEn}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2 lg:justify-end">
+            <span className="rounded-full border border-border bg-white px-4 py-2 text-[13px] font-bold text-primary">视频 {scene.duration}</span>
+            <span className="rounded-full border border-border bg-white px-4 py-2 text-[13px] font-bold text-primary">逐句 {content?.dialogue.length ?? 0} 句</span>
+            <span className="rounded-full border border-border bg-white px-4 py-2 text-[13px] font-bold text-primary">词汇 {keyExpressionItems.length} 个</span>
+            <span className="rounded-full border border-border bg-white px-4 py-2 text-[13px] font-bold text-primary">讲义 PDF</span>
           </div>
         </div>
       </div>
 
       {!content ? (
         <div className="pb-24">
-          <section className="max-w-[1000px] mx-auto px-4 md:px-6 pt-8 pb-20">
-            <div className="flex items-start gap-4 mb-6">
-              <span className="text-[44px] md:text-[52px] font-black leading-none select-none flex-shrink-0 mt-0.5 tabular-nums" style={{ color: "rgba(15,53,39,0.1)", WebkitTextStroke: "1px rgba(15,53,39,0.5)", paintOrder: "stroke fill" }}>01</span>
-              <div className="pt-0.5">
-                <p className="text-[24px] md:text-[28px] font-black leading-tight text-foreground">Watch & Understand</p>
-                <p className="text-[15px] md:text-[16px] text-muted-foreground mt-1 leading-snug">Watch the scene, then read the setup and your goal.</p>
-              </div>
-            </div>
+          <section className="px-5 pt-2 pb-20 md:px-10">
+            <StepHeading number="01" title="看视频" hint="先完整看一遍，字幕随时开关" />
             <div className="rounded-2xl border border-dashed border-border bg-card px-6 py-10 text-center">
               <p className="text-sm font-semibold text-foreground">Full lesson content for this scene is coming soon.</p>
               <p className="text-xs text-muted-foreground mt-1">该场景的完整学习内容即将上线。</p>
@@ -615,14 +626,16 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             {/* ─────────────────────────────────────────────
                 Video + playback speed + study tabs
                 ───────────────────────────────────────────── */}
-            <section id="section-watch" className="max-w-[1000px] mx-auto px-4 md:px-6 pt-6 pb-14">
+            <section id="section-watch" className="px-5 pb-12 md:px-10 md:pb-16">
+
+              <StepHeading number="01" title="看视频" hint="先完整看一遍，字幕随时开关" />
 
               {/* ── Scene video area — always the same 16:9 video-shaped frame.
                   scene.photo is only ever used as the <video> poster (cover
                   image) or, before scene.video_url is synced from the Google
                   Sheet, as a poster-style background — never shown as a bare
                   standalone image. ── */}
-              <div className="w-full rounded-[24px] overflow-hidden bg-black border border-primary/10 shadow-[0_20px_50px_rgba(15,53,39,0.14)]" style={{ aspectRatio: "16 / 9" }}>
+              <div className="w-full overflow-hidden rounded-[20px] border border-primary/10 bg-black shadow-[0_16px_40px_rgba(15,53,39,0.12)]" style={{ aspectRatio: "16 / 9" }}>
                 {scene.video_url ? (
                   <div className="relative w-full h-full">
                     <video
@@ -688,9 +701,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     </video>
                     {subtitleLang !== "off" && activeSubtitleLine && (
                       <div className="absolute inset-x-0 bottom-14 md:bottom-16 flex justify-center px-6 pointer-events-none">
-                        <p className="max-w-[90%] text-center text-white text-base md:text-lg leading-snug px-3 py-1.5 rounded-lg bg-black/70" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
-                          {subtitleLang === "en" ? activeSubtitleLine.en : activeSubtitleLine.zh}
-                        </p>
+                        <div className="max-w-[90%] rounded-lg bg-black/70 px-4 py-2 text-center text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
+                          <p className="text-base leading-snug md:text-lg">{activeSubtitleLine.en}</p>
+                          {subtitleLang === "zh" && <p className="mt-1 text-sm leading-snug text-white/85 md:text-base">{activeSubtitleLine.zh}</p>}
+                        </div>
                       </div>
                     )}
                     {dialogueLineAudioRanges.size > 0 && (
@@ -730,9 +744,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                             videoRef.current?.play();
                           }}
                           aria-label="Play video"
-                          className="pointer-events-auto flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
+                          className="pointer-events-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent text-primary shadow-[0_8px_24px_rgba(0,0,0,0.22)] transition-transform hover:scale-105 md:h-20 md:w-20"
                         >
-                          <Play className="w-7 h-7 md:w-9 md:h-9 text-white fill-white ml-1" />
+                          <Play className="ml-1 h-7 w-7 fill-current md:h-9 md:w-9" />
                         </button>
                       </div>
                     )}
@@ -757,9 +771,18 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               </div>
 
               {/* ── Playback speed ── */}
-              <div className="flex flex-wrap items-center gap-3 mt-4">
-                <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">Playback Speed · 播放速度</span>
-                <div className="flex items-center gap-0.5 rounded-full border border-border bg-white p-0.5">
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <span className="text-[13px] font-black text-primary">字幕</span>
+                <div className="flex items-center rounded-full bg-secondary p-1">
+                  {(["zh", "en", "off"] as const).map(lang => (
+                    <button key={lang} type="button" onClick={() => setSubtitleLang(lang)}
+                      className={`rounded-full px-4 py-1.5 text-xs font-bold transition-colors ${subtitleLang === lang ? "bg-primary text-white" : "text-primary"}`}>
+                      {lang === "zh" ? "双语" : lang === "en" ? "英文" : "关闭"}
+                    </button>
+                  ))}
+                </div>
+                <span className="text-[12px] text-muted-foreground">可随时切换字幕 · 倍速练习</span>
+                <div className="ml-auto flex items-center gap-0.5 rounded-full border border-border bg-white p-0.5">
                   {PLAYBACK_RATES.map(rate => {
                     const isActive = playbackRate === rate;
                     return (
@@ -768,8 +791,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         type="button"
                         onClick={() => setPlaybackRate(rate)}
                         aria-pressed={isActive}
-                        className="text-xs font-bold px-2.5 py-1 rounded-full transition-colors"
-                        style={isActive ? { backgroundColor: "#0F3527", color: "#F4EFE6" } : { color: "var(--muted-foreground)" }}
+                        className="rounded-full px-3 py-1.5 text-xs font-bold transition-colors"
+                        style={isActive ? { backgroundColor: "#C8F169", color: "#0F3527" } : { color: "var(--muted-foreground)" }}
                       >
                         {rate}×
                       </button>
@@ -779,7 +802,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               </div>
 
               {/* ── Study mode tabs ── */}
-              <div className="flex items-center gap-5 md:gap-8 border-b border-border mt-6 mb-6">
+              <div className="mt-12 mb-5 flex flex-wrap items-center justify-between gap-4">
+                <StepHeading number="02" title="逐句精听跟读" hint="点任意一句，单句播放给你跟读" />
+                <div className="flex items-center rounded-full border border-border bg-white p-1">
                 {STUDY_TABS.map(tab => {
                   const isActive = studyTab === tab.key;
                   return (
@@ -787,20 +812,17 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       key={tab.key}
                       type="button"
                       onClick={() => switchStudyTab(tab.key)}
-                      className="flex items-center gap-1.5 md:gap-2 pb-3 border-b-2 transition-colors cursor-pointer bg-transparent"
+                      className="cursor-pointer rounded-full px-4 py-2 text-[12px] font-bold transition-colors"
                       style={isActive
-                        ? { borderBottomColor: "#C8F169", color: "#0F3527" }
-                        : { borderBottomColor: "transparent", color: "var(--muted-foreground)" }
+                        ? { backgroundColor: "#0F3527", color: "#FFFFFF" }
+                        : { color: "var(--muted-foreground)" }
                       }
                     >
-                      <span className="text-[10px] md:text-[11px] font-black">{tab.num}</span>
-                      <span className="text-[13px] md:text-[16px] font-bold whitespace-nowrap">
-                        <span className="sm:hidden">{tab.zh}</span>
-                        <span className="hidden sm:inline">{tab.en} · {tab.zh}</span>
-                      </span>
+                      {tab.zh}
                     </button>
                   );
                 })}
+                </div>
               </div>
 
               {studyTab === "dictation" ? (
@@ -811,9 +833,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   onStopPlayback={stopDictationPlayback}
                 />
               ) : (
-              <div className="rounded-2xl px-4 py-6 md:px-6 md:py-7" style={{ backgroundColor: "#EFF4F1" }}>
+              <div className="rounded-[22px] border border-border bg-white p-2 md:p-3">
                 {/* Controls bar */}
-                <div className="flex flex-wrap items-center gap-3 mb-5 pb-5 border-b border-black/8">
+                <div className="flex flex-wrap items-center gap-3 px-2 py-2 md:px-3">
                   {/* EN / 双语 toggle */}
                   <div className="flex items-center border border-border rounded-full p-0.5 bg-white shadow-sm">
                     <button onClick={() => setBilingualMode(false)}
@@ -828,7 +850,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     </button>
                   </div>
 
-                  <span className="text-xs text-muted-foreground">{content.dialogue.length} lines · {scene.duration}</span>
+                  <span className="text-xs text-muted-foreground">{content.dialogue.length} 句 · {scene.duration}</span>
 
                   {/* Legend — every role that actually speaks in this scene, in first-occurrence order */}
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 ml-auto">
@@ -853,7 +875,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   {content.dialogue.map((line, i) => {
                     const speaker = sceneSpeakers.get(normalizeSpeaker(line.speaker));
                     const style = speaker?.style ?? SPEAKER_STYLES[0];
-                    const label = (speaker?.en ?? line.speaker).toUpperCase();
+                    const label = speaker?.en ?? line.speaker;
                     const audioRange = dialogueLineAudioRanges.get(i);
                     const isActiveLine = highlightedLineIndex === i;
                     // Prefer the permanent external_line_id (Phase A-0 —
@@ -869,8 +891,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     return (
                       <div key={rowKey}
                         ref={el => { dialogueRowRefs.current[i] = el; }}
-                        className={`dialogue-row py-4 border-b border-black/6 last:border-0 hover:bg-white/70 transition-colors rounded-lg px-3 -mx-3 ${audioRange ? "cursor-pointer" : ""} ${isActiveLine ? "bg-primary/5" : ""}`}
-                        style={{ borderLeft: `3px solid ${style.accent}` }}
+                        className={`mx-0 grid grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-4 rounded-[16px] px-4 py-5 transition-colors md:grid-cols-[52px_minmax(0,1fr)_88px] md:px-5 ${audioRange ? "cursor-pointer hover:bg-secondary/55" : ""} ${isActiveLine ? "bg-[#EEF7D8] ring-1 ring-inset ring-accent/55" : i % 3 === 2 ? "bg-secondary" : "bg-white"}`}
                         role={audioRange ? "button" : undefined}
                         tabIndex={audioRange ? 0 : undefined}
                         aria-pressed={audioRange ? isActiveLine : undefined}
@@ -884,36 +905,39 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         } : undefined}
                       >
 
-                        {/* Speech-bubble speaker label — fixed-width column on desktop/tablet,
-                            stacked above the text with no reserved column on mobile (<=640px) */}
-                        <div className="speaker-column">
-                          <SpeechBubbleLabel label={label} style={style} />
+                        <div className="flex h-11 w-11 items-center justify-center rounded-full text-center text-[10px] font-black leading-tight text-white md:h-12 md:w-12 md:text-[11px]"
+                          style={{ backgroundColor: style.accent }}>
+                          {label}
                         </div>
 
-                        {/* English + Chinese lines — fluid column, same left edge for every role */}
-                        <div className="dialogue-content">
-                          <div className="flex items-start gap-2">
-                            <p
-                              className={`dialogue-english font-medium leading-[1.65] flex-1 transition-colors ${isActiveLine ? "text-primary" : "text-foreground"}`}
-                              style={{ fontSize: "17px", WebkitTextStroke: isActiveLine ? "0.5px currentColor" : "0px currentColor" }}
-                            >
-                              {line.en}
-                            </p>
-                            {/* Purely a state indicator now — the whole row is the click target (see onClick above) */}
-                            {audioRange && (
-                              <span aria-hidden="true" className={`dialogue-audio flex-shrink-0 mt-0.5 flex items-center justify-center w-6 h-6 rounded-full transition-colors ${isActiveLine ? "bg-primary text-white" : "text-muted-foreground"}`}>
-                                <Volume2 className="w-3.5 h-3.5" />
-                              </span>
-                            )}
-                          </div>
+                        <div className="min-w-0">
+                          <p className="text-[13px] font-black leading-none text-primary">{speaker?.zh || label}</p>
+                          <p className={`mt-1 font-serif text-[19px] leading-snug transition-colors md:text-[22px] ${isActiveLine ? "text-primary" : "text-foreground"}`}>
+                            {line.en}
+                          </p>
                           {bilingualMode && (
-                            <p className="dialogue-chinese mt-2 leading-[1.75]" style={{ fontSize: "15px", color: "#3A4A42" }}>{line.zh}</p>
+                            <p className="mt-1 text-[14px] leading-relaxed text-muted-foreground md:text-[15px]">{line.zh}</p>
+                          )}
+                        </div>
+
+                        <div className="flex items-center justify-end gap-3">
+                          <span className="hidden text-[12px] tabular-nums text-muted-foreground sm:inline">
+                            {formatTimestamp(dialogueLineRawRanges.get(i)?.start)}
+                          </span>
+                          {audioRange && (
+                            <span aria-hidden="true" className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border transition-colors ${isActiveLine ? "border-primary bg-primary text-white" : "border-border bg-white text-primary"}`}>
+                              <Play className="ml-0.5 h-3.5 w-3.5 fill-current" />
+                            </span>
                           )}
                         </div>
 
                       </div>
                     );
                   })}
+                </div>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-border px-2 pt-4 text-[12px] text-muted-foreground md:px-3">
+                  <span className="rounded-full border border-border bg-white px-4 py-2 font-bold text-primary">单句循环 · 关</span>
+                  <span>整句可点，播完自动停 · 跟读完一句，再点下一句</span>
                 </div>
               </div>
               )}
@@ -923,17 +947,14 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             {/* ─────────────────────────────────────────────
                 STAGE 03 · Learn the Language
                 ───────────────────────────────────────────── */}
-            <section id="section-language" className="border-t border-border bg-secondary/55">
-              <div className="max-w-[960px] mx-auto px-4 md:px-6 py-12 md:py-16">
-              <div className="paper-panel rounded-[24px] p-5 md:p-8">
+            <section id="section-language" className="px-5 pb-12 md:px-10 md:pb-16">
+              <StepHeading number="03" title="知识点" hint="这一课真正要带走的" />
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {/* Key Expressions — from public.key_expressions (or its legacy-tips fallback) */}
                 {keyExpressionItems.length > 0 && (
-                  <div className="mb-8">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-0.5 h-4 rounded-full bg-primary" />
-                      <span className="text-xs font-black uppercase tracking-[0.14em] text-muted-foreground">Key Expressions · 重点表达</span>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className={`rounded-[20px] border border-border bg-white p-5 md:p-7 ${cultureTipItems.length === 0 ? "md:col-span-2" : ""}`}>
+                    <h3 className="mb-6 text-[18px] font-black text-primary">核心表达</h3>
+                    <div>
                       {keyExpressionItems.map((item, i) => (
                         <KeyExpressionCard key={i} item={item} />
                       ))}
@@ -943,50 +964,44 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                 {/* Culture & Local Tips — from public.culture_tips (or its legacy-tips fallback) */}
                 {cultureTipItems.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-0.5 h-4 rounded-full bg-primary" />
-                      <span className="text-xs font-black uppercase tracking-[0.14em] text-muted-foreground">Culture & Local Tips · 文化与本地提示</span>
-                    </div>
-                    <div className="space-y-3">
+                  <div className={`rounded-[20px] border border-border bg-white p-5 md:p-7 ${keyExpressionItems.length === 0 ? "md:col-span-2" : ""}`}>
+                    <h3 className="mb-6 text-[18px] font-black text-primary">文化与本地提示</h3>
+                    <div>
                       {cultureTipItems.map((item, i) => (
                         <CultureTipCard key={i} item={item} tipNumber={i + 1} />
                       ))}
                     </div>
                   </div>
                 )}
-              </div>{/* inner card */}
-              </div>{/* inner container */}
+              </div>
             </section>
 
             {/* ─────────────────────────────────────────────
                 LIGHT SECTION: PDF · Related · Prev/Next
                 ───────────────────────────────────────────── */}
-            <section className="border-t border-border bg-background">
-              <div className="max-w-[960px] mx-auto px-4 md:px-6 py-12">
+            <section className="px-5 pb-10 md:px-10 md:pb-12">
+              <div>
 
                 {/* PDF download — scene.pdfUrl comes straight from Supabase scenes.pdf_url;
                     never hardcoded and never guessed from the scene id/slug. */}
-                <div className="paper-panel flex items-center gap-4 rounded-[20px] px-5 py-4 mb-10">
-                  <div className="w-10 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(200,241,105,0.15)" }}>
-                    <FileText size={16} className="text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-foreground leading-snug">{scene.titleEn} — PDF</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Dialogue · Expressions · Culture tips · Free</p>
+                <div className="mb-12 flex flex-col gap-6 rounded-[24px] bg-primary px-6 py-8 text-white md:flex-row md:items-center md:justify-between md:px-8">
+                  <div className="max-w-[720px]">
+                    <p className="text-[11px] font-black uppercase tracking-[0.18em] text-white/65">Step 04 · 本期讲义 PDF</p>
+                    <p className="mt-4 font-serif text-[27px] font-semibold leading-tight md:text-[34px]">把这一课带走，贴在冰箱上练</p>
+                    <p className="mt-3 text-[14px] leading-relaxed text-white/70">完整双语对话 + 核心表达 + 本地文化提示，下载后随时复习。</p>
                   </div>
                   {scene.pdfUrl ? (
                     <a
                       href={scene.pdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-xs font-black rounded-xl px-4 py-2.5 transition-opacity hover:opacity-90 flex-shrink-0"
+                      className="flex flex-shrink-0 items-center justify-center gap-2 rounded-full px-6 py-4 text-[14px] font-black transition-transform hover:scale-[1.02]"
                       style={{ backgroundColor: "#C8F169", color: "#12241C" }}
                     >
-                      <Download size={11} />Download
+                      下载 PDF 讲义 <Download size={15} />
                     </a>
                   ) : (
-                    <span className="text-xs font-bold text-muted-foreground italic flex-shrink-0">资料准备中</span>
+                    <span className="flex-shrink-0 rounded-full border border-white/25 px-5 py-3 text-xs font-bold text-white/65">资料准备中</span>
                   )}
                 </div>
 
@@ -1045,6 +1060,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
           </div>
         </>
       )}
+      </div>
     </div>
   );
 }
