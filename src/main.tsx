@@ -3,10 +3,10 @@
   import { BrowserRouter } from "react-router";
   import App from "./app/App.tsx";
 // Self-hosted fonts (no Google Fonts CDN — works everywhere, including CN visitors)
-// Fraunces: full variable font (SOFT/WONK/opsz/wght) so display sizes get
-// high-contrast optical sizing automatically, like the design mockup.
-import "@fontsource-variable/fraunces/full.css";
-import "@fontsource-variable/fraunces/full-italic.css";
+// Newsreader: variable opsz (6..72) + wght — the design's serif. Browser
+// auto-applies display optical sizing at large sizes (font-optical-sizing).
+import "@fontsource-variable/newsreader/opsz.css";
+import "@fontsource-variable/newsreader/opsz-italic.css";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";

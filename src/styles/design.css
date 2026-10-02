@@ -1,0 +1,67 @@
+/* ─────────────────────────────────────────────
+   Design tokens + editorial classes copied verbatim from the
+   direction-A source (~/workspace/ts-spaces/space/index.html).
+   Only the sections the homepage uses; nothing else.
+   ───────────────────────────────────────────── */
+:root{
+  --bg:#F4EFE6; --surface:#FFFEFB; --surface2:#EDE6D8;
+  --ink:#12241C; --ink2:#3A4A42; --muted:#7A877F;
+  --brand:#0F3527; --brand2:#174A36; --accent:#C8F169; --accent-ink:#0F3527;
+  --line:rgba(18,36,28,.14); --radius:18px;
+  --serif:"Newsreader Variable","Noto Serif SC",serif;
+  --sans:"Noto Sans SC",system-ui,sans-serif;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+@media(min-width:768px){.wrap{padding:0 32px}}
+
+/* kicker — 28px×1px rule drawn with ::before */
+.kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:10px}
+.kicker::before{content:"";width:28px;height:1px;background:var(--muted);display:inline-block}
+
+/* hero */
+.hero-grid{display:grid;gap:28px}
+@media(min-width:900px){.hero-grid{grid-template-columns:1.02fr .98fr;gap:56px;align-items:center}}
+.dh1{margin:14px 0 0}
+.dh1 .zh{display:block;font-family:"Noto Serif SC",serif;font-size:clamp(28px,4.5vw,44px);line-height:1.15;margin-top:14px;font-weight:600;color:var(--ink)}
+.lede{margin-top:26px;font-size:16px;line-height:1.85;color:var(--ink2);max-width:460px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}
+.btn{padding:13px 20px;border-radius:999px;font-weight:700;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn.primary:hover{opacity:.92}
+.hero-img{position:relative}
+.hero-img img{width:100%;height:520px;object-fit:cover;border-radius:22px}
+@media(max-width:899px){.hero-img img{height:340px}}
+.hero-card{position:absolute;left:14px;bottom:14px;right:14px;background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.hero-card b{font-size:14px;color:var(--ink)} .hero-card p{margin:3px 0 0;font-size:12px;color:var(--muted);line-height:1.5}
+.badge{background:var(--accent);color:var(--accent-ink);font-size:11px;font-weight:800;padding:6px 9px;border-radius:999px;white-space:nowrap}
+
+/* marquee — static, per design */
+.marquee{margin:40px 0 10px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;overflow:hidden;white-space:nowrap}
+.marquee span{display:inline-block;padding-right:28px;font-family:var(--serif);font-style:italic;font-size:15px;color:var(--ink2)}
+
+/* scene library */
+.libsec{padding:44px 0 8px}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.sec-head h2{font-family:"Noto Serif SC",serif;font-size:clamp(24px,3.4vw,34px);line-height:1.15;margin:6px 0 0;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.sec-head h2 i{font-family:var(--serif);font-style:italic;font-weight:500}
+.sec-head p{color:var(--muted);font-size:13px;line-height:1.6;max-width:360px;margin:0}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.filters button{padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:600;cursor:pointer;color:var(--ink2)}
+.filters button.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* scene editorial cards */
+.scenes{display:grid;gap:14px}
+@media(min-width:860px){.scenes{grid-template-columns:1.25fr .85fr .85fr;grid-auto-rows:1fr}}
+.scene{position:relative;border-radius:18px;overflow:hidden;background:var(--surface);border:1px solid var(--line);min-height:240px;cursor:pointer;display:block;text-decoration:none}
+.scene img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transition:transform .6s}
+.scene:hover img{transform:scale(1.03)}
+.scene::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(6,20,14,.78))}
+.scene-txt{position:absolute;left:16px;right:16px;bottom:14px;z-index:2;color:#fff}
+.scene-txt small{letter-spacing:.14em;text-transform:uppercase;font-size:11px;font-weight:700;opacity:.85}
+.scene-txt h3{margin:6px 0 4px;font-size:20px;line-height:1.2;font-family:"Noto Serif SC",serif;color:#fff}
+.scene-txt p{margin:0;font-size:12.5px;opacity:.88;line-height:1.55;color:#fff}
+.scene .play{position:absolute;top:12px;right:12px;z-index:2;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.92);color:#0F3527;display:grid;place-items:center}
+.scene .play svg{width:15px;height:15px;display:block}
+.scene.large{min-height:420px}
+@media(max-width:859px){.scene.large{min-height:320px}}
+.hidden{display:none!important}

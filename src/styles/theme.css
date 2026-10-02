@@ -6,34 +6,34 @@
      drives the bottom padding App.tsx adds so page content/footer can
      scroll fully clear of it. Keep both reads of this in sync. */
   --mobile-nav-height: 76px;
-  --background: #F7F4EE;
-  --foreground: #1A1A1A;
-  --card: #FFFFFF;
-  --card-foreground: #1A1A1A;
-  --popover: #FFFFFF;
-  --popover-foreground: #1A1A1A;
-  --primary: #1C3329;
-  --primary-foreground: #F7F4EE;
-  --secondary: #ECE7DB;
-  --secondary-foreground: #3A3833;
-  --muted: #ECE7DB;
-  --muted-foreground: #6E6A5E;
-  --accent: #C6F24E;
-  --accent-foreground: #1C3329;
+  --background: #F4EFE6;
+  --foreground: #12241C;
+  --card: #FFFEFB;
+  --card-foreground: #12241C;
+  --popover: #FFFEFB;
+  --popover-foreground: #12241C;
+  --primary: #0F3527;
+  --primary-foreground: #F4EFE6;
+  --secondary: #EDE6D8;
+  --secondary-foreground: #3A4A42;
+  --muted: #EDE6D8;
+  --muted-foreground: #7A877F;
+  --accent: #C8F169;
+  --accent-foreground: #0F3527;
   --destructive: #C0392B;
   --destructive-foreground: #FFFFFF;
-  --border: rgba(26, 26, 26, 0.09);
+  --border: rgba(18, 36, 28, 0.14);
   --input: transparent;
-  --input-background: #F0ECE2;
+  --input-background: #EDE6D8;
   --switch-background: #CCCCCC;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #1C3329;
-  --chart-1: #1C3329;
-  --chart-2: #C6F24E;
-  --chart-3: #2E5244;
-  --chart-4: #6E6A5E;
-  --chart-5: #ECE7DB;
+  --ring: #0F3527;
+  --chart-1: #0F3527;
+  --chart-2: #C8F169;
+  --chart-3: #174A36;
+  --chart-4: #7A877F;
+  --chart-5: #EDE6D8;
   --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
@@ -130,13 +130,13 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+    font-family: "Noto Sans SC", system-ui, sans-serif;
   }
 
-  /* Editorial display serif — Fraunces (Latin) + Noto Serif SC (Chinese).
+  /* Editorial display serif — Newsreader (Latin, variable opsz) + Noto Serif SC.
      Used for brand headlines and scene titles: the "深林编辑" voice. */
   .font-display {
-    font-family: 'Fraunces Variable', 'Noto Serif SC', Georgia, serif;
+    font-family: "Newsreader Variable", "Noto Serif SC", serif;
     font-optical-sizing: auto;
   }
 

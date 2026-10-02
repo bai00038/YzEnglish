@@ -1,5 +1,7 @@
+import { useState } from "react";
+import type { CSSProperties } from "react";
 import { Link } from "react-router";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useScenes } from "@/data/scenes-access";
 import type { Scene } from "@/data/types";
 import { ImgBox } from "@/app/components/primitives";
@@ -7,93 +9,72 @@ import { LevelBadge, DurationLabel } from "@/app/components/badges";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 
 // ─────────────────────────────────────────────
-// Scene Library — the five editorial collections.
-// `match` maps each collection to the data-layer categories that feed
-// it; `fixedCount` is an editorial override for collections whose
-// scenes live outside the current dataset (Small Talk's 13 episodes).
-// Purely presentational — the data layer is untouched.
+// Scene cards — copy verbatim from the direction-A design source
+// (~/workspace/ts-spaces/space/index.html, #sceneGrid).
 // ─────────────────────────────────────────────
-const LIBRARY = [
-  {
-    name: "生活场景",
-    en: "Everyday Life",
-    desc: "日常办事与生活消费",
-    match: ["Shopping & Returns", "Food & Restaurants", "Housing", "Travel"],
-  },
-  {
-    name: "医疗场景",
-    en: "Healthcare · 看病就医",
-    desc: "看病、问诊与药房沟通",
-    match: ["Healthcare"],
-  },
-  {
-    name: "家校沟通",
-    en: "School & Family",
-    desc: "学校、老师与家长交流",
-    match: ["School & Family"],
-  },
-  {
-    name: "Small Talk",
-    en: "日常寒暄 · 13 集",
-    desc: "自然破冰与闲聊",
-    match: ["Small Talk"],
-    fixedCount: 13,
-  },
-  {
-    name: "宠物英语",
-    en: "Pets",
-    desc: "养宠、看诊与社区交流",
-    match: ["Pets"],
-  },
+type SceneCardData = {
+  cats: string[];
+  large?: boolean;
+  img: string;
+  alt: string;
+  imgStyle?: CSSProperties;
+  small: string;
+  h3: string;
+  p: string;
+};
+
+const SCENE_CARDS: SceneCardData[] = [
+  { cats: ["medical"], large: true, img: "/images/dental.webp", alt: "牙科诊所场景",
+    small: "Medical · 看病就医", h3: "看牙：补牙、洗牙、问费用",
+    p: "全站人气最高的场景之一。高焦虑时刻，一句句拆给你听。" },
+  { cats: ["daily", "school"], img: "/images/hero.webp", alt: "校门口寒暄场景",
+    small: "Small Talk · 家校", h3: "校门口寒暄",
+    p: "孩子近况、课程、老师——固定话题库，下次见面接着聊。" },
+  { cats: ["daily"], img: "/images/cafe.webp", alt: "咖啡馆闲聊场景",
+    small: "Small Talk · 日常", h3: "和邻居喝杯咖啡",
+    p: "不谈正事的聊天，才是最难的 bonding。" },
+  { cats: ["medical"], img: "/images/pharmacy.webp", alt: "药房取药场景",
+    small: "Medical · 看病就医", h3: "药房取药",
+    p: "处方、剂量、副作用，一次问清，不靠猜。" },
+  { cats: ["life"], img: "/images/cafe.webp", alt: "生活消费场景",
+    imgStyle: { filter: "saturate(.85)" },
+    small: "Life · 生活消费", h3: "买防晒 / 退换货",
+    p: "小红书上跑出来的高收藏场景，实用又体面。" },
+  { cats: ["school"], img: "/images/hero.webp", alt: "家校沟通场景",
+    imgStyle: { filter: "brightness(.92)" },
+    small: "School · 家校沟通", h3: "家长会：为孩子开口",
+    p: "不是寒暄，是据理力争——这部分，翻译机替不了你。" },
+];
+
+const FILTERS = [
+  { key: "all", label: "全部" },
+  { key: "medical", label: "看病就医" },
+  { key: "school", label: "家校沟通" },
+  { key: "daily", label: "日常寒暄" },
+  { key: "life", label: "生活消费" },
 ] as const;
 
-// ─────────────────────────────────────────────
-// Hero ticker — scene names scrolling under the hero, per 方向稿.
-// ─────────────────────────────────────────────
-const TICKER_ITEMS = [
-  { en: "At the dentist", zh: "看牙怎么说" },
-  { en: "At the pharmacy", zh: "药房取药" },
-  { en: "School gate small talk", zh: "校门口寒暄" },
-  { en: "Blood work", zh: "抽血检查" },
-  { en: "Parent-teacher meeting", zh: "家长会" },
-] as const;
+// Ticker copy — verbatim from design (em dash + ✦ separators).
+const TICKER_TEXT =
+  "At the dentist — 看牙怎么说 ✦ At the pharmacy — 药房取药 ✦ School gate small talk — 校门口寒暄 ✦ Blood work — 抽血检查 ✦ Parent-teacher meeting — 家长会 ✦ ";
 
-function LibraryCard({ name, en, desc, scenes, fixedCount }: {  name: string; en: string; desc: string; scenes: Scene[]; fixedCount?: number;
-}) {
-  const photo = scenes.find(s => s.photo)?.photo;
-  const count = fixedCount ?? scenes.length;
+function SceneCard({ card, hidden }: { card: SceneCardData; hidden: boolean }) {
   return (
     <Link
       to="/explore"
-      className="group block bg-card rounded-3xl overflow-hidden border border-border/60 hover:shadow-[0_22px_54px_rgba(28,51,41,0.13)] hover:-translate-y-1 transition-all duration-300"
+      className={`scene${card.large ? " large" : ""}${hidden ? " hidden" : ""}`}
+      data-cat={card.cats.join(" ")}
     >
-      <div className="relative aspect-[16/10] overflow-hidden bg-primary">
-        {photo ? (
-          <>
-            <img
-              src={photo}
-              alt={name}
-              className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-          </>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-primary">
-            <span className="font-display text-[26px] font-semibold text-[#F7F4EE]/85">{name}</span>
-          </div>
-        )}
-      </div>
-      <div className="px-6 pt-5 pb-6">
-        <div className="flex items-baseline justify-between gap-3">
-          <p className="font-display text-[22px] font-semibold text-foreground leading-tight">{name}</p>
-          <ArrowUpRight size={18} className="flex-shrink-0 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-        </div>
-        <p className="text-[12px] font-semibold tracking-wide text-muted-foreground mt-1">{en}</p>
-        <p className="text-[13px] text-muted-foreground mt-2">{desc}</p>
-        <p className="text-[12px] font-bold text-primary mt-3">
-          {count > 0 ? `${count} 个场景` : "即将上线"}
-        </p>
+      <img src={card.img} alt={card.alt} style={card.imgStyle} loading="lazy" />
+      <span className="play">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5.5v13l11-6.5z" fill="currentColor" />
+        </svg>
+      </span>
+      <div className="scene-txt">
+        <small>{card.small}</small>
+        <h3>{card.h3}</h3>
+        <p>{card.p}</p>
       </div>
     </Link>
   );
@@ -101,6 +82,7 @@ function LibraryCard({ name, en, desc, scenes, fixedCount }: {  name: string; en
 
 // ─────────────────────────────────────────────
 // Featured scene — one cinematic card (dental, the all-time top).
+// Untouched by the direction-A restoration.
 // ─────────────────────────────────────────────
 function FeaturedCard({ scene }: { scene: Scene }) {
   return (
@@ -149,6 +131,7 @@ function FeaturedCard({ scene }: { scene: Scene }) {
 export function HomePage() {
   const { data: scenesData, loading, error } = useScenes();
   const scenes = scenesData ?? [];
+  const [filter, setFilter] = useState<string>("all");
 
   const dentalScene =
     scenes.find(s => s.slug === "booking-a-dentist-appointment") ??
@@ -158,90 +141,61 @@ export function HomePage() {
   return (
     <div>
       {/* ════════════════════════════════════════
-          HERO — editorial two-column, per 方向稿.
-          Left: eyebrow / serif H1 (roman + italic) / Chinese
-          headline / body / dual capsule CTAs.
-          Right: photo card with floating featured-scene card.
+          HERO — structure per direction-A design source.
+          EN headline stays as the approved cut-out image.
           ════════════════════════════════════════ */}
       <section className="bg-background overflow-hidden">
-        <div className="max-w-[1120px] mx-auto px-6 md:px-10 pt-14 md:pt-20 lg:pt-24 pb-14 md:pb-20">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.02fr_0.98fr] gap-12 lg:gap-14 items-center">
+        <div className="wrap pt-14 md:pt-20 lg:pt-24 pb-14 md:pb-20">
+          <div className="hero-grid">
             <div>
-              <p className="text-[11px] font-bold tracking-[0.24em] text-muted-foreground mb-6">
-                —— OTTAWA · 真实生活英语
-              </p>
-              <h1 className="max-w-[340px] md:max-w-[500px] lg:max-w-[620px]">
+              <div className="kicker">Ottawa · 真实生活英语</div>
+              <h1 className="dh1 max-w-[340px] md:max-w-[500px] lg:max-w-[620px]">
                 <img
                   src="/images/headline-real-scenes.png"
                   alt="Real scenes, for real life."
                   className="block w-full h-auto select-none"
                   draggable={false}
                 />
+                <span className="zh">
+                  不是背单词，
+                  <br />
+                  是下一次开口不慌。
+                </span>
               </h1>
-              <p className="font-display font-semibold text-primary leading-snug text-[28px] md:text-[34px] lg:text-[40px] mt-7">
-                不是背单词，<br />
-                是下一次开口不慌。
-              </p>
-              <p className="text-[15px] md:text-[16px] text-muted-foreground leading-relaxed mt-5 max-w-md">
+              <p className="lede">
                 看牙、抽血、校门口寒暄、跟老师谈孩子——每一个场景都聚焦真实生活，做成视频 + 点读 + 跟读。学完，就能用在明天早上。
               </p>
-              <div className="mt-9 flex flex-wrap items-center gap-4">
-                <Link
-                  to="/explore"
-                  className="inline-flex items-center gap-2 text-[14px] font-bold text-[#F7F4EE] bg-primary rounded-full px-7 py-3.5 hover:opacity-90 transition-opacity"
-                >
-                  进入场景库 <ArrowRight size={15} />
+              <div className="hero-actions">
+                <Link to="/explore" className="btn primary">
+                  进入场景库
                 </Link>
-                <a
-                  href="#library"
-                  className="inline-flex items-center gap-2 text-[14px] font-bold text-primary border border-primary/25 rounded-full px-7 py-3.5 hover:border-primary/60 transition-colors"
-                >
-                  先试学一课 <span aria-hidden="true">↓</span>
+                <a href="#library" className="btn">
+                  先试学一课 ↓
                 </a>
               </div>
             </div>
-            <div className="relative rounded-[28px] overflow-hidden bg-secondary">
-              <img
-                src="/images/hero-school-talk.jpg"
-                alt="两位女士在秋日街道上聊天"
-                className="w-full aspect-[4/4.3] sm:aspect-[16/11] lg:aspect-[4/4.6] object-cover"
-              />
-              <div className="absolute inset-x-4 bottom-4 bg-white/95 backdrop-blur rounded-2xl px-5 py-4 shadow-[0_18px_44px_rgba(28,51,41,0.18)] flex items-center gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-bold text-foreground">本期场景 · 校门口寒暄</p>
-                  <p className="text-[13px] text-muted-foreground leading-relaxed mt-1">
-                    “聊十几分钟不冷场”的固定话题库——孩子近况、课程、老师，下次见面接着聊。
-                  </p>
+            <div className="hero-img">
+              <img src="/images/hero.webp" alt="秋日街道上两位女士聊天" />
+              <div className="hero-card">
+                <div>
+                  <b>本期场景 · 校门口寒暄</b>
+                  <p>“聊十几分钟不冷场”的固定话题库——孩子近况、课程、老师，下次见面接着聊。</p>
                 </div>
-                <span className="flex-shrink-0 text-[12px] font-bold text-accent-foreground bg-accent rounded-full px-4 py-2">
-                  人气场景
-                </span>
+                <span className="badge">人气场景</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Ticker — thin rules top/bottom, slow infinite scroll. */}
-        <div className="border-y border-foreground/10 py-4 overflow-hidden" aria-hidden="true">
-          <div className="ticker-track flex w-max items-baseline">
-            {[0, 1].map((copy) => (
-              <div key={copy} className="flex items-baseline flex-shrink-0">
-                {TICKER_ITEMS.map((item) => (
-                  <span key={`${copy}-${item.en}`} className="flex items-baseline flex-shrink-0">
-                    <span className="font-display italic text-[15px] md:text-[17px] text-muted-foreground whitespace-nowrap">
-                      {item.en} – {item.zh}
-                    </span>
-                    <span className="mx-6 md:mx-8 text-[11px] text-primary/50">◆</span>
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
+        {/* Ticker — static, verbatim from design. */}
+        <div className="marquee" aria-hidden="true">
+          <span>{TICKER_TEXT}</span>
+          <span>{TICKER_TEXT}</span>
         </div>
       </section>
 
       {/* ════════════════════════════════════════
-          FEATURED SCENE
+          FEATURED SCENE (untouched)
           ════════════════════════════════════════ */}
       <section className="bg-background pb-16 md:pb-24">
         <div className="max-w-[1120px] mx-auto px-6">
@@ -258,36 +212,42 @@ export function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════
-          SCENE LIBRARY — the big cards
+          SCENE LIBRARY — rebuilt per direction-A design source.
           ════════════════════════════════════════ */}
-      <section id="library" className="bg-background pb-20 md:pb-28 scroll-mt-24">
-        <div className="max-w-[1120px] mx-auto px-6">
-          <div className="mb-10 md:mb-14">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-4">
-              Scene Library · 场景库
-            </p>
-            <h2 className="font-display font-semibold text-[30px] md:text-[40px] lg:text-[52px] leading-tight tracking-tight text-foreground">
-              从生活里选<br />要学的英语。
-            </h2>
-          </div>
-          {loading ? (
-            <LoadingState label="Loading scene library…" />
-          ) : error ? (
-            <ErrorState message={error} />
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7">
-              {LIBRARY.map(lib => (
-                <LibraryCard
-                  key={lib.name}
-                  name={lib.name}
-                  en={lib.en}
-                  desc={lib.desc}
-                  scenes={scenes.filter(s => (lib.match as readonly string[]).includes(s.category))}
-                  fixedCount={"fixedCount" in lib ? lib.fixedCount : undefined}
-                />
-              ))}
+      <section id="library" className="bg-background libsec scroll-mt-24">
+        <div className="wrap">
+          <div className="sec-head">
+            <div>
+              <div className="kicker">Scene Library</div>
+              <h2>
+                按生活逛，不按课本翻。
+                <br />
+                <i>Browse by life, not by textbook.</i>
+              </h2>
             </div>
-          )}
+            <p>工具站按功能排，这里按“你明天会遇到的事”排。点分类筛一下，像逛一本生活杂志。</p>
+          </div>
+          <div className="filters">
+            {FILTERS.map(f => (
+              <button
+                key={f.key}
+                data-f={f.key}
+                className={filter === f.key ? "active" : ""}
+                onClick={() => setFilter(f.key)}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+          <div className="scenes" id="sceneGrid">
+            {SCENE_CARDS.map(card => (
+              <SceneCard
+                key={card.h3}
+                card={card}
+                hidden={filter !== "all" && !card.cats.includes(filter)}
+              />
+            ))}
+          </div>
         </div>
       </section>
     </div>
