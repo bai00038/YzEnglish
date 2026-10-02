@@ -54,7 +54,14 @@ const demoLines = [
 
 const HERO_IMAGE = "https://images.unsplash.com/photo-1516901408257-500ed7566e6a?w=900&h=1100&fit=crop&auto=format";
 
-const TICKER_TEXT = "At the dentist — 看牙怎么说 ✦ At the pharmacy — 药房取药 ✦ School communication — 家校沟通 ✦ Blood work — 抽血检查 ✦ Parent-teacher meeting — 家长会 ✦";
+const TICKER_ITEMS = [
+  "At the dentist — 看牙怎么说",
+  "At the pharmacy — 药房取药",
+  "School communication — 家校沟通",
+  "Blood work — 抽血检查",
+  "Parent-teacher meeting — 家长会",
+];
+const TICKER_TEXT = TICKER_ITEMS.join(" ✦ ");
 const HOME_CATEGORIES = ["购物英语", "日常生活", "医疗英语", "家校沟通"];
 
 function SceneTicker() {
@@ -83,7 +90,12 @@ function SceneTicker() {
             aria-hidden={copy === 1}
             className="scene-ticker-copy display-serif whitespace-nowrap px-5 text-[15px] italic text-secondary-foreground md:px-8 md:text-[16px]"
           >
-            {TICKER_TEXT}
+            {TICKER_ITEMS.map((item) => (
+              <span key={item} className="inline-flex items-center gap-4">
+                <span>{item}</span>
+                <span aria-hidden="true">✦</span>
+              </span>
+            ))}
           </p>
         ))}
       </div>

@@ -326,7 +326,10 @@
 }
 
 .scene-ticker-copy {
+  display: flex;
   flex: none;
+  align-items: center;
+  gap: 16px;
 }
 
 @media (prefers-reduced-motion: reduce) {
