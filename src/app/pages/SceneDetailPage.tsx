@@ -833,40 +833,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   onStopPlayback={stopDictationPlayback}
                 />
               ) : (
-              <div className="rounded-[22px] border border-border bg-white p-2 md:p-3">
-                {/* Controls bar */}
-                <div className="flex flex-wrap items-center gap-3 px-2 py-2 md:px-3">
-                  {/* EN / 双语 toggle */}
-                  <div className="flex items-center border border-border rounded-full p-0.5 bg-white shadow-sm">
-                    <button onClick={() => setBilingualMode(false)}
-                      className={`text-[11px] font-bold px-3 py-1 rounded-full transition-all duration-200 ${!bilingualMode ? "shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                      style={!bilingualMode ? { backgroundColor: "#0F3527", color: "#F4EFE6" } : {}}>
-                      English
-                    </button>
-                    <button onClick={() => setBilingualMode(true)}
-                      className={`text-[11px] font-bold px-3 py-1 rounded-full transition-all duration-200 ${bilingualMode ? "shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                      style={bilingualMode ? { backgroundColor: "#0F3527", color: "#F4EFE6" } : {}}>
-                      双语
-                    </button>
-                  </div>
-
-                  <span className="text-xs text-muted-foreground">{content.dialogue.length} 句 · {scene.duration}</span>
-
-                  {/* Legend — every role that actually speaks in this scene, in first-occurrence order */}
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 ml-auto">
-                    {Array.from(sceneSpeakers.values()).map(sp => (
-                      <div key={sp.key} className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded whitespace-nowrap"
-                          style={{ backgroundColor: sp.style.bg, color: sp.style.color, border: sp.style.border }}>
-                          {sp.en.toUpperCase()}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground hidden sm:inline whitespace-nowrap">
-                          {sp.zh ? `${sp.en} · ${sp.zh}` : sp.en}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              <div className="rounded-[22px] border border-border bg-white p-2.5 md:p-3">
 
                 {/* Transcript rows — no scroll container of its own; the
                     lines expand naturally and only the page scrollbar
@@ -874,8 +841,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 <div>
                   {content.dialogue.map((line, i) => {
                     const speaker = sceneSpeakers.get(normalizeSpeaker(line.speaker));
-                    const style = speaker?.style ?? SPEAKER_STYLES[0];
-                    const label = speaker?.en ?? line.speaker;
+                    const speakerIndex = Array.from(sceneSpeakers.keys()).indexOf(normalizeSpeaker(line.speaker));
+                    const isLearnerSpeaker = speakerIndex <= 0;
+                    const label = isLearnerSpeaker ? "You" : (speaker?.en ?? line.speaker);
+                    const avatarColor = isLearnerSpeaker ? "#0F3A2B" : "#9A7533";
                     const audioRange = dialogueLineAudioRanges.get(i);
                     const isActiveLine = highlightedLineIndex === i;
                     // Prefer the permanent external_line_id (Phase A-0 —
@@ -891,7 +860,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     return (
                       <div key={rowKey}
                         ref={el => { dialogueRowRefs.current[i] = el; }}
-                        className={`mx-0 grid grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-4 rounded-[16px] px-4 py-5 transition-colors md:grid-cols-[52px_minmax(0,1fr)_88px] md:px-5 ${audioRange ? "cursor-pointer hover:bg-secondary/55" : ""} ${isActiveLine ? "bg-[#EEF7D8] ring-1 ring-inset ring-accent/55" : i % 3 === 2 ? "bg-secondary" : "bg-white"}`}
+                        className={`mx-0 grid min-h-[104px] grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-4 rounded-[18px] px-4 py-6 transition-colors md:min-h-[126px] md:grid-cols-[56px_minmax(0,1fr)_104px] md:gap-5 md:px-5 md:py-7 ${audioRange ? "cursor-pointer hover:bg-secondary/45" : ""} ${isActiveLine ? "bg-[#EEE7D8]" : "bg-white"}`}
                         role={audioRange ? "button" : undefined}
                         tabIndex={audioRange ? 0 : undefined}
                         aria-pressed={audioRange ? isActiveLine : undefined}
@@ -905,27 +874,27 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         } : undefined}
                       >
 
-                        <div className="flex h-11 w-11 items-center justify-center rounded-full text-center text-[10px] font-black leading-tight text-white md:h-12 md:w-12 md:text-[11px]"
-                          style={{ backgroundColor: style.accent }}>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full text-center text-[13px] font-black leading-tight text-white md:h-14 md:w-14 md:text-[14px]"
+                          style={{ backgroundColor: avatarColor }}>
                           {label}
                         </div>
 
                         <div className="min-w-0">
-                          <p className="text-[13px] font-black leading-none text-primary">{speaker?.zh || label}</p>
-                          <p className={`mt-1 font-serif text-[19px] leading-snug transition-colors md:text-[22px] ${isActiveLine ? "text-primary" : "text-foreground"}`}>
+                          <p className="text-[15px] font-black leading-none text-primary md:text-[16px]">{isLearnerSpeaker ? "你" : (speaker?.zh || label)}</p>
+                          <p className={`mt-1.5 font-serif text-[20px] leading-snug transition-colors md:text-[24px] ${isActiveLine ? "text-primary" : "text-foreground"}`}>
                             {line.en}
                           </p>
                           {bilingualMode && (
-                            <p className="mt-1 text-[14px] leading-relaxed text-muted-foreground md:text-[15px]">{line.zh}</p>
+                            <p className="mt-1.5 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">{line.zh}</p>
                           )}
                         </div>
 
                         <div className="flex items-center justify-end gap-3">
-                          <span className="hidden text-[12px] tabular-nums text-muted-foreground sm:inline">
+                          <span className="hidden text-[13px] tabular-nums text-muted-foreground sm:inline md:text-[14px]">
                             {formatTimestamp(dialogueLineRawRanges.get(i)?.start)}
                           </span>
                           {audioRange && (
-                            <span aria-hidden="true" className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border transition-colors ${isActiveLine ? "border-primary bg-primary text-white" : "border-border bg-white text-primary"}`}>
+                            <span aria-hidden="true" className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-border bg-white text-primary transition-colors md:h-12 md:w-12">
                               <Play className="ml-0.5 h-3.5 w-3.5 fill-current" />
                             </span>
                           )}
@@ -936,7 +905,12 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   })}
                 </div>
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-border px-2 pt-4 text-[12px] text-muted-foreground md:px-3">
-                  <span className="rounded-full border border-border bg-white px-4 py-2 font-bold text-primary">单句循环 · 关</span>
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-full border border-border bg-white px-4 py-2 font-bold text-primary">单句循环 · 关</span>
+                    <button onClick={() => setBilingualMode(!bilingualMode)} className="rounded-full border border-border bg-white px-4 py-2 font-bold text-primary">
+                      {bilingualMode ? "双语" : "英文"}
+                    </button>
+                  </div>
                   <span>整句可点，播完自动停 · 跟读完一句，再点下一句</span>
                 </div>
               </div>
