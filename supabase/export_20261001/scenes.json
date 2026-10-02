@@ -1,0 +1,1016 @@
+[
+ {
+  "id": 28,
+  "slug": "shopping-for-clothes",
+  "title_en": "Shopping for Clothes",
+  "title_zh": "买衣服",
+  "category_id": 12,
+  "region": "Canada",
+  "level": "A2–B1",
+  "duration": "2 min",
+  "featured": false,
+  "is_new": false,
+  "description": "Ask for the right size, try on the clothes, and complete your purchase.",
+  "photo_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/images/scene-001-shopping-for-clothes.png",
+  "status": "published",
+  "scene_setup_en": null,
+  "scene_setup_zh": null,
+  "learning_goal_en": null,
+  "learning_goal_zh": null,
+  "dialogue": [
+   {
+    "en": "Excuse me. Do you have this in a small?",
+    "zh": "不好意思，这件有小号吗？",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   },
+   {
+    "en": "Let me check. Yes, we do. Here you go.",
+    "zh": "我帮您查一下。有的，给您。",
+    "speaker": "Staff",
+    "speakerZh": "工作人员"
+   },
+   {
+    "en": "Perfect. Thank you!",
+    "zh": "太好了，谢谢！",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   },
+   {
+    "en": "Where are the fitting rooms?",
+    "zh": "请问试衣间在哪里？",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   },
+   {
+    "en": "They’re right over there.",
+    "zh": "就在那边。",
+    "speaker": "Staff",
+    "speakerZh": "工作人员"
+   },
+   {
+    "en": "How did everything fit?",
+    "zh": "这些衣服穿着都合适吗？",
+    "speaker": "Staff",
+    "speakerZh": "工作人员"
+   },
+   {
+    "en": "Great! I’ll take these two.",
+    "zh": "很合适！这两件我要了。",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   },
+   {
+    "en": "Your total is $78.45.",
+    "zh": "一共是78.45加元。",
+    "speaker": "Cashier",
+    "speakerZh": "收银员"
+   },
+   {
+    "en": "Credit, please.",
+    "zh": "刷信用卡，谢谢。",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   },
+   {
+    "en": "Perfect. All set. Have a great day!",
+    "zh": "好的，已经好了。祝您今天愉快！",
+    "speaker": "Cashier",
+    "speakerZh": "收银员"
+   },
+   {
+    "en": "You too!",
+    "zh": "您也是！",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   }
+  ],
+  "expressions": [
+   {
+    "en": "in a small",
+    "zh": "小码的",
+    "note": "",
+    "label": "in a small"
+   },
+   {
+    "en": "fitting room",
+    "zh": "试衣间",
+    "note": "",
+    "label": "fitting room"
+   },
+   {
+    "en": "try it on",
+    "zh": "试穿一下",
+    "note": "",
+    "label": "try it on"
+   },
+   {
+    "en": "fit well",
+    "zh": "穿着合适",
+    "note": "",
+    "label": "fit well"
+   },
+   {
+    "en": "pay by credit",
+    "zh": "用信用卡付款",
+    "note": "",
+    "label": "pay by credit"
+   },
+   {
+    "en": "tap the card",
+    "zh": "轻触银行卡付款",
+    "note": "",
+    "label": "tap the card"
+   },
+   {
+    "en": "your total",
+    "zh": "您的总金额",
+    "note": "",
+    "label": "your total"
+   },
+   {
+    "en": "all set",
+    "zh": "已经完成了",
+    "note": "",
+    "label": "all set"
+   }
+  ],
+  "vocabulary": [],
+  "tips": [
+   {
+    "body": "In Canada, clothing sizes may be shown as XS, S, M, L and XL, or as numbers.",
+    "type": "tip",
+    "title": "Tip 1",
+    "bodyZh": "在加拿大，衣服尺码通常使用XS、S、M、L、XL，也可能使用数字尺码。",
+    "titleZh": "提示 1"
+   },
+   {
+    "body": "At checkout, Canadians often say “Credit, please” or “I’ll pay by credit.”",
+    "type": "tip",
+    "title": "Tip 2",
+    "bodyZh": "结账时，加拿大人经常说“Credit, please”或“I’ll pay by credit”。",
+    "titleZh": "提示 2"
+   }
+  ],
+  "related_scene_ids": null,
+  "prev_scene_id": null,
+  "next_scene_id": null,
+  "sort_order": 1,
+  "created_at": "2026-08-06T02:46:25.888199+00:00",
+  "updated_at": "2026-08-12T19:05:31.28122+00:00",
+  "pdf_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/pdfs/scene-001-shopping-for-clothes.pdf",
+  "video_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/videos/scene-001-shopping-for-clothes.mp4",
+  "subtitle_cues": [
+   {
+    "en": "Excuse me.",
+    "zh": "不好意思。",
+    "end": 1.03,
+    "start": 0.33
+   },
+   {
+    "en": "Do you have this in a small?",
+    "zh": "这件有小号吗？",
+    "end": 3.48,
+    "start": 2.37
+   },
+   {
+    "en": "Let me check.",
+    "zh": "我帮您查一下。",
+    "end": 4.9,
+    "start": 4.31
+   },
+   {
+    "en": "Yes, we do.",
+    "zh": "有的。",
+    "end": 6.97,
+    "start": 6.36
+   },
+   {
+    "en": "Here you go.",
+    "zh": "给您。",
+    "end": 7.7,
+    "start": 7.2
+   },
+   {
+    "en": "Perfect.",
+    "zh": "太好了。",
+    "end": 8.78,
+    "start": 8.39
+   },
+   {
+    "en": "Thank you!",
+    "zh": "谢谢！",
+    "end": 9.57,
+    "start": 9.06
+   },
+   {
+    "en": "Where are the fitting rooms?",
+    "zh": "请问试衣间在哪里？",
+    "end": 11.41,
+    "start": 10.34
+   },
+   {
+    "en": "They’re right over there.",
+    "zh": "就在那边。",
+    "end": 12.8,
+    "start": 12.02
+   },
+   {
+    "en": "How did everything fit?",
+    "zh": "这些衣服穿着都合适吗？",
+    "end": 16.28,
+    "start": 15.38
+   },
+   {
+    "en": "Great!",
+    "zh": "很合适！",
+    "end": 17.3,
+    "start": 16.79
+   },
+   {
+    "en": "I’ll take these two.",
+    "zh": "这两件我要了。",
+    "end": 18.27,
+    "start": 17.51
+   },
+   {
+    "en": "Your total is $78.45.",
+    "zh": "一共是78.45加元。",
+    "end": 22.1,
+    "start": 20.26
+   },
+   {
+    "en": "Credit, please.",
+    "zh": "刷信用卡，谢谢。",
+    "end": 24.3,
+    "start": 21.7
+   },
+   {
+    "en": "Perfect.",
+    "zh": "好的。",
+    "end": 25.15,
+    "start": 24.5
+   },
+   {
+    "en": "All set.",
+    "zh": "已经好了。",
+    "end": 26.15,
+    "start": 25.45
+   },
+   {
+    "en": "Have a great day!",
+    "zh": "祝您今天愉快！",
+    "end": 27.15,
+    "start": 26.35
+   },
+   {
+    "en": "You too!",
+    "zh": "您也是！",
+    "end": 28.73,
+    "start": 27.5
+   }
+  ],
+  "external_scene_id": "scene_001"
+ },
+ {
+  "id": 31,
+  "slug": "requesting-a-price-adjustment-at-costco",
+  "title_en": "Requesting a Price Adjustment at Costco",
+  "title_zh": "在 Costco 申请退差价",
+  "category_id": 12,
+  "region": "Canada",
+  "level": "A2–B1",
+  "duration": "23.5",
+  "featured": false,
+  "is_new": false,
+  "description": "Ask Costco for a price adjustment after an item goes on sale.",
+  "photo_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/images/scene-004-price adjustment.png",
+  "status": "published",
+  "scene_setup_en": "You bought a lunch bag last week and noticed it is now on sale. At the membership counter, you ask whether the store can refund the difference.",
+  "scene_setup_zh": "你上周买了一个午餐包，后来发现它现在正在打折。你来到会员服务柜台，询问商店能否退还差价。",
+  "learning_goal_en": "Learn how to request a price adjustment, provide proof of purchase, and understand the refund confirmation.",
+  "learning_goal_zh": "学习如何申请退差价、提供购买记录，并听懂退款处理完成的确认表达。",
+  "dialogue": [
+   {
+    "en": "Hi, I bought a lunch bag here last week, and I noticed it's on sale now. I was wondering if I could get a price adjustment?",
+    "zh": "你好！我上周在这里买了一个午餐包，今天发现它降价了。我想问一下，可以退差价吗？",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   },
+   {
+    "en": "Of course, do you have your receipt?",
+    "zh": "当然可以。请问有购物小票吗？",
+    "speaker": "Clerk",
+    "speakerZh": "店员"
+   },
+   {
+    "en": "Not with me, but I think I can find it in the Costco app.",
+    "zh": "我现在没带，不过我可以在 Costco App 里找一下。",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   },
+   {
+    "en": "No worries. I can also look it up using your membership card.",
+    "zh": "没关系。我也可以通过你的会员卡帮你查。",
+    "speaker": "Clerk",
+    "speakerZh": "店员"
+   },
+   {
+    "en": "I'm all set. The refund has been processed.",
+    "zh": "好了，已经处理完成了。我会把差价退回到你原来的付款方式。",
+    "speaker": "Clerk",
+    "speakerZh": "店员"
+   },
+   {
+    "en": "Thank you so much.",
+    "zh": "太感谢了！",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   }
+  ],
+  "expressions": [
+   {
+    "en": "price adjustment",
+    "zh": "退差价",
+    "note": "",
+    "label": "price adjustment"
+   },
+   {
+    "en": "membership card",
+    "zh": "会员卡",
+    "note": "",
+    "label": "membership card"
+   },
+   {
+    "en": "refund",
+    "zh": "退款",
+    "note": "",
+    "label": "refund"
+   },
+   {
+    "en": "original payment method",
+    "zh": "原支付方式",
+    "note": "",
+    "label": "original payment method"
+   },
+   {
+    "en": "receipt",
+    "zh": "购物小票",
+    "note": "",
+    "label": "receipt"
+   },
+   {
+    "en": "look it up",
+    "zh": "查询",
+    "note": "",
+    "label": "look it up"
+   }
+  ],
+  "vocabulary": [],
+  "tips": [
+   {
+    "body": "Many Canadian stores offer a price adjustment if an item goes on sale shortly after you buy it.",
+    "type": "tip",
+    "title": "Tip 1",
+    "bodyZh": "加拿大很多商家都提供退差价的服务，如果商品购买后短时间内降价，可以申请退还差价。",
+    "titleZh": "提示 1"
+   },
+   {
+    "body": "Always keep your receipt or digital order history.",
+    "type": "tip",
+    "title": "Tip 2",
+    "bodyZh": "记得保留购物小票或电子订单记录。",
+    "titleZh": "提示 2"
+   }
+  ],
+  "related_scene_ids": null,
+  "prev_scene_id": null,
+  "next_scene_id": null,
+  "sort_order": 4,
+  "created_at": "2026-08-06T02:46:44.299681+00:00",
+  "updated_at": "2026-08-13T12:51:12.424385+00:00",
+  "pdf_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/pdfs/scene-004-price adjustment.pdf",
+  "video_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/videos/scene-004-price adjustment.mp4",
+  "subtitle_cues": null,
+  "external_scene_id": "scene_004"
+ },
+ {
+  "id": 35,
+  "slug": "dining-at-a-turkish-restaurant",
+  "title_en": "Dining at a Turkish Restaurant",
+  "title_zh": "在土耳其餐厅用餐",
+  "category_id": 13,
+  "region": "Canada",
+  "level": "A2–B1",
+  "duration": "2 min",
+  "featured": false,
+  "is_new": false,
+  "description": "Order dishes to share, respond to the server, and pack up the leftovers.",
+  "photo_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/images/scene-008-turkish-restaurant.png",
+  "status": "published",
+  "scene_setup_en": null,
+  "scene_setup_zh": null,
+  "learning_goal_en": null,
+  "learning_goal_zh": null,
+  "dialogue": [
+   {
+    "en": "Hi! Are you ready to order?",
+    "zh": "您好！准备好点餐了吗？",
+    "speaker": "Server",
+    "speakerZh": "服务员"
+   },
+   {
+    "en": "Yes. We’ll start with the eggplant in tomato sauce.",
+    "zh": "准备好了。我们先点茄子番茄酱。",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   },
+   {
+    "en": "We’ll have one order of lamb chops, one order of chicken wings, and one order of beef shish.",
+    "zh": "我们要一份羊排、一份鸡翅和一份牛肉串。",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   },
+   {
+    "en": "Great. Anything to drink?",
+    "zh": "好的。需要喝点什么吗？",
+    "speaker": "Server",
+    "speakerZh": "服务员"
+   },
+   {
+    "en": "Three Cokes, please.",
+    "zh": "请给我们三杯可乐。",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   },
+   {
+    "en": "Here’s some Turkish bread with cacık and spicy ezme for the table.",
+    "zh": "这是给全桌一起享用的土耳其面包、酸奶黄瓜酱和辣味 ezme。",
+    "speaker": "Server",
+    "speakerZh": "服务员"
+   },
+   {
+    "en": "Here are the main courses. Are you sharing everything, or is each person having their own dish?",
+    "zh": "主菜来了。你们是一起分享，还是每人吃自己的菜？",
+    "speaker": "Server",
+    "speakerZh": "服务员"
+   },
+   {
+    "en": "We’re sharing everything.",
+    "zh": "我们一起分享。",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   },
+   {
+    "en": "No problem. I’ll bring you some extra plates.",
+    "zh": "没问题。我给你们拿几个额外的盘子。",
+    "speaker": "Server",
+    "speakerZh": "服务员"
+   },
+   {
+    "en": "How was everything?",
+    "zh": "餐点怎么样？",
+    "speaker": "Server",
+    "speakerZh": "服务员"
+   },
+   {
+    "en": "It was delicious. The portions were really generous.",
+    "zh": "非常好吃，而且分量很足。",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   },
+   {
+    "en": "We still have quite a bit left. Could we get two takeout boxes, please?",
+    "zh": "我们还剩下不少。可以给我们两个打包盒吗？",
+    "speaker": "Customer",
+    "speakerZh": "顾客"
+   },
+   {
+    "en": "Of course. I’ll bring them right over.",
+    "zh": "当然。我马上拿过来。",
+    "speaker": "Server",
+    "speakerZh": "服务员"
+   }
+  ],
+  "expressions": [
+   {
+    "en": "we’ll start with",
+    "zh": "我们先点……",
+    "note": "",
+    "label": "we’ll start with"
+   },
+   {
+    "en": "one order of",
+    "zh": "一份……",
+    "note": "",
+    "label": "one order of"
+   },
+   {
+    "en": "put the order in",
+    "zh": "把订单送进厨房、下单",
+    "note": "",
+    "label": "put the order in"
+   },
+   {
+    "en": "for the table",
+    "zh": "供全桌一起享用",
+    "note": "",
+    "label": "for the table"
+   },
+   {
+    "en": "share everything",
+    "zh": "所有菜一起分享",
+    "note": "",
+    "label": "share everything"
+   },
+   {
+    "en": "generous portions",
+    "zh": "分量很足",
+    "note": "",
+    "label": "generous portions"
+   },
+   {
+    "en": "quite a bit left",
+    "zh": "还剩下不少",
+    "note": "",
+    "label": "quite a bit left"
+   },
+   {
+    "en": "takeout box",
+    "zh": "外带盒、打包盒",
+    "note": "",
+    "label": "takeout box"
+   }
+  ],
+  "vocabulary": [],
+  "tips": [
+   {
+    "body": "At many Turkish restaurants, bread and small dips may be served for the whole table to share.",
+    "type": "tip",
+    "title": "Tip 1",
+    "bodyZh": "在很多土耳其餐厅，面包和小份蘸酱会作为全桌共享的配套食物上桌。",
+    "titleZh": "提示 1"
+   },
+   {
+    "body": "“Takeout box” is common in Canada; “to-go box” is also widely understood.",
+    "type": "tip",
+    "title": "Tip 2",
+    "bodyZh": "在加拿大常说 takeout box，to-go box 也很常见。",
+    "titleZh": "提示 2"
+   }
+  ],
+  "related_scene_ids": null,
+  "prev_scene_id": null,
+  "next_scene_id": null,
+  "sort_order": 8,
+  "created_at": "2026-08-06T02:47:06.457491+00:00",
+  "updated_at": "2026-08-13T03:12:59.2928+00:00",
+  "pdf_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/pdfs/scene-008-turkish-restaurant.pdf",
+  "video_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/videos/scene-008-turkish-restaurant.mp4",
+  "subtitle_cues": null,
+  "external_scene_id": "scene_008"
+ },
+ {
+  "id": 40,
+  "slug": "getting-a-dental-filling",
+  "title_en": "Getting a Dental Filling",
+  "title_zh": "补牙",
+  "category_id": 15,
+  "region": "Canada",
+  "level": "A2–B1",
+  "duration": "2 min",
+  "featured": false,
+  "is_new": false,
+  "description": "Understand the dental filling process, from protective glasses and local anesthetic to bite checking and aftercare.",
+  "photo_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/images/scene-013-dental-filling.png",
+  "status": "published",
+  "scene_setup_en": null,
+  "scene_setup_zh": null,
+  "learning_goal_en": null,
+  "learning_goal_zh": null,
+  "dialogue": [
+   {
+    "en": "I’m going to give you some protective glasses.",
+    "zh": "我给您一副防护眼镜。",
+    "speaker": "Dentist",
+    "speakerZh": "牙医"
+   },
+   {
+    "en": "Okay, thank you.",
+    "zh": "好的，谢谢。",
+    "speaker": "Patient",
+    "speakerZh": "患者"
+   },
+   {
+    "en": "They’ll protect your eyes from the bright light.",
+    "zh": "它们可以保护您的眼睛不受强光刺激。",
+    "speaker": "Dentist",
+    "speakerZh": "牙医"
+   },
+   {
+    "en": "I’m going to numb the area first.",
+    "zh": "我先给这个部位打麻药。",
+    "speaker": "Dentist",
+    "speakerZh": "牙医"
+   },
+   {
+    "en": "Will I feel anything?",
+    "zh": "我会有感觉吗？",
+    "speaker": "Patient",
+    "speakerZh": "患者"
+   },
+   {
+    "en": "You’ll feel a little pinch, and then it should start to feel numb.",
+    "zh": "您会感觉轻轻扎一下，然后这里会开始变麻。",
+    "speaker": "Dentist",
+    "speakerZh": "牙医"
+   },
+   {
+    "en": "Does this feel numb?",
+    "zh": "这里感觉麻了吗？",
+    "speaker": "Dentist",
+    "speakerZh": "牙医"
+   },
+   {
+    "en": "Yes, my lip feels numb too.",
+    "zh": "是的，我的嘴唇也感觉麻了。",
+    "speaker": "Patient",
+    "speakerZh": "患者"
+   },
+   {
+    "en": "That’s normal.",
+    "zh": "这是正常的。",
+    "speaker": "Dentist",
+    "speakerZh": "牙医"
+   },
+   {
+    "en": "I’m going to remove the decay and place the filling now.",
+    "zh": "现在我要清理蛀坏的部分并放入补牙材料。",
+    "speaker": "Dentist",
+    "speakerZh": "牙医"
+   },
+   {
+    "en": "You’ll feel some pressure and vibration, but it shouldn’t hurt.",
+    "zh": "您会感觉到一些压力和震动，但应该不会疼。",
+    "speaker": "Dentist",
+    "speakerZh": "牙医"
+   },
+   {
+    "en": "Bite down and grind left and right.",
+    "zh": "咬紧一点，然后左右磨动牙齿。",
+    "speaker": "Dentist",
+    "speakerZh": "牙医"
+   },
+   {
+    "en": "Great.",
+    "zh": "很好。",
+    "speaker": "Dentist",
+    "speakerZh": "牙医"
+   }
+  ],
+  "expressions": [
+   {
+    "en": "protective glasses",
+    "zh": "防护眼镜",
+    "note": "",
+    "label": "protective glasses"
+   },
+   {
+    "en": "numb the area",
+    "zh": "给这个部位打麻药",
+    "note": "",
+    "label": "numb the area"
+   },
+   {
+    "en": "a little pinch",
+    "zh": "轻微的针扎感",
+    "note": "",
+    "label": "a little pinch"
+   },
+   {
+    "en": "remove the decay",
+    "zh": "清理蛀坏部分",
+    "note": "",
+    "label": "remove the decay"
+   },
+   {
+    "en": "place the filling",
+    "zh": "放入补牙材料",
+    "note": "",
+    "label": "place the filling"
+   },
+   {
+    "en": "pressure and vibration",
+    "zh": "压力感和震动感",
+    "note": "",
+    "label": "pressure and vibration"
+   },
+   {
+    "en": "bite down",
+    "zh": "咬合、咬下去",
+    "note": "",
+    "label": "bite down"
+   },
+   {
+    "en": "the numbness wears off",
+    "zh": "麻药效果消退",
+    "note": "",
+    "label": "the numbness wears off"
+   }
+  ],
+  "vocabulary": [],
+  "tips": [
+   {
+    "body": "Try not to chew until the numbness wears off, so you don’t accidentally bite your lip or the inside of your cheek.",
+    "type": "tip",
+    "title": "Tip 1",
+    "bodyZh": "麻药消退前尽量不要咀嚼，以免不小心咬伤嘴唇或脸颊内侧。",
+    "titleZh": "提示 1"
+   },
+   {
+    "body": "If your bite feels high or uncomfortable after the filling, contact the dental office for an adjustment.",
+    "type": "tip",
+    "title": "Tip 2",
+    "bodyZh": "如果补牙后感觉咬合偏高或不舒服，请联系牙科诊所进行调磨。",
+    "titleZh": "提示 2"
+   }
+  ],
+  "related_scene_ids": null,
+  "prev_scene_id": null,
+  "next_scene_id": null,
+  "sort_order": 13,
+  "created_at": "2026-08-08T01:09:07.992591+00:00",
+  "updated_at": "2026-08-13T16:48:06.400838+00:00",
+  "pdf_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/pdfs/scene-013-dental-filling.pdf",
+  "video_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/videos/scene-013-dental-filling.mp4",
+  "subtitle_cues": [
+   {
+    "en": "I’m going to give you some protective glasses.",
+    "zh": "我给您一副防护眼镜。",
+    "end": 3.5,
+    "start": 1.66
+   },
+   {
+    "en": "Okay, thank you.",
+    "zh": "好的，谢谢。",
+    "end": 5.5,
+    "start": 4.42
+   },
+   {
+    "en": "They’ll protect your eyes from the bright light.",
+    "zh": "它们可以保护您的眼睛不受强光刺激。",
+    "end": 7.94,
+    "start": 6.16
+   },
+   {
+    "en": "I’m going to numb the area first.",
+    "zh": "我先给这个部位打麻药。",
+    "end": 10.82,
+    "start": 9.4
+   },
+   {
+    "en": "Will I feel anything?",
+    "zh": "我会有感觉吗？",
+    "end": 12,
+    "start": 11.36
+   },
+   {
+    "en": "You’ll feel a little pinch, and then it should start to feel numb.",
+    "zh": "您会感觉轻轻扎一下，然后这里会开始变麻。",
+    "end": 14.86,
+    "start": 12.54
+   },
+   {
+    "en": "Okay.",
+    "zh": "好的。",
+    "end": 15.46,
+    "start": 15.24
+   },
+   {
+    "en": "Does this feel numb?",
+    "zh": "这里感觉麻了吗？",
+    "end": 20.58,
+    "start": 19.24
+   },
+   {
+    "en": "Yes, my lip feels numb too.",
+    "zh": "是的，我的嘴唇也感觉麻了。",
+    "end": 24.04,
+    "start": 21.82
+   },
+   {
+    "en": "That’s normal.",
+    "zh": "这是正常的。",
+    "end": 25.2,
+    "start": 24.64
+   },
+   {
+    "en": "Let me know if you feel any pain.",
+    "zh": "如果感觉疼，请告诉我。",
+    "end": 26.9,
+    "start": 25.7
+   },
+   {
+    "en": "I’m going to remove the decay and place the filling now.",
+    "zh": "现在我要清理蛀坏的部分并放入补牙材料。",
+    "end": 30.28,
+    "start": 27.5
+   },
+   {
+    "en": "You’ll feel some pressure and vibration, but it shouldn’t hurt.",
+    "zh": "您会感觉到一些压力和震动，但应该不会疼。",
+    "end": 33.74,
+    "start": 31.02
+   },
+   {
+    "en": "Bite down and grind left and right.",
+    "zh": "咬紧一点，然后左右磨动牙齿。",
+    "end": 38.94,
+    "start": 36.8
+   },
+   {
+    "en": "Great.",
+    "zh": "很好。",
+    "end": 39.52,
+    "start": 39.36
+   },
+   {
+    "en": "The anesthetic will wear off in a few hours.",
+    "zh": "麻药会在几个小时后消退。",
+    "end": 41.34,
+    "start": 39.82
+   },
+   {
+    "en": "Not to bite your lip.",
+    "zh": "不要咬到嘴唇。",
+    "end": 42.08,
+    "start": 41.5
+   }
+  ],
+  "external_scene_id": "scene_013"
+ },
+ {
+  "id": 41,
+  "slug": "dental-implant-surgery",
+  "title_en": "Dental Implant Surgery",
+  "title_zh": "种植牙手术",
+  "category_id": 15,
+  "region": "Canada",
+  "level": "A2–B2",
+  "duration": "00:51",
+  "featured": false,
+  "is_new": false,
+  "description": "Learn practical English for communicating during a dental implant procedure and understanding post-operative instructions.",
+  "photo_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/images/scene-030-dental-implant.png",
+  "status": "published",
+  "scene_setup_en": "A patient undergoes dental implant surgery. The dentist explains the anaesthesia, checks the patient’s comfort, places the implant, closes the area with stitches, and gives aftercare instructions.",
+  "scene_setup_zh": "患者接受种植牙手术。牙医说明麻醉过程、确认患者是否舒适、植入种植体、缝合手术区域，并讲解术后注意事项。",
+  "learning_goal_en": "Understand and use practical expressions for describing sensations, signalling pain, following aftercare instructions, and arranging a follow-up visit.",
+  "learning_goal_zh": "掌握描述治疗感受、示意疼痛、遵循术后护理要求和预约复诊时的实用表达。",
+  "dialogue": null,
+  "expressions": null,
+  "vocabulary": null,
+  "tips": [
+   {
+    "body": "We’ll be placing an implant in the missing-tooth area.",
+    "type": "tip",
+    "title": "place an implant",
+    "bodyZh": "我们会在缺牙的位置植入种植体。",
+    "tipType": "key_expression",
+    "titleZh": "植入种植体"
+   },
+   {
+    "body": "I’m going to numb the area now.",
+    "type": "tip",
+    "title": "numb the area",
+    "bodyZh": "我现在要给这个区域打麻药。",
+    "tipType": "key_expression",
+    "titleZh": "给这个区域做局部麻醉"
+   },
+   {
+    "body": "You’ll feel a small pinch.",
+    "type": "tip",
+    "title": "a small pinch",
+    "bodyZh": "你会感觉到轻微刺痛。",
+    "tipType": "key_expression",
+    "titleZh": "轻微的刺痛感"
+   },
+   {
+    "body": "You may feel pressure and vibration, but you shouldn’t feel any sharp pain.",
+    "type": "tip",
+    "title": "pressure and vibration",
+    "bodyZh": "你可能会感觉到一些压力和震动，但不应该有明显疼痛。",
+    "tipType": "key_expression",
+    "titleZh": "压力感和震动感"
+   },
+   {
+    "body": "Any pain, or just pressure? — Just pressure. No pain.",
+    "type": "tip",
+    "title": "just pressure, no pain",
+    "bodyZh": "有疼痛，还是只有压力感？——只有压力感，不疼。",
+    "tipType": "key_expression",
+    "titleZh": "只有压力感，不疼"
+   },
+   {
+    "body": "I’m going to close the area with a few stitches.",
+    "type": "tip",
+    "title": "close the area with stitches",
+    "bodyZh": "我要缝几针，把这个区域闭合起来。",
+    "tipType": "key_expression",
+    "titleZh": "用缝线闭合手术区域"
+   },
+   {
+    "body": "Before treatment, dental staff in Canada may agree on a hand signal with the patient. If you cannot speak because instruments are in your mouth, raise your hand to ask the dentist to pause. “Sharp pain” means clear, acute pain, which is different from normal pressure or vibration.",
+    "type": "tip",
+    "title": "Raise your hand if you need to pause",
+    "bodyZh": "在加拿大牙科诊所，治疗开始前，医护人员可能会和患者约定举手作为暂停信号。嘴里有器械、无法说话时，可以举手请医生暂停。“Sharp pain”指明显、尖锐的疼痛，与正常的压力感或震动感不同。",
+    "tipType": "key_expression",
+    "titleZh": "不舒服时可以举手示意"
+   },
+   {
+    "body": "Placing the implant does not usually mean the permanent crown is fitted on the same day. The implant needs time to integrate with the bone before the crown stage. A follow-up visit is commonly arranged to check healing, and some patients may also need stitches removed. Ask: “When should I come back for a follow-up?”",
+    "type": "tip",
+    "title": "Dental implants are usually completed in stages",
+    "bodyZh": "植入种植体通常不代表当天就能装上永久牙冠。种植体需要一段时间与骨组织结合，之后才进入牙冠阶段。诊所通常会安排复诊检查愈合情况，部分患者还需要拆线。可以问：“When should I come back for a follow-up?”",
+    "tipType": "key_expression",
+    "titleZh": "种植牙通常需要分阶段完成"
+   }
+  ],
+  "related_scene_ids": null,
+  "prev_scene_id": null,
+  "next_scene_id": null,
+  "sort_order": 30,
+  "created_at": "2026-08-12T03:31:50.5715+00:00",
+  "updated_at": "2026-08-13T02:59:43.442766+00:00",
+  "pdf_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/pdfs/scene-030-dental-implant.pdf",
+  "video_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/videos/scene-030-dental-implant.mp4",
+  "subtitle_cues": null,
+  "external_scene_id": "scene_030"
+ },
+ {
+  "id": 42,
+  "slug": "parent-teacher-meeting",
+  "title_en": "Parent-Teacher Meeting: Discussing a Child's Progress",
+  "title_zh": "家长会：讨论孩子的学习进展",
+  "category_id": 14,
+  "region": "Canada",
+  "level": "A2–B1",
+  "duration": "00:57",
+  "featured": false,
+  "is_new": false,
+  "description": "Learn practical English for discussing a child's academic progress, areas for improvement, classroom participation, and follow-up support with a teacher.",
+  "photo_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/images/scene-027-parent-teacher-meeting.png",
+  "status": "published",
+  "scene_setup_en": "A parent meets with Ethan’s teacher to discuss his overall progress, reading comprehension, focus, classroom participation, and ways to support him at home.",
+  "scene_setup_zh": "家长与 Ethan 的老师见面，讨论他的整体学习进展、阅读理解、专注力、课堂参与情况，以及在家如何给予支持。",
+  "learning_goal_en": "Understand and use practical expressions for asking about a child’s school performance, discussing areas that need support, and agreeing on a follow-up plan.",
+  "learning_goal_zh": "掌握询问孩子在校表现、讨论需要加强的方面，以及商定后续跟进计划时的实用表达。",
+  "dialogue": null,
+  "expressions": null,
+  "vocabulary": null,
+  "tips": null,
+  "related_scene_ids": null,
+  "prev_scene_id": null,
+  "next_scene_id": null,
+  "sort_order": 27,
+  "created_at": "2026-08-12T22:17:56.886809+00:00",
+  "updated_at": "2026-08-12T22:48:18.509006+00:00",
+  "pdf_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/pdfs/scene-027-parent-teacher-meeting.pdf",
+  "video_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/videos/scene-027-parent-teacher-meeting.mp4",
+  "subtitle_cues": null,
+  "external_scene_id": "scene_027"
+ },
+ {
+  "id": 43,
+  "slug": "picking-up-a-prescription",
+  "title_en": "Picking Up a Prescription",
+  "title_zh": "药房取处方药",
+  "category_id": 15,
+  "region": "Canada",
+  "level": "A2–B1",
+  "duration": "00:36",
+  "featured": false,
+  "is_new": false,
+  "description": "Learn practical English for picking up prescription medicine, asking about dosage and side effects, and using insurance at a Canadian pharmacy.",
+  "photo_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/images/scene-018-picking-up-a-prescription.png",
+  "status": "published",
+  "scene_setup_en": "A customer picks up a prescription, confirms personal information, asks how to take the medicine and discusses side effects, insurance, and the copay.",
+  "scene_setup_zh": "顾客到药房领取处方药，确认个人信息，询问服药方法和副作用，并使用保险支付自付费用。",
+  "learning_goal_en": "Understand and use practical expressions for collecting a prescription, following dosage instructions, asking about side effects, and paying with insurance.",
+  "learning_goal_zh": "掌握领取处方药、理解服药说明、询问副作用以及使用保险付款时的实用表达。",
+  "dialogue": null,
+  "expressions": null,
+  "vocabulary": null,
+  "tips": null,
+  "related_scene_ids": null,
+  "prev_scene_id": null,
+  "next_scene_id": null,
+  "sort_order": 18,
+  "created_at": "2026-08-13T04:20:20.799726+00:00",
+  "updated_at": "2026-08-13T13:40:57.884875+00:00",
+  "pdf_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/pdfs/scene-018-picking-up-a-prescription.pdf",
+  "video_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/videos/scene-018-picking-up-a-prescription.mp4",
+  "subtitle_cues": null,
+  "external_scene_id": "scene_018"
+ }
+]

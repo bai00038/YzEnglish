@@ -1,0 +1,128 @@
+[
+ {
+  "id": 1,
+  "scene_id": 35,
+  "sort_order": 1,
+  "body_en": "If everyone is sharing the dishes, tell the server so they can bring extra plates and place the food in the centre of the table.",
+  "body_zh": "如果大家一起分享菜品，可以告诉服务员，他们会提供额外餐盘，并把菜放在桌子中间。",
+  "created_at": "2026-08-12T16:14:51.418049+00:00",
+  "updated_at": "2026-08-13T03:12:59.2928+00:00"
+ },
+ {
+  "id": 2,
+  "scene_id": 35,
+  "sort_order": 2,
+  "body_en": "Taking leftovers home is common in Canada. You can ask for a take-out box or a to-go box.",
+  "body_zh": "在加拿大，打包剩菜很常见。你可以索要 take-out box 或 to-go box。",
+  "created_at": "2026-08-12T16:14:51.418049+00:00",
+  "updated_at": "2026-08-13T03:12:59.2928+00:00"
+ },
+ {
+  "id": 3,
+  "scene_id": 41,
+  "sort_order": 1,
+  "body_en": "If you cannot speak during treatment, raise your hand to ask the dentist to pause.",
+  "body_zh": "治疗过程中如果无法说话，可以举手示意牙医暂停。",
+  "created_at": "2026-08-12T16:15:00.059183+00:00",
+  "updated_at": "2026-08-13T02:59:43.442766+00:00"
+ },
+ {
+  "id": 4,
+  "scene_id": 41,
+  "sort_order": 2,
+  "body_en": "Dental implant treatment is usually completed in stages. A follow-up visit is arranged to check healing before the permanent crown stage.",
+  "body_zh": "种植牙通常分阶段完成。进入永久牙冠阶段前，诊所会安排复诊检查愈合情况。",
+  "created_at": "2026-08-12T16:15:00.059183+00:00",
+  "updated_at": "2026-08-13T02:59:43.442766+00:00"
+ },
+ {
+  "id": 5,
+  "scene_id": 28,
+  "sort_order": 1,
+  "body_en": "In many Canadian clothing stores, staff may ask how the items fit and offer to take the clothes you do not want.",
+  "body_zh": "在加拿大许多服装店，店员可能会询问衣服是否合身，并帮你收走不需要的衣服。",
+  "created_at": "2026-08-12T16:15:13.808502+00:00",
+  "updated_at": "2026-08-12T19:05:31.28122+00:00"
+ },
+ {
+  "id": 6,
+  "scene_id": 28,
+  "sort_order": 2,
+  "body_en": "Cashiers often make brief small talk or ask whether you found everything. A short, friendly answer is enough.",
+  "body_zh": "收银员经常会简单寒暄，或询问你是否找齐了商品。简短、友好地回答即可。",
+  "created_at": "2026-08-12T16:15:13.808502+00:00",
+  "updated_at": "2026-08-12T19:05:31.28122+00:00"
+ },
+ {
+  "id": 7,
+  "scene_id": 40,
+  "sort_order": 1,
+  "body_en": "Try not to chew until the numbness wears off, so you don’t accidentally bite your lip or the inside of your cheek.",
+  "body_zh": "麻药消退前尽量不要咀嚼，以免不小心咬伤嘴唇或脸颊内侧。",
+  "created_at": "2026-08-12T16:15:21.490428+00:00",
+  "updated_at": "2026-08-13T16:48:06.400838+00:00"
+ },
+ {
+  "id": 8,
+  "scene_id": 40,
+  "sort_order": 2,
+  "body_en": "If your bite feels high or uncomfortable after the filling, contact the dental office for an adjustment.",
+  "body_zh": "如果补牙后感觉咬合偏高或不舒服，请联系牙科诊所进行调磨。",
+  "created_at": "2026-08-12T16:15:21.490428+00:00",
+  "updated_at": "2026-08-13T16:48:06.400838+00:00"
+ },
+ {
+  "id": 13,
+  "scene_id": 42,
+  "sort_order": 1,
+  "body_en": "Teachers may begin with a child’s overall progress or strengths before discussing areas that need support.",
+  "body_zh": "老师可能会先介绍孩子的整体表现或优点，再讨论需要加强的方面。",
+  "created_at": "2026-08-12T22:17:56.886809+00:00",
+  "updated_at": "2026-08-12T22:48:18.509006+00:00"
+ },
+ {
+  "id": 14,
+  "scene_id": 42,
+  "sort_order": 2,
+  "body_en": "Parents can ask for practical strategies to use at home and arrange a follow-up with the teacher.",
+  "body_zh": "家长可以询问在家练习的方法，并与老师约定后续跟进。",
+  "created_at": "2026-08-12T22:17:56.886809+00:00",
+  "updated_at": "2026-08-12T22:48:18.509006+00:00"
+ },
+ {
+  "id": 27,
+  "scene_id": 31,
+  "sort_order": 1,
+  "body_en": "Some Canadian retailers offer price adjustments when an item goes on sale shortly after purchase, but eligibility periods and exclusions vary. Bring your receipt or digital purchase record and ask the store directly.",
+  "body_zh": "加拿大部分商家允许顾客在购买后不久遇到降价时申请退差价，但适用期限和排除商品各不相同。最好准备好纸质收据或电子购买记录，并向商家确认。",
+  "created_at": "2026-08-13T02:49:23.163762+00:00",
+  "updated_at": "2026-08-13T12:51:12.424385+00:00"
+ },
+ {
+  "id": 28,
+  "scene_id": 31,
+  "sort_order": 2,
+  "body_en": "At membership-based stores, staff may be able to locate a purchase through the customer’s membership account. Having the membership card or app ready can make the process faster.",
+  "body_zh": "在会员制商店，工作人员通常可以通过会员账户查找购买记录。提前准备好会员卡或 App，可以让办理过程更顺畅。",
+  "created_at": "2026-08-13T02:49:23.163762+00:00",
+  "updated_at": "2026-08-13T12:51:12.424385+00:00"
+ },
+ {
+  "id": 43,
+  "scene_id": 43,
+  "sort_order": 1,
+  "body_en": "When picking up a prescription at a Canadian pharmacy, the pharmacist may ask you to confirm your name, date of birth, or address to verify your identity and prevent medication errors.",
+  "body_zh": "在加拿大药房取处方药时，药剂师通常会要求确认姓名、出生日期或地址，以核对身份并避免拿错药。",
+  "created_at": "2026-08-13T04:20:20.799726+00:00",
+  "updated_at": "2026-08-13T13:40:57.884875+00:00"
+ },
+ {
+  "id": 44,
+  "scene_id": 43,
+  "sort_order": 2,
+  "body_en": "A copay is the portion you pay after insurance coverage is applied. You can present your insurance card and ask how much you need to pay.",
+  "body_zh": "Copay 是保险报销后由顾客自己支付的部分。取药时可以出示保险卡，并询问实际需要支付的金额。",
+  "created_at": "2026-08-13T04:20:20.799726+00:00",
+  "updated_at": "2026-08-13T13:40:57.884875+00:00"
+ }
+]

@@ -124,6 +124,45 @@ export const SCENES: Scene[] = [
     isNew: false,
     desc: "Learn to call a dental clinic, answer intake questions, and confirm your appointment.",
     photo: "https://images.unsplash.com/photo-1629308993023-bb7ca078abdc?w=700&h=480&fit=crop&auto=format",
+    content: {
+      sceneSetup: {
+        en: "You need a dental cleaning, and one tooth has been sensitive lately.",
+        zh: "你需要洗牙，而且最近有一颗牙一直敏感不舒服。",
+      },
+      learningGoal: {
+        en: "Book a cleaning, describe tooth pain, and ask about insurance coverage.",
+        zh: "学会约洗牙、描述牙痛，并问清保险报销。",
+      },
+      dialogue: [
+        { speaker: "You", speakerZh: "你", en: "Hi, I'd like to book a cleaning, please.", zh: "你好，我想约一个洗牙。" , start: 0.0, end: 2.8 },
+        { speaker: "Front desk", speakerZh: "前台", en: "Of course. Have you been here before?", zh: "好的，您之前来过我们这儿吗？" , start: 3.0, end: 5.6 },
+        { speaker: "You", speakerZh: "你", en: "Yes. And this tooth has been bothering me lately.", zh: "来过。而且这颗牙最近一直不舒服。" , start: 5.8, end: 9.0 },
+        { speaker: "Front desk", speakerZh: "前台", en: "Does it hurt when you bite down?", zh: "咬东西的时候疼吗？" , start: 9.2, end: 11.6 },
+        { speaker: "You", speakerZh: "你", en: "A little — mostly when I drink cold water.", zh: "有一点，喝冷水的时候最明显。" , start: 11.8, end: 15.0 },
+        { speaker: "Front desk", speakerZh: "前台", en: "We'll take an X-ray first, then go from there.", zh: "我们先拍个 X 光片，再看情况。" , start: 15.2, end: 18.4 },
+        { speaker: "You", speakerZh: "你", en: "Will my insurance cover the cleaning?", zh: "洗牙保险能报销吗？" , start: 18.6, end: 21.2 },
+        { speaker: "Front desk", speakerZh: "前台", en: "Most plans cover one cleaning per year. We'll check yours before we start.", zh: "大多数保险每年报一次洗牙。开始前我们会帮您确认。" , start: 21.4, end: 26.0 },
+      ],
+      expressions: [
+        { label: "BOOKING", en: "I'd like to book a cleaning.", zh: "我想约个洗牙。", note: "Standard opening for any dental appointment" },
+        { label: "DESCRIBING PAIN", en: "This tooth has been bothering me lately.", zh: "这颗牙最近一直不舒服。", note: "Describe the problem before the dentist asks" },
+        { label: "ASKING", en: "Will my insurance cover it?", zh: "保险能报销吗？", note: "Always ask before treatment, not after" },
+        { label: "STAFF PHRASE", en: "We'll take an X-ray first.", zh: "我们先拍个 X 光片。", note: "Staff phrase — X-ray almost always comes first" },
+        { label: "CONFIRMING", en: "We'll check yours before we start.", zh: "开始前我们会帮您确认。", note: "Clinics usually verify insurance for you" },
+      ],
+      vocabulary: [
+        { word: "cleaning", phonetic: "/ˈkliːnɪŋ/", pos: "n.", zh: "洗牙", example: "I'd like to book a cleaning." },
+        { word: "insurance", phonetic: "/ɪnˈʃʊrəns/", pos: "n.", zh: "保险", example: "Will my insurance cover it?" },
+        { word: "X-ray", phonetic: "/ˈeks reɪ/", pos: "n.", zh: "X 光片", example: "We'll take an X-ray first." },
+        { word: "cover", phonetic: "/ˈkʌvər/", pos: "v.", zh: "报销；覆盖", example: "Does the plan cover cleanings?" },
+        { word: "sensitive", phonetic: "/ˈsensətɪv/", pos: "adj.", zh: "敏感的", example: "This tooth is sensitive to cold." },
+      ],
+      tips: [
+        { type: "Must Know", tipType: "culture_tip", title: "One cleaning per year is usually covered", titleZh: "大多数保险每年报一次洗牙", body: "Most Canadian dental plans cover one cleaning and checkup per year. Always confirm your coverage before the appointment — the front desk will check for you if you ask.", bodyZh: "大多数加拿大牙科保险每年报销一次洗牙和检查。预约前先确认报销额度——只要你问，前台都会帮你查。" },
+        { type: "Practical Tip", tipType: "culture_tip", title: "Describe pain precisely", titleZh: "把疼痛描述具体", body: "Instead of just saying 'it hurts', say when it hurts: biting down, cold water, at night. Dentists diagnose from these details.", bodyZh: "别只说「疼」，要说什么时候疼：咬东西时、喝冷水时、晚上。牙医靠这些细节判断问题。" },
+      ],
+      relatedSceneIds: [1],
+    },
   },
   {
     id: 4,

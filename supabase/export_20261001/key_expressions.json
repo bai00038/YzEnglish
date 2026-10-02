@@ -1,0 +1,506 @@
+[
+ {
+  "id": 1,
+  "scene_id": 35,
+  "sort_order": 1,
+  "expression_en": "ready to order",
+  "expression_zh": "准备好点餐",
+  "created_at": "2026-08-12T16:14:51.418049+00:00",
+  "updated_at": "2026-08-13T03:12:59.2928+00:00"
+ },
+ {
+  "id": 2,
+  "scene_id": 35,
+  "sort_order": 2,
+  "expression_en": "start with…",
+  "expression_zh": "先要……",
+  "created_at": "2026-08-12T16:14:51.418049+00:00",
+  "updated_at": "2026-08-13T03:12:59.2928+00:00"
+ },
+ {
+  "id": 3,
+  "scene_id": 35,
+  "sort_order": 3,
+  "expression_en": "main courses",
+  "expression_zh": "主菜",
+  "created_at": "2026-08-12T16:14:51.418049+00:00",
+  "updated_at": "2026-08-13T03:12:59.2928+00:00"
+ },
+ {
+  "id": 4,
+  "scene_id": 35,
+  "sort_order": 4,
+  "expression_en": "one order of…",
+  "expression_zh": "一份……",
+  "created_at": "2026-08-12T16:14:51.418049+00:00",
+  "updated_at": "2026-08-13T03:12:59.2928+00:00"
+ },
+ {
+  "id": 5,
+  "scene_id": 35,
+  "sort_order": 5,
+  "expression_en": "anything to drink?",
+  "expression_zh": "想喝点什么吗？",
+  "created_at": "2026-08-12T16:14:51.418049+00:00",
+  "updated_at": "2026-08-13T03:12:59.2928+00:00"
+ },
+ {
+  "id": 6,
+  "scene_id": 35,
+  "sort_order": 6,
+  "expression_en": "share everything",
+  "expression_zh": "所有菜一起分享",
+  "created_at": "2026-08-12T16:14:51.418049+00:00",
+  "updated_at": "2026-08-13T03:12:59.2928+00:00"
+ },
+ {
+  "id": 7,
+  "scene_id": 35,
+  "sort_order": 7,
+  "expression_en": "extra plates",
+  "expression_zh": "额外的盘子",
+  "created_at": "2026-08-12T16:14:51.418049+00:00",
+  "updated_at": "2026-08-13T03:12:59.2928+00:00"
+ },
+ {
+  "id": 8,
+  "scene_id": 35,
+  "sort_order": 8,
+  "expression_en": "take-out boxes",
+  "expression_zh": "打包盒",
+  "created_at": "2026-08-12T16:14:51.418049+00:00",
+  "updated_at": "2026-08-13T03:12:59.2928+00:00"
+ },
+ {
+  "id": 9,
+  "scene_id": 41,
+  "sort_order": 1,
+  "expression_en": "place an implant",
+  "expression_zh": "植入种植体",
+  "created_at": "2026-08-12T16:15:00.059183+00:00",
+  "updated_at": "2026-08-13T02:59:43.442766+00:00"
+ },
+ {
+  "id": 10,
+  "scene_id": 41,
+  "sort_order": 2,
+  "expression_en": "the missing-tooth area",
+  "expression_zh": "缺牙区域",
+  "created_at": "2026-08-12T16:15:00.059183+00:00",
+  "updated_at": "2026-08-13T02:59:43.442766+00:00"
+ },
+ {
+  "id": 11,
+  "scene_id": 41,
+  "sort_order": 3,
+  "expression_en": "numb the area",
+  "expression_zh": "给这个区域做局部麻醉",
+  "created_at": "2026-08-12T16:15:00.059183+00:00",
+  "updated_at": "2026-08-13T02:59:43.442766+00:00"
+ },
+ {
+  "id": 12,
+  "scene_id": 41,
+  "sort_order": 4,
+  "expression_en": "a small pinch",
+  "expression_zh": "轻微的刺痛感",
+  "created_at": "2026-08-12T16:15:00.059183+00:00",
+  "updated_at": "2026-08-13T02:59:43.442766+00:00"
+ },
+ {
+  "id": 13,
+  "scene_id": 41,
+  "sort_order": 5,
+  "expression_en": "sharp pain",
+  "expression_zh": "明显的尖锐疼痛",
+  "created_at": "2026-08-12T16:15:00.059183+00:00",
+  "updated_at": "2026-08-13T02:59:43.442766+00:00"
+ },
+ {
+  "id": 14,
+  "scene_id": 41,
+  "sort_order": 6,
+  "expression_en": "pressure and vibration",
+  "expression_zh": "压力感和震动感",
+  "created_at": "2026-08-12T16:15:00.059183+00:00",
+  "updated_at": "2026-08-13T02:59:43.442766+00:00"
+ },
+ {
+  "id": 15,
+  "scene_id": 41,
+  "sort_order": 7,
+  "expression_en": "close the area with stitches",
+  "expression_zh": "用缝线闭合手术区域",
+  "created_at": "2026-08-12T16:15:00.059183+00:00",
+  "updated_at": "2026-08-13T02:59:43.442766+00:00"
+ },
+ {
+  "id": 16,
+  "scene_id": 41,
+  "sort_order": 8,
+  "expression_en": "check the healing",
+  "expression_zh": "检查愈合情况",
+  "created_at": "2026-08-12T16:15:00.059183+00:00",
+  "updated_at": "2026-08-13T02:59:43.442766+00:00"
+ },
+ {
+  "id": 17,
+  "scene_id": 28,
+  "sort_order": 1,
+  "expression_en": "do you have this in a small?",
+  "expression_zh": "这件有小码吗？",
+  "created_at": "2026-08-12T16:15:13.808502+00:00",
+  "updated_at": "2026-08-12T19:05:31.28122+00:00"
+ },
+ {
+  "id": 18,
+  "scene_id": 28,
+  "sort_order": 2,
+  "expression_en": "fitting rooms",
+  "expression_zh": "试衣间",
+  "created_at": "2026-08-12T16:15:13.808502+00:00",
+  "updated_at": "2026-08-12T19:05:31.28122+00:00"
+ },
+ {
+  "id": 19,
+  "scene_id": 28,
+  "sort_order": 3,
+  "expression_en": "how did everything fit?",
+  "expression_zh": "衣服都合身吗？",
+  "created_at": "2026-08-12T16:15:13.808502+00:00",
+  "updated_at": "2026-08-12T19:05:31.28122+00:00"
+ },
+ {
+  "id": 20,
+  "scene_id": 28,
+  "sort_order": 4,
+  "expression_en": "I’ll take these two",
+  "expression_zh": "这两件我要了",
+  "created_at": "2026-08-12T16:15:13.808502+00:00",
+  "updated_at": "2026-08-12T19:05:31.28122+00:00"
+ },
+ {
+  "id": 21,
+  "scene_id": 28,
+  "sort_order": 5,
+  "expression_en": "did you find everything?",
+  "expression_zh": "想找的东西都找到了吗？",
+  "created_at": "2026-08-12T16:15:13.808502+00:00",
+  "updated_at": "2026-08-12T19:05:31.28122+00:00"
+ },
+ {
+  "id": 22,
+  "scene_id": 28,
+  "sort_order": 6,
+  "expression_en": "your total is…",
+  "expression_zh": "一共是……",
+  "created_at": "2026-08-12T16:15:13.808502+00:00",
+  "updated_at": "2026-08-12T19:05:31.28122+00:00"
+ },
+ {
+  "id": 23,
+  "scene_id": 28,
+  "sort_order": 7,
+  "expression_en": "credit, please",
+  "expression_zh": "刷信用卡，谢谢",
+  "created_at": "2026-08-12T16:15:13.808502+00:00",
+  "updated_at": "2026-08-12T19:05:31.28122+00:00"
+ },
+ {
+  "id": 24,
+  "scene_id": 28,
+  "sort_order": 8,
+  "expression_en": "all set",
+  "expression_zh": "都好了",
+  "created_at": "2026-08-12T16:15:13.808502+00:00",
+  "updated_at": "2026-08-12T19:05:31.28122+00:00"
+ },
+ {
+  "id": 25,
+  "scene_id": 40,
+  "sort_order": 1,
+  "expression_en": "protective glasses",
+  "expression_zh": "防护眼镜",
+  "created_at": "2026-08-12T16:15:21.490428+00:00",
+  "updated_at": "2026-08-13T16:48:06.400838+00:00"
+ },
+ {
+  "id": 26,
+  "scene_id": 40,
+  "sort_order": 2,
+  "expression_en": "numb the area",
+  "expression_zh": "给这个部位打麻药",
+  "created_at": "2026-08-12T16:15:21.490428+00:00",
+  "updated_at": "2026-08-13T16:48:06.400838+00:00"
+ },
+ {
+  "id": 27,
+  "scene_id": 40,
+  "sort_order": 3,
+  "expression_en": "a little pinch",
+  "expression_zh": "轻微的针扎感",
+  "created_at": "2026-08-12T16:15:21.490428+00:00",
+  "updated_at": "2026-08-13T16:48:06.400838+00:00"
+ },
+ {
+  "id": 28,
+  "scene_id": 40,
+  "sort_order": 4,
+  "expression_en": "remove the decay",
+  "expression_zh": "清理蛀坏部分",
+  "created_at": "2026-08-12T16:15:21.490428+00:00",
+  "updated_at": "2026-08-13T16:48:06.400838+00:00"
+ },
+ {
+  "id": 29,
+  "scene_id": 40,
+  "sort_order": 5,
+  "expression_en": "place the filling",
+  "expression_zh": "放入补牙材料",
+  "created_at": "2026-08-12T16:15:21.490428+00:00",
+  "updated_at": "2026-08-13T16:48:06.400838+00:00"
+ },
+ {
+  "id": 30,
+  "scene_id": 40,
+  "sort_order": 6,
+  "expression_en": "pressure and vibration",
+  "expression_zh": "压力感和震动感",
+  "created_at": "2026-08-12T16:15:21.490428+00:00",
+  "updated_at": "2026-08-13T16:48:06.400838+00:00"
+ },
+ {
+  "id": 31,
+  "scene_id": 40,
+  "sort_order": 7,
+  "expression_en": "bite down",
+  "expression_zh": "咬合、咬下去",
+  "created_at": "2026-08-12T16:15:21.490428+00:00",
+  "updated_at": "2026-08-13T16:48:06.400838+00:00"
+ },
+ {
+  "id": 32,
+  "scene_id": 40,
+  "sort_order": 8,
+  "expression_en": "the numbness wears off",
+  "expression_zh": "麻药效果消退",
+  "created_at": "2026-08-12T16:15:21.490428+00:00",
+  "updated_at": "2026-08-13T16:48:06.400838+00:00"
+ },
+ {
+  "id": 49,
+  "scene_id": 42,
+  "sort_order": 1,
+  "expression_en": "overall",
+  "expression_zh": "总体来说",
+  "created_at": "2026-08-12T22:17:56.886809+00:00",
+  "updated_at": "2026-08-12T22:48:18.509006+00:00"
+ },
+ {
+  "id": 50,
+  "scene_id": 42,
+  "sort_order": 2,
+  "expression_en": "meet grade-level expectations",
+  "expression_zh": "达到年级水平要求",
+  "created_at": "2026-08-12T22:17:56.886809+00:00",
+  "updated_at": "2026-08-12T22:48:18.509006+00:00"
+ },
+ {
+  "id": 51,
+  "scene_id": 42,
+  "sort_order": 3,
+  "expression_en": "need work",
+  "expression_zh": "需要加强",
+  "created_at": "2026-08-12T22:17:56.886809+00:00",
+  "updated_at": "2026-08-12T22:48:18.509006+00:00"
+ },
+ {
+  "id": 52,
+  "scene_id": 42,
+  "sort_order": 4,
+  "expression_en": "reading comprehension",
+  "expression_zh": "阅读理解",
+  "created_at": "2026-08-12T22:17:56.886809+00:00",
+  "updated_at": "2026-08-12T22:48:18.509006+00:00"
+ },
+ {
+  "id": 53,
+  "scene_id": 42,
+  "sort_order": 5,
+  "expression_en": "lose focus",
+  "expression_zh": "注意力不集中；走神",
+  "created_at": "2026-08-12T22:17:56.886809+00:00",
+  "updated_at": "2026-08-12T22:48:18.509006+00:00"
+ },
+ {
+  "id": 54,
+  "scene_id": 42,
+  "sort_order": 6,
+  "expression_en": "stay on task",
+  "expression_zh": "专注于当前任务",
+  "created_at": "2026-08-12T22:17:56.886809+00:00",
+  "updated_at": "2026-08-12T22:48:18.509006+00:00"
+ },
+ {
+  "id": 55,
+  "scene_id": 42,
+  "sort_order": 7,
+  "expression_en": "fall behind",
+  "expression_zh": "落后；跟不上进度",
+  "created_at": "2026-08-12T22:17:56.886809+00:00",
+  "updated_at": "2026-08-12T22:48:18.509006+00:00"
+ },
+ {
+  "id": 56,
+  "scene_id": 42,
+  "sort_order": 8,
+  "expression_en": "keep track of someone’s progress",
+  "expression_zh": "持续了解某人的进展",
+  "created_at": "2026-08-12T22:17:56.886809+00:00",
+  "updated_at": "2026-08-12T22:48:18.509006+00:00"
+ },
+ {
+  "id": 105,
+  "scene_id": 31,
+  "sort_order": 1,
+  "expression_en": "price adjustment",
+  "expression_zh": "退差价；价格调整",
+  "created_at": "2026-08-13T02:49:23.163762+00:00",
+  "updated_at": "2026-08-13T12:51:12.424385+00:00"
+ },
+ {
+  "id": 106,
+  "scene_id": 31,
+  "sort_order": 2,
+  "expression_en": "be on sale",
+  "expression_zh": "正在打折",
+  "created_at": "2026-08-13T02:49:23.163762+00:00",
+  "updated_at": "2026-08-13T12:51:12.424385+00:00"
+ },
+ {
+  "id": 107,
+  "scene_id": 31,
+  "sort_order": 3,
+  "expression_en": "I was wondering if…",
+  "expression_zh": "我想问一下是否……",
+  "created_at": "2026-08-13T02:49:23.163762+00:00",
+  "updated_at": "2026-08-13T12:51:12.424385+00:00"
+ },
+ {
+  "id": 108,
+  "scene_id": 31,
+  "sort_order": 4,
+  "expression_en": "Do you have your receipt?",
+  "expression_zh": "您有收据吗？",
+  "created_at": "2026-08-13T02:49:23.163762+00:00",
+  "updated_at": "2026-08-13T12:51:12.424385+00:00"
+ },
+ {
+  "id": 109,
+  "scene_id": 31,
+  "sort_order": 5,
+  "expression_en": "find it in the app",
+  "expression_zh": "在 App 里找到它",
+  "created_at": "2026-08-13T02:49:23.163762+00:00",
+  "updated_at": "2026-08-13T12:51:12.424385+00:00"
+ },
+ {
+  "id": 110,
+  "scene_id": 31,
+  "sort_order": 6,
+  "expression_en": "look it up",
+  "expression_zh": "查询；查找记录",
+  "created_at": "2026-08-13T02:49:23.163762+00:00",
+  "updated_at": "2026-08-13T12:51:12.424385+00:00"
+ },
+ {
+  "id": 111,
+  "scene_id": 31,
+  "sort_order": 7,
+  "expression_en": "membership card",
+  "expression_zh": "会员卡",
+  "created_at": "2026-08-13T02:49:23.163762+00:00",
+  "updated_at": "2026-08-13T12:51:12.424385+00:00"
+ },
+ {
+  "id": 112,
+  "scene_id": 31,
+  "sort_order": 8,
+  "expression_en": "The refund has been processed.",
+  "expression_zh": "退款已经处理完成",
+  "created_at": "2026-08-13T02:49:23.163762+00:00",
+  "updated_at": "2026-08-13T12:51:12.424385+00:00"
+ },
+ {
+  "id": 169,
+  "scene_id": 43,
+  "sort_order": 1,
+  "expression_en": "pick up a prescription",
+  "expression_zh": "领取处方药",
+  "created_at": "2026-08-13T04:20:20.799726+00:00",
+  "updated_at": "2026-08-13T13:40:57.884875+00:00"
+ },
+ {
+  "id": 170,
+  "scene_id": 43,
+  "sort_order": 2,
+  "expression_en": "confirm your date of birth and address",
+  "expression_zh": "确认出生日期和地址",
+  "created_at": "2026-08-13T04:20:20.799726+00:00",
+  "updated_at": "2026-08-13T13:40:57.884875+00:00"
+ },
+ {
+  "id": 171,
+  "scene_id": 43,
+  "sort_order": 3,
+  "expression_en": "prescribe amoxicillin",
+  "expression_zh": "开阿莫西林",
+  "created_at": "2026-08-13T04:20:20.799726+00:00",
+  "updated_at": "2026-08-13T13:40:57.884875+00:00"
+ },
+ {
+  "id": 172,
+  "scene_id": 43,
+  "sort_order": 4,
+  "expression_en": "How should I take it?",
+  "expression_zh": "这个药应该怎么服用？",
+  "created_at": "2026-08-13T04:20:20.799726+00:00",
+  "updated_at": "2026-08-13T13:40:57.884875+00:00"
+ },
+ {
+  "id": 173,
+  "scene_id": 43,
+  "sort_order": 5,
+  "expression_en": "twice a day with food",
+  "expression_zh": "每天两次，随餐服用",
+  "created_at": "2026-08-13T04:20:20.799726+00:00",
+  "updated_at": "2026-08-13T13:40:57.884875+00:00"
+ },
+ {
+  "id": 174,
+  "scene_id": 43,
+  "sort_order": 6,
+  "expression_en": "make sure to finish it",
+  "expression_zh": "一定要按疗程服完",
+  "created_at": "2026-08-13T04:20:20.799726+00:00",
+  "updated_at": "2026-08-13T13:40:57.884875+00:00"
+ },
+ {
+  "id": 175,
+  "scene_id": 43,
+  "sort_order": 7,
+  "expression_en": "Are there any side effects?",
+  "expression_zh": "有什么副作用吗？",
+  "created_at": "2026-08-13T04:20:20.799726+00:00",
+  "updated_at": "2026-08-13T13:40:57.884875+00:00"
+ },
+ {
+  "id": 176,
+  "scene_id": 43,
+  "sort_order": 8,
+  "expression_en": "a $10 copay",
+  "expression_zh": "10 美元的自付费用",
+  "created_at": "2026-08-13T04:20:20.799726+00:00",
+  "updated_at": "2026-08-13T13:40:57.884875+00:00"
+ }
+]

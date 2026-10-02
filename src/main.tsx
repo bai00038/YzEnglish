@@ -3,14 +3,10 @@
   import { BrowserRouter } from "react-router";
   import App from "./app/App.tsx";
 // Self-hosted fonts (no Google Fonts CDN — works everywhere, including CN visitors)
-import "@fontsource/fraunces/400.css";
-import "@fontsource/fraunces/500.css";
-import "@fontsource/fraunces/600.css";
-import "@fontsource/fraunces/700.css";
-import "@fontsource/fraunces/400-italic.css";
-import "@fontsource/fraunces/500-italic.css";
-import "@fontsource/fraunces/600-italic.css";
-import "@fontsource/fraunces/700-italic.css";
+// Fraunces: full variable font (SOFT/WONK/opsz/wght) so display sizes get
+// high-contrast optical sizing automatically, like the design mockup.
+import "@fontsource-variable/fraunces/full.css";
+import "@fontsource-variable/fraunces/full-italic.css";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";

@@ -1,0 +1,90 @@
+[
+ {
+  "id": 12,
+  "slug": "shopping-returns",
+  "name_en": "Shopping & Returns",
+  "name_zh": null,
+  "sort_order": 1,
+  "created_at": "2026-07-28T17:22:10.499156+00:00"
+ },
+ {
+  "id": 13,
+  "slug": "food-restaurants",
+  "name_en": "Food & Restaurants",
+  "name_zh": null,
+  "sort_order": 2,
+  "created_at": "2026-07-28T17:22:10.499156+00:00"
+ },
+ {
+  "id": 14,
+  "slug": "school-family",
+  "name_en": "School & Family",
+  "name_zh": null,
+  "sort_order": 3,
+  "created_at": "2026-07-28T17:22:10.499156+00:00"
+ },
+ {
+  "id": 15,
+  "slug": "healthcare",
+  "name_en": "Healthcare",
+  "name_zh": null,
+  "sort_order": 4,
+  "created_at": "2026-07-28T17:22:10.499156+00:00"
+ },
+ {
+  "id": 16,
+  "slug": "banking-services",
+  "name_en": "Banking & Services",
+  "name_zh": null,
+  "sort_order": 5,
+  "created_at": "2026-07-28T17:22:10.499156+00:00"
+ },
+ {
+  "id": 17,
+  "slug": "housing",
+  "name_en": "Housing",
+  "name_zh": null,
+  "sort_order": 6,
+  "created_at": "2026-07-28T17:22:10.499156+00:00"
+ },
+ {
+  "id": 18,
+  "slug": "transportation",
+  "name_en": "Transportation",
+  "name_zh": null,
+  "sort_order": 7,
+  "created_at": "2026-07-28T17:22:10.499156+00:00"
+ },
+ {
+  "id": 19,
+  "slug": "social-life",
+  "name_en": "Social Life",
+  "name_zh": null,
+  "sort_order": 8,
+  "created_at": "2026-07-28T17:22:10.499156+00:00"
+ },
+ {
+  "id": 20,
+  "slug": "work",
+  "name_en": "Work",
+  "name_zh": null,
+  "sort_order": 9,
+  "created_at": "2026-07-28T17:22:10.499156+00:00"
+ },
+ {
+  "id": 21,
+  "slug": "travel",
+  "name_en": "Travel",
+  "name_zh": null,
+  "sort_order": 10,
+  "created_at": "2026-07-28T17:22:10.499156+00:00"
+ },
+ {
+  "id": 22,
+  "slug": "emergencies",
+  "name_en": "Emergencies",
+  "name_zh": null,
+  "sort_order": 11,
+  "created_at": "2026-07-28T17:22:10.499156+00:00"
+ }
+]

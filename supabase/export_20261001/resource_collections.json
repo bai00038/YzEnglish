@@ -1,0 +1,40 @@
+[
+ {
+  "id": 9,
+  "external_collection_id": "collection01",
+  "title_en": "Ontario Driver’s Licence Test Guide",
+  "title_zh": "安省考驾照英文指南合集",
+  "description_en": "A practical English guide to Ontario’s G1, G2 and Full G tests, covering the test process, common instructions, real dialogue examples and essential driving-test vocabulary.",
+  "description_zh": "涵盖安省 G1、G2 和 Full G 考试流程、常见考官指令、真实英文对话及重点词汇，帮助你提前熟悉考试场景，听懂指令，减少紧张。",
+  "collection_type": "tests_licences",
+  "price_type": "paid",
+  "price": 3.9,
+  "cover_image_url": null,
+  "pdf_url": null,
+  "scene_ids": "scene01,scene08,scene13",
+  "scene_count": 3,
+  "status": "published",
+  "sort_order": 1,
+  "created_at": "2026-08-11T00:06:35.619245+00:00",
+  "updated_at": "2026-08-13T16:47:10.105262+00:00"
+ },
+ {
+  "id": 13,
+  "external_collection_id": "collection02",
+  "title_en": "Dental English Guide",
+  "title_zh": "加拿大牙科场景英语合集",
+  "description_en": "A practical English guide to common dental visits in Canada, covering check-in, dental X-rays, cleaning, fillings, payment, insurance and follow-up appointments, with real-life dialogues and essential dental expressions.",
+  "description_zh": "涵盖加拿大常见看牙场景，包括前台登记、拍牙片、洗牙、补牙、保险与付款以及后续预约，通过真实场景对话和重点表达，帮助你提前熟悉看牙流程，更自然地听懂和沟通。",
+  "collection_type": "essential_services",
+  "price_type": "free",
+  "price": 0.0,
+  "cover_image_url": null,
+  "pdf_url": "https://pub-c841bdba889a419488112963ed100f5b.r2.dev/collections/C02-Dental-English.pdf",
+  "scene_ids": "",
+  "scene_count": 4,
+  "status": "published",
+  "sort_order": 0,
+  "created_at": "2026-08-11T01:13:34.110082+00:00",
+  "updated_at": "2026-08-13T16:47:08.565753+00:00"
+ }
+]

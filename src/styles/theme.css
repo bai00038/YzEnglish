@@ -136,7 +136,8 @@
   /* Editorial display serif — Fraunces (Latin) + Noto Serif SC (Chinese).
      Used for brand headlines and scene titles: the "深林编辑" voice. */
   .font-display {
-    font-family: 'Fraunces', 'Noto Serif SC', Georgia, serif;
+    font-family: 'Fraunces Variable', 'Noto Serif SC', Georgia, serif;
+    font-optical-sizing: auto;
   }
 
   /**
