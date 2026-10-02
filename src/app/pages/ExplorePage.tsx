@@ -47,14 +47,14 @@ export function ExplorePage({
 
           {/* Category */}
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#184C3A" }}>Category · 分类</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#1C3329" }}>Category · 分类</p>
             <div className="flex flex-wrap gap-1.5">
               {["All", ...categories].map(cat => (
                 <button key={cat} onClick={() => setActiveCategory(cat)}
                   className="text-xs font-semibold rounded-full px-3 py-1.5 border transition-all duration-150 whitespace-nowrap"
                   style={activeCategory === cat
-                    ? { backgroundColor: "#B7F21D", color: "#1E1F1C", borderColor: "#B7F21D" }
-                    : { backgroundColor: "white", color: "#3A3B37", borderColor: "rgba(24,76,58,0.18)" }}>
+                    ? { backgroundColor: "#C6F24E", color: "#1A1A1A", borderColor: "#C6F24E" }
+                    : { backgroundColor: "white", color: "#3A3B37", borderColor: "rgba(28,51,41,0.18)" }}>
                   {cat}
                 </button>
               ))}
@@ -63,14 +63,14 @@ export function ExplorePage({
 
           {/* Level */}
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#184C3A" }}>Level · 难度</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#1C3329" }}>Level · 难度</p>
             <div className="flex flex-wrap gap-1.5">
               {["All", "A1–A2", "A2–B1", "B1–B2"].map(d => (
                 <button key={d} onClick={() => setActiveDiff(d)}
                   className="text-xs font-semibold rounded-full px-3 py-1.5 border transition-all duration-150"
                   style={activeDiff === d
-                    ? { backgroundColor: "#B7F21D", color: "#1E1F1C", borderColor: "#B7F21D" }
-                    : { backgroundColor: "white", color: "#3A3B37", borderColor: "rgba(24,76,58,0.18)" }}>
+                    ? { backgroundColor: "#C6F24E", color: "#1A1A1A", borderColor: "#C6F24E" }
+                    : { backgroundColor: "white", color: "#3A3B37", borderColor: "rgba(28,51,41,0.18)" }}>
                   {d}
                 </button>
               ))}

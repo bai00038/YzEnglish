@@ -1,32 +1,34 @@
 import { Link, useLocation } from "react-router";
-import { Home, Grid, FileText, Info, Mail } from "lucide-react";
 import { isNavActive } from "@/app/components/nav-utils";
+
+// Minimal bottom tab bar — paper background, quiet icons, no pills.
+const ITEMS = [
+  { label: "首页", path: "/" },
+  { label: "场景库", path: "/explore" },
+  { label: "学习资料", path: "/resources" },
+  { label: "关于", path: "/about" },
+];
 
 export function MobileNav() {
   const { pathname } = useLocation();
-  const items = [
-    { label: "Home", path: "/", Icon: Home },
-    { label: "Explore", path: "/explore", Icon: Grid },
-    { label: "Resources", path: "/resources", Icon: FileText },
-    { label: "About", path: "/about", Icon: Info },
-    { label: "Contact", path: "/contact", Icon: Mail },
-  ];
   return (
     <nav
-      className="min-[641px]:hidden fixed bottom-0 left-0 right-0 z-50 flex w-full bg-card border-t border-border"
+      className="min-[641px]:hidden fixed bottom-0 left-0 right-0 z-50 flex w-full bg-background/95 backdrop-blur-sm border-t border-border"
       style={{
         height: "var(--mobile-nav-height)",
         paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
-      {items.map(({ label, path, Icon }) => {
+      {ITEMS.map(({ label, path }) => {
         const active = isNavActive(pathname, path);
         return (
           <Link key={label} to={path} className="flex-1 flex flex-col items-center justify-center gap-1 py-2">
-            <div className={`flex items-center justify-center w-9 h-6 rounded-full transition-colors ${active ? "bg-primary/10" : ""}`}>
-              <Icon size={19} className={active ? "text-primary" : "text-muted-foreground"} strokeWidth={active ? 2.5 : 1.75} />
-            </div>
-            <span className={`text-[10px] font-semibold ${active ? "text-primary" : "text-muted-foreground"}`}>{label}</span>
+            <span
+              className={`block w-5 h-[2px] rounded-full transition-colors ${active ? "bg-accent" : "bg-transparent"}`}
+            />
+            <span className={`text-[11px] ${active ? "text-foreground font-bold" : "text-muted-foreground font-medium"}`}>
+              {label}
+            </span>
           </Link>
         );
       })}

@@ -37,8 +37,8 @@ const PRICE_FILTERS: { label: string; type?: "free" | "paid" }[] = [
   { label: "Paid", type: "paid" },
 ];
 
-const PILL_ACTIVE = { backgroundColor: "#B7F21D", color: "#1E1F1C", borderColor: "#B7F21D" };
-const PILL_INACTIVE = { backgroundColor: "white", color: "#3A3B37", borderColor: "rgba(24,76,58,0.18)" };
+const PILL_ACTIVE = { backgroundColor: "#C6F24E", color: "#1A1A1A", borderColor: "#C6F24E" };
+const PILL_INACTIVE = { backgroundColor: "white", color: "#3A3B37", borderColor: "rgba(28,51,41,0.18)" };
 
 // One resource-library row. Deliberately never reads cover_image_url — the
 // goal is a document-library card (icon + metadata + download button), not
@@ -68,7 +68,7 @@ function CollectionCard({ c, onGetAccess }: { c: ResourceCollection; onGetAccess
             <h3 className="text-sm md:text-base font-bold text-foreground leading-snug">{displayResourceTitle(c.titleEn)}</h3>
             <span
               className={`flex-shrink-0 text-[9px] font-black px-2 py-0.5 rounded-full ${c.priceType === "free" ? "" : "bg-secondary text-muted-foreground border border-border"}`}
-              style={c.priceType === "free" ? { backgroundColor: "#B7F21D", color: "#1E1F1C" } : {}}
+              style={c.priceType === "free" ? { backgroundColor: "#C6F24E", color: "#1A1A1A" } : {}}
             >
               {c.priceType === "free" ? "Free" : c.price != null ? formatRmbPrice(c.price) : "Premium"}
             </span>
@@ -159,7 +159,7 @@ export function ResourcesPage() {
 
           {/* Browse by topic */}
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#184C3A" }}>Browse by Topic · 按主题浏览</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#1C3329" }}>Browse by Topic · 按主题浏览</p>
             <div className="flex flex-wrap gap-1.5">
               {visibleTopicFilters.map(f => (
                 <button key={f.label} onClick={() => setActiveFilter(f.label)}
@@ -174,7 +174,7 @@ export function ResourcesPage() {
           {/* Price — a resource property, kept as its own filter dimension
               rather than mixed into the collection-type list above */}
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#184C3A" }}>Price · 价格</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#1C3329" }}>Price · 价格</p>
             <div className="flex flex-wrap gap-1.5">
               {PRICE_FILTERS.map(p => (
                 <button key={p.label} onClick={() => setPriceFilter(p.label)}

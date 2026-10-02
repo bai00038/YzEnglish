@@ -6,7 +6,7 @@ export function SmileCurve({ width = 56, opacity = 0.75, className = "" }: {
 }) {
   return (
     <svg aria-hidden="true" width={width} height={Math.round(width * 0.32)} viewBox="0 0 56 18" fill="none" className={className} style={{ display: "block" }}>
-      <path d="M4 6 Q28 16 52 6" stroke="#B7F21D" strokeWidth="2.4" strokeLinecap="round" fill="none" opacity={opacity} />
+      <path d="M4 6 Q28 16 52 6" stroke="#C6F24E" strokeWidth="2.4" strokeLinecap="round" fill="none" opacity={opacity} />
     </svg>
   );
 }
@@ -17,7 +17,7 @@ export function LimeLine({ width = 40, opacity = 0.65, className = "" }: {
 }) {
   return (
     <svg aria-hidden="true" width={width} height="8" viewBox={`0 0 ${width} 8`} fill="none" className={className} style={{ display: "block" }}>
-      <path d={`M2 5 C${width * 0.25} 3, ${width * 0.6} 3.5, ${width - 2} 4.5`} stroke="#B7F21D" strokeWidth="2" strokeLinecap="round" fill="none" opacity={opacity} />
+      <path d={`M2 5 C${width * 0.25} 3, ${width * 0.6} 3.5, ${width - 2} 4.5`} stroke="#C6F24E" strokeWidth="2" strokeLinecap="round" fill="none" opacity={opacity} />
     </svg>
   );
 }

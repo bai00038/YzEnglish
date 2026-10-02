@@ -6,34 +6,34 @@
      drives the bottom padding App.tsx adds so page content/footer can
      scroll fully clear of it. Keep both reads of this in sync. */
   --mobile-nav-height: 76px;
-  --background: #F7F6F2;
-  --foreground: #1E1F1C;
+  --background: #F7F4EE;
+  --foreground: #1A1A1A;
   --card: #FFFFFF;
-  --card-foreground: #1E1F1C;
+  --card-foreground: #1A1A1A;
   --popover: #FFFFFF;
-  --popover-foreground: #1E1F1C;
-  --primary: #184C3A;
-  --primary-foreground: #F7F6F2;
-  --secondary: #ECEBE6;
-  --secondary-foreground: #3A3B37;
-  --muted: #ECEBE6;
-  --muted-foreground: #6A6C66;
-  --accent: #B7F21D;
-  --accent-foreground: #1E1F1C;
+  --popover-foreground: #1A1A1A;
+  --primary: #1C3329;
+  --primary-foreground: #F7F4EE;
+  --secondary: #ECE7DB;
+  --secondary-foreground: #3A3833;
+  --muted: #ECE7DB;
+  --muted-foreground: #6E6A5E;
+  --accent: #C6F24E;
+  --accent-foreground: #1C3329;
   --destructive: #C0392B;
   --destructive-foreground: #FFFFFF;
-  --border: rgba(30, 31, 28, 0.09);
+  --border: rgba(26, 26, 26, 0.09);
   --input: transparent;
-  --input-background: #F0EDE8;
+  --input-background: #F0ECE2;
   --switch-background: #CCCCCC;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #184C3A;
-  --chart-1: #184C3A;
-  --chart-2: #B7F21D;
-  --chart-3: #1F5A44;
-  --chart-4: #6A6C66;
-  --chart-5: #ECEBE6;
+  --ring: #1C3329;
+  --chart-1: #1C3329;
+  --chart-2: #C6F24E;
+  --chart-3: #2E5244;
+  --chart-4: #6E6A5E;
+  --chart-5: #ECE7DB;
   --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
@@ -130,7 +130,13 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Plus Jakarta Sans', 'Noto Sans SC', system-ui, sans-serif;
+    font-family: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+  }
+
+  /* Editorial display serif — Fraunces (Latin) + Noto Serif SC (Chinese).
+     Used for brand headlines and scene titles: the "深林编辑" voice. */
+  .font-display {
+    font-family: 'Fraunces', 'Noto Serif SC', Georgia, serif;
   }
 
   /**
@@ -187,13 +193,14 @@
 
 /* ─────────────────────────────────────────────
    Learn the Dialogue — transcript row layout
-   Fixed speaker column + fluid content column so every
-   role's English/Chinese lines share one left edge,
-   regardless of speaker-label length.
+   Fixed speaker column + fluid content column + a dedicated,
+   vertically-centred play-button column, so every role's
+   English/Chinese lines share one left edge regardless of
+   speaker-label length.
    ───────────────────────────────────────────── */
 .dialogue-row {
   display: grid;
-  grid-template-columns: 150px minmax(0, 1fr);
+  grid-template-columns: 150px minmax(0, 1fr) 48px;
   column-gap: 16px;
   align-items: start;
 }
@@ -205,6 +212,15 @@
 .dialogue-content {
   grid-column: 2;
   min-width: 0;
+}
+
+/* Per-line play/pause control — light outlined SVG button, vertically
+   centred against the whole row. The entire row remains the click
+   target; this is purely the visual affordance. */
+.dialogue-play {
+  grid-column: 3;
+  align-self: center;
+  justify-self: end;
 }
 
 .dialogue-english,
@@ -225,18 +241,17 @@
 
 @media (max-width: 768px) {
   .dialogue-row {
-    grid-template-columns: 120px minmax(0, 1fr);
+    grid-template-columns: 120px minmax(0, 1fr) 44px;
     column-gap: 10px;
   }
 }
 
-/* Mobile (<=640px): the two-column speaker/content grid collapses to a
-   single stacked column — no reserved speaker-column width, so English/
-   Chinese text gets the card's full available width. The audio icon
-   (.dialogue-audio, set on the <span> in SceneDetailPage.tsx) is pulled
-   out of flow and pinned to the row's top-right corner, aligned with the
-   speaker badge instead of sitting inline with the English text. Placed
-   after the 768px block so it wins in the <=640 overlap. */
+/* Mobile (<=640px): the speaker/content/play grid collapses to a single
+   stacked column — no reserved speaker-column width, so English/Chinese
+   text gets the card's full available width. The play button
+   (.dialogue-play) is pulled out of flow and pinned to the row's right
+   edge, vertically centred. Placed after the 768px block so it wins in
+   the <=640 overlap. */
 @media (max-width: 640px) {
   .dialogue-row {
     display: block;
@@ -246,18 +261,18 @@
     padding-top: 24px;
     padding-bottom: 24px;
     padding-left: 20px;
-    padding-right: 20px;
+    padding-right: 68px;
   }
 
   .speaker-column {
-    padding-right: 44px; /* keeps a long label clear of the audio icon's corner */
     margin-bottom: 12px;
   }
 
-  .dialogue-audio {
+  .dialogue-play {
     position: absolute;
-    top: 24px;
-    right: 20px;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useParams } from "react-router";
 import {
-  ChevronRight, ChevronLeft, FileText, Download, Info, Play, Volume2,
+  ChevronRight, ChevronLeft, FileText, Download, Info, Play,
 } from "lucide-react";
 import { useSceneDetail } from "@/data/scenes-access";
 import { SpeechBubbleLabel } from "@/app/components/brand";
@@ -11,6 +11,27 @@ import { DictationPractice, type DictationLineInput } from "@/app/components/Dic
 import { buildSceneSpeakers, normalizeSpeaker, SPEAKER_STYLES } from "@/data/speakerRoles";
 import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
 
+// ─────────────────────────────────────────────
+// Light outlined SVG play / pause icons — real vector icons, never
+// typed glyphs. Pause bars are tight (x=3.6 / x=9.2).
+// ─────────────────────────────────────────────
+function PlaySvg({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M4.5 2.8v10.4c0 .8.9 1.3 1.6.9l8-5.2c.6-.4.6-1.4 0-1.8l-8-5.2c-.7-.4-1.6.1-1.6.9z" />
+    </svg>
+  );
+}
+
+function PauseSvg({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <rect x="3.6" y="2.6" width="3.2" height="10.8" rx="1" />
+      <rect x="9.2" y="2.6" width="3.2" height="10.8" rx="1" />
+    </svg>
+  );
+}
+
 // Key Expressions card — expressionEn/expressionZh, the only two fields
 // KeyExpressionItem has (public.key_expressions.usage_en/usage_zh/
 // example_en/example_zh were dropped entirely — see
@@ -19,11 +40,11 @@ import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
 function KeyExpressionCard({ item }: { item: KeyExpressionItem }) {
   return (
     <div
-      className="rounded-xl border px-5 py-4 min-h-[88px] flex flex-col justify-center"
-      style={{ borderColor: "rgba(24,76,58,0.13)", backgroundColor: "rgba(24,76,58,0.025)" }}
+      className="rounded-2xl border px-5 py-4 min-h-[88px] flex flex-col justify-center bg-card"
+      style={{ borderColor: "rgba(28,51,41,0.12)" }}
     >
-      <p className="text-base font-bold text-primary leading-snug">{item.expressionEn}</p>
-      <p className="text-sm text-[#3A3B37] mt-1 leading-snug">{item.expressionZh}</p>
+      <p className="font-display text-[17px] font-semibold text-primary leading-snug">{item.expressionEn}</p>
+      <p className="text-sm text-muted-foreground mt-1 leading-snug">{item.expressionZh}</p>
     </div>
   );
 }
@@ -37,13 +58,13 @@ function KeyExpressionCard({ item }: { item: KeyExpressionItem }) {
 // cultureTipItems in SceneDetailPage below).
 function CultureTipCard({ item, tipNumber }: { item: CultureTipItem; tipNumber: number }) {
   return (
-    <div className="rounded-xl overflow-hidden border" style={{ borderColor: "rgba(24,76,58,0.13)", backgroundColor: "rgba(24,76,58,0.025)" }}>
-      <div className="flex items-center gap-2 px-4 py-3 border-b" style={{ borderColor: "rgba(24,76,58,0.09)" }}>
+    <div className="rounded-2xl overflow-hidden border bg-card" style={{ borderColor: "rgba(28,51,41,0.12)" }}>
+      <div className="flex items-center gap-2 px-5 py-3 border-b" style={{ borderColor: "rgba(28,51,41,0.08)" }}>
         <Info size={13} className="text-primary flex-shrink-0" />
-        <p className="text-sm font-bold text-primary leading-snug">Tip {tipNumber}</p>
+        <p className="text-[13px] font-bold text-primary leading-snug">Tip {tipNumber}</p>
       </div>
-      <div className="px-4 py-4">
-        <p className="text-sm leading-[1.7] font-semibold text-foreground">{item.bodyEn}</p>
+      <div className="px-5 py-4">
+        <p className="text-[15px] leading-[1.7] font-semibold text-foreground">{item.bodyEn}</p>
         {item.bodyZh && (
           <p className="text-sm mt-1.5 leading-[1.7] text-muted-foreground">{item.bodyZh}</p>
         )}
@@ -58,6 +79,9 @@ function CultureTipCard({ item, tipNumber }: { item: CultureTipItem; tipNumber: 
 // (see the playbackRate effect below). 1 is always the default.
 const PLAYBACK_RATES = [0.8, 1, 1.2] as const;
 const PLAYBACK_RATE_STORAGE_KEY = "yzenglish:playbackRate";
+
+// Subtitle overlay modes: off / English only / bilingual (EN+ZH stacked).
+type SubtitleMode = "off" | "en" | "bi";
 
 const STUDY_TABS = [
   { key: "listening", num: "01", en: "Sentence Listening", zh: "单句精听" },
@@ -93,7 +117,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoPaused, setVideoPaused] = useState(true);
-  const [subtitleLang, setSubtitleLang] = useState<"off" | "en" | "zh">("off");
+  const [subtitleMode, setSubtitleMode] = useState<SubtitleMode>("off");
   const [videoCurrentTime, setVideoCurrentTime] = useState(0);
   const [studyTab, setStudyTab] = useState<StudyTabKey>("listening");
   // Selected playback speed — applies to the one shared <video> element no
@@ -462,6 +486,20 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     video.currentTime = range.start;
   }
 
+  // Whole-row tap handler — "tap a line, play that line". Tapping the
+  // line that's currently playing pauses it instead.
+  function handleLineClick(lineIndex: number) {
+    const range = dialogueLineRawRanges.get(lineIndex);
+    if (!range) return;
+    const isPlayingThisLine =
+      pinnedLineIndex === lineIndex && !videoPaused && activeEndRef.current !== null;
+    if (isPlayingThisLine) {
+      videoRef.current?.pause();
+    } else {
+      playDialogueLine(lineIndex, range);
+    }
+  }
+
   // Intentionally no auto-scroll here: highlighting must follow
   // video.currentTime / clicked-line state without ever moving the page's
   // scroll position. See SceneDetailPage playback-scroll fix.
@@ -522,7 +560,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
   if (loading) {
     return (
-      <div className="max-w-lg mx-auto px-4 py-24">
+      <div className="max-w-5xl mx-auto px-6 py-24">
         <LoadingState label="Loading scene…" />
       </div>
     );
@@ -530,7 +568,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
   if (error) {
     return (
-      <div className="max-w-lg mx-auto px-4 py-24">
+      <div className="max-w-5xl mx-auto px-6 py-24">
         <ErrorState message={error} />
       </div>
     );
@@ -546,39 +584,41 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // not-yet-public scenes.
   if (!scene) {
     return (
-      <div className="max-w-lg mx-auto px-4 py-24 text-center">
-        <p className="text-sm font-semibold text-foreground">This scene is being prepared</p>
-        <p className="text-xs text-muted-foreground mt-1">该场景正在准备中，敬请期待。</p>
-        <Link to="/explore" className="text-xs font-bold text-primary inline-flex items-center gap-0.5 mt-4 hover:opacity-70 transition-opacity">
-          Back to Explore <ChevronRight size={12} />
+      <div className="max-w-5xl mx-auto px-6 py-24 text-center">
+        <p className="font-display text-[22px] font-semibold text-foreground">This scene is being prepared</p>
+        <p className="text-sm text-muted-foreground mt-2">该场景正在准备中，敬请期待。</p>
+        <Link to="/explore" className="text-sm font-bold text-primary inline-flex items-center gap-1 mt-6 hover:opacity-70 transition-opacity">
+          Back to Explore <ChevronRight size={13} />
         </Link>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="bg-background">
 
-      {/* Breadcrumb */}
-      <div className="bg-background border-b border-border">
-        <div className="max-w-[1000px] mx-auto px-4 md:px-6 py-2.5 flex items-center gap-1 text-[13px] md:text-[14px] text-muted-foreground flex-wrap">
-          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-          <ChevronRight size={9} />
+      {/* Breadcrumb — quiet */}
+      <div className="border-b border-border/70">
+        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center gap-1.5 text-[12px] text-muted-foreground flex-wrap">
+          <Link to="/" className="hover:text-primary transition-colors">首页</Link>
+          <ChevronRight size={10} />
           <Link to="/explore" className="hover:text-primary transition-colors">{scene.category}</Link>
-          <ChevronRight size={9} />
-          <span className="text-foreground font-semibold">{scene.titleEn}</span>
+          <ChevronRight size={10} />
+          <span className="text-foreground font-semibold">{scene.titleZh || scene.titleEn}</span>
         </div>
       </div>
 
-      {/* ─── Lesson identity block (sits between breadcrumb and chapter nav) ─── */}
-      <div className="bg-background border-b border-border">
-        <div className="max-w-[1000px] mx-auto px-4 md:px-6 pt-6 pb-5">
-          <h1 className="text-[32px] md:text-[38px] font-black leading-tight text-foreground mb-0.5">
+      {/* ─── Lesson identity — editorial serif ─── */}
+      <div className="border-b border-border/70">
+        <div className="max-w-5xl mx-auto px-6 pt-10 pb-8 md:pt-14 md:pb-10">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-4">
+            {scene.category}
+          </p>
+          <h1 className="font-display font-semibold tracking-tight text-foreground leading-[1.08] text-[34px] md:text-[52px]">
             {scene.titleEn}
           </h1>
-          <p className="font-normal text-[#3A3B37] mb-3 text-[16px] md:text-[18px]">{scene.titleZh}</p>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[13px] md:text-[14px] font-bold text-primary bg-primary/10 px-2.5 py-0.5 rounded-md">{scene.category}</span>
+          <p className="font-display text-[17px] md:text-[20px] text-foreground/70 mt-3">{scene.titleZh}</p>
+          <div className="flex flex-wrap items-center gap-2.5 mt-5">
             <LevelBadge level={scene.level} />
             <DurationLabel duration={scene.duration} />
           </div>
@@ -586,462 +626,452 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       </div>
 
       {!content ? (
-        <div className="pb-24">
-          <section className="max-w-[1000px] mx-auto px-4 md:px-6 pt-8 pb-20">
-            <div className="flex items-start gap-4 mb-6">
-              <span className="text-[44px] md:text-[52px] font-black leading-none select-none flex-shrink-0 mt-0.5 tabular-nums" style={{ color: "rgba(24,76,58,0.1)", WebkitTextStroke: "1px rgba(24,76,58,0.5)", paintOrder: "stroke fill" }}>01</span>
-              <div className="pt-0.5">
-                <p className="text-[24px] md:text-[28px] font-black leading-tight text-foreground">Watch & Understand</p>
-                <p className="text-[15px] md:text-[16px] text-muted-foreground mt-1 leading-snug">Watch the scene, then read the setup and your goal.</p>
-              </div>
-            </div>
-            <div className="rounded-2xl border border-dashed border-border bg-card px-6 py-10 text-center">
-              <p className="text-sm font-semibold text-foreground">Full lesson content for this scene is coming soon.</p>
-              <p className="text-xs text-muted-foreground mt-1">该场景的完整学习内容即将上线。</p>
-              <Link to="/explore" className="text-xs font-bold text-primary inline-flex items-center gap-0.5 mt-4 hover:opacity-70 transition-opacity">
-                Explore other scenes <ChevronRight size={12} />
-              </Link>
-            </div>
-          </section>
-        </div>
+        <section className="max-w-5xl mx-auto px-6 pt-12 pb-24">
+          <div className="rounded-3xl border border-dashed border-border bg-card px-6 py-14 text-center">
+            <p className="font-display text-[20px] font-semibold text-foreground">Full lesson content for this scene is coming soon.</p>
+            <p className="text-sm text-muted-foreground mt-2">该场景的完整学习内容即将上线。</p>
+            <Link to="/explore" className="text-sm font-bold text-primary inline-flex items-center gap-1 mt-6 hover:opacity-70 transition-opacity">
+              Explore other scenes <ChevronRight size={13} />
+            </Link>
+          </div>
+        </section>
       ) : (
         <>
-          {/* ═══════════════════════════════════════════
-              CENTRED CONTENT LAYOUT (no sidebar)
-              ═══════════════════════════════════════════ */}
-          <div>
 
-            {/* ─────────────────────────────────────────────
-                Video + playback speed + study tabs
-                ───────────────────────────────────────────── */}
-            <section id="section-watch" className="max-w-[1000px] mx-auto px-4 md:px-6 pt-6 pb-14">
+          {/* ─────────────────────────────────────────────
+              Video + playback speed + study tabs
+              ───────────────────────────────────────────── */}
+          <section id="section-watch" className="max-w-5xl mx-auto px-6 pt-8 md:pt-10 pb-16">
 
-              {/* ── Scene video area — always the same 16:9 video-shaped frame.
-                  scene.photo is only ever used as the <video> poster (cover
-                  image) or, before scene.video_url is synced from the Google
-                  Sheet, as a poster-style background — never shown as a bare
-                  standalone image. ── */}
-              <div className="w-full rounded-2xl overflow-hidden bg-black" style={{ aspectRatio: "16 / 9" }}>
-                {scene.video_url ? (
-                  <div className="relative w-full h-full">
-                    <video
-                      ref={videoRef}
-                      controls
-                      controlsList="nodownload noremoteplayback"
-                      disablePictureInPicture
-                      playsInline
-                      preload="metadata"
-                      poster={scene.photo || undefined}
-                      className="w-full h-full object-cover"
-                      draggable={false}
-                      onContextMenu={(event) => event.preventDefault()}
-                      onDragStart={(event) => event.preventDefault()}
-                      onPlay={() => {
-                        setVideoPaused(false);
-                        // activeEndRef is set (before video.play() is
-                        // called) only by playDialogueLine — so a play
-                        // event with it still null means this is normal
-                        // continuous playback (big button or native
-                        // controls), which should track the video's own
-                        // time again rather than stay pinned to whichever
-                        // line was last clicked.
-                        if (activeEndRef.current === null) {
-                          setPinnedLineIndex(null);
-                        }
-                      }}
-                      onPause={() => {
-                        setVideoPaused(true);
-                        // Any pause — manual, native-controls, or the
-                        // frame watcher's own auto-stop (see
-                        // watchForLineEnd) — ends single-line mode.
-                        // Whatever resumes playback next (big play
-                        // button, native controls, another line click) is
-                        // never held to a stale line's end time.
-                        cancelRangePlayback();
-                      }}
-                      // Display-only: keeps videoCurrentTime (and so the
-                      // highlight/subtitle) in sync during ordinary
-                      // continuous playback, i.e. whenever the frame
-                      // watcher isn't already doing that at a much higher
-                      // resolution for single-line playback. Never pauses
-                      // the video itself — see watchForLineEnd for why
-                      // timeupdate's firing rate is too coarse for that.
-                      onTimeUpdate={e => {
-                        setVideoCurrentTime(e.currentTarget.currentTime);
-                      }}
-                      onEnded={e => {
-                        cancelRangePlayback();
-                        e.currentTarget.currentTime = 0;
-                        setVideoCurrentTime(0);
-                      }}
-                      // Some browsers reset playbackRate to 1 when a new
-                      // <source> finishes loading — reapply the selected
-                      // speed once metadata is ready, same value as the
-                      // playbackRate effect above.
-                      onLoadedMetadata={e => {
-                        e.currentTarget.playbackRate = playbackRate;
-                      }}
-                    >
-                      <source src={scene.video_url} />
-                      Your browser does not support video playback.
-                    </video>
-                    {subtitleLang !== "off" && activeSubtitleLine && (
-                      <div className="absolute inset-x-0 bottom-14 md:bottom-16 flex justify-center px-6 pointer-events-none">
-                        <p className="max-w-[90%] text-center text-white text-base md:text-lg leading-snug px-3 py-1.5 rounded-lg bg-black/70" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
-                          {subtitleLang === "en" ? activeSubtitleLine.en : activeSubtitleLine.zh}
-                        </p>
+            {/* ── Scene video — 16:9 frame ── */}
+            <div className="w-full rounded-3xl overflow-hidden bg-black shadow-[0_24px_60px_rgba(28,51,41,0.18)]" style={{ aspectRatio: "16 / 9" }}>
+              {scene.video_url ? (
+                <div className="relative w-full h-full">
+                  <video
+                    ref={videoRef}
+                    controls
+                    controlsList="nodownload noremoteplayback"
+                    disablePictureInPicture
+                    playsInline
+                    preload="metadata"
+                    poster={scene.photo || undefined}
+                    className="w-full h-full object-cover"
+                    draggable={false}
+                    onContextMenu={(event) => event.preventDefault()}
+                    onDragStart={(event) => event.preventDefault()}
+                    onPlay={() => {
+                      setVideoPaused(false);
+                      // activeEndRef is set (before video.play() is
+                      // called) only by playDialogueLine — so a play
+                      // event with it still null means this is normal
+                      // continuous playback (big button or native
+                      // controls), which should track the video's own
+                      // time again rather than stay pinned to whichever
+                      // line was last clicked.
+                      if (activeEndRef.current === null) {
+                        setPinnedLineIndex(null);
+                      }
+                    }}
+                    onPause={() => {
+                      setVideoPaused(true);
+                      // Any pause — manual, native-controls, or the
+                      // frame watcher's own auto-stop (see
+                      // watchForLineEnd) — ends single-line mode.
+                      // Whatever resumes playback next (big play
+                      // button, native controls, another line click) is
+                      // never held to a stale line's end time.
+                      cancelRangePlayback();
+                    }}
+                    // Display-only: keeps videoCurrentTime (and so the
+                    // highlight/subtitle) in sync during ordinary
+                    // continuous playback, i.e. whenever the frame
+                    // watcher isn't already doing that at a much higher
+                    // resolution for single-line playback. Never pauses
+                    // the video itself — see watchForLineEnd for why
+                    // timeupdate's firing rate is too coarse for that.
+                    onTimeUpdate={e => {
+                      setVideoCurrentTime(e.currentTarget.currentTime);
+                    }}
+                    onEnded={e => {
+                      cancelRangePlayback();
+                      e.currentTarget.currentTime = 0;
+                      setVideoCurrentTime(0);
+                    }}
+                    // Some browsers reset playbackRate to 1 when a new
+                    // <source> finishes loading — reapply the selected
+                    // speed once metadata is ready, same value as the
+                    // playbackRate effect above.
+                    onLoadedMetadata={e => {
+                      e.currentTarget.playbackRate = playbackRate;
+                    }}
+                  >
+                    <source src={scene.video_url} />
+                    Your browser does not support video playback.
+                  </video>
+                  {subtitleMode !== "off" && activeSubtitleLine && (
+                    <div className="absolute inset-x-0 bottom-14 md:bottom-16 flex justify-center px-6 pointer-events-none">
+                      <div className="max-w-[92%] text-center px-4 py-2 rounded-xl bg-black/70" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
+                        <p className="text-white text-[15px] md:text-[17px] leading-snug">{activeSubtitleLine.en}</p>
+                        {subtitleMode === "bi" && activeSubtitleLine.zh && (
+                          <p className="text-white/80 text-[13px] md:text-[15px] leading-snug mt-1">{activeSubtitleLine.zh}</p>
+                        )}
                       </div>
-                    )}
-                    {dialogueLineAudioRanges.size > 0 && (
-                      <div className="absolute top-3 right-3 flex items-center gap-0.5 rounded-full bg-black/50 p-1 text-xs font-bold">
-                        <button
-                          type="button"
-                          onClick={() => setSubtitleLang("off")}
-                          aria-pressed={subtitleLang === "off"}
-                          className={`px-2.5 py-1 rounded-full transition-colors ${subtitleLang === "off" ? "bg-white text-black" : "text-white hover:bg-white/20"}`}
-                        >
-                          Off
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setSubtitleLang("en")}
-                          aria-pressed={subtitleLang === "en"}
-                          className={`px-2.5 py-1 rounded-full transition-colors ${subtitleLang === "en" ? "bg-white text-black" : "text-white hover:bg-white/20"}`}
-                        >
-                          EN
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setSubtitleLang("zh")}
-                          aria-pressed={subtitleLang === "zh"}
-                          className={`px-2.5 py-1 rounded-full transition-colors ${subtitleLang === "zh" ? "bg-white text-black" : "text-white hover:bg-white/20"}`}
-                        >
-                          中
-                        </button>
-                      </div>
-                    )}
-                    {videoPaused && (
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            cancelRangePlayback(); // resuming from the big button is always continuous playback
-                            videoRef.current?.play();
-                          }}
-                          aria-label="Play video"
-                          className="pointer-events-auto flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
-                        >
-                          <Play className="w-7 h-7 md:w-9 md:h-9 text-white fill-white ml-1" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ) : scene.photo ? (
-                  <div className="relative w-full h-full">
-                    <img
-                      src={scene.photo}
-                      alt={`${scene.titleEn} scene cover`}
-                      className="w-full h-full object-cover object-center"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/35">
-                      <p className="text-white text-xs font-bold px-3 py-1.5 rounded-full bg-black/40">Video coming soon · 视频准备中</p>
                     </div>
-                  </div>
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center px-6 text-center">
-                    <p className="text-white text-sm font-bold">{scene.titleEn}</p>
-                    <p className="text-white/70 text-xs mt-1">Video coming soon · 视频准备中</p>
-                  </div>
-                )}
-              </div>
-
-              {/* ── Playback speed ── */}
-              <div className="flex flex-wrap items-center gap-3 mt-4">
-                <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">Playback Speed · 播放速度</span>
-                <div className="flex items-center gap-0.5 rounded-full border border-border bg-white p-0.5">
-                  {PLAYBACK_RATES.map(rate => {
-                    const isActive = playbackRate === rate;
-                    return (
+                  )}
+                  {/* Subtitle mode — 双语 / EN / 关 */}
+                  {dialogueLineAudioRanges.size > 0 && (
+                    <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-black/55 p-1.5 text-[12px] font-bold backdrop-blur-sm">
+                      {([
+                        { key: "bi", label: "双语" },
+                        { key: "en", label: "EN" },
+                        { key: "off", label: "关" },
+                      ] as const).map(opt => (
+                        <button
+                          key={opt.key}
+                          type="button"
+                          onClick={() => setSubtitleMode(opt.key)}
+                          aria-pressed={subtitleMode === opt.key}
+                          className={`px-3.5 py-1.5 rounded-full transition-colors ${subtitleMode === opt.key ? "bg-white text-black" : "text-white/85 hover:bg-white/20"}`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {videoPaused && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                       <button
-                        key={rate}
                         type="button"
-                        onClick={() => setPlaybackRate(rate)}
-                        aria-pressed={isActive}
-                        className="text-xs font-bold px-2.5 py-1 rounded-full transition-colors"
-                        style={isActive ? { backgroundColor: "#184C3A", color: "#F7F6F2" } : { color: "var(--muted-foreground)" }}
+                        onClick={() => {
+                          cancelRangePlayback(); // resuming from the big button is always continuous playback
+                          videoRef.current?.play();
+                        }}
+                        aria-label="Play video"
+                        className="pointer-events-auto flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
                       >
-                        {rate}×
+                        <Play className="w-7 h-7 md:w-9 md:h-9 text-white fill-white ml-1" />
                       </button>
-                    );
-                  })}
+                    </div>
+                  )}
                 </div>
-              </div>
+              ) : scene.photo ? (
+                <div className="relative w-full h-full">
+                  <img
+                    src={scene.photo}
+                    alt={`${scene.titleEn} scene cover`}
+                    className="w-full h-full object-cover object-center"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/35">
+                    <p className="text-white text-xs font-bold px-3 py-1.5 rounded-full bg-black/40">Video coming soon · 视频准备中</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center px-6 text-center">
+                  <p className="text-white text-sm font-bold">{scene.titleEn}</p>
+                  <p className="text-white/70 text-xs mt-1">Video coming soon · 视频准备中</p>
+                </div>
+              )}
+            </div>
 
-              {/* ── Study mode tabs ── */}
-              <div className="flex items-center gap-5 md:gap-8 border-b border-border mt-6 mb-6">
-                {STUDY_TABS.map(tab => {
-                  const isActive = studyTab === tab.key;
+            {/* ── Playback speed — generous capsule ── */}
+            <div className="flex flex-wrap items-center gap-4 mt-6">
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">播放速度</span>
+              <div className="flex items-center gap-1.5 rounded-full border border-border bg-card p-1.5 shadow-sm">
+                {PLAYBACK_RATES.map(rate => {
+                  const isActive = playbackRate === rate;
                   return (
                     <button
-                      key={tab.key}
+                      key={rate}
                       type="button"
-                      onClick={() => switchStudyTab(tab.key)}
-                      className="flex items-center gap-1.5 md:gap-2 pb-3 border-b-2 transition-colors cursor-pointer bg-transparent"
+                      onClick={() => setPlaybackRate(rate)}
+                      aria-pressed={isActive}
+                      className="text-[13px] font-bold px-4 py-1.5 rounded-full transition-all"
                       style={isActive
-                        ? { borderBottomColor: "#B7F21D", color: "#184C3A" }
-                        : { borderBottomColor: "transparent", color: "var(--muted-foreground)" }
-                      }
+                        ? { backgroundColor: "#1C3329", color: "#F7F4EE" }
+                        : { color: "#6E6A5E" }}
                     >
-                      <span className="text-[10px] md:text-[11px] font-black">{tab.num}</span>
-                      <span className="text-[13px] md:text-[16px] font-bold whitespace-nowrap">
-                        <span className="sm:hidden">{tab.zh}</span>
-                        <span className="hidden sm:inline">{tab.en} · {tab.zh}</span>
-                      </span>
+                      {rate}×
                     </button>
                   );
                 })}
               </div>
+            </div>
 
-              {studyTab === "dictation" ? (
-                <DictationPractice
-                  sceneId={scene.id}
-                  lines={dictationLines}
-                  onPlayLine={playDictationLine}
-                  onStopPlayback={stopDictationPlayback}
-                />
-              ) : (
-              <div className="rounded-2xl px-4 py-6 md:px-6 md:py-7" style={{ backgroundColor: "#EFF4F1" }}>
-                {/* Controls bar */}
-                <div className="flex flex-wrap items-center gap-3 mb-5 pb-5 border-b border-black/8">
-                  {/* EN / 双语 toggle */}
-                  <div className="flex items-center border border-border rounded-full p-0.5 bg-white shadow-sm">
-                    <button onClick={() => setBilingualMode(false)}
-                      className={`text-[11px] font-bold px-3 py-1 rounded-full transition-all duration-200 ${!bilingualMode ? "shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                      style={!bilingualMode ? { backgroundColor: "#184C3A", color: "#F7F6F2" } : {}}>
-                      English
-                    </button>
-                    <button onClick={() => setBilingualMode(true)}
-                      className={`text-[11px] font-bold px-3 py-1 rounded-full transition-all duration-200 ${bilingualMode ? "shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                      style={bilingualMode ? { backgroundColor: "#184C3A", color: "#F7F6F2" } : {}}>
-                      双语
-                    </button>
-                  </div>
+            {/* ── Study mode tabs ── */}
+            <div className="flex items-center gap-8 border-b border-border mt-8 mb-8">
+              {STUDY_TABS.map(tab => {
+                const isActive = studyTab === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => switchStudyTab(tab.key)}
+                    className="flex items-baseline gap-2 pb-3.5 border-b-2 transition-colors cursor-pointer bg-transparent"
+                    style={isActive
+                      ? { borderBottomColor: "#C6F24E", color: "#1C3329" }
+                      : { borderBottomColor: "transparent", color: "#6E6A5E" }
+                    }
+                  >
+                    <span className="text-[11px] font-bold">{tab.num}</span>
+                    <span className="text-[15px] md:text-[17px] font-bold whitespace-nowrap">
+                      <span className="sm:hidden">{tab.zh}</span>
+                      <span className="hidden sm:inline">{tab.zh} · {tab.en}</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
 
-                  <span className="text-xs text-muted-foreground">{content.dialogue.length} lines · {scene.duration}</span>
+            {studyTab === "dictation" ? (
+              <DictationPractice
+                sceneId={scene.id}
+                lines={dictationLines}
+                onPlayLine={playDictationLine}
+                onStopPlayback={stopDictationPlayback}
+              />
+            ) : (
+            <div className="rounded-3xl bg-card border border-border/70 px-4 py-6 md:px-8 md:py-8 shadow-[0_10px_36px_rgba(28,51,41,0.06)]">
+              {/* Controls bar */}
+              <div className="flex flex-wrap items-center gap-3 mb-6 pb-6 border-b border-border/70">
+                {/* EN / 双语 toggle */}
+                <div className="flex items-center border border-border rounded-full p-1 bg-background">
+                  <button onClick={() => setBilingualMode(false)}
+                    className={`text-[12px] font-bold px-4 py-1.5 rounded-full transition-all duration-200 ${!bilingualMode ? "shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                    style={!bilingualMode ? { backgroundColor: "#1C3329", color: "#F7F4EE" } : {}}>
+                    English
+                  </button>
+                  <button onClick={() => setBilingualMode(true)}
+                    className={`text-[12px] font-bold px-4 py-1.5 rounded-full transition-all duration-200 ${bilingualMode ? "shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                    style={bilingualMode ? { backgroundColor: "#1C3329", color: "#F7F4EE" } : {}}>
+                    双语
+                  </button>
+                </div>
 
-                  {/* Legend — every role that actually speaks in this scene, in first-occurrence order */}
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 ml-auto">
-                    {Array.from(sceneSpeakers.values()).map(sp => (
-                      <div key={sp.key} className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded whitespace-nowrap"
-                          style={{ backgroundColor: sp.style.bg, color: sp.style.color, border: sp.style.border }}>
-                          {sp.en.toUpperCase()}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground hidden sm:inline whitespace-nowrap">
-                          {sp.zh ? `${sp.en} · ${sp.zh}` : sp.en}
-                        </span>
+                <span className="text-[12px] text-muted-foreground font-medium">{content.dialogue.length} 句 · {scene.duration}</span>
+
+                {/* Legend — every role that actually speaks in this scene, in first-occurrence order */}
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 ml-auto">
+                  {Array.from(sceneSpeakers.values()).map(sp => (
+                    <div key={sp.key} className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded whitespace-nowrap"
+                        style={{ backgroundColor: sp.style.bg, color: sp.style.color, border: sp.style.border }}>
+                        {sp.en.toUpperCase()}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground hidden sm:inline whitespace-nowrap">
+                        {sp.zh ? `${sp.en} · ${sp.zh}` : sp.en}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Transcript rows — whole-row tap target; light outlined
+                  SVG play/pause button, vertically centred. No scroll
+                  container of its own; highlighting never moves the page. */}
+              <div>
+                {content.dialogue.map((line, i) => {
+                  const speaker = sceneSpeakers.get(normalizeSpeaker(line.speaker));
+                  const style = speaker?.style ?? SPEAKER_STYLES[0];
+                  const label = (speaker?.en ?? line.speaker).toUpperCase();
+                  const audioRange = dialogueLineAudioRanges.get(i);
+                  const isActiveLine = highlightedLineIndex === i;
+                  const isPlayingThisLine = pinnedLineIndex === i && !videoPaused;
+                  // Prefer the permanent external_line_id (Phase A-0 —
+                  // see supabase/migrations/0013_add_external_ids.sql),
+                  // then the dialogue_lines row's own internal database
+                  // id, and only fall back to array index for scenes
+                  // still on the legacy scenes.dialogue jsonb (which has
+                  // no per-line identity at all). Playback/highlight
+                  // logic (dialogueLineAudioRanges, activeDialogueLineIndex)
+                  // stays index-keyed on purpose — it's positional state
+                  // scoped to one render, not a React reconciliation key.
+                  const rowKey = line.externalLineId ?? line.dialogueLineDbId ?? i;
+                  return (
+                    <div key={rowKey}
+                      ref={el => { dialogueRowRefs.current[i] = el; }}
+                      className={`dialogue-row py-5 border-b border-border/60 last:border-0 transition-colors rounded-xl px-3 -mx-3 ${audioRange ? "cursor-pointer hover:bg-primary/[0.04]" : ""} ${isActiveLine ? "bg-primary/[0.05]" : ""}`}
+                      style={{ borderLeft: `3px solid ${style.accent}` }}
+                      role={audioRange ? "button" : undefined}
+                      tabIndex={audioRange ? 0 : undefined}
+                      aria-pressed={audioRange ? isActiveLine : undefined}
+                      aria-label={audioRange ? `播放本句：${line.en}` : undefined}
+                      onClick={audioRange ? () => handleLineClick(i) : undefined}
+                      onKeyDown={audioRange ? e => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleLineClick(i);
+                        }
+                      } : undefined}
+                    >
+
+                      {/* Speech-bubble speaker label */}
+                      <div className="speaker-column">
+                        <SpeechBubbleLabel label={label} style={style} />
                       </div>
+
+                      {/* English + Chinese lines */}
+                      <div className="dialogue-content">
+                        <p
+                          className={`dialogue-english font-medium leading-[1.65] transition-colors ${isActiveLine ? "text-primary" : "text-foreground"}`}
+                          style={{ fontSize: "17px" }}
+                        >
+                          {line.en}
+                        </p>
+                        {bilingualMode && (
+                          <p className="dialogue-chinese mt-2 leading-[1.75] text-[15px] text-muted-foreground">{line.zh}</p>
+                        )}
+                      </div>
+
+                      {/* Per-line play control — light outlined SVG button,
+                          vertically centred; the whole row is the tap
+                          target, this is the visual affordance. Never a
+                          "已精听" badge: hearing a line is not intensive
+                          listening. */}
+                      {audioRange && (
+                        <button
+                          type="button"
+                          aria-hidden="true"
+                          tabIndex={-1}
+                          onClick={e => { e.stopPropagation(); handleLineClick(i); }}
+                          className="dialogue-play flex items-center justify-center w-9 h-9 rounded-full transition-all"
+                          style={isPlayingThisLine
+                            ? { backgroundColor: "#C6F24E", border: "1.5px solid transparent", color: "#1C3329" }
+                            : { backgroundColor: "transparent", border: "1.5px solid rgba(28,51,41,0.28)", color: "#1C3329" }}
+                        >
+                          {isPlayingThisLine ? <PauseSvg size={13} /> : <PlaySvg size={13} />}
+                        </button>
+                      )}
+
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            )}
+
+          </section>
+
+          {/* ─────────────────────────────────────────────
+              STAGE 03 · Learn the Language — 知识点
+              ───────────────────────────────────────────── */}
+          <section id="section-language" className="border-t border-border/70">
+            <div className="max-w-5xl mx-auto px-6 py-14 md:py-20">
+              <div className="mb-10">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-4">
+                  Language · 知识点
+                </p>
+                <h2 className="font-display font-semibold text-[26px] md:text-[36px] tracking-tight text-foreground leading-tight">
+                  把这几句<br />带进真实生活。
+                </h2>
+              </div>
+
+              {/* Key Expressions — from public.key_expressions (or its legacy-tips fallback) */}
+              {keyExpressionItems.length > 0 && (
+                <div className="mb-10">
+                  <p className="text-[13px] font-bold text-primary mb-4">重点表达 · Key Expressions</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    {keyExpressionItems.map((item, i) => (
+                      <KeyExpressionCard key={i} item={item} />
                     ))}
                   </div>
                 </div>
-
-                {/* Transcript rows — no scroll container of its own; the
-                    lines expand naturally and only the page scrollbar
-                    applies. Highlighting never triggers scrolling. */}
-                <div>
-                  {content.dialogue.map((line, i) => {
-                    const speaker = sceneSpeakers.get(normalizeSpeaker(line.speaker));
-                    const style = speaker?.style ?? SPEAKER_STYLES[0];
-                    const label = (speaker?.en ?? line.speaker).toUpperCase();
-                    const audioRange = dialogueLineAudioRanges.get(i);
-                    const isActiveLine = highlightedLineIndex === i;
-                    // Prefer the permanent external_line_id (Phase A-0 —
-                    // see supabase/migrations/0013_add_external_ids.sql),
-                    // then the dialogue_lines row's own internal database
-                    // id, and only fall back to array index for scenes
-                    // still on the legacy scenes.dialogue jsonb (which has
-                    // no per-line identity at all). Playback/highlight
-                    // logic (dialogueLineAudioRanges, activeDialogueLineIndex)
-                    // stays index-keyed on purpose — it's positional state
-                    // scoped to one render, not a React reconciliation key.
-                    const rowKey = line.externalLineId ?? line.dialogueLineDbId ?? i;
-                    return (
-                      <div key={rowKey}
-                        ref={el => { dialogueRowRefs.current[i] = el; }}
-                        className={`dialogue-row py-4 border-b border-black/6 last:border-0 hover:bg-white/70 transition-colors rounded-lg px-3 -mx-3 ${audioRange ? "cursor-pointer" : ""} ${isActiveLine ? "bg-primary/5" : ""}`}
-                        style={{ borderLeft: `3px solid ${style.accent}` }}
-                        role={audioRange ? "button" : undefined}
-                        tabIndex={audioRange ? 0 : undefined}
-                        aria-pressed={audioRange ? isActiveLine : undefined}
-                        aria-label={audioRange ? "Play English audio" : undefined}
-                        onClick={audioRange ? () => playDialogueLine(i, dialogueLineRawRanges.get(i)!) : undefined}
-                        onKeyDown={audioRange ? e => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            playDialogueLine(i, dialogueLineRawRanges.get(i)!);
-                          }
-                        } : undefined}
-                      >
-
-                        {/* Speech-bubble speaker label — fixed-width column on desktop/tablet,
-                            stacked above the text with no reserved column on mobile (<=640px) */}
-                        <div className="speaker-column">
-                          <SpeechBubbleLabel label={label} style={style} />
-                        </div>
-
-                        {/* English + Chinese lines — fluid column, same left edge for every role */}
-                        <div className="dialogue-content">
-                          <div className="flex items-start gap-2">
-                            <p
-                              className={`dialogue-english font-medium leading-[1.65] flex-1 transition-colors ${isActiveLine ? "text-primary" : "text-foreground"}`}
-                              style={{ fontSize: "17px", WebkitTextStroke: isActiveLine ? "0.5px currentColor" : "0px currentColor" }}
-                            >
-                              {line.en}
-                            </p>
-                            {/* Purely a state indicator now — the whole row is the click target (see onClick above) */}
-                            {audioRange && (
-                              <span aria-hidden="true" className={`dialogue-audio flex-shrink-0 mt-0.5 flex items-center justify-center w-6 h-6 rounded-full transition-colors ${isActiveLine ? "bg-primary text-white" : "text-muted-foreground"}`}>
-                                <Volume2 className="w-3.5 h-3.5" />
-                              </span>
-                            )}
-                          </div>
-                          {bilingualMode && (
-                            <p className="dialogue-chinese mt-2 leading-[1.75]" style={{ fontSize: "15px", color: "#3A3B37" }}>{line.zh}</p>
-                          )}
-                        </div>
-
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
               )}
 
-            </section>
-
-            {/* ─────────────────────────────────────────────
-                STAGE 03 · Learn the Language
-                ───────────────────────────────────────────── */}
-            <section id="section-language" className="border-t border-border bg-card">
-              <div className="max-w-[960px] mx-auto px-4 md:px-6 py-12 md:py-16">
-              <div className="bg-card px-0">
-                {/* Key Expressions — from public.key_expressions (or its legacy-tips fallback) */}
-                {keyExpressionItems.length > 0 && (
-                  <div className="mb-8">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-0.5 h-4 rounded-full bg-primary" />
-                      <span className="text-xs font-black uppercase tracking-[0.14em] text-muted-foreground">Key Expressions · 重点表达</span>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {keyExpressionItems.map((item, i) => (
-                        <KeyExpressionCard key={i} item={item} />
-                      ))}
-                    </div>
+              {/* Culture & Local Tips — from public.culture_tips (or its legacy-tips fallback) */}
+              {cultureTipItems.length > 0 && (
+                <div>
+                  <p className="text-[13px] font-bold text-primary mb-4">文化与本地提示 · Culture Tips</p>
+                  <div className="space-y-3.5">
+                    {cultureTipItems.map((item, i) => (
+                      <CultureTipCard key={i} item={item} tipNumber={i + 1} />
+                    ))}
                   </div>
-                )}
-
-                {/* Culture & Local Tips — from public.culture_tips (or its legacy-tips fallback) */}
-                {cultureTipItems.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-0.5 h-4 rounded-full bg-primary" />
-                      <span className="text-xs font-black uppercase tracking-[0.14em] text-muted-foreground">Culture & Local Tips · 文化与本地提示</span>
-                    </div>
-                    <div className="space-y-3">
-                      {cultureTipItems.map((item, i) => (
-                        <CultureTipCard key={i} item={item} tipNumber={i + 1} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>{/* inner card */}
-              </div>{/* inner container */}
-            </section>
-
-            {/* ─────────────────────────────────────────────
-                LIGHT SECTION: PDF · Related · Prev/Next
-                ───────────────────────────────────────────── */}
-            <section className="border-t border-border bg-background">
-              <div className="max-w-[960px] mx-auto px-4 md:px-6 py-12">
-
-                {/* PDF download — scene.pdfUrl comes straight from Supabase scenes.pdf_url;
-                    never hardcoded and never guessed from the scene id/slug. */}
-                <div className="flex items-center gap-4 border border-border rounded-2xl bg-card px-5 py-4 mb-10 shadow-sm">
-                  <div className="w-10 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(183,242,29,0.15)" }}>
-                    <FileText size={16} className="text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-foreground leading-snug">{scene.titleEn} — PDF</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Dialogue · Expressions · Culture tips · Free</p>
-                  </div>
-                  {scene.pdfUrl ? (
-                    <a
-                      href={scene.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-xs font-black rounded-xl px-4 py-2.5 transition-opacity hover:opacity-90 flex-shrink-0"
-                      style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}
-                    >
-                      <Download size={11} />Download
-                    </a>
-                  ) : (
-                    <span className="text-xs font-bold text-muted-foreground italic flex-shrink-0">资料准备中</span>
-                  )}
                 </div>
+              )}
+            </div>
+          </section>
 
-                {/* Related Scenes */}
-                {related.length > 0 && (
-                  <div className="mb-10">
-                    <div className="flex items-center gap-2 mb-5">
-                      <div className="w-0.5 h-4 rounded-full bg-primary" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground">Related Scenes · 相关场景</span>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {related.map(r => (
-                        <Link key={r.id} to={`/scenes/${r.slug}`}
-                          className="flex items-start gap-3 border border-border rounded-xl p-3.5 bg-card text-left hover:border-primary/30 hover:shadow-sm transition-all">
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-foreground leading-snug">{r.titleEn}</p>
-                            <p className="text-xs text-muted-foreground mt-0.5">{r.titleZh}</p>
-                            <div className="flex items-center gap-1.5 mt-2">
-                              <LevelBadge level={r.level} />
-                            </div>
-                          </div>
-                          <ChevronRight size={13} className="text-muted-foreground flex-shrink-0 mt-0.5" />
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
+          {/* ─────────────────────────────────────────────
+              PDF · Related · Prev/Next
+              ───────────────────────────────────────────── */}
+          <section className="border-t border-border/70">
+            <div className="max-w-5xl mx-auto px-6 py-14">
+
+              {/* PDF download — scene.pdfUrl comes straight from Supabase scenes.pdf_url;
+                  never hardcoded and never guessed from the scene id/slug. */}
+              <div className="flex items-center gap-4 border border-border/70 rounded-3xl bg-card px-6 py-5 mb-12 shadow-[0_10px_36px_rgba(28,51,41,0.06)]">
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 bg-primary/[0.07]">
+                  <FileText size={17} className="text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-display text-[16px] font-semibold text-foreground leading-snug">{scene.titleEn} — PDF 讲义</p>
+                  <p className="text-[12px] text-muted-foreground mt-1">对话 · 重点表达 · 文化提示 · 免费下载</p>
+                </div>
+                {scene.pdfUrl ? (
+                  <a
+                    href={scene.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-[13px] font-bold rounded-full px-5 py-2.5 transition-opacity hover:opacity-90 flex-shrink-0 bg-accent text-accent-foreground"
+                  >
+                    <Download size={13} />下载
+                  </a>
+                ) : (
+                  <span className="text-[13px] font-semibold text-muted-foreground italic flex-shrink-0">资料准备中</span>
                 )}
-
-                {/* Prev / Next scene */}
-                {(prevScene || nextScene) && (
-                  <div className="grid grid-cols-2 gap-3 pt-8 border-t border-border">
-                    {prevScene ? (
-                      <Link to={`/scenes/${prevScene.slug}`} className="border border-border rounded-xl p-4 text-left bg-card hover:border-primary/30 hover:shadow-sm transition-all">
-                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-2">
-                          <ChevronLeft size={10} />Previous scene
-                        </div>
-                        <p className="text-xs font-bold text-foreground leading-snug">{prevScene.titleEn}</p>
-                        <p className="text-[11px] text-primary mt-1">{prevScene.titleZh}</p>
-                      </Link>
-                    ) : <div />}
-                    {nextScene ? (
-                      <Link to={`/scenes/${nextScene.slug}`} className="border border-border rounded-xl p-4 text-right bg-card hover:border-primary/30 hover:shadow-sm transition-all">
-                        <div className="flex items-center gap-1 justify-end text-[10px] text-muted-foreground mb-2">
-                          Next scene<ChevronRight size={10} />
-                        </div>
-                        <p className="text-xs font-bold text-foreground leading-snug">{nextScene.titleEn}</p>
-                        <p className="text-[11px] text-primary mt-1">{nextScene.titleZh}</p>
-                      </Link>
-                    ) : <div />}
-                  </div>
-                )}
-
               </div>
-            </section>
 
-          </div>
+              {/* Related Scenes */}
+              {related.length > 0 && (
+                <div className="mb-12">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-6">
+                    Related Scenes · 相关场景
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {related.map(r => (
+                      <Link key={r.id} to={`/scenes/${r.slug}`}
+                        className="flex items-start gap-3 border border-border/70 rounded-2xl p-4 bg-card text-left hover:shadow-[0_10px_30px_rgba(28,51,41,0.08)] transition-all">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-display text-[15px] font-semibold text-foreground leading-snug">{r.titleEn}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{r.titleZh}</p>
+                          <div className="flex items-center gap-1.5 mt-2.5">
+                            <LevelBadge level={r.level} />
+                          </div>
+                        </div>
+                        <ChevronRight size={14} className="text-muted-foreground flex-shrink-0 mt-0.5" />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Prev / Next scene */}
+              {(prevScene || nextScene) && (
+                <div className="grid grid-cols-2 gap-4 pt-10 border-t border-border/70">
+                  {prevScene ? (
+                    <Link to={`/scenes/${prevScene.slug}`} className="rounded-2xl p-5 text-left bg-card border border-border/70 hover:shadow-[0_10px_30px_rgba(28,51,41,0.08)] transition-all">
+                      <div className="flex items-center gap-1 text-[11px] text-muted-foreground mb-2.5">
+                        <ChevronLeft size={11} />上一场景
+                      </div>
+                      <p className="font-display text-[15px] font-semibold text-foreground leading-snug">{prevScene.titleEn}</p>
+                      <p className="text-[12px] text-primary mt-1.5">{prevScene.titleZh}</p>
+                    </Link>
+                  ) : <div />}
+                  {nextScene ? (
+                    <Link to={`/scenes/${nextScene.slug}`} className="rounded-2xl p-5 text-right bg-card border border-border/70 hover:shadow-[0_10px_30px_rgba(28,51,41,0.08)] transition-all">
+                      <div className="flex items-center gap-1 justify-end text-[11px] text-muted-foreground mb-2.5">
+                        下一场景<ChevronRight size={11} />
+                      </div>
+                      <p className="font-display text-[15px] font-semibold text-foreground leading-snug">{nextScene.titleEn}</p>
+                      <p className="text-[12px] text-primary mt-1.5">{nextScene.titleZh}</p>
+                    </Link>
+                  ) : <div />}
+                </div>
+              )}
+
+            </div>
+          </section>
+
         </>
       )}
     </div>
