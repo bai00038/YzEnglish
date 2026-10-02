@@ -1,44 +1,52 @@
 import { Link } from "react-router";
-import yzEnglishLogo from "@/imports/logo-4.png";
-import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { Music2, BookMarked, MessageCircle } from "lucide-react";
 
 const SOCIAL_ICONS = [
-  { label: "Douyin", Icon: Music2 },
-  { label: "Xiaohongshu", Icon: BookMarked },
-  { label: "WeChat", Icon: MessageCircle },
+  { label: "抖音", Icon: Music2 },
+  { label: "小红书", Icon: BookMarked },
+  { label: "微信公众号", Icon: MessageCircle },
 ];
 
 export function Footer() {
   return (
-    <footer style={{ backgroundColor: "#0F2E24" }} className="px-4 pt-10 pb-8">
-      <div className="max-w-lg mx-auto md:max-w-5xl">
-        {/* Logo */}
-        <Link to="/" className="mb-5 block">
-          <ImageWithFallback
-            src={yzEnglishLogo}
-            alt="Yz English — Real English for Real Life"
-            className="object-contain"
-            style={{ height: "40px", width: "auto" }}
-          />
-        </Link>
-        <div className="flex flex-wrap items-center justify-between gap-y-4 mb-6">
-          <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
-            {([["Home", "/"], ["Explore", "/explore"], ["Resources", "/resources"], ["About", "/about"], ["Contact", "/contact"]] as [string, string][]).map(([l, p]) => (
-              <Link key={l} to={p} className="hover:text-white transition-colors">{l}</Link>
-            ))}
+    <footer className="bg-primary px-5 text-white/75 md:px-8">
+      <div className="mx-auto max-w-[1180px]">
+        <div className="grid gap-9 py-12 md:grid-cols-[1.4fr_1fr_1fr] md:gap-10 md:py-14">
+          <div>
+            <Link to="/" className="display-serif text-[27px] font-semibold leading-none text-white transition-colors hover:text-accent">
+              YZ English
+            </Link>
+            <p className="display-serif mt-2 text-base italic text-accent">real scenes for real life</p>
+            <p className="mt-2 text-sm text-white/60">为海外生活而生的真场景英语</p>
           </div>
-          <div className="flex items-center gap-3">
+
+          <div>
+            <p className="mb-4 text-xs font-medium tracking-[0.28em] text-white/50">导航</p>
+            <nav className="grid gap-2.5 text-[15px]" aria-label="页脚导航">
+              {([["首页", "/"], ["场景库", "/explore"], ["学习资料", "/resources"], ["关于", "/about"], ["联系我们", "/contact"]] as [string, string][]).map(([label, path]) => (
+                <Link key={label} to={path} className="w-fit text-white/85 transition-colors hover:text-accent">{label}</Link>
+              ))}
+            </nav>
+          </div>
+
+          <div>
+            <p className="mb-4 text-xs font-medium tracking-[0.28em] text-white/50">关注我们</p>
+            <div className="grid gap-2.5 text-[15px]">
             {SOCIAL_ICONS.map(({ label, Icon }) => (
               <Link key={label} to="/contact" aria-label={label}
-                className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:text-white"
-                style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)" }}>
-                <Icon size={15} />
+                className="flex w-fit items-center gap-2.5 text-white/85 transition-colors hover:text-accent">
+                <Icon size={16} className="opacity-85" />
+                <span>{label}</span>
               </Link>
             ))}
+            </div>
           </div>
         </div>
-        <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.18)" }}>© 2026 Yz English. All rights reserved.</p>
+
+        <div className="flex flex-wrap justify-between gap-3 border-t border-white/15 py-5 text-[13px] text-white/45 md:pb-7">
+          <span>© 2026 YZ English. All rights reserved.</span>
+          <span className="display-serif italic">real scenes for real life</span>
+        </div>
       </div>
     </footer>
   );
