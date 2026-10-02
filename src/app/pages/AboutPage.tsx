@@ -48,7 +48,7 @@ export function AboutPage() {
 
       {/* ══ HERO ══════════════════════════════════════════════════════════════ */}
       <section className="bg-background border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 md:px-8 pt-12 pb-14 md:pt-16 md:pb-20">
+        <div className="max-w-[1120px] mx-auto px-4 md:px-8 pt-12 pb-14 md:pt-16 md:pb-20">
           <span className="inline-flex items-center text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-6"
             style={{ backgroundColor: "#C6F24E", color: "#1A1A1A" }}>
             About Yz English · 关于我们
@@ -90,7 +90,7 @@ export function AboutPage() {
 
       {/* ══ WHY ══════════════════════════════════════════════════════════════ */}
       <section className="bg-card border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 md:px-8 py-14 md:py-18">
+        <div className="max-w-[1120px] mx-auto px-4 md:px-8 py-14 md:py-18">
           <div className="md:grid md:grid-cols-2 md:gap-16 md:items-start">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground mb-4">Why we built it</p>
@@ -119,7 +119,7 @@ export function AboutPage() {
 
       {/* ══ METHOD ════════════════════════════════════════════════════════════ */}
       <section className="bg-background border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 md:px-8 py-14 md:py-18">
+        <div className="max-w-[1120px] mx-auto px-4 md:px-8 py-14 md:py-18">
           <p className="text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground mb-4">The learning method</p>
           <h2 className="text-[26px] md:text-[32px] font-black leading-tight text-foreground mb-1">
             Watch. Understand. Practise.
@@ -147,7 +147,7 @@ export function AboutPage() {
 
       {/* ══ WHO ═══════════════════════════════════════════════════════════════ */}
       <section className="border-b border-border" style={{ backgroundColor: "#1C3329" }}>
-        <div className="max-w-5xl mx-auto px-4 md:px-8 py-14 md:py-18">
+        <div className="max-w-[1120px] mx-auto px-4 md:px-8 py-14 md:py-18">
           <p className="text-[10px] font-black uppercase tracking-[0.14em] mb-4" style={{ color: "rgba(183,242,29,0.6)" }}>Who it's for</p>
           <h2 className="text-[26px] md:text-[32px] font-black leading-tight text-white mb-1">
             Made for real-life English learners
@@ -169,7 +169,7 @@ export function AboutPage() {
 
       {/* ══ DIFFERENT ═════════════════════════════════════════════════════════ */}
       <section className="bg-card border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 md:px-8 py-14 md:py-18">
+        <div className="max-w-[1120px] mx-auto px-4 md:px-8 py-14 md:py-18">
           <div className="md:grid md:grid-cols-[1fr_1fr] md:gap-16 md:items-start">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground mb-4">What makes it different</p>
@@ -203,7 +203,7 @@ export function AboutPage() {
 
       {/* ══ CONTENT APPROACH ═══════════════════════════════════════════════════ */}
       <section className="bg-background border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 md:px-8 py-14 md:py-18">
+        <div className="max-w-[1120px] mx-auto px-4 md:px-8 py-14 md:py-18">
           <div className="md:grid md:grid-cols-[1.1fr_1fr] md:gap-14">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground mb-4">Content approach</p>
@@ -245,7 +245,7 @@ export function AboutPage() {
 
       {/* ══ VISION ════════════════════════════════════════════════════════════ */}
       <section className="border-b border-border" style={{ backgroundColor: "#ffffff" }}>
-        <div className="max-w-5xl mx-auto px-4 md:px-8 py-14 md:py-18">
+        <div className="max-w-[1120px] mx-auto px-4 md:px-8 py-14 md:py-18">
           <div className="max-w-2xl">
             <p className="text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground mb-4">Brand vision</p>
             <h2 className="text-[26px] md:text-[32px] font-black leading-tight text-foreground mb-1">
@@ -267,7 +267,7 @@ export function AboutPage() {
 
       {/* ══ FINAL CTA ═════════════════════════════════════════════════════════ */}
       <section className="border-t border-border" style={{ backgroundColor: "#f7f6f3" }}>
-        <div className="max-w-5xl mx-auto px-4 md:px-8 py-16 md:py-20 text-center">
+        <div className="max-w-[1120px] mx-auto px-4 md:px-8 py-16 md:py-20 text-center">
           <SmileCurve width={64} opacity={0.5} className="mx-auto mb-6" />
           <h2 className="text-[28px] md:text-[38px] font-black leading-tight text-foreground mb-2">
             Prepare before it happens.

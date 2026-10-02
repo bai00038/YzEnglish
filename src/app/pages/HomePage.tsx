@@ -152,14 +152,14 @@ export function HomePage() {
           No stats, no collage, no dashboard chrome.
           ════════════════════════════════════════ */}
       <section className="bg-background">
-        <div className="max-w-5xl mx-auto px-6 pt-20 pb-16 md:pt-28 md:pb-24">
+        <div className="max-w-[1120px] mx-auto px-6 md:px-10 pt-20 pb-16 md:pt-28 md:pb-24 lg:pt-36 lg:pb-32">
           <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-muted-foreground mb-6">
             YZ English · Yz影子英语
           </p>
-          <h1 className="font-display font-semibold text-foreground leading-[1.04] tracking-tight text-[44px] md:text-[76px]">
+          <h1 className="font-display font-semibold text-foreground leading-[1.04] tracking-tight text-[44px] md:text-[60px] lg:text-[84px]">
             real scenes<br />for real life.
           </h1>
-          <p className="font-display text-[19px] md:text-[24px] text-foreground/80 mt-7 leading-relaxed">
+          <p className="font-display text-[19px] md:text-[22px] lg:text-[26px] text-foreground/80 mt-7 leading-relaxed">
             为海外生活而生的真场景英语。
           </p>
           <p className="text-[14px] md:text-[15px] text-muted-foreground leading-relaxed mt-4 max-w-md">
@@ -180,7 +180,7 @@ export function HomePage() {
           FEATURED SCENE
           ════════════════════════════════════════ */}
       <section className="bg-background pb-16 md:pb-24">
-        <div className="max-w-5xl mx-auto px-6">
+        <div className="max-w-[1120px] mx-auto px-6">
           {loading ? (
             <LoadingState label="Loading featured scene…" />
           ) : error ? (
@@ -197,12 +197,12 @@ export function HomePage() {
           SCENE LIBRARY — the big cards
           ════════════════════════════════════════ */}
       <section className="bg-background pb-20 md:pb-28">
-        <div className="max-w-5xl mx-auto px-6">
+        <div className="max-w-[1120px] mx-auto px-6">
           <div className="mb-10 md:mb-14">
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-4">
               Scene Library · 场景库
             </p>
-            <h2 className="font-display font-semibold text-[30px] md:text-[44px] leading-tight tracking-tight text-foreground">
+            <h2 className="font-display font-semibold text-[30px] md:text-[40px] lg:text-[52px] leading-tight tracking-tight text-foreground">
               从生活里选<br />要学的英语。
             </h2>
           </div>
@@ -211,7 +211,7 @@ export function HomePage() {
           ) : error ? (
             <ErrorState message={error} />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-7">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7">
               {LIBRARY.map(lib => (
                 <LibraryCard
                   key={lib.name}

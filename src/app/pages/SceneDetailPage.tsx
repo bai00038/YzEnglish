@@ -560,7 +560,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-24">
+      <div className="max-w-[1120px] mx-auto px-6 py-24">
         <LoadingState label="Loading scene…" />
       </div>
     );
@@ -568,7 +568,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
   if (error) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-24">
+      <div className="max-w-[1120px] mx-auto px-6 py-24">
         <ErrorState message={error} />
       </div>
     );
@@ -584,7 +584,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // not-yet-public scenes.
   if (!scene) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-24 text-center">
+      <div className="max-w-[1120px] mx-auto px-6 py-24 text-center">
         <p className="font-display text-[22px] font-semibold text-foreground">This scene is being prepared</p>
         <p className="text-sm text-muted-foreground mt-2">该场景正在准备中，敬请期待。</p>
         <Link to="/explore" className="text-sm font-bold text-primary inline-flex items-center gap-1 mt-6 hover:opacity-70 transition-opacity">
@@ -599,7 +599,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
       {/* Breadcrumb — quiet */}
       <div className="border-b border-border/70">
-        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center gap-1.5 text-[12px] text-muted-foreground flex-wrap">
+        <div className="max-w-[1120px] mx-auto px-6 py-3 flex items-center gap-1.5 text-[12px] text-muted-foreground flex-wrap">
           <Link to="/" className="hover:text-primary transition-colors">首页</Link>
           <ChevronRight size={10} />
           <Link to="/explore" className="hover:text-primary transition-colors">{scene.category}</Link>
@@ -610,14 +610,14 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
       {/* ─── Lesson identity — editorial serif ─── */}
       <div className="border-b border-border/70">
-        <div className="max-w-5xl mx-auto px-6 pt-10 pb-8 md:pt-14 md:pb-10">
+        <div className="max-w-[1120px] mx-auto px-6 md:px-10 pt-10 pb-8 md:pt-14 md:pb-10 lg:pt-20">
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-4">
             {scene.category}
           </p>
-          <h1 className="font-display font-semibold tracking-tight text-foreground leading-[1.08] text-[34px] md:text-[52px]">
+          <h1 className="font-display font-semibold tracking-tight text-foreground leading-[1.08] text-[34px] md:text-[52px] lg:text-[64px]">
             {scene.titleEn}
           </h1>
-          <p className="font-display text-[17px] md:text-[20px] text-foreground/70 mt-3">{scene.titleZh}</p>
+          <p className="font-display text-[17px] md:text-[20px] lg:text-[22px] text-foreground/70 mt-3">{scene.titleZh}</p>
           <div className="flex flex-wrap items-center gap-2.5 mt-5">
             <LevelBadge level={scene.level} />
             <DurationLabel duration={scene.duration} />
@@ -626,7 +626,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       </div>
 
       {!content ? (
-        <section className="max-w-5xl mx-auto px-6 pt-12 pb-24">
+        <section className="max-w-[1120px] mx-auto px-6 pt-12 pb-24">
           <div className="rounded-3xl border border-dashed border-border bg-card px-6 py-14 text-center">
             <p className="font-display text-[20px] font-semibold text-foreground">Full lesson content for this scene is coming soon.</p>
             <p className="text-sm text-muted-foreground mt-2">该场景的完整学习内容即将上线。</p>
@@ -641,7 +641,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
           {/* ─────────────────────────────────────────────
               Video + playback speed + study tabs
               ───────────────────────────────────────────── */}
-          <section id="section-watch" className="max-w-5xl mx-auto px-6 pt-8 md:pt-10 pb-16">
+          <section id="section-watch" className="max-w-[1120px] mx-auto px-6 md:px-10 pt-8 md:pt-10 lg:pt-14 pb-16">
 
             {/* ── Scene video — 16:9 frame ── */}
             <div className="w-full rounded-3xl overflow-hidden bg-black shadow-[0_24px_60px_rgba(28,51,41,0.18)]" style={{ aspectRatio: "16 / 9" }}>
@@ -773,6 +773,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               )}
             </div>
 
+            {/* ── Study column: playback + tabs + transcript stay in a
+                readable 720px column on desktop; the video above goes wide. */}
+            <div className="max-w-[720px] mx-auto">
             {/* ── Playback speed — generous capsule ── */}
             <div className="flex flex-wrap items-center gap-4 mt-6">
               <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">播放速度</span>
@@ -948,6 +951,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               </div>
             </div>
             )}
+            </div>
 
           </section>
 
@@ -955,12 +959,12 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               STAGE 03 · Learn the Language — 知识点
               ───────────────────────────────────────────── */}
           <section id="section-language" className="border-t border-border/70">
-            <div className="max-w-5xl mx-auto px-6 py-14 md:py-20">
+            <div className="max-w-[720px] mx-auto px-6 py-14 md:py-20">
               <div className="mb-10">
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-4">
                   Language · 知识点
                 </p>
-                <h2 className="font-display font-semibold text-[26px] md:text-[36px] tracking-tight text-foreground leading-tight">
+                <h2 className="font-display font-semibold text-[26px] md:text-[36px] lg:text-[40px] tracking-tight text-foreground leading-tight">
                   把这几句<br />带进真实生活。
                 </h2>
               </div>
@@ -995,7 +999,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               PDF · Related · Prev/Next
               ───────────────────────────────────────────── */}
           <section className="border-t border-border/70">
-            <div className="max-w-5xl mx-auto px-6 py-14">
+            <div className="max-w-[1120px] mx-auto px-6 md:px-10 py-14">
 
               {/* PDF download — scene.pdfUrl comes straight from Supabase scenes.pdf_url;
                   never hardcoded and never guessed from the scene id/slug. */}

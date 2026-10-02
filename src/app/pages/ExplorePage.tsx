@@ -27,7 +27,7 @@ export function ExplorePage({
   return (
     <div>
       {/* Header + search */}
-      <div className="bg-background max-w-lg mx-auto md:max-w-4xl px-4 pt-5 pb-4">
+      <div className="bg-background max-w-lg mx-auto md:max-w-[1120px] px-4 pt-5 pb-4">
         <h1 className="text-xl font-black text-foreground mb-0.5">Explore Real-Life Scenes</h1>
         <p className="text-xs text-muted-foreground mb-4">浏览真实生活场景 · {scenesLoading ? "…" : scenes.length} scenes available</p>
         <div className="flex items-center gap-2.5 border border-border rounded-xl px-3.5 py-2.5 bg-card shadow-sm focus-within:border-primary/50 transition-colors">
@@ -43,7 +43,7 @@ export function ExplorePage({
 
       {/* Filters — light editorial strip */}
       <div style={{ backgroundColor: "#EDF3EE" }} className="border-b border-black/8">
-        <div className="max-w-lg mx-auto md:max-w-4xl px-4 pt-5 pb-4 space-y-4">
+        <div className="max-w-lg mx-auto md:max-w-[1120px] px-4 pt-5 pb-4 space-y-4">
 
           {/* Category */}
           <div>
@@ -81,7 +81,7 @@ export function ExplorePage({
       </div>
 
       {/* Results count + clear */}
-      <div className="bg-background max-w-lg mx-auto md:max-w-4xl px-4">
+      <div className="bg-background max-w-lg mx-auto md:max-w-[1120px] px-4">
         <div className="py-3 flex items-center gap-3">
           <p className="text-xs font-semibold text-foreground">{filtered.length} scene{filtered.length !== 1 ? "s" : ""} found</p>
           {(activeCategory !== "All" || activeDiff !== "All" || searchQuery) && (

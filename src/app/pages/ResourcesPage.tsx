@@ -140,7 +140,7 @@ export function ResourcesPage() {
   return (
     <div>
       {/* Header */}
-      <div className="bg-background max-w-lg mx-auto md:max-w-4xl px-4 pt-5 pb-4">
+      <div className="bg-background max-w-lg mx-auto md:max-w-[1120px] px-4 pt-5 pb-4">
         <h1 className="text-xl font-black text-foreground mb-0.5">PDF Resources</h1>
         <p className="text-sm text-muted-foreground mb-1">学习资料下载 · Curated PDF Collections by Topic</p>
         <p className="text-xs text-muted-foreground leading-relaxed mb-4">Download curated collections to study offline. Free resources need no login.</p>
@@ -155,7 +155,7 @@ export function ResourcesPage() {
 
       {/* Filters — light editorial strip, matches Explore page */}
       <div style={{ backgroundColor: "#EDF3EE" }} className="border-b border-black/8">
-        <div className="max-w-lg mx-auto md:max-w-4xl px-4 pt-5 pb-4 space-y-4">
+        <div className="max-w-lg mx-auto md:max-w-[1120px] px-4 pt-5 pb-4 space-y-4">
 
           {/* Browse by topic */}
           <div>
@@ -190,7 +190,7 @@ export function ResourcesPage() {
       </div>
 
       {/* Results count + clear */}
-      <div className="bg-background max-w-lg mx-auto md:max-w-4xl px-4">
+      <div className="bg-background max-w-lg mx-auto md:max-w-[1120px] px-4">
         <div className="py-3 flex items-center gap-3">
           <p className="text-xs font-semibold text-foreground">{loading ? "…" : filtered.length} collection{filtered.length !== 1 ? "s" : ""} found</p>
           {hasActiveFilters && (

@@ -41,7 +41,7 @@ export function ContactPage() {
     <div>
       {/* ══ HERO ══════════════════════════════════════════════════════════════ */}
       <section className="bg-background border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 md:px-8 pt-12 pb-14 md:pt-16 md:pb-20">
+        <div className="max-w-[1120px] mx-auto px-4 md:px-8 pt-12 pb-14 md:pt-16 md:pb-20">
           <span className="inline-flex items-center text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-6"
             style={{ backgroundColor: "#C6F24E", color: "#1A1A1A" }}>
             Contact · 联系我们
@@ -68,7 +68,7 @@ export function ContactPage() {
 
       {/* ══ QR CODES ══════════════════════════════════════════════════════════ */}
       <section className="bg-card border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 md:px-8 py-14 md:py-18">
+        <div className="max-w-[1120px] mx-auto px-4 md:px-8 py-14 md:py-18">
           <p className="text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground mb-4">Follow &amp; reach us</p>
           <h2 className="text-[26px] md:text-[32px] font-black leading-tight text-foreground mb-1">
             Scan a code to connect
@@ -102,7 +102,7 @@ export function ContactPage() {
 
       {/* ══ CLOSING ═══════════════════════════════════════════════════════════ */}
       <section className="border-t border-border" style={{ backgroundColor: "#f7f6f3" }}>
-        <div className="max-w-5xl mx-auto px-4 md:px-8 py-16 md:py-20 text-center">
+        <div className="max-w-[1120px] mx-auto px-4 md:px-8 py-16 md:py-20 text-center">
           <SmileCurve width={64} opacity={0.5} className="mx-auto mb-6" />
           <h2 className="text-[28px] md:text-[38px] font-black leading-tight text-foreground mb-2">
             We'd love to hear from you.

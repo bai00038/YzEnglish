@@ -13,17 +13,17 @@ const LINKS: [string, string][] = [
 export function DesktopNav() {
   const { pathname } = useLocation();
   return (
-    <nav className="hidden min-[641px]:flex fixed top-0 left-0 right-0 z-50 h-16 items-center bg-background/95 backdrop-blur-sm border-b border-border">
-      <div className="max-w-5xl w-full mx-auto px-6 flex items-center gap-10">
+    <nav className="hidden min-[641px]:flex fixed top-0 left-0 right-0 z-50 h-16 lg:h-20 items-center bg-background/95 backdrop-blur-sm border-b border-border">
+      <div className="max-w-[1120px] w-full mx-auto px-6 md:px-10 flex items-center gap-10">
         <Link to="/" className="flex-shrink-0 leading-none">
-          <span className="font-display font-semibold text-[19px] tracking-tight text-foreground">
+          <span className="font-display font-semibold text-[19px] lg:text-[22px] tracking-tight text-foreground">
             YZ English
           </span>
           <span className="block text-[9px] font-semibold tracking-[0.22em] uppercase text-muted-foreground mt-0.5">
             real scenes for real life
           </span>
         </Link>
-        <div className="ml-auto flex items-center gap-8">
+        <div className="ml-auto flex items-center gap-8 lg:gap-10">
           {LINKS.map(([path, label]) => {
             const active = isNavActive(pathname, path);
             return (

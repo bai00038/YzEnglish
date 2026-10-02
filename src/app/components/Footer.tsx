@@ -4,7 +4,7 @@ import { Link } from "react-router";
 export function Footer() {
   return (
     <footer className="bg-primary px-6 pt-14 pb-10">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-[1120px] mx-auto">
         <Link to="/" className="inline-block leading-none">
           <span className="font-display font-semibold text-[22px] tracking-tight text-[#F7F4EE]">
             YZ English

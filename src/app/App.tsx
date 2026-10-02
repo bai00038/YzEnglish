@@ -61,7 +61,7 @@ export default function App() {
     <div className="min-h-screen bg-background text-foreground">
       <ScrollToTop />
       <DesktopNav />
-      <main className="mobile-nav-page-padding min-[641px]:pt-16">
+      <main className="mobile-nav-page-padding min-[641px]:pt-16 lg:pt-20">
         <Routes>
           <Route path="/" element={<HomePage onExploreEnter={resetExploreFilters} />} />
           <Route
