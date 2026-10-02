@@ -43,13 +43,13 @@ export function ContactPage() {
       <section className="bg-background border-b border-border">
         <div className="max-w-5xl mx-auto px-4 md:px-8 pt-12 pb-14 md:pt-16 md:pb-20">
           <span className="inline-flex items-center text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-6"
-            style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}>
+            style={{ backgroundColor: "#C8F169", color: "#12241C" }}>
             Contact · 联系我们
           </span>
           <h1 className="text-[36px] md:text-[52px] font-black leading-[1.06] text-foreground mb-3">
             Let's stay connected
           </h1>
-          <p className="text-lg md:text-xl font-semibold mb-6" style={{ color: "#184C3A" }}>扫码关注，保持联系</p>
+          <p className="text-lg md:text-xl font-semibold mb-6" style={{ color: "#0F3527" }}>扫码关注，保持联系</p>
           <p
             className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-xl mb-3"
             style={oneLineWidth ? { maxWidth: oneLineWidth } : undefined}
@@ -59,7 +59,7 @@ export function ContactPage() {
           <p
             ref={zhRef}
             className={`text-sm text-muted-foreground leading-relaxed ${oneLineWidth ? "w-fit whitespace-nowrap" : "max-w-xl"}`}
-            style={{ color: "rgba(24,76,58,0.7)" }}
+            style={{ color: "rgba(15,53,39,0.7)" }}
           >
             关注 Yz English 的抖音与小红书，第一时间获取新场景内容；也可以扫描微信二维码直接联系我们。
           </p>
@@ -73,7 +73,7 @@ export function ContactPage() {
           <h2 className="text-[26px] md:text-[32px] font-black leading-tight text-foreground mb-1">
             Scan a code to connect
           </h2>
-          <p className="text-base font-semibold mb-10" style={{ color: "#184C3A" }}>扫描下方二维码</p>
+          <p className="text-base font-semibold mb-10" style={{ color: "#0F3527" }}>扫描下方二维码</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {CHANNELS.map(({ key, Icon, color, en, zh, handle, qrCode }) => (
@@ -83,7 +83,7 @@ export function ContactPage() {
                 </div>
                 <div
                   className="w-40 h-40 rounded-xl overflow-hidden flex items-center justify-center mb-4"
-                  style={{ border: "1px solid rgba(24,76,58,0.15)", backgroundColor: "#FFFFFF" }}
+                  style={{ border: "1px solid rgba(15,53,39,0.15)", backgroundColor: "#FFFFFF" }}
                 >
                   <ImageWithFallback
                     src={qrCode}
@@ -92,7 +92,7 @@ export function ContactPage() {
                   />
                 </div>
                 <p className="text-[15px] font-black text-foreground leading-snug">{en}</p>
-                <p className="text-sm font-semibold mt-0.5 mb-2" style={{ color: "#184C3A" }}>{zh}</p>
+                <p className="text-sm font-semibold mt-0.5 mb-2" style={{ color: "#0F3527" }}>{zh}</p>
                 <p className="text-xs text-muted-foreground">{handle}</p>
               </div>
             ))}
@@ -107,7 +107,7 @@ export function ContactPage() {
           <h2 className="text-[28px] md:text-[38px] font-black leading-tight text-foreground mb-2">
             We'd love to hear from you.
           </h2>
-          <p className="text-base font-semibold" style={{ color: "#184C3A" }}>
+          <p className="text-base font-semibold" style={{ color: "#0F3527" }}>
             期待与你交流。
           </p>
         </div>

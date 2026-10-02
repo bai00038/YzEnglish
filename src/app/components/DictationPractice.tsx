@@ -191,7 +191,7 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
           type="button"
           onClick={handleRestart}
           className="mt-7 text-sm font-bold rounded-full px-5 py-2.5 transition-opacity hover:opacity-90"
-          style={{ backgroundColor: "#184C3A", color: "#F7F6F2" }}
+          style={{ backgroundColor: "#0F3527", color: "#F4EFE6" }}
         >
           重新练习 · Restart
         </button>
@@ -213,7 +213,7 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
         type="button"
         onClick={() => onPlayLine(currentLine.index)}
         className="flex items-center gap-2 text-sm font-bold rounded-full px-4 py-2.5 mb-5 transition-opacity hover:opacity-90"
-        style={{ backgroundColor: "#184C3A", color: "#F7F6F2" }}
+        style={{ backgroundColor: "#0F3527", color: "#F4EFE6" }}
       >
         <Play size={13} className="fill-current" />
         播放本句 · Play sentence
@@ -246,7 +246,7 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
             onClick={handleCheck}
             disabled={draft.trim().length === 0}
             className="text-sm font-bold rounded-full px-4 py-2 transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}
+            style={{ backgroundColor: "#C8F169", color: "#12241C" }}
           >
             检查 · Check
           </button>
@@ -255,7 +255,7 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
             type="button"
             onClick={() => onPlayLine(currentLine.index)}
             className="text-sm font-bold rounded-full px-4 py-2 border transition-colors hover:bg-white"
-            style={{ borderColor: "rgba(24,76,58,0.3)", color: "#184C3A" }}
+            style={{ borderColor: "rgba(15,53,39,0.3)", color: "#0F3527" }}
           >
             再听一次 · Listen again
           </button>

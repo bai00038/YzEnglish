@@ -20,10 +20,10 @@ function KeyExpressionCard({ item }: { item: KeyExpressionItem }) {
   return (
     <div
       className="rounded-xl border px-5 py-4 min-h-[88px] flex flex-col justify-center"
-      style={{ borderColor: "rgba(24,76,58,0.13)", backgroundColor: "rgba(24,76,58,0.025)" }}
+      style={{ borderColor: "rgba(15,53,39,0.13)", backgroundColor: "rgba(15,53,39,0.025)" }}
     >
       <p className="text-base font-bold text-primary leading-snug">{item.expressionEn}</p>
-      <p className="text-sm text-[#3A3B37] mt-1 leading-snug">{item.expressionZh}</p>
+      <p className="text-sm text-[#3A4A42] mt-1 leading-snug">{item.expressionZh}</p>
     </div>
   );
 }
@@ -37,8 +37,8 @@ function KeyExpressionCard({ item }: { item: KeyExpressionItem }) {
 // cultureTipItems in SceneDetailPage below).
 function CultureTipCard({ item, tipNumber }: { item: CultureTipItem; tipNumber: number }) {
   return (
-    <div className="rounded-xl overflow-hidden border" style={{ borderColor: "rgba(24,76,58,0.13)", backgroundColor: "rgba(24,76,58,0.025)" }}>
-      <div className="flex items-center gap-2 px-4 py-3 border-b" style={{ borderColor: "rgba(24,76,58,0.09)" }}>
+    <div className="rounded-xl overflow-hidden border" style={{ borderColor: "rgba(15,53,39,0.13)", backgroundColor: "rgba(15,53,39,0.025)" }}>
+      <div className="flex items-center gap-2 px-4 py-3 border-b" style={{ borderColor: "rgba(15,53,39,0.09)" }}>
         <Info size={13} className="text-primary flex-shrink-0" />
         <p className="text-sm font-bold text-primary leading-snug">Tip {tipNumber}</p>
       </div>
@@ -572,11 +572,12 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
       {/* ─── Lesson identity block (sits between breadcrumb and chapter nav) ─── */}
       <div className="bg-background border-b border-border">
-        <div className="max-w-[1000px] mx-auto px-4 md:px-6 pt-6 pb-5">
-          <h1 className="text-[32px] md:text-[38px] font-black leading-tight text-foreground mb-0.5">
+        <div className="max-w-[1000px] mx-auto px-4 md:px-6 pt-8 md:pt-12 pb-7 md:pb-10">
+          <p className="editorial-kicker mb-3">Scene lesson · 场景课程</p>
+          <h1 className="display-serif text-[40px] md:text-[58px] font-semibold leading-[1.02] text-foreground mb-2 max-w-[820px]">
             {scene.titleEn}
           </h1>
-          <p className="font-normal text-[#3A3B37] mb-3 text-[16px] md:text-[18px]">{scene.titleZh}</p>
+          <p className="font-normal text-[#3A4A42] mb-3 text-[16px] md:text-[18px]">{scene.titleZh}</p>
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[13px] md:text-[14px] font-bold text-primary bg-primary/10 px-2.5 py-0.5 rounded-md">{scene.category}</span>
             <LevelBadge level={scene.level} />
@@ -589,7 +590,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
         <div className="pb-24">
           <section className="max-w-[1000px] mx-auto px-4 md:px-6 pt-8 pb-20">
             <div className="flex items-start gap-4 mb-6">
-              <span className="text-[44px] md:text-[52px] font-black leading-none select-none flex-shrink-0 mt-0.5 tabular-nums" style={{ color: "rgba(24,76,58,0.1)", WebkitTextStroke: "1px rgba(24,76,58,0.5)", paintOrder: "stroke fill" }}>01</span>
+              <span className="text-[44px] md:text-[52px] font-black leading-none select-none flex-shrink-0 mt-0.5 tabular-nums" style={{ color: "rgba(15,53,39,0.1)", WebkitTextStroke: "1px rgba(15,53,39,0.5)", paintOrder: "stroke fill" }}>01</span>
               <div className="pt-0.5">
                 <p className="text-[24px] md:text-[28px] font-black leading-tight text-foreground">Watch & Understand</p>
                 <p className="text-[15px] md:text-[16px] text-muted-foreground mt-1 leading-snug">Watch the scene, then read the setup and your goal.</p>
@@ -621,7 +622,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   image) or, before scene.video_url is synced from the Google
                   Sheet, as a poster-style background — never shown as a bare
                   standalone image. ── */}
-              <div className="w-full rounded-2xl overflow-hidden bg-black" style={{ aspectRatio: "16 / 9" }}>
+              <div className="w-full rounded-[24px] overflow-hidden bg-black border border-primary/10 shadow-[0_20px_50px_rgba(15,53,39,0.14)]" style={{ aspectRatio: "16 / 9" }}>
                 {scene.video_url ? (
                   <div className="relative w-full h-full">
                     <video
@@ -768,7 +769,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         onClick={() => setPlaybackRate(rate)}
                         aria-pressed={isActive}
                         className="text-xs font-bold px-2.5 py-1 rounded-full transition-colors"
-                        style={isActive ? { backgroundColor: "#184C3A", color: "#F7F6F2" } : { color: "var(--muted-foreground)" }}
+                        style={isActive ? { backgroundColor: "#0F3527", color: "#F4EFE6" } : { color: "var(--muted-foreground)" }}
                       >
                         {rate}×
                       </button>
@@ -788,7 +789,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       onClick={() => switchStudyTab(tab.key)}
                       className="flex items-center gap-1.5 md:gap-2 pb-3 border-b-2 transition-colors cursor-pointer bg-transparent"
                       style={isActive
-                        ? { borderBottomColor: "#B7F21D", color: "#184C3A" }
+                        ? { borderBottomColor: "#C8F169", color: "#0F3527" }
                         : { borderBottomColor: "transparent", color: "var(--muted-foreground)" }
                       }
                     >
@@ -817,12 +818,12 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   <div className="flex items-center border border-border rounded-full p-0.5 bg-white shadow-sm">
                     <button onClick={() => setBilingualMode(false)}
                       className={`text-[11px] font-bold px-3 py-1 rounded-full transition-all duration-200 ${!bilingualMode ? "shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                      style={!bilingualMode ? { backgroundColor: "#184C3A", color: "#F7F6F2" } : {}}>
+                      style={!bilingualMode ? { backgroundColor: "#0F3527", color: "#F4EFE6" } : {}}>
                       English
                     </button>
                     <button onClick={() => setBilingualMode(true)}
                       className={`text-[11px] font-bold px-3 py-1 rounded-full transition-all duration-200 ${bilingualMode ? "shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                      style={bilingualMode ? { backgroundColor: "#184C3A", color: "#F7F6F2" } : {}}>
+                      style={bilingualMode ? { backgroundColor: "#0F3527", color: "#F4EFE6" } : {}}>
                       双语
                     </button>
                   </div>
@@ -906,7 +907,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                             )}
                           </div>
                           {bilingualMode && (
-                            <p className="dialogue-chinese mt-2 leading-[1.75]" style={{ fontSize: "15px", color: "#3A3B37" }}>{line.zh}</p>
+                            <p className="dialogue-chinese mt-2 leading-[1.75]" style={{ fontSize: "15px", color: "#3A4A42" }}>{line.zh}</p>
                           )}
                         </div>
 
@@ -922,9 +923,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             {/* ─────────────────────────────────────────────
                 STAGE 03 · Learn the Language
                 ───────────────────────────────────────────── */}
-            <section id="section-language" className="border-t border-border bg-card">
+            <section id="section-language" className="border-t border-border bg-secondary/55">
               <div className="max-w-[960px] mx-auto px-4 md:px-6 py-12 md:py-16">
-              <div className="bg-card px-0">
+              <div className="paper-panel rounded-[24px] p-5 md:p-8">
                 {/* Key Expressions — from public.key_expressions (or its legacy-tips fallback) */}
                 {keyExpressionItems.length > 0 && (
                   <div className="mb-8">
@@ -966,8 +967,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                 {/* PDF download — scene.pdfUrl comes straight from Supabase scenes.pdf_url;
                     never hardcoded and never guessed from the scene id/slug. */}
-                <div className="flex items-center gap-4 border border-border rounded-2xl bg-card px-5 py-4 mb-10 shadow-sm">
-                  <div className="w-10 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(183,242,29,0.15)" }}>
+                <div className="paper-panel flex items-center gap-4 rounded-[20px] px-5 py-4 mb-10">
+                  <div className="w-10 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(200,241,105,0.15)" }}>
                     <FileText size={16} className="text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -980,7 +981,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-1.5 text-xs font-black rounded-xl px-4 py-2.5 transition-opacity hover:opacity-90 flex-shrink-0"
-                      style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}
+                      style={{ backgroundColor: "#C8F169", color: "#12241C" }}
                     >
                       <Download size={11} />Download
                     </a>

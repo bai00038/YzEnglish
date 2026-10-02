@@ -6,35 +6,35 @@
      drives the bottom padding App.tsx adds so page content/footer can
      scroll fully clear of it. Keep both reads of this in sync. */
   --mobile-nav-height: 76px;
-  --background: #F7F6F2;
-  --foreground: #1E1F1C;
-  --card: #FFFFFF;
-  --card-foreground: #1E1F1C;
-  --popover: #FFFFFF;
-  --popover-foreground: #1E1F1C;
-  --primary: #184C3A;
-  --primary-foreground: #F7F6F2;
-  --secondary: #ECEBE6;
-  --secondary-foreground: #3A3B37;
-  --muted: #ECEBE6;
-  --muted-foreground: #6A6C66;
-  --accent: #B7F21D;
-  --accent-foreground: #1E1F1C;
+  --background: #F4EFE6;
+  --foreground: #12241C;
+  --card: #FFFEFB;
+  --card-foreground: #12241C;
+  --popover: #FFFEFB;
+  --popover-foreground: #12241C;
+  --primary: #0F3527;
+  --primary-foreground: #FFFEFB;
+  --secondary: #EDE6D8;
+  --secondary-foreground: #3A4A42;
+  --muted: #EDE6D8;
+  --muted-foreground: #6F7C74;
+  --accent: #C8F169;
+  --accent-foreground: #12241C;
   --destructive: #C0392B;
   --destructive-foreground: #FFFFFF;
-  --border: rgba(30, 31, 28, 0.09);
+  --border: rgba(15, 53, 39, 0.13);
   --input: transparent;
-  --input-background: #F0EDE8;
+  --input-background: #F7F2E9;
   --switch-background: #CCCCCC;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #184C3A;
-  --chart-1: #184C3A;
-  --chart-2: #B7F21D;
-  --chart-3: #1F5A44;
-  --chart-4: #6A6C66;
-  --chart-5: #ECEBE6;
-  --radius: 0.75rem;
+  --ring: #0F3527;
+  --chart-1: #0F3527;
+  --chart-2: #C8F169;
+  --chart-3: #174A36;
+  --chart-4: #7A877F;
+  --chart-5: #EDE6D8;
+  --radius: 1.125rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: #2E6B5E;
@@ -130,7 +130,15 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Plus Jakarta Sans', 'Noto Sans SC', system-ui, sans-serif;
+    font-family: 'Noto Sans SC', system-ui, sans-serif;
+    letter-spacing: -0.01em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    color: #12241C;
+    background: #C8F169;
   }
 
   /**
@@ -182,6 +190,27 @@
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
+  }
+}
+
+@layer components {
+  .display-serif {
+    font-family: 'Newsreader', 'Noto Serif SC', serif;
+    letter-spacing: -0.035em;
+  }
+
+  .editorial-kicker {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .paper-panel {
+    background: color-mix(in srgb, var(--card) 94%, transparent);
+    border: 1px solid var(--border);
+    box-shadow: 0 18px 50px rgba(15, 53, 39, 0.07);
   }
 }
 

@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Routes, Route, useLocation, useNavigationType } from "react-router";
 import { DesktopNav } from "@/app/components/DesktopNav";
-import { MobileNav } from "@/app/components/MobileNav";
 import { Footer } from "@/app/components/Footer";
 import { HomePage } from "@/app/pages/HomePage";
 import { ExplorePage } from "@/app/pages/ExplorePage";
@@ -61,7 +60,7 @@ export default function App() {
     <div className="min-h-screen bg-background text-foreground">
       <ScrollToTop />
       <DesktopNav />
-      <main className="mobile-nav-page-padding min-[641px]:pt-16">
+      <main>
         <Routes>
           <Route path="/" element={<HomePage onExploreEnter={resetExploreFilters} />} />
           <Route
@@ -84,7 +83,6 @@ export default function App() {
         </Routes>
         <Footer />
       </main>
-      <MobileNav />
     </div>
   );
 }

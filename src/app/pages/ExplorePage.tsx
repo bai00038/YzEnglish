@@ -27,10 +27,11 @@ export function ExplorePage({
   return (
     <div>
       {/* Header + search */}
-      <div className="bg-background max-w-lg mx-auto md:max-w-4xl px-4 pt-5 pb-4">
-        <h1 className="text-xl font-black text-foreground mb-0.5">Explore Real-Life Scenes</h1>
-        <p className="text-xs text-muted-foreground mb-4">浏览真实生活场景 · {scenesLoading ? "…" : scenes.length} scenes available</p>
-        <div className="flex items-center gap-2.5 border border-border rounded-xl px-3.5 py-2.5 bg-card shadow-sm focus-within:border-primary/50 transition-colors">
+      <div className="bg-background max-w-lg mx-auto md:max-w-5xl px-4 pt-10 md:pt-16 pb-8">
+        <p className="editorial-kicker mb-3">Scene library · 场景库</p>
+        <h1 className="display-serif text-[42px] md:text-[60px] font-semibold leading-none text-foreground mb-2">Explore real-life scenes</h1>
+        <p className="text-sm text-muted-foreground mb-7">浏览真实生活场景 · {scenesLoading ? "…" : scenes.length} scenes available</p>
+        <div className="flex items-center gap-2.5 border border-border rounded-full px-5 py-3.5 bg-card shadow-[0_12px_35px_rgba(15,53,39,0.06)] focus-within:border-primary/50 transition-colors max-w-2xl">
           <Search size={15} className="text-muted-foreground flex-shrink-0" />
           <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
             placeholder="Search: return, 退货, dentist, hotel…"
@@ -42,19 +43,19 @@ export function ExplorePage({
       </div>
 
       {/* Filters — light editorial strip */}
-      <div style={{ backgroundColor: "#EDF3EE" }} className="border-b border-black/8">
-        <div className="max-w-lg mx-auto md:max-w-4xl px-4 pt-5 pb-4 space-y-4">
+      <div className="border-y border-border bg-secondary/70">
+        <div className="max-w-lg mx-auto md:max-w-5xl px-4 py-6 space-y-5">
 
           {/* Category */}
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#184C3A" }}>Category · 分类</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#0F3527" }}>Category · 分类</p>
             <div className="flex flex-wrap gap-1.5">
               {["All", ...categories].map(cat => (
                 <button key={cat} onClick={() => setActiveCategory(cat)}
                   className="text-xs font-semibold rounded-full px-3 py-1.5 border transition-all duration-150 whitespace-nowrap"
                   style={activeCategory === cat
-                    ? { backgroundColor: "#B7F21D", color: "#1E1F1C", borderColor: "#B7F21D" }
-                    : { backgroundColor: "white", color: "#3A3B37", borderColor: "rgba(24,76,58,0.18)" }}>
+                    ? { backgroundColor: "#C8F169", color: "#12241C", borderColor: "#C8F169" }
+                    : { backgroundColor: "#FFFEFB", color: "#3A4A42", borderColor: "rgba(15,53,39,0.18)" }}>
                   {cat}
                 </button>
               ))}
@@ -63,14 +64,14 @@ export function ExplorePage({
 
           {/* Level */}
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#184C3A" }}>Level · 难度</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#0F3527" }}>Level · 难度</p>
             <div className="flex flex-wrap gap-1.5">
               {["All", "A1–A2", "A2–B1", "B1–B2"].map(d => (
                 <button key={d} onClick={() => setActiveDiff(d)}
                   className="text-xs font-semibold rounded-full px-3 py-1.5 border transition-all duration-150"
                   style={activeDiff === d
-                    ? { backgroundColor: "#B7F21D", color: "#1E1F1C", borderColor: "#B7F21D" }
-                    : { backgroundColor: "white", color: "#3A3B37", borderColor: "rgba(24,76,58,0.18)" }}>
+                    ? { backgroundColor: "#C8F169", color: "#12241C", borderColor: "#C8F169" }
+                    : { backgroundColor: "#FFFEFB", color: "#3A4A42", borderColor: "rgba(15,53,39,0.18)" }}>
                   {d}
                 </button>
               ))}
@@ -81,7 +82,7 @@ export function ExplorePage({
       </div>
 
       {/* Results count + clear */}
-      <div className="bg-background max-w-lg mx-auto md:max-w-4xl px-4">
+      <div className="bg-background max-w-lg mx-auto md:max-w-5xl px-4">
         <div className="py-3 flex items-center gap-3">
           <p className="text-xs font-semibold text-foreground">{filtered.length} scene{filtered.length !== 1 ? "s" : ""} found</p>
           {(activeCategory !== "All" || activeDiff !== "All" || searchQuery) && (

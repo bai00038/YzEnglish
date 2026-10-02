@@ -1,470 +1,160 @@
-import { useState } from "react";
 import { Link } from "react-router";
-import type { CSSProperties } from "react";
-import { ChevronRight, Play, ArrowRight, FileText, Download } from "lucide-react";
-import { CATEGORY_BG } from "@/data/scenes";
+import { ArrowRight, Play, Volume2 } from "lucide-react";
 import { useCuratedFeaturedScenes, useLatestScenes, useCategoryNames } from "@/data/scenes-access";
-import { useHomepageResourceCollections } from "@/data/resource-collections-access";
-import { formatRmbPrice } from "@/data/resource-collections";
-import type { Scene, ResourceCollection } from "@/data/types";
-import { Btn } from "@/app/components/Btn";
-import { LimeLine } from "@/app/components/brand";
-import { SceneCard } from "@/app/components/SceneCard";
-import { LevelBadge, DurationLabel } from "@/app/components/badges";
-import { ImgBox } from "@/app/components/primitives";
+import type { Scene } from "@/data/types";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
-import { PurchaseModal } from "@/app/components/PurchaseModal";
 
-// One PDF Resources preview card — a compact horizontal "download card",
-// deliberately not the cover-image tile ResourcesPage.tsx's CollectionCard
-// uses on the full Resources page. Never reads cover_image_url: on the
-// homepage the goal is to read as a downloadable document at a glance, not
-// another scene thumbnail (cover_image_url stays in the data model/query
-// for the full Resources page). Only the Download PDF button opens pdf_url,
-// and only for free collections — paid collections never read or open
-// pdf_url from the browser (the file lives in the private paid-resources
-// Storage bucket); they open PurchaseModal instead via onGetAccess.
-function HomeResourceCard({ c, onGetAccess }: { c: ResourceCollection; onGetAccess: (c: ResourceCollection) => void }) {
-  const canDownload = c.priceType === "free" && !!c.pdfUrl;
-
-  return (
-    <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 border border-border rounded-2xl bg-card px-4 py-3.5 md:px-5 transition-all duration-150 hover:border-primary/25 hover:shadow-sm">
-      <div className="flex items-center gap-3 flex-1 min-w-0">
-        {/* PDF icon — subtle light-green (primary-tinted) square */}
-        <div className="w-11 h-11 rounded-xl bg-primary/10 flex flex-col items-center justify-center flex-shrink-0">
-          <FileText size={16} className="text-primary" />
-          <span className="text-[7px] font-black text-primary tracking-wide mt-0.5">PDF</span>
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <p className="text-sm font-bold text-foreground leading-snug truncate">{c.titleEn}</p>
-            {c.priceType === "free" && (
-              <span
-                className="flex-shrink-0 text-[9px] font-black px-2 py-0.5 rounded-full"
-                style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}
-              >
-                Free
-              </span>
-            )}
-          </div>
-          <p className="text-xs text-muted-foreground font-medium truncate">{c.titleZh}</p>
-          <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{c.descriptionEn}</p>
-          <p className="text-[10px] text-muted-foreground mt-1">{c.sceneCount} scene{c.sceneCount !== 1 ? "s" : ""}</p>
-        </div>
-      </div>
-      {c.priceType === "paid" ? (
-        <div className="flex items-center gap-3 flex-shrink-0 justify-end">
-          {c.price != null && <span className="text-sm font-bold text-primary">{formatRmbPrice(c.price)}</span>}
-          <Btn
-            variant="accent"
-            size="sm"
-            onClick={() => onGetAccess(c)}
-            className="w-full md:w-auto flex-shrink-0"
-          >
-            Get Access
-          </Btn>
-        </div>
-      ) : (
-        <Btn
-          variant="accent"
-          size="sm"
-          disabled={!canDownload}
-          onClick={() => canDownload && window.open(c.pdfUrl!, "_blank", "noopener,noreferrer")}
-          className="w-full md:w-auto flex-shrink-0"
-        >
-          <Download size={13} />{canDownload ? "Download PDF" : "Coming soon"}
-        </Btn>
-      )}
-    </div>
-  );
+function uniqueScenes(primary: Scene[], secondary: Scene[]) {
+  const seen = new Set<number>();
+  return [...primary, ...secondary].filter((scene) => {
+    if (seen.has(scene.id)) return false;
+    seen.add(scene.id);
+    return true;
+  });
 }
 
-// Shared tile for the Hero collage — a whole-image link to the scene's
-// detail page with its English title over a dark gradient. Used for both
-// the desktop (absolutely-positioned) and mobile (stacked) layouts, which
-// only differ in the className/style passed in. `scene` is undefined only
-// for the brief window before the curated fetch resolves, in which case it
-// renders as a non-interactive placeholder instead of a dead link.
-function HeroSceneTile({ scene, className = "", style, titleClassName }: {
-  scene?: Scene;
-  className?: string;
-  style?: CSSProperties;
-  titleClassName?: string;
-}) {
-  const inner = (
-    <>
-      {scene?.photo ? (
-        <img
-          src={scene.photo}
-          alt={scene.titleEn}
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-          loading="lazy"
-        />
-      ) : (
-        <ImgBox label={scene?.titleEn ?? ""} className="w-full h-full" />
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
-      {scene && (
-        <p className={titleClassName ?? "absolute bottom-3 left-3 right-3 text-sm font-black text-white leading-snug"}>
-          {scene.titleEn}
-        </p>
-      )}
-    </>
-  );
-
-  // No hardcoded position class here — the caller's className supplies
-  // either "absolute" (desktop collage, positioned within a relative
-  // parent) or "relative" (mobile stack, block layout). Tailwind's
-  // generated stylesheet order would let a hardcoded "relative" silently
-  // beat a caller's "absolute" of the same specificity regardless of
-  // class-string order, so don't combine both here.
-  const base = `block overflow-hidden bg-secondary group ${className}`;
-
-  if (!scene) {
-    return <div className={base} style={style}>{inner}</div>;
-  }
+function EditorialScene({ scene, large = false }: { scene: Scene; large?: boolean }) {
   return (
-    <Link to={`/scenes/${scene.slug}`} className={base} style={style}>
-      {inner}
+    <Link
+      to={`/scenes/${scene.slug}`}
+      className={`group relative min-h-[280px] overflow-hidden rounded-[18px] border border-primary/15 bg-card ${large ? "md:min-h-[420px]" : "md:min-h-[300px]"}`}
+    >
+      {scene.photo ? (
+        <img src={scene.photo} alt={scene.titleEn} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.035]" loading="lazy" />
+      ) : (
+        <div className="absolute inset-0 bg-[linear-gradient(145deg,#254B3C,#0F3527)]" />
+      )}
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_32%,rgba(6,20,14,.82))]" />
+      <span className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-primary shadow-sm"><Play size={14} fill="currentColor" /></span>
+      <div className="absolute inset-x-4 bottom-4 z-10 text-white">
+        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/80">{scene.category}</p>
+        <h3 className="mt-1.5 font-['Noto_Serif_SC'] text-[21px] font-bold leading-tight">{scene.titleZh || scene.titleEn}</h3>
+        <p className="mt-1 text-[12.5px] leading-relaxed text-white/85">{scene.titleEn}</p>
+      </div>
     </Link>
   );
 }
 
+const demoLines = [
+  { role: "You", zhRole: "你", en: "Hi, I'd like to book a cleaning, please.", zh: "你好，我想约一个洗牙。", person: true },
+  { role: "Front", zhRole: "前台", en: "Of course. Have you been here before?", zh: "好的，您之前来过我们这儿吗？" },
+  { role: "You", zhRole: "你", en: "Yes — and this tooth has been bothering me.", zh: "来过，而且这颗牙最近有点不舒服。", person: true },
+  { role: "Front", zhRole: "前台", en: "We'll take a look first, then go from there.", zh: "我们先检查一下，再决定下一步。" },
+];
+
+const HERO_IMAGE = "https://images.unsplash.com/photo-1516901408257-500ed7566e6a?w=900&h=1100&fit=crop&auto=format";
+
 export function HomePage() {
-  const { data: featuredScenesData, loading: featuredLoading, error: featuredError } = useCuratedFeaturedScenes();
-  const { data: latestScenesData, loading: latestLoading, error: latestError } = useLatestScenes(3);
-  const { data: categoriesData, loading: categoriesLoading, error: categoriesError } = useCategoryNames();
-  const { data: homepageCollectionsData, loading: collectionsLoading, error: collectionsError } = useHomepageResourceCollections();
-  const [purchaseCollection, setPurchaseCollection] = useState<ResourceCollection | null>(null);
-
-  const featuredScenes = featuredScenesData ?? [];
-  const latestScenes = latestScenesData ?? [];
+  const { data: featuredData, loading: featuredLoading, error: featuredError } = useCuratedFeaturedScenes();
+  const { data: latestData, loading: latestLoading } = useLatestScenes(3);
+  const { data: categoriesData } = useCategoryNames();
+  const featured = featuredData ?? [];
+  const latest = latestData ?? [];
   const categories = categoriesData ?? [];
-  const homepageCollections = homepageCollectionsData ?? [];
-
-  // Hero collage — reuses the curated featured scenes (matched by stable
-  // slug, not title) also shown in the Featured Scenes section below.
-  const heroDiningScene = featuredScenes.find(s => s.slug === "dining-at-a-turkish-restaurant");
-  const heroShoppingScene = featuredScenes.find(s => s.slug === "shopping-for-clothes");
-  const heroDentalScene = featuredScenes.find(s => s.slug === "getting-a-dental-filling");
+  const scenes = uniqueScenes(featured, latest)
+    .sort((a, b) => Number(Boolean(b.photo)) - Number(Boolean(a.photo)))
+    .slice(0, 6);
+  const dentalScene = featured.find((scene) => scene.slug === "getting-a-dental-filling");
+  const heroScene = dentalScene
+    ?? featured.find((scene) => Boolean(scene.photo))
+    ?? latest.find((scene) => Boolean(scene.photo))
+    ?? featured[0]
+    ?? latest[0];
+  const heroImage = HERO_IMAGE;
 
   return (
-    <div>
-
-      {/* ════════════════════════════════════════
-          HERO — off-white, bold, editorial
-          ════════════════════════════════════════ */}
-      <section className="bg-background">
-        <div className="max-w-lg mx-auto md:max-w-5xl px-4 pt-10 pb-6 md:pt-14 md:pb-12 md:flex md:items-start md:gap-14">
-
-          <div className="md:flex-1 md:max-w-[540px]">
-            {/* Lime pill badge */}
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-3" style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}>
-              Real English for Real Life · 真实生活英语
-            </span>
-            <div className="flex items-center gap-2 mb-4 opacity-30">
-              <LimeLine width={28} opacity={1} />
-            </div>
-
-            <h1 className="text-[32px] md:text-[48px] font-black leading-[1.08] text-foreground mb-4">
-              Prepare for real{" "}
-              <span className="relative inline-block" style={{ isolation: "isolate" }}>
-                <span className="relative" style={{ zIndex: 1 }}>English</span>
-                {/* Hand-drawn marker underline — SVG sits below the text layer */}
-                <svg
-                  aria-hidden="true"
-                  className="absolute left-[-2%] w-[104%] pointer-events-none"
-                  style={{ bottom: "-0.28em", height: "0.28em", zIndex: -1 }}
-                  viewBox="0 0 220 18"
-                  fill="none"
-                  preserveAspectRatio="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M4 13.5 C28 10.2, 60 8.8, 92 9.6 C124 10.4, 158 12.8, 188 11.2 C200 10.6, 210 9.8, 216 9.2"
-                    stroke="#B7F21D"
-                    strokeWidth="5.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M6 15.5 C36 13.8, 80 13.2, 120 13.8 C155 14.3, 185 13.6, 214 12.8"
-                    stroke="#B7F21D"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    opacity="0.45"
-                  />
-                </svg>
-              </span>
-              {" "}situations<br className="hidden md:block" /> before they happen.
+    <div className="bg-background">
+      <header className="mx-auto max-w-[1180px] px-5 pb-12 pt-16 md:px-8">
+        <div className="grid gap-7 md:grid-cols-[1.02fr_.98fr] md:items-center md:gap-14">
+          <div>
+            <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Ottawa · 真实生活英语</p>
+            <h1 className="mt-4 font-normal leading-[0.92] tracking-[-0.03em] text-foreground">
+              <span className="display-serif block text-[50px] md:text-[78px]">Real scenes,<br /><em className="font-normal">for real life.</em></span>
+              <span className="mt-4 block font-['Noto_Serif_SC'] text-[30px] font-semibold leading-[1.15] md:text-[44px]">不是背单词，<br />是下一次开口不慌。</span>
             </h1>
-
-            <p className="text-sm font-semibold text-primary mt-2 mb-1">
-              在真实场景发生之前，先看一遍、听一遍、练一遍。
-            </p>
-            <p className="text-sm text-muted-foreground mt-2 leading-relaxed mb-7 max-w-md">
-              For people living, working, studying, or travelling in English-speaking countries.
-              Not a language course — a real-life situational preparation platform.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Btn variant="accent" size="lg" to="/explore">
-                Explore Scenes <ArrowRight size={15} />
-              </Btn>
+            <p className="mt-7 max-w-[460px] text-base leading-[1.85] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄——每一个场景都聚焦真实生活，做成视频、点读和跟读。学完，就能用在下一次真实交流里。</p>
+            <div className="mt-8 flex flex-wrap gap-2.5">
+              <Link to="/explore" className="rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90">进入场景库</Link>
+              <a href="#learn" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-bold text-foreground">先试学一课 ↓</a>
             </div>
           </div>
 
-          {/* Right: editorial collage — desktop only */}
-          <div className="hidden md:block flex-shrink-0 self-start mt-2" style={{ width: "380px", position: "relative", height: "420px" }}>
+          <div className="relative">
+            <div className="h-[340px] overflow-hidden rounded-[22px] bg-secondary md:h-[520px]">
+              <img src={heroImage} alt={heroScene?.titleEn ?? "Getting a dental filling"} className="h-full w-full object-cover" />
+            </div>
+            <div className="absolute inset-x-3.5 bottom-3.5 flex items-center justify-between gap-3 rounded-[14px] border border-primary/15 bg-card/90 px-4 py-3.5 backdrop-blur-xl">
+              <div><b className="text-sm">本期场景 · 校门口寒暄</b><p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">孩子近况、课程和老师——下次见面接着聊。</p></div>
+              <span className="whitespace-nowrap rounded-full bg-accent px-2.5 py-1.5 text-[11px] font-extrabold text-accent-foreground">人气场景</span>
+            </div>
+          </div>
+        </div>
+      </header>
 
-            {/* ── Primary image — tall, left-anchored, slight clockwise tilt ── */}
-            <HeroSceneTile
-              scene={heroDiningScene}
-              className="absolute shadow-2xl"
-              style={{ width: "210px", height: "300px", top: "16px", left: "0px", borderRadius: "20px", transform: "rotate(1.2deg)", boxShadow: "0 20px 48px rgba(24,76,58,0.18)" }}
-              titleClassName="absolute bottom-3 left-3 right-3 text-sm font-black text-white leading-snug"
-            />
+      <div className="mx-auto max-w-[1180px] overflow-hidden border-y border-border px-5 py-3.5 md:px-8">
+        <p className="display-serif whitespace-nowrap text-[15px] italic text-secondary-foreground">At the dentist — 看牙怎么说 ✦ At the pharmacy — 药房取药 ✦ School communication — 家校沟通 ✦ Blood work — 抽血检查 ✦ Parent-teacher meeting — 家长会 ✦</p>
+      </div>
 
-            {/* ── Secondary image — top-right, counter-tilt ── */}
-            <HeroSceneTile
-              scene={heroShoppingScene}
-              className="absolute"
-              style={{ width: "148px", height: "148px", top: "0px", right: "0px", borderRadius: "16px", transform: "rotate(-1.8deg)", boxShadow: "0 8px 24px rgba(24,76,58,0.13)" }}
-              titleClassName="absolute bottom-2 left-2 right-2 text-[11px] font-black text-white leading-snug"
-            />
+      <section className="mx-auto max-w-[1180px] px-5 pb-2 pt-12 md:px-8" id="scenes">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Scene Library</p>
+            <h2 className="mt-2 font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.2] tracking-[-0.02em] md:text-[34px]">按生活逛，不按课本翻。<br /><span className="display-serif font-medium italic">Browse by life, not by textbook.</span></h2>
+          </div>
+          <p className="max-w-[360px] text-[13px] leading-relaxed text-muted-foreground">按“你下一次会遇到的事”找场景。先看完整交流如何发生，再练真正会用到的话。</p>
+        </div>
 
-            {/* ── Tertiary image — bottom-right, slightly overlapping secondary ── */}
-            <HeroSceneTile
-              scene={heroDentalScene}
-              className="absolute"
-              style={{ width: "162px", height: "142px", top: "164px", right: "4px", borderRadius: "14px", transform: "rotate(0.6deg)", boxShadow: "0 10px 28px rgba(24,76,58,0.14)" }}
-              titleClassName="absolute bottom-2 left-2 right-2 text-[11px] font-black text-white leading-snug"
-            />
+        <div className="mb-4 flex flex-wrap gap-2">
+          <Link to="/explore" className="rounded-full border border-foreground bg-foreground px-3.5 py-2 text-[13px] font-semibold text-background">全部</Link>
+          {categories.slice(0, 4).map((category) => <Link key={category} to="/explore" className="rounded-full border border-border bg-card px-3.5 py-2 text-[13px] font-semibold text-secondary-foreground">{category}</Link>)}
+        </div>
 
-            {/* ── Floating info badge ── */}
-            <div className="absolute flex items-center gap-2 bg-white rounded-2xl px-3.5 py-2.5"
-              style={{ bottom: "24px", left: "140px", boxShadow: "0 6px 20px rgba(24,76,58,0.14)", minWidth: "164px", zIndex: 10 }}>
-              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#B7F21D" }}>
-                <Play size={9} fill="#1E1F1C" style={{ color: "#1E1F1C", marginLeft: "1px" }} />
-              </div>
-              <div>
-                <p className="text-[11px] font-black leading-none" style={{ color: "#184C3A" }}>Watch · Learn · Practise</p>
-                <p className="text-[9px] mt-0.5 font-medium" style={{ color: "rgba(24,76,58,0.5)" }}>Real-life scenes</p>
-              </div>
+        {featuredLoading || latestLoading ? <LoadingState label="Loading scenes…" /> : featuredError ? <ErrorState message={featuredError} /> : scenes.length ? (
+          <div className="grid gap-3.5 md:grid-cols-[1.25fr_.85fr_.85fr]">{scenes.map((scene, index) => <EditorialScene key={scene.id} scene={scene} large={index === 0} />)}</div>
+        ) : <EmptyState title="No scenes yet." />}
+      </section>
+
+      <section className="mx-auto max-w-[1180px] px-5 pb-2 pt-12 md:px-8" id="learn">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">How it feels to learn</p>
+            <h2 className="mt-2 font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.25] md:text-[34px]">点开一节课，<span className="display-serif font-medium italic">不像上课，像排练生活。</span></h2>
+          </div>
+          <p className="max-w-[360px] text-[13px] leading-relaxed text-muted-foreground">先看真实场景，再逐句点读、跟读和整理表达。不是做题，是为下一次交流做准备。</p>
+        </div>
+
+        <div className="rounded-[24px] bg-primary p-6 text-white md:p-12">
+          <div className="grid gap-6 md:grid-cols-[1fr_1.12fr] md:items-start md:gap-12">
+            <div className="pt-1.5">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/65">Featured Scene · HC 医疗系列</p>
+              <h3 className="mt-3.5 font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.45]">在牙科前台：<br />“我想约一个洗牙，<br />顺便看看这颗牙。”</h3>
+              <p className="mt-4 max-w-[34em] text-[14.5px] leading-[1.9] text-white/75">先看一遍视频，再逐句点读，最后跟读录一遍。每句都放回真实流程里学——不是课本腔，是前台真的会这样说。</p>
+              <div className="mt-6 flex flex-wrap gap-2.5">{["视频", "点读", "跟读"].map((label) => <span key={label} className="rounded-full border border-white/30 px-3.5 py-2 text-xs font-bold">{label}</span>)}</div>
             </div>
 
-            {/* ── Lime hand-drawn arc — top-left corner accent ── */}
-            <svg aria-hidden="true" className="absolute pointer-events-none" style={{ top: "0px", left: "168px", width: "48px", height: "48px", zIndex: 5 }} viewBox="0 0 48 48" fill="none">
-              <path d="M8 40 Q24 6 40 10" stroke="#B7F21D" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.85"/>
-              <circle cx="40" cy="10" r="3" fill="#B7F21D" opacity="0.7"/>
-            </svg>
-
-            {/* ── Small dot cluster — bottom-left ── */}
-            <svg aria-hidden="true" className="absolute pointer-events-none" style={{ bottom: "60px", left: "8px", width: "36px", height: "36px", zIndex: 5 }} viewBox="0 0 36 36" fill="none">
-              <circle cx="6" cy="6" r="3" fill="#B7F21D" opacity="0.6"/>
-              <circle cx="18" cy="10" r="2" fill="#B7F21D" opacity="0.35"/>
-              <circle cx="10" cy="20" r="1.5" fill="#184C3A" opacity="0.25"/>
-            </svg>
-
-            {/* ── Tiny sparkle — top-right ── */}
-            <svg aria-hidden="true" className="absolute pointer-events-none" style={{ top: "130px", right: "168px", width: "20px", height: "20px", zIndex: 5 }} viewBox="0 0 20 20" fill="none">
-              <path d="M10 2 L11.2 8.8 L18 10 L11.2 11.2 L10 18 L8.8 11.2 L2 10 L8.8 8.8 Z" fill="#B7F21D" opacity="0.8"/>
-            </svg>
-          </div>
-        </div>
-
-        {/* Mobile: one main scene image, with the two smaller ones below */}
-        <div className="md:hidden px-4 pb-8 pt-3 space-y-3">
-          <HeroSceneTile
-            scene={heroDiningScene}
-            className="relative rounded-2xl shadow-md aspect-[16/10]"
-            titleClassName="absolute bottom-3 left-3 right-3 text-sm font-black text-white leading-snug"
-          />
-          <div className="grid grid-cols-2 gap-3">
-            <HeroSceneTile
-              scene={heroShoppingScene}
-              className="relative rounded-2xl shadow-md aspect-square"
-              titleClassName="absolute bottom-2 left-2 right-2 text-xs font-black text-white leading-snug"
-            />
-            <HeroSceneTile
-              scene={heroDentalScene}
-              className="relative rounded-2xl shadow-md aspect-square"
-              titleClassName="absolute bottom-2 left-2 right-2 text-xs font-black text-white leading-snug"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════
-          HOW IT WORKS — dark forest green
-          ════════════════════════════════════════ */}
-      <section style={{ backgroundColor: "#184C3A" }} className="py-12 md:py-16">
-        <div className="max-w-lg mx-auto md:max-w-5xl px-4">
-          <p className="text-[9px] font-black uppercase tracking-[0.18em] mb-8 md:mb-12" style={{ color: "rgba(183,242,29,0.6)" }}>
-            How it works · 学习方式
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6 relative">
-            {[
-              { num: "01", en: "Watch the situation", zh: "观看真实场景视频", desc: "Each scene opens with a short vertical video showing a realistic, everyday English situation before the conversation begins." },
-              { num: "02", en: "Learn the conversation", zh: "逐句学习完整对话", desc: "Read the full bilingual dialogue, study key expressions, and build vocabulary — at your own pace, with no pressure." },
-              { num: "03", en: "Practise before real life", zh: "开口练习，做好准备", desc: "Shadow the conversation line by line to build the confidence to handle the situation yourself when it actually happens." },
-            ].map((s, i) => (
-              <div key={i} className="flex gap-5 md:block">
-                <div className="md:mb-4 flex-shrink-0">
-                  <span className="text-6xl md:text-7xl font-black leading-none select-none" style={{ color: "rgba(183,242,29,0.25)" }}>{s.num}</span>
-                </div>
-                <div className="pt-1 md:pt-0">
-                  <p className="text-lg font-black text-white mb-1 leading-snug">{s.en}</p>
-                  <p className="text-xs font-semibold mb-3" style={{ color: "#B7F21D" }}>{s.zh}</p>
-                  <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>{s.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════
-          FEATURED SCENES — off-white
-          ════════════════════════════════════════ */}
-      <section className="bg-background py-10 md:py-14">
-        <div className="max-w-lg mx-auto md:max-w-5xl px-4">
-          <div className="flex items-end justify-between mb-6">
             <div>
-              <p className="text-[9px] font-black uppercase tracking-[0.18em] text-muted-foreground mb-1">Featured scenes · 精选场景</p>
-              <p className="text-2xl font-black text-foreground leading-tight">Real situations. Practise them first.</p>
-            </div>
-            <Link to="/explore" className="text-xs font-bold text-primary flex items-center gap-0.5 hover:opacity-70 transition-opacity flex-shrink-0 mb-1">
-              See all <ChevronRight size={13} />
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {featuredLoading ? (
-              <LoadingState label="Loading featured scenes…" />
-            ) : featuredError ? (
-              <ErrorState message={featuredError} />
-            ) : featuredScenes.length > 0 ? (
-              featuredScenes.map(scene => <SceneCard key={scene.id} scene={scene} />)
-            ) : (
-              <EmptyState title="No featured scenes yet." />
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════
-          BROWSE BY LIFE SITUATION — light neutral
-          ════════════════════════════════════════ */}
-      <section className="bg-secondary border-y border-border py-10 md:py-14">
-        <div className="max-w-lg mx-auto md:max-w-5xl px-4">
-          <div className="flex items-end justify-between mb-5">
-            <p className="text-[9px] font-black uppercase tracking-[0.18em] text-muted-foreground">Browse by life situation · 按生活任务</p>
-            <Link to="/explore" className="text-xs font-bold text-primary flex items-center gap-0.5 hover:opacity-70 transition-opacity">
-              View all scenes <ChevronRight size={13} />
-            </Link>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {categoriesLoading ? (
-              <LoadingState label="Loading categories…" />
-            ) : categoriesError ? (
-              <ErrorState message={categoriesError} />
-            ) : categories.length > 0 ? (
-              categories.map(cat => (
-                <Link key={cat} to="/explore"
-                  className="text-xs font-bold border border-border rounded-full px-4 py-2 bg-card hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-150 text-foreground">
-                  {cat}
-                </Link>
-              ))
-            ) : (
-              <EmptyState title="No categories yet." />
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════
-          RECENTLY ADDED — off-white
-          ════════════════════════════════════════ */}
-      <section className="bg-background border-b border-border py-10 md:py-14">
-        <div className="max-w-lg mx-auto md:max-w-5xl px-4">
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <p className="text-[9px] font-black uppercase tracking-[0.18em] text-muted-foreground mb-0.5">Recently added · 最新场景</p>
-              <p className="text-xl font-black text-foreground">New scenes this week</p>
-            </div>
-            <Link to="/explore" className="text-xs font-bold text-primary flex items-center gap-0.5 hover:opacity-70 transition-opacity">
-              See all <ChevronRight size={13} />
-            </Link>
-          </div>
-          <div className="space-y-3">
-            {latestLoading ? (
-              <LoadingState label="Loading new scenes…" />
-            ) : latestError ? (
-              <ErrorState message={latestError} />
-            ) : latestScenes.length > 0 ? (
-              latestScenes.map(scene => (
-                <Link key={scene.id} to={`/scenes/${scene.slug}`}
-                  className="w-full flex items-center gap-4 rounded-2xl p-3 bg-card border border-border text-left hover:border-primary/25 hover:shadow-md transition-all duration-150">
-                  <div className={`w-16 h-16 rounded-xl flex-shrink-0 overflow-hidden ${scene.photo ? "" : (CATEGORY_BG[scene.category] ?? "bg-secondary")}`}>
-                    {scene.photo ? (
-                      <img src={scene.photo.replace("w=700&h=480", "w=128&h=128")} alt={scene.titleEn} className="w-full h-full object-cover" loading="lazy" />
-                    ) : (
-                      <ImgBox label="" className="w-full h-full" />
-                    )}
+              <div className="rounded-2xl bg-card p-2 text-foreground">
+                {demoLines.map((line, index) => (
+                  <div key={line.en} className={`flex gap-3 rounded-xl border p-3 ${index === 0 ? "border-[#D6E8A8] bg-[#EEF6D8]" : "border-transparent"}`}>
+                    <span className={`grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full text-[10px] font-extrabold text-white ${line.person ? "bg-primary" : "bg-[#8A6D3B]"}`}>{line.role}</span>
+                    <div className="min-w-0"><b className="text-[13px]">{line.zhRole}</b><p className="display-serif mt-0.5 text-base">{line.en}</p><p className="mt-0.5 text-xs text-muted-foreground">{line.zh}</p></div>
+                    <Volume2 size={14} className="ml-auto mt-1 shrink-0 text-muted-foreground" />
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold text-foreground leading-snug">{scene.titleEn}</p>
-                    <p className="text-xs text-muted-foreground font-medium mt-0.5">{scene.titleZh}</p>
-                    <div className="flex gap-1.5 mt-2">
-                      <span className="text-[10px] font-bold text-muted-foreground bg-secondary px-2 py-0.5 rounded-md">{scene.category}</span>
-                      <LevelBadge level={scene.level} />
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                    <span className="text-[10px] font-black px-2.5 py-1 rounded-full" style={{ backgroundColor: "#B7F21D", color: "#1E1F1C" }}>New</span>
-                    <DurationLabel duration={scene.duration} />
-                  </div>
-                </Link>
-              ))
-            ) : (
-              <EmptyState title="No new scenes this week." />
-            )}
+                ))}
+              </div>
+              <div className="mx-1 mt-3 h-1.5 overflow-hidden rounded-full bg-white/15"><span className="block h-full w-1/4 bg-accent" /></div>
+              <div className="mx-1 mt-2 flex justify-between gap-3 text-xs text-white/55"><span>已点读 1 / 4 句</span><span>跟读清单 · 学完去生活里试一次</span></div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ════════════════════════════════════════
-          PDF RESOURCES PREVIEW — neutral surface
-          ════════════════════════════════════════ */}
-      <section className="bg-secondary py-10">
-        <div className="max-w-lg mx-auto md:max-w-5xl px-4">
-          <div className="flex items-end justify-between mb-5">
-            <div>
-              <p className="text-[9px] font-black uppercase tracking-[0.18em] text-muted-foreground mb-1">PDF resources · 学习资料</p>
-              <p className="text-xl font-black text-foreground">Download and study offline</p>
-            </div>
-            <Link to="/resources" className="text-xs font-bold text-primary flex items-center gap-0.5 hover:opacity-70 transition-opacity flex-shrink-0 mb-1">
-              View all <ChevronRight size={13} />
-            </Link>
-          </div>
-          {collectionsLoading ? (
-            <LoadingState label="Loading resources…" />
-          ) : collectionsError ? (
-            <ErrorState message={collectionsError} />
-          ) : homepageCollections.length > 0 ? (
-            <div className="flex flex-col gap-3">
-              {homepageCollections.map(c => (
-                <HomeResourceCard key={c.id} c={c} onGetAccess={setPurchaseCollection} />
-              ))}
-            </div>
-          ) : (
-            <EmptyState title="No resources yet." />
-          )}
+      <section className="mx-auto max-w-[1180px] px-5 py-14 md:px-8 md:py-20">
+        <div className="flex flex-col items-start justify-between gap-6 border-y border-border py-8 md:flex-row md:items-center">
+          <div><p className="text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">Ready for real life?</p><h2 className="display-serif mt-2 text-[34px] font-medium leading-tight md:text-[46px]">Choose the situation you need next.</h2></div>
+          <Link to="/explore" className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-bold text-accent-foreground">逛全部场景 <ArrowRight size={15} /></Link>
         </div>
       </section>
-
-      <PurchaseModal collection={purchaseCollection} onClose={() => setPurchaseCollection(null)} />
     </div>
   );
 }
