@@ -43,7 +43,6 @@ function ScrollToTop() {
 export default function App() {
   const [bilingualMode, setBilingualMode] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
-  const [activeDiff, setActiveDiff] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
   // Single source of truth for resetting Explore's filters. Called by every
@@ -52,7 +51,6 @@ export default function App() {
   // what lets Back button preserve filters/results (see req. 6).
   const resetExploreFilters = () => {
     setActiveCategory("All");
-    setActiveDiff("All");
     setSearchQuery("");
   };
 
@@ -68,7 +66,6 @@ export default function App() {
             element={
               <ExplorePage
                 activeCategory={activeCategory} setActiveCategory={setActiveCategory}
-                activeDiff={activeDiff} setActiveDiff={setActiveDiff}
                 searchQuery={searchQuery} setSearchQuery={setSearchQuery}
               />
             }
