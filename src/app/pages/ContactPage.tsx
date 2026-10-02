@@ -3,7 +3,7 @@ import { SmileCurve, DouyinIcon, XiaohongshuIcon, WeChatIcon } from "@/app/compo
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import douyinQrCode from "@/imports/douyin-qr-code.png";
 import xiaohongshuQrCode from "@/imports/xiaohongshu-qr-code.jpg";
-import weixinQrCode from "@/imports/weixin-qr-code.jpg";
+import weixinQrCode from "@/imports/weixin-qr-code.png";
 
 const CHANNELS = [
   { key: "douyin", Icon: DouyinIcon, color: "#000000", en: "Douyin", zh: "抖音", handle: "Scan to follow on Douyin", qrCode: douyinQrCode },
@@ -46,12 +46,12 @@ export function ContactPage() {
             style={{ backgroundColor: "#C8F169", color: "#12241C" }}>
             Contact · 联系我们
           </span>
-          <h1 className="text-[36px] md:text-[52px] font-black leading-[1.06] text-foreground mb-3">
+          <h1 className="display-serif text-[40px] md:text-[62px] font-bold leading-[1.06] tracking-[-0.01em] text-foreground mb-3">
             Let's stay connected
           </h1>
-          <p className="text-lg md:text-xl font-semibold mb-6" style={{ color: "#0F3527" }}>扫码关注，保持联系</p>
+          <p className="font-['Noto_Serif_SC'] text-lg md:text-xl font-bold mb-6" style={{ color: "#0F3527" }}>扫码关注，保持联系</p>
           <p
-            className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-xl mb-3"
+            className="display-serif text-sm md:text-base italic text-muted-foreground leading-relaxed max-w-xl mb-3"
             style={oneLineWidth ? { maxWidth: oneLineWidth } : undefined}
           >
             Follow Yz English on Douyin and Xiaohongshu for new real-life scenes, or scan the WeChat code to reach out directly.
@@ -70,10 +70,10 @@ export function ContactPage() {
       <section className="bg-card border-b border-border">
         <div className="max-w-5xl mx-auto px-4 md:px-8 py-14 md:py-18">
           <p className="text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground mb-4">Follow &amp; reach us</p>
-          <h2 className="text-[26px] md:text-[32px] font-black leading-tight text-foreground mb-1">
+          <h2 className="display-serif text-[28px] md:text-[36px] font-bold leading-tight tracking-[-0.01em] text-foreground mb-1">
             Scan a code to connect
           </h2>
-          <p className="text-base font-semibold mb-10" style={{ color: "#0F3527" }}>扫描下方二维码</p>
+          <p className="font-['Noto_Serif_SC'] text-base font-bold mb-10" style={{ color: "#0F3527" }}>扫描下方二维码</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {CHANNELS.map(({ key, Icon, color, en, zh, handle, qrCode }) => (
@@ -91,8 +91,8 @@ export function ContactPage() {
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <p className="text-[15px] font-black text-foreground leading-snug">{en}</p>
-                <p className="text-sm font-semibold mt-0.5 mb-2" style={{ color: "#0F3527" }}>{zh}</p>
+                <p className="display-serif text-[17px] font-bold text-foreground leading-snug">{en}</p>
+                <p className="font-['Noto_Serif_SC'] text-sm font-bold mt-0.5 mb-2" style={{ color: "#0F3527" }}>{zh}</p>
                 <p className="text-xs text-muted-foreground">{handle}</p>
               </div>
             ))}
@@ -104,10 +104,10 @@ export function ContactPage() {
       <section className="border-t border-border" style={{ backgroundColor: "#f7f6f3" }}>
         <div className="max-w-5xl mx-auto px-4 md:px-8 py-16 md:py-20 text-center">
           <SmileCurve width={64} opacity={0.5} className="mx-auto mb-6" />
-          <h2 className="text-[28px] md:text-[38px] font-black leading-tight text-foreground mb-2">
+          <h2 className="display-serif text-[30px] md:text-[42px] font-bold leading-tight tracking-[-0.01em] text-foreground mb-2">
             We'd love to hear from you.
           </h2>
-          <p className="text-base font-semibold" style={{ color: "#0F3527" }}>
+          <p className="font-['Noto_Serif_SC'] text-base font-bold" style={{ color: "#0F3527" }}>
             期待与你交流。
           </p>
         </div>

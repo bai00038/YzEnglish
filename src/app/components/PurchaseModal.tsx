@@ -83,7 +83,7 @@ export function PurchaseModal({ collection, onClose }: { collection: ResourceCol
                   right-click the QR image to save it. */}
               <a
                 href={WECHAT_QR_CODE_URL}
-                download="wechat-qr-code.jpg"
+                download="wechat-qr-code.png"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="min-[641px]:hidden inline-flex items-center justify-center gap-1.5 font-semibold rounded-xl transition-all duration-150 cursor-pointer select-none bg-accent text-accent-foreground hover:opacity-90 active:scale-95 text-sm px-4 py-2.5 w-full sm:w-auto"

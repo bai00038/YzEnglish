@@ -52,8 +52,6 @@ const demoLines = [
   { role: "Front", zhRole: "前台", en: "We'll take a look first, then go from there.", zh: "我们先检查一下，再决定下一步。" },
 ];
 
-const HERO_IMAGE = "https://images.unsplash.com/photo-1516901408257-500ed7566e6a?w=900&h=1100&fit=crop&auto=format";
-
 const TICKER_ITEMS = [
   "At the dentist — 看牙怎么说",
   "At the pharmacy — 药房取药",
@@ -111,39 +109,44 @@ export function HomePage() {
   const scenes = uniqueScenes(featured, latest)
     .sort((a, b) => Number(Boolean(b.photo)) - Number(Boolean(a.photo)))
     .slice(0, 6);
-  const dentalScene = featured.find((scene) => scene.slug === "getting-a-dental-filling");
-  const heroScene = dentalScene
-    ?? featured.find((scene) => Boolean(scene.photo))
-    ?? latest.find((scene) => Boolean(scene.photo))
-    ?? featured[0]
-    ?? latest[0];
-  const heroImage = HERO_IMAGE;
-
   return (
     <div className="bg-background">
-      <header className="mx-auto max-w-[1180px] px-5 pb-12 pt-16 md:px-8">
-        <div className="grid gap-7 md:grid-cols-[1.02fr_.98fr] md:items-center md:gap-14">
+      <header className="mx-auto max-w-[1180px] px-5 py-12 md:px-8 md:py-[72px]">
+        <div className="grid gap-8 md:grid-cols-[.92fr_1.08fr] md:items-center md:gap-[52px]">
           <div>
             <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Canada · 真实生活英语</p>
             <h1 className="mt-6 font-normal leading-[0.92] tracking-[-0.03em] text-foreground">
-              <span className="display-serif block text-[50px] md:text-[78px]">Real scenes,<br /><em className="font-normal">for real life.</em></span>
-              <span className="mt-4 block font-['Noto_Serif_SC'] text-[30px] font-semibold leading-[1.15] md:text-[44px]">不是背单词，<br />是下一次开口不慌。</span>
+              <span className="display-serif block text-[42px] font-semibold md:text-[54px]">Real scenes,<br /><em className="font-medium">for real life.</em></span>
+              <span className="mt-4 block font-['Noto_Serif_SC'] text-[22px] font-bold leading-[1.35] md:text-[26px]">真实生活里的英语，提前练一遍。</span>
             </h1>
-            <p className="mt-7 max-w-[460px] text-base leading-[1.85] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄——每一个场景都聚焦真实生活，做成视频、点读和跟读。学完，就能用在下一次真实交流里。</p>
-            <div className="mt-8 flex flex-wrap gap-2.5">
+            <p className="mt-4 max-w-[480px] text-[15px] leading-[1.75] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄——每一个场景都聚焦真实生活，做成视频、点读和跟读。学完，就能用在下一次真实交流里。</p>
+            <div className="mt-7 flex flex-wrap gap-3">
               <Link to="/explore" className="rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90">进入场景库</Link>
               <a href="#learn" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-bold text-foreground">先试学一课 ↓</a>
             </div>
           </div>
 
-          <div className="relative">
-            <div className="h-[340px] overflow-hidden rounded-[22px] bg-secondary md:h-[520px]">
-              <img src={heroImage} alt={heroScene?.titleEn ?? "Getting a dental filling"} className="h-full w-full object-cover" />
-            </div>
-            <div className="absolute inset-x-3.5 bottom-3.5 flex items-center justify-between gap-3 rounded-[14px] border border-primary/15 bg-card/90 px-4 py-3.5 backdrop-blur-xl">
-              <div><b className="text-sm">本期场景 · 校门口寒暄</b><p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">孩子近况、课程和老师——下次见面接着聊。</p></div>
-              <span className="whitespace-nowrap rounded-full bg-accent px-2.5 py-1.5 text-[11px] font-extrabold text-accent-foreground">人气场景</span>
-            </div>
+          <div className="relative isolate flex min-h-0 items-center justify-center px-1 py-2 md:min-h-[430px] md:py-2.5">
+            <span className="pointer-events-none absolute -bottom-6 -left-5 z-0 h-[280px] w-[280px] rounded-full bg-accent/25 md:-bottom-9 md:-left-10 md:h-[340px] md:w-[340px]" />
+            <svg
+              aria-hidden="true"
+              className="pointer-events-none absolute right-5 top-[10%] z-0 h-[150px] w-[150px] text-accent opacity-25"
+              viewBox="0 0 150 150"
+              fill="none"
+            >
+              <circle cx="98" cy="48" r="42" fill="currentColor" />
+            </svg>
+            <figure className="relative z-10 w-[92%] max-w-[380px]">
+              <img
+                src="/hero-aria-cafe.jpg"
+                alt="咖啡馆窗边，Aria 微笑着低头看自己的手机，自然地学英语"
+                className="block aspect-[4/5] w-full rounded-[26px] object-cover shadow-[0_26px_52px_rgba(18,36,28,.22)]"
+              />
+              <figcaption className="absolute -left-2 top-[15%] flex max-w-[62%] items-start gap-2 rounded-[14px] border border-border bg-white px-3.5 py-2.5 shadow-[0_14px_30px_rgba(18,36,28,.14)] md:-left-[22px]">
+                <span className="mt-[5px] h-[7px] w-[7px] flex-none rounded-full bg-accent" />
+                <p className="text-[13.5px] font-semibold leading-[1.5] text-foreground">每天几分钟，吃透一个场景</p>
+              </figcaption>
+            </figure>
           </div>
         </div>
       </header>
