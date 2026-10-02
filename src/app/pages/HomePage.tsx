@@ -112,8 +112,8 @@ export function HomePage() {
       <header className="mx-auto max-w-[1180px] px-5 pb-12 pt-16 md:px-8">
         <div className="grid gap-7 md:grid-cols-[1.02fr_.98fr] md:items-center md:gap-14">
           <div>
-            <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Ottawa · 真实生活英语</p>
-            <h1 className="mt-4 font-normal leading-[0.92] tracking-[-0.03em] text-foreground">
+            <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Canada · 真实生活英语</p>
+            <h1 className="mt-6 font-normal leading-[0.92] tracking-[-0.03em] text-foreground">
               <span className="display-serif block text-[50px] md:text-[78px]">Real scenes,<br /><em className="font-normal">for real life.</em></span>
               <span className="mt-4 block font-['Noto_Serif_SC'] text-[30px] font-semibold leading-[1.15] md:text-[44px]">不是背单词，<br />是下一次开口不慌。</span>
             </h1>
