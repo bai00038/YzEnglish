@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import { Home, Grid, FileText, Info, Mail } from "lucide-react";
+import { Home, Grid, Info, Mail } from "lucide-react";
 import { isNavActive } from "@/app/components/nav-utils";
 
 export function MobileNav() {
@@ -7,7 +7,6 @@ export function MobileNav() {
   const items = [
     { label: "Home", path: "/", Icon: Home },
     { label: "Explore", path: "/explore", Icon: Grid },
-    { label: "Resources", path: "/resources", Icon: FileText },
     { label: "About", path: "/about", Icon: Info },
     { label: "Contact", path: "/contact", Icon: Mail },
   ];

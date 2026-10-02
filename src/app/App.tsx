@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { Routes, Route, useLocation, useNavigationType } from "react-router";
+import { Routes, Route, Navigate, useLocation, useNavigationType } from "react-router";
 import { DesktopNav } from "@/app/components/DesktopNav";
 import { Footer } from "@/app/components/Footer";
 import { HomePage } from "@/app/pages/HomePage";
 import { ExplorePage } from "@/app/pages/ExplorePage";
 import { SceneDetailPage } from "@/app/pages/SceneDetailPage";
-import { ResourcesPage } from "@/app/pages/ResourcesPage";
 import { AboutPage } from "@/app/pages/AboutPage";
 import { ContactPage } from "@/app/pages/ContactPage";
 
@@ -74,7 +73,7 @@ export default function App() {
             path="/scenes/:slug"
             element={<SceneDetailPage bilingualMode={bilingualMode} setBilingualMode={setBilingualMode} />}
           />
-          <Route path="/resources" element={<ResourcesPage />} />
+          <Route path="/resources" element={<Navigate to="/explore" replace />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
         </Routes>

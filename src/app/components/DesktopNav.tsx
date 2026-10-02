@@ -15,7 +15,7 @@ export function DesktopNav() {
         </Link>
 
         <div className="ml-auto hidden items-center gap-2 text-[16px] font-medium text-secondary-foreground min-[761px]:flex">
-          {([['/', '首页'], ['/explore', '场景库'], ['/resources', '学习资料'], ['/about', '关于']] as [string, string][]).map(([path, label]) => (
+          {([['/', '首页'], ['/explore', '场景库'], ['/about', '关于']] as [string, string][]).map(([path, label]) => (
             <Link key={path} to={path}
               className={`rounded-full px-5 py-3 transition-colors ${isNavActive(pathname, path) ? 'bg-primary font-semibold text-white' : 'hover:bg-secondary hover:text-foreground'}`}>
               {label}

@@ -23,7 +23,7 @@ export function Footer() {
           <div>
             <p className="mb-4 text-xs font-medium tracking-[0.28em] text-white/50">导航</p>
             <nav className="grid gap-2.5 text-[15px]" aria-label="页脚导航">
-              {([["首页", "/"], ["场景库", "/explore"], ["学习资料", "/resources"], ["关于", "/about"], ["联系我们", "/contact"]] as [string, string][]).map(([label, path]) => (
+              {([["首页", "/"], ["场景库", "/explore"], ["关于", "/about"], ["联系我们", "/contact"]] as [string, string][]).map(([label, path]) => (
                 <Link key={label} to={path} className="w-fit text-white/85 transition-colors hover:text-accent">{label}</Link>
               ))}
             </nav>

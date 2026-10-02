@@ -275,12 +275,9 @@ export function AboutPage() {
           <p className="text-base font-semibold mb-10" style={{ color: "#0F3527" }}>
             在场景发生之前，先练一遍。
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex justify-center">
             <Btn variant="accent" size="lg" to="/explore">
               Explore Scenes <ArrowRight size={15} />
-            </Btn>
-            <Btn variant="secondary" size="lg" to="/resources">
-              Browse Resources
             </Btn>
           </div>
         </div>
