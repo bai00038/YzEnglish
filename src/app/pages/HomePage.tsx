@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { ArrowRight, Play, Volume2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useCuratedFeaturedScenes, useLatestScenes, useCategoryNames } from "@/data/scenes-access";
+import { useCuratedFeaturedScenes, useLatestScenes } from "@/data/scenes-access";
 import type { Scene } from "@/data/types";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 
@@ -46,6 +46,7 @@ const demoLines = [
 const HERO_IMAGE = "https://images.unsplash.com/photo-1516901408257-500ed7566e6a?w=900&h=1100&fit=crop&auto=format";
 
 const TICKER_TEXT = "At the dentist — 看牙怎么说 ✦ At the pharmacy — 药房取药 ✦ School communication — 家校沟通 ✦ Blood work — 抽血检查 ✦ Parent-teacher meeting — 家长会 ✦";
+const HOME_CATEGORIES = ["购物英语", "日常生活", "医疗英语", "家校沟通"];
 
 function SceneTicker() {
   const tickerRef = useRef<HTMLDivElement>(null);
@@ -84,10 +85,8 @@ function SceneTicker() {
 export function HomePage() {
   const { data: featuredData, loading: featuredLoading, error: featuredError } = useCuratedFeaturedScenes();
   const { data: latestData, loading: latestLoading } = useLatestScenes(3);
-  const { data: categoriesData } = useCategoryNames();
   const featured = featuredData ?? [];
   const latest = latestData ?? [];
-  const categories = categoriesData ?? [];
   const scenes = uniqueScenes(featured, latest)
     .sort((a, b) => Number(Boolean(b.photo)) - Number(Boolean(a.photo)))
     .slice(0, 6);
@@ -141,7 +140,7 @@ export function HomePage() {
 
         <div className="mb-4 flex flex-wrap gap-2">
           <Link to="/explore" className="rounded-full border border-foreground bg-foreground px-3.5 py-2 text-[13px] font-semibold text-background">全部</Link>
-          {categories.slice(0, 4).map((category) => <Link key={category} to="/explore" className="rounded-full border border-border bg-card px-3.5 py-2 text-[13px] font-semibold text-secondary-foreground">{category}</Link>)}
+          {HOME_CATEGORIES.map((category) => <Link key={category} to="/explore" className="rounded-full border border-border bg-card px-3.5 py-2 text-[13px] font-semibold text-secondary-foreground">{category}</Link>)}
         </div>
 
         {featuredLoading || latestLoading ? <LoadingState label="Loading scenes…" /> : featuredError ? <ErrorState message={featuredError} /> : scenes.length ? (
