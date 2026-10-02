@@ -585,20 +585,20 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
         <span className="inline-flex rounded-full bg-primary px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-white">
           {scene.category} · {scene.region || "Real life"}
         </span>
-        <div className="mt-5 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-[760px]">
-            <h1 className="font-serif text-[40px] font-semibold leading-[1.08] tracking-[-0.025em] text-primary md:text-[58px]">
+        <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-end lg:gap-10">
+          <div className="min-w-0 max-w-[760px]">
+            <h1 className="font-serif text-[40px] font-semibold leading-[1.08] tracking-[-0.025em] text-primary md:text-[58px] lg:text-[64px]">
               {scene.titleZh}
             </h1>
             <p className="mt-3 max-w-[690px] text-[15px] leading-relaxed text-[#3A4A42] md:text-[17px]">
               {scene.desc || scene.titleEn}
             </p>
           </div>
-          <div className="flex flex-wrap gap-2 lg:justify-end">
-            <span className="rounded-full border border-border bg-white px-4 py-2 text-[13px] font-bold text-primary">视频 {scene.duration}</span>
-            <span className="rounded-full border border-border bg-white px-4 py-2 text-[13px] font-bold text-primary">逐句 {content?.dialogue.length ?? 0} 句</span>
-            <span className="rounded-full border border-border bg-white px-4 py-2 text-[13px] font-bold text-primary">词汇 {keyExpressionItems.length} 个</span>
-            <span className="rounded-full border border-border bg-white px-4 py-2 text-[13px] font-bold text-primary">讲义 PDF</span>
+          <div className="flex flex-wrap gap-2 lg:grid lg:w-[300px] lg:grid-cols-3 lg:justify-self-end">
+            <span className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary">视频 {scene.duration}</span>
+            <span className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary">逐句 {content?.dialogue.length ?? 0} 句</span>
+            <span className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary">词汇 {keyExpressionItems.length} 个</span>
+            <span className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary lg:col-start-3">讲义 PDF</span>
           </div>
         </div>
       </div>
