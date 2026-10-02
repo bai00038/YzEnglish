@@ -26,6 +26,8 @@ export function SceneCard({ scene }: { scene: Scene }) {
       <div className="relative aspect-[16/10] shrink-0 overflow-hidden">
         {scene.photo ? (
           <img src={scene.photo} alt={scene.titleEn} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+        ) : scene.video_url ? (
+          <video src={`${scene.video_url}#t=0.001`} aria-label={scene.titleEn} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" muted playsInline preload="metadata" />
         ) : (
           <ImgBox label={scene.category} className={`w-full h-full ${catColor}`} />
         )}

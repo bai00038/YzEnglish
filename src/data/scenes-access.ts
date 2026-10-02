@@ -1,6 +1,6 @@
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { useAsyncData } from "./useAsyncData";
-import { CATEGORIES as MOCK_CATEGORIES, SCENES as MOCK_SCENES } from "./scenes";
+import { CATEGORIES as MOCK_CATEGORIES, SCENES as MOCK_SCENES, VISIBLE_SCENE_SLUGS } from "./scenes";
 import type { CultureTip, CultureTipItem, KeyExpressionItem, Scene, TipType } from "./types";
 import type {
   SceneRow,
@@ -280,11 +280,12 @@ async function fetchScenes(): Promise<Scene[]> {
         .from("scenes")
         .select(SCENE_SELECT)
         .eq("status", "published")
+        .in("slug", VISIBLE_SCENE_SLUGS)
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return ((data ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
     },
-    () => MOCK_SCENES,
+    () => MOCK_SCENES.filter(scene => VISIBLE_SCENE_SLUGS.includes(scene.slug)),
     "scenes list"
   );
 }
@@ -296,12 +297,13 @@ async function fetchFeaturedScenes(): Promise<Scene[]> {
         .from("scenes")
         .select(SCENE_SELECT)
         .eq("status", "published")
+        .in("slug", VISIBLE_SCENE_SLUGS)
         .eq("featured", true)
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return ((data ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
     },
-    () => MOCK_SCENES.filter(s => s.featured),
+    () => MOCK_SCENES.filter(s => s.featured && VISIBLE_SCENE_SLUGS.includes(s.slug)),
     "featured scenes"
   );
 }
@@ -310,9 +312,8 @@ async function fetchFeaturedScenes(): Promise<Scene[]> {
 // order. Update this list (not a `featured` flag) to change what's shown.
 // As of 2026-08-10 these are the only three published scenes.
 const CURATED_FEATURED_SLUGS = [
-  "shopping-for-clothes", // Scene 01 — 买衣服
-  "dining-at-a-turkish-restaurant", // Scene 08 — 土耳其餐厅用餐
-  "getting-a-dental-filling", // Scene 13 — 补牙
+  "returning-clothes-at-a-store",
+  "ordering-a-pizza-by-phone-for-pickup",
 ];
 
 async function fetchCuratedFeaturedScenes(): Promise<Scene[]> {
@@ -344,12 +345,13 @@ async function fetchLatestScenes(limit: number): Promise<Scene[]> {
         .from("scenes")
         .select(SCENE_SELECT)
         .eq("status", "published")
+        .in("slug", VISIBLE_SCENE_SLUGS)
         .order("created_at", { ascending: false })
         .limit(limit);
       if (error) throw error;
       return ((data ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
     },
-    () => [...MOCK_SCENES].sort((a, b) => b.id - a.id).slice(0, limit),
+    () => MOCK_SCENES.filter(scene => VISIBLE_SCENE_SLUGS.includes(scene.slug)).sort((a, b) => b.id - a.id).slice(0, limit),
     "latest scenes"
   );
 }
@@ -361,12 +363,13 @@ async function fetchNewScenes(): Promise<Scene[]> {
         .from("scenes")
         .select(SCENE_SELECT)
         .eq("status", "published")
+        .in("slug", VISIBLE_SCENE_SLUGS)
         .eq("is_new", true)
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return ((data ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
     },
-    () => MOCK_SCENES.filter(s => s.isNew),
+    () => MOCK_SCENES.filter(s => s.isNew && VISIBLE_SCENE_SLUGS.includes(s.slug)),
     "new scenes"
   );
 }
@@ -416,6 +419,7 @@ async function fetchSceneDetail(slug: string): Promise<SceneDetail> {
           .from("scenes")
           .select(SCENE_SELECT)
           .eq("status", "published")
+          .in("slug", VISIBLE_SCENE_SLUGS)
           .in("id", relatedIds);
         if (relatedError) throw relatedError;
         related = ((relatedRows ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
@@ -424,6 +428,7 @@ async function fetchSceneDetail(slug: string): Promise<SceneDetail> {
           .from("scenes")
           .select(SCENE_SELECT)
           .eq("status", "published")
+          .in("slug", VISIBLE_SCENE_SLUGS)
           .eq("category_id", row.category_id)
           .neq("id", row.id)
           .limit(3);
@@ -439,6 +444,7 @@ async function fetchSceneDetail(slug: string): Promise<SceneDetail> {
           .from("scenes")
           .select(SCENE_SELECT)
           .eq("status", "published")
+          .in("slug", VISIBLE_SCENE_SLUGS)
           .in("id", navIds);
         if (navError) throw navError;
         const navScenes = ((navRows ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
@@ -470,14 +476,14 @@ async function fetchSceneDetail(slug: string): Promise<SceneDetail> {
 
       const relatedIds = scene.content?.relatedSceneIds;
       const related = relatedIds
-        ? relatedIds.map(id => MOCK_SCENES.find(s => s.id === id)).filter((s): s is Scene => Boolean(s))
-        : MOCK_SCENES.filter(s => s.id !== scene.id && s.category === scene.category).slice(0, 3);
+        ? relatedIds.map(id => MOCK_SCENES.find(s => s.id === id && VISIBLE_SCENE_SLUGS.includes(s.slug))).filter((s): s is Scene => Boolean(s))
+        : MOCK_SCENES.filter(s => s.id !== scene.id && s.category === scene.category && VISIBLE_SCENE_SLUGS.includes(s.slug)).slice(0, 3);
 
       const prevScene = scene.content?.prevSceneId
-        ? MOCK_SCENES.find(s => s.id === scene.content!.prevSceneId) ?? null
+        ? MOCK_SCENES.find(s => s.id === scene.content!.prevSceneId && VISIBLE_SCENE_SLUGS.includes(s.slug)) ?? null
         : null;
       const nextScene = scene.content?.nextSceneId
-        ? MOCK_SCENES.find(s => s.id === scene.content!.nextSceneId) ?? null
+        ? MOCK_SCENES.find(s => s.id === scene.content!.nextSceneId && VISIBLE_SCENE_SLUGS.includes(s.slug)) ?? null
         : null;
 
       return { scene, related, prevScene, nextScene };
