@@ -4,7 +4,7 @@ import { ChevronRight, ChevronLeft, Download, Info, Play } from "lucide-react";
 import { useSceneDetail } from "@/data/scenes-access";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
-import { buildSceneSpeakers, normalizeSpeaker, SPEAKER_STYLES } from "@/data/speakerRoles";
+import { buildSceneSpeakers, normalizeSpeaker, speakerAvatarLabel, SPEAKER_STYLES } from "@/data/speakerRoles";
 import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
 
 // Key Expressions card — expressionEn/expressionZh, the only two fields
@@ -662,6 +662,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                           setPinnedLineIndex(null);
                         }
                       }}
+                      onPlaying={() => setVideoPaused(false)}
                       onPause={() => {
                         setVideoPaused(true);
                         // Any pause — manual, native-controls, or the
@@ -681,11 +682,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       // timeupdate's firing rate is too coarse for that.
                       onTimeUpdate={e => {
                         setVideoCurrentTime(e.currentTarget.currentTime);
+                        if (!e.currentTarget.paused) setVideoPaused(false);
                       }}
                       onEnded={e => {
                         cancelRangePlayback();
                         e.currentTarget.currentTime = 0;
                         setVideoCurrentTime(0);
+                        setVideoPaused(true);
                       }}
                       // Some browsers reset playbackRate to 1 when a new
                       // <source> finishes loading — reapply the selected
@@ -875,7 +878,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                         <div className="flex h-12 w-12 items-center justify-center rounded-full text-center text-[13px] font-black leading-tight text-white md:h-14 md:w-14 md:text-[14px]"
                           style={{ backgroundColor: avatarColor }}>
-                          {label}
+                          {speakerAvatarLabel(label)}
                         </div>
 
                         <div className="min-w-0">

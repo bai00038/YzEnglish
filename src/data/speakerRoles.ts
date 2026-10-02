@@ -10,6 +10,18 @@ export function normalizeSpeaker(raw: string): string {
   return raw.trim().toLowerCase();
 }
 
+// Compact label for the circular transcript avatar. Short labels such as
+// "You" stay readable; a longer single word becomes its first two letters
+// (Receptionist -> RE), while multi-word roles use two initials
+// (Pizza Shop -> PS, Beauty Advisor -> BA).
+export function speakerAvatarLabel(raw: string): string {
+  const words = raw.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "";
+  if (words.length === 1 && words[0].length <= 3) return words[0];
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+  return words.slice(0, 2).map(word => word[0]).join("").toUpperCase();
+}
+
 // EN -> ZH fallback for the rare dialogue line synced without a speakerZh.
 // Mirrored from SPEAKER_ZH_MAP in google-apps-script/Code.gs — the
 // project's existing role map — so an empty speakerZh still resolves to a

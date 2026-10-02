@@ -314,6 +314,7 @@ async function fetchFeaturedScenes(): Promise<Scene[]> {
 const CURATED_FEATURED_SLUGS = [
   "returning-clothes-at-a-store",
   "ordering-a-pizza-by-phone-for-pickup",
+  "calling-about-a-childs-fever",
 ];
 
 async function fetchCuratedFeaturedScenes(): Promise<Scene[]> {

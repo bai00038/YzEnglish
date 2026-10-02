@@ -301,3 +301,41 @@
     padding-bottom: 0;
   }
 }
+
+/* The home-page scene ribbon begins moving only after it enters the viewport.
+   Two equal-width copies create a seamless loop without a visible jump. */
+@keyframes scene-ticker-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.scene-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: scene-ticker-scroll 30s linear infinite;
+  animation-play-state: paused;
+  will-change: transform;
+}
+
+.scene-ticker-track.is-running {
+  animation-play-state: running;
+}
+
+.scene-ticker-copy {
+  flex: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-ticker-track {
+    animation: none;
+    transform: none;
+  }
+
+  .scene-ticker-copy:nth-child(2) {
+    display: none;
+  }
+}

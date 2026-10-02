@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { ArrowRight, Play, Volume2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useCuratedFeaturedScenes, useLatestScenes, useCategoryNames } from "@/data/scenes-access";
 import type { Scene } from "@/data/types";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
@@ -43,6 +44,42 @@ const demoLines = [
 ];
 
 const HERO_IMAGE = "https://images.unsplash.com/photo-1516901408257-500ed7566e6a?w=900&h=1100&fit=crop&auto=format";
+
+const TICKER_TEXT = "At the dentist — 看牙怎么说 ✦ At the pharmacy — 药房取药 ✦ School communication — 家校沟通 ✦ Blood work — 抽血检查 ✦ Parent-teacher meeting — 家长会 ✦";
+
+function SceneTicker() {
+  const tickerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const ticker = tickerRef.current;
+    if (!ticker) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.35 },
+    );
+
+    observer.observe(ticker);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={tickerRef} className="mx-auto max-w-[1180px] overflow-hidden border-y border-border py-5 md:py-6">
+      <div className={`scene-ticker-track ${isVisible ? "is-running" : ""}`} aria-label={TICKER_TEXT}>
+        {[0, 1].map((copy) => (
+          <p
+            key={copy}
+            aria-hidden={copy === 1}
+            className="scene-ticker-copy display-serif whitespace-nowrap px-5 text-[15px] italic text-secondary-foreground md:px-8 md:text-[16px]"
+          >
+            {TICKER_TEXT}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function HomePage() {
   const { data: featuredData, loading: featuredLoading, error: featuredError } = useCuratedFeaturedScenes();
@@ -91,9 +128,7 @@ export function HomePage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1180px] overflow-hidden border-y border-border px-5 py-3.5 md:px-8">
-        <p className="display-serif whitespace-nowrap text-[15px] italic text-secondary-foreground">At the dentist — 看牙怎么说 ✦ At the pharmacy — 药房取药 ✦ School communication — 家校沟通 ✦ Blood work — 抽血检查 ✦ Parent-teacher meeting — 家长会 ✦</p>
-      </div>
+      <SceneTicker />
 
       <section className="mx-auto max-w-[1180px] px-5 pb-2 pt-12 md:px-8" id="scenes">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
