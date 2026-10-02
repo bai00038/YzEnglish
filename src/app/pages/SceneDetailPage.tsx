@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useParams } from "react-router";
 import { ChevronRight, ChevronLeft, Download, Info, Play } from "lucide-react";
 import { useSceneDetail } from "@/data/scenes-access";
-import { LevelBadge } from "@/app/components/badges";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
 import { buildSceneSpeakers, normalizeSpeaker, SPEAKER_STYLES } from "@/data/speakerRoles";
@@ -993,9 +992,6 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-bold text-foreground leading-snug">{r.titleEn}</p>
                             <p className="text-xs text-muted-foreground mt-0.5">{r.titleZh}</p>
-                            <div className="flex items-center gap-1.5 mt-2">
-                              <LevelBadge level={r.level} />
-                            </div>
                           </div>
                           <ChevronRight size={13} className="text-muted-foreground flex-shrink-0 mt-0.5" />
                         </Link>

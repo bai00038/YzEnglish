@@ -1,7 +1,15 @@
 import { Search, X } from "lucide-react";
-import { useScenes, useCategoryNames } from "@/data/scenes-access";
+import { useScenes } from "@/data/scenes-access";
 import { SceneCard } from "@/app/components/SceneCard";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
+
+const CATEGORY_FILTERS = [
+  { label: "购物英语", categories: ["Shopping & Beauty", "Shopping & Returns"] },
+  { label: "日常生活", categories: ["Food & Restaurants", "Housing", "Transportation", "Social Life", "Work", "Travel", "Emergencies"] },
+  { label: "医疗英语", categories: ["Healthcare"] },
+  { label: "新移民必备", categories: ["Banking & Services", "Housing", "Transportation", "Work", "Emergencies"] },
+  { label: "家校沟通", categories: ["School & Family"] },
+] as const;
 
 export function ExplorePage({
   activeCategory, setActiveCategory,
@@ -11,12 +19,12 @@ export function ExplorePage({
   searchQuery: string; setSearchQuery: (q: string) => void;
 }) {
   const { data: scenesData, loading: scenesLoading, error: scenesError } = useScenes();
-  const { data: categoryNamesData } = useCategoryNames();
   const scenes = scenesData ?? [];
-  const categories = categoryNamesData ?? [];
 
   const filtered = scenes.filter(s => {
-    const cm = activeCategory === "All" || s.category === activeCategory;
+    const selectedFilter = CATEGORY_FILTERS.find(filter => filter.label === activeCategory);
+    const selectedCategories = selectedFilter?.categories as readonly string[] | undefined;
+    const cm = activeCategory === "All" || Boolean(selectedCategories?.includes(s.category));
     const qm = !searchQuery || s.titleEn.toLowerCase().includes(searchQuery.toLowerCase()) || s.titleZh.includes(searchQuery);
     return cm && qm;
   });
@@ -45,15 +53,15 @@ export function ExplorePage({
 
           {/* Category */}
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.13em] mb-2.5" style={{ color: "#0F3527" }}>Category · 分类</p>
+            <p className="text-[9px] font-black tracking-[0.13em] mb-2.5" style={{ color: "#0F3527" }}>场景分类</p>
             <div className="flex flex-wrap gap-1.5">
-              {["All", ...categories].map(cat => (
-                <button key={cat} onClick={() => setActiveCategory(cat)}
+              {[{ label: "全部", value: "All" }, ...CATEGORY_FILTERS.map(filter => ({ label: filter.label, value: filter.label }))].map(cat => (
+                <button key={cat.value} onClick={() => setActiveCategory(cat.value)}
                   className="text-xs font-semibold rounded-full px-3 py-1.5 border transition-all duration-150 whitespace-nowrap"
-                  style={activeCategory === cat
+                  style={activeCategory === cat.value
                     ? { backgroundColor: "#C8F169", color: "#12241C", borderColor: "#C8F169" }
                     : { backgroundColor: "#FFFEFB", color: "#3A4A42", borderColor: "rgba(15,53,39,0.18)" }}>
-                  {cat}
+                  {cat.label}
                 </button>
               ))}
             </div>

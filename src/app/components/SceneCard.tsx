@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { CATEGORY_BG } from "@/data/scenes";
 import type { Scene } from "@/data/types";
 import { ImgBox } from "@/app/components/primitives";
-import { LevelBadge, DurationLabel } from "@/app/components/badges";
+import { DurationLabel } from "@/app/components/badges";
 
 export function SceneCard({ scene }: { scene: Scene }) {
   const catColor = CATEGORY_BG[scene.category] ?? "bg-secondary";
@@ -26,7 +26,6 @@ export function SceneCard({ scene }: { scene: Scene }) {
         <p className="display-serif text-[21px] font-semibold leading-[1.12] text-foreground group-hover:text-primary transition-colors">{scene.titleEn}</p>
         <p className="text-xs text-muted-foreground font-medium mt-0.5 mb-2">{scene.titleZh}</p>
         <div className="flex flex-wrap items-center gap-1.5 mt-auto pt-3 border-t border-border">
-          <LevelBadge level={scene.level} />
           <span className="ml-auto"><DurationLabel duration={scene.duration} /></span>
         </div>
       </div>
