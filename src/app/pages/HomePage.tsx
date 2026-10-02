@@ -170,7 +170,7 @@ export function HomePage() {
               <p className="text-[11px] font-bold tracking-[0.24em] text-muted-foreground mb-6">
                 —— OTTAWA · 真实生活英语
               </p>
-              <h1 className="font-display font-semibold text-primary leading-[1.04] tracking-tight text-[44px] md:text-[60px] lg:text-[84px]">
+              <h1 className="font-display font-bold text-primary leading-[1.04] tracking-tight text-[44px] md:text-[60px] lg:text-[84px]">
                 Real scenes,<br />
                 <span className="italic">for real life.</span>
               </h1>
