@@ -32,35 +32,39 @@ export function ExplorePage({
   return (
     <div>
       {/* Header + search */}
-      <div className="bg-background max-w-lg mx-auto md:max-w-5xl px-4 pt-10 md:pt-16 pb-8">
-        <p className="editorial-kicker mb-3">Scene library · 场景库</p>
-        <h1 className="display-serif text-[42px] md:text-[60px] font-semibold leading-none text-foreground mb-2">Explore real-life scenes</h1>
-        <p className="text-sm text-muted-foreground mb-7">浏览真实生活场景 · {scenesLoading ? "…" : scenes.length} scenes available</p>
-        <div className="flex items-center gap-2.5 border border-border rounded-full px-5 py-3.5 bg-card shadow-[0_12px_35px_rgba(15,53,39,0.06)] focus-within:border-primary/50 transition-colors max-w-2xl">
-          <Search size={15} className="text-muted-foreground flex-shrink-0" />
+      <div className="mx-auto max-w-[1180px] bg-background px-5 pb-10 pt-12 md:px-8 md:pb-12 md:pt-16">
+        <p className="editorial-kicker mb-4">Scene library · 场景库</p>
+        <h1 className="display-serif mb-4 text-[44px] font-semibold leading-[1.04] tracking-[-0.01em] text-primary md:text-[68px]">
+          Explore <em className="font-normal">real-life</em> scenes
+        </h1>
+        <p className="mb-8 text-[15px] text-foreground md:text-[17px]">
+          浏览真实生活场景 · 共 {scenesLoading ? "…" : scenes.length} 个场景
+          <span className="display-serif ml-2 hidden text-[15px] italic text-muted-foreground sm:inline">real scenes for real life</span>
+        </p>
+        <form className="flex max-w-[680px] items-center gap-3 rounded-full border border-border bg-card py-2 pl-5 pr-2 shadow-[0_10px_30px_rgba(18,36,28,0.06)] transition-colors focus-within:border-primary/50 md:pl-6" onSubmit={event => event.preventDefault()}>
+          <Search size={19} className="flex-shrink-0 text-muted-foreground" />
           <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Search: return, 退货, dentist, hotel…"
-            className="flex-1 text-sm bg-transparent outline-none placeholder:text-muted-foreground" />
+            placeholder="搜索场景：退货、牙医、酒店…"
+            className="min-w-0 flex-1 bg-transparent text-[15px] text-foreground outline-none placeholder:text-muted-foreground md:text-base" />
           {searchQuery && (
             <button onClick={() => setSearchQuery("")} className="text-muted-foreground hover:text-foreground"><X size={14} /></button>
           )}
-        </div>
+          <button type="submit" className="flex-shrink-0 rounded-full bg-accent px-4 py-2.5 text-sm font-bold text-accent-foreground transition-[filter] hover:brightness-95 md:px-6">搜索</button>
+        </form>
       </div>
 
       {/* Filters — light editorial strip */}
-      <div className="border-y border-border bg-secondary/70">
-        <div className="max-w-lg mx-auto md:max-w-5xl px-4 py-6">
-
-          {/* Category */}
-          <div>
-            <p className="text-[9px] font-black tracking-[0.13em] mb-2.5" style={{ color: "#0F3527" }}>场景分类</p>
-            <div className="flex flex-wrap gap-1.5">
+      <div className="border-y border-border bg-secondary">
+        <div className="mx-auto max-w-[1180px] px-5 py-4 md:px-8">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <p className="mr-1 text-[12px] font-medium tracking-[0.18em] text-muted-foreground">场景分类</p>
+            <div className="flex flex-wrap gap-2.5">
               {[{ label: "全部", value: "All" }, ...CATEGORY_FILTERS.map(filter => ({ label: filter.label, value: filter.label }))].map(cat => (
                 <button key={cat.value} onClick={() => setActiveCategory(cat.value)}
-                  className="text-xs font-semibold rounded-full px-3 py-1.5 border transition-all duration-150 whitespace-nowrap"
+                  className="whitespace-nowrap rounded-full border-[1.5px] px-5 py-2 text-sm leading-none transition-all duration-150"
                   style={activeCategory === cat.value
-                    ? { backgroundColor: "#C8F169", color: "#12241C", borderColor: "#C8F169" }
-                    : { backgroundColor: "#FFFEFB", color: "#3A4A42", borderColor: "rgba(15,53,39,0.18)" }}>
+                    ? { backgroundColor: "#C8F169", color: "#12241C", borderColor: "#C8F169", fontWeight: 700 }
+                    : { backgroundColor: "transparent", color: "#3A4A42", borderColor: "rgba(18,36,28,0.22)" }}>
                   {cat.label}
                 </button>
               ))}
@@ -71,30 +75,30 @@ export function ExplorePage({
       </div>
 
       {/* Results count + clear */}
-      <div className="bg-background max-w-lg mx-auto md:max-w-5xl px-4">
-        <div className="py-3 flex items-center gap-3">
-          <p className="text-xs font-semibold text-foreground">{filtered.length} scene{filtered.length !== 1 ? "s" : ""} found</p>
+      <div className="mx-auto max-w-[1180px] bg-background px-5 md:px-8">
+        <div className="flex items-baseline gap-4 pb-5 pt-7 md:pt-8">
+          <p className="text-[15px] text-foreground">共 <b className="display-serif mx-0.5 text-[22px] text-primary">{filtered.length}</b> 个场景</p>
           {(activeCategory !== "All" || searchQuery) && (
             <button onClick={() => { setActiveCategory("All"); setSearchQuery(""); }}
-              className="text-[11px] text-muted-foreground hover:text-primary transition-colors underline underline-offset-2">
-              Clear all
+              className="text-sm text-muted-foreground underline underline-offset-4 transition-colors hover:text-primary">
+              清除筛选
             </button>
           )}
         </div>
-        <div className="pb-10">
+        <div className="pb-[72px]">
           {scenesLoading ? (
             <LoadingState label="Loading scenes…" />
           ) : scenesError ? (
             <ErrorState message={scenesError} />
           ) : filtered.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-[26px] sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map(scene => <SceneCard key={scene.id} scene={scene} />)}
             </div>
           ) : (
-            <div className="text-center py-16 border border-dashed border-border rounded-2xl text-muted-foreground">
+            <div className="rounded-2xl border border-dashed border-border py-20 text-center text-muted-foreground">
               <Search size={28} className="mx-auto mb-3 opacity-30" />
-              <p className="text-sm font-semibold">No scenes found</p>
-              <p className="text-xs mt-1">Try a different search or filter</p>
+              <p className="font-['Noto_Serif_SC'] text-[20px] font-bold text-foreground">没有找到匹配的场景</p>
+              <p className="mt-1 text-sm">换个关键词试试，或者清除筛选看全部。</p>
             </div>
           )}
         </div>
