@@ -170,9 +170,13 @@ export function HomePage() {
               <p className="text-[11px] font-bold tracking-[0.24em] text-muted-foreground mb-6">
                 —— OTTAWA · 真实生活英语
               </p>
-              <h1 className="font-display font-bold text-primary leading-[1.04] tracking-tight text-[44px] md:text-[60px] lg:text-[84px]">
-                Real scenes,<br />
-                <span className="italic">for real life.</span>
+              <h1 className="max-w-[340px] md:max-w-[500px] lg:max-w-[620px]">
+                <img
+                  src="/images/headline-real-scenes.png"
+                  alt="Real scenes, for real life."
+                  className="block w-full h-auto select-none"
+                  draggable={false}
+                />
               </h1>
               <p className="font-display font-semibold text-primary leading-snug text-[28px] md:text-[34px] lg:text-[40px] mt-7">
                 不是背单词，<br />
