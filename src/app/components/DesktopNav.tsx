@@ -4,7 +4,7 @@ import { isNavActive } from "@/app/components/nav-utils";
 export function DesktopNav() {
   const { pathname } = useLocation();
   return (
-    <nav className="border-y border-border bg-background">
+    <nav className="border-b border-border bg-background">
       <div className="mx-auto flex max-w-[1180px] items-center gap-5 px-5 py-4 md:px-8 md:py-5">
         <Link to="/" className="flex items-center gap-3.5">
           <img src="/yz-english-logo.png" alt="YZ English" className="h-[52px] w-[52px] flex-none object-contain md:h-[56px] md:w-[56px]" />

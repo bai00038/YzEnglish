@@ -26,7 +26,7 @@ function ExploreButton() {
 
 export function AboutPage() {
   return (
-    <div className="border-t-2 border-foreground bg-background pt-[52px] md:pt-[72px]">
+    <div className="bg-background pt-[52px] md:pt-[72px]">
       <section className="mx-auto max-w-[1180px] px-5 md:px-8">
         <p className="editorial-kicker">About · 关于我们</p>
         <h1 className="display-serif mt-4 text-[40px] font-bold leading-[1.06] tracking-[-0.01em] text-primary md:text-[62px]">
