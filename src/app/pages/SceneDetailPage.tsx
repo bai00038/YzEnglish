@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router";
 import {
   ChevronRight, ChevronLeft, FileText, Download, Info, Play,
 } from "lucide-react";
-import { useSceneDetail } from "@/data/scenes-access";
+import { useSceneDetail, useScenes } from "@/data/scenes-access";
 import { SpeechBubbleLabel } from "@/app/components/brand";
 import { LevelBadge, DurationLabel } from "@/app/components/badges";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
@@ -98,6 +98,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const scene = data?.scene ?? null;
   const content = scene?.content;
   const related = data?.related ?? [];
+  // Right-sidebar episode list: every scene in this scene's collection
+  // (category), catalogue order; falls back to curated related scenes.
+  const { data: allScenes } = useScenes();
+  const collectionScenes = useMemo(() => {
+    const list = (allScenes ?? []).filter(s => s.category === scene?.category);
+    return list.length > 0 ? list : related;
+  }, [allScenes, scene?.category, related]);
   // Language module data — sourced from public.key_expressions/
   // public.culture_tips (falling back to legacy scenes.tips only when a
   // scene has no rows in the new tables yet; see "Temporary legacy Tips
@@ -636,12 +643,14 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
           </div>
         </section>
       ) : (
-        <>
+        <div className="max-w-[1180px] mx-auto px-6 md:px-10">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px] items-start py-8 md:py-12">
+            <div className="min-w-0">
 
-          {/* ─────────────────────────────────────────────
-              Video + playback speed + study tabs
-              ───────────────────────────────────────────── */}
-          <section id="section-watch" className="max-w-[1120px] mx-auto px-6 md:px-10 pt-8 md:pt-10 lg:pt-14 pb-16">
+              {/* ─────────────────────────────────────────────
+                  Video + playback speed + study tabs
+                  ───────────────────────────────────────────── */}
+          <section id="section-watch" className="pt-2 md:pt-4 pb-10">
 
             {/* ── Scene video — 16:9 frame ── */}
             <div className="w-full rounded-3xl overflow-hidden bg-black shadow-[0_24px_60px_rgba(28,51,41,0.18)]" style={{ aspectRatio: "16 / 9" }}>
@@ -959,7 +968,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               STAGE 03 · Learn the Language — 知识点
               ───────────────────────────────────────────── */}
           <section id="section-language" className="border-t border-border/70">
-            <div className="max-w-[720px] mx-auto px-6 py-14 md:py-20">
+            <div className="py-10 md:py-12">
               <div className="mb-10">
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-4">
                   Language · 知识点
@@ -999,7 +1008,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               PDF · Related · Prev/Next
               ───────────────────────────────────────────── */}
           <section className="border-t border-border/70">
-            <div className="max-w-[1120px] mx-auto px-6 md:px-10 py-14">
+            <div className="py-10">
 
               {/* PDF download — scene.pdfUrl comes straight from Supabase scenes.pdf_url;
                   never hardcoded and never guessed from the scene id/slug. */}
@@ -1025,58 +1034,51 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 )}
               </div>
 
-              {/* Related Scenes */}
-              {related.length > 0 && (
-                <div className="mb-12">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-6">
-                    Related Scenes · 相关场景
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {related.map(r => (
-                      <Link key={r.id} to={`/scenes/${r.slug}`}
-                        className="flex items-start gap-3 border border-border/70 rounded-2xl p-4 bg-card text-left hover:shadow-[0_10px_30px_rgba(28,51,41,0.08)] transition-all">
-                        <div className="flex-1 min-w-0">
-                          <p className="font-display text-[15px] font-semibold text-foreground leading-snug">{r.titleEn}</p>
-                          <p className="text-xs text-muted-foreground mt-1">{r.titleZh}</p>
-                          <div className="flex items-center gap-1.5 mt-2.5">
-                            <LevelBadge level={r.level} />
-                          </div>
-                        </div>
-                        <ChevronRight size={14} className="text-muted-foreground flex-shrink-0 mt-0.5" />
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Prev / Next scene */}
-              {(prevScene || nextScene) && (
-                <div className="grid grid-cols-2 gap-4 pt-10 border-t border-border/70">
-                  {prevScene ? (
-                    <Link to={`/scenes/${prevScene.slug}`} className="rounded-2xl p-5 text-left bg-card border border-border/70 hover:shadow-[0_10px_30px_rgba(28,51,41,0.08)] transition-all">
-                      <div className="flex items-center gap-1 text-[11px] text-muted-foreground mb-2.5">
-                        <ChevronLeft size={11} />上一场景
-                      </div>
-                      <p className="font-display text-[15px] font-semibold text-foreground leading-snug">{prevScene.titleEn}</p>
-                      <p className="text-[12px] text-primary mt-1.5">{prevScene.titleZh}</p>
-                    </Link>
-                  ) : <div />}
-                  {nextScene ? (
-                    <Link to={`/scenes/${nextScene.slug}`} className="rounded-2xl p-5 text-right bg-card border border-border/70 hover:shadow-[0_10px_30px_rgba(28,51,41,0.08)] transition-all">
-                      <div className="flex items-center gap-1 justify-end text-[11px] text-muted-foreground mb-2.5">
-                        下一场景<ChevronRight size={11} />
-                      </div>
-                      <p className="font-display text-[15px] font-semibold text-foreground leading-snug">{nextScene.titleEn}</p>
-                      <p className="text-[12px] text-primary mt-1.5">{nextScene.titleZh}</p>
-                    </Link>
-                  ) : <div />}
-                </div>
-              )}
-
             </div>
           </section>
+            </div>
 
-        </>
+            {/* ── Right column: collection episode list ── */}
+            <aside className="lg:sticky lg:top-24 rounded-[18px] border border-border/70 bg-card p-5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-1">
+                Collection · 本合集
+              </p>
+              <h3 className="font-display text-[22px] font-semibold text-foreground tracking-tight">
+                {scene.category}
+              </h3>
+              <p className="text-[12px] text-muted-foreground mt-1 mb-4">
+                {collectionScenes.length} 个场景 · 按顺序学完
+              </p>
+              <nav className="space-y-1" aria-label="合集分集列表">
+                {collectionScenes.map((s, i) => {
+                  const active = s.slug === slug;
+                  return (
+                    <Link
+                      key={s.id}
+                      to={`/scenes/${s.slug}`}
+                      aria-current={active ? "page" : undefined}
+                      className={`flex items-start gap-3 rounded-xl px-3 py-3 transition-colors ${active ? "bg-primary/[0.07]" : "hover:bg-primary/[0.04]"}`}
+                    >
+                      <span className={`font-display text-[13px] font-semibold w-7 h-7 rounded-full grid place-items-center flex-shrink-0 mt-0.5 ${active ? "bg-primary text-primary-foreground" : "border border-border/70 text-muted-foreground"}`}>
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="min-w-0">
+                        <span className={`block font-display text-[15px] font-semibold leading-snug ${active ? "text-primary" : "text-foreground"}`}>
+                          {s.titleZh || s.titleEn}
+                        </span>
+                        {s.desc ? (
+                          <span className="block text-[12px] text-muted-foreground leading-relaxed mt-1 line-clamp-2">
+                            {s.desc}
+                          </span>
+                        ) : null}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </nav>
+            </aside>
+          </div>
+        </div>
       )}
     </div>
   );
