@@ -287,3 +287,26 @@
     padding-bottom: 0;
   }
 }
+
+/* ─────────────────────────────────────────────
+   Hero ticker — slow infinite scroll, pauses on hover.
+   Track holds two identical copies; -50% loops seamlessly.
+   ───────────────────────────────────────────── */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.ticker-track {
+  animation: ticker-scroll 45s linear infinite;
+}
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track { animation: none; }
+}
+
+/* Anchor jumps (e.g. hero "先试学一课 ↓" -> #library) glide instead of jumping. */
+html {
+  scroll-behavior: smooth;
+}

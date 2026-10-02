@@ -1,9 +1,9 @@
 import { Link, useLocation } from "react-router";
 import { isNavActive } from "@/app/components/nav-utils";
 
-// Minimal editorial header — paper background, serif wordmark, three
-// plain text links. Deliberately no search box, no pills, no dashboard
-// chrome: the "深林编辑" voice starts here.
+// Editorial header per 方向稿: forest-green rounded-square logo mark with
+// paper serif "YZ", two-line wordmark, three plain links, forest-green
+// capsule CTA. No divider line, no dashboard chrome.
 const LINKS: [string, string][] = [
   ["/explore", "场景库"],
   ["/resources", "学习资料"],
@@ -13,14 +13,21 @@ const LINKS: [string, string][] = [
 export function DesktopNav() {
   const { pathname } = useLocation();
   return (
-    <nav className="hidden min-[641px]:flex fixed top-0 left-0 right-0 z-50 h-16 lg:h-20 items-center bg-background/95 backdrop-blur-sm border-b border-border">
-      <div className="max-w-[1120px] w-full mx-auto px-6 md:px-10 flex items-center gap-10">
-        <Link to="/" className="flex-shrink-0 leading-none">
-          <span className="font-display font-semibold text-[19px] lg:text-[22px] tracking-tight text-foreground">
-            YZ English
+    <nav className="hidden min-[641px]:flex fixed top-0 left-0 right-0 z-50 h-16 lg:h-20 items-center bg-background/95 backdrop-blur-sm">
+      <div className="max-w-[1120px] w-full mx-auto px-6 md:px-10 flex items-center gap-4">
+        <Link to="/" className="flex items-center gap-3 flex-shrink-0" aria-label="YZ English 首页">
+          <span className="w-11 h-11 lg:w-12 lg:h-12 rounded-2xl bg-primary flex items-center justify-center flex-shrink-0">
+            <span className="font-display font-semibold text-[#F7F4EE] text-[17px] lg:text-[19px] leading-none">
+              YZ
+            </span>
           </span>
-          <span className="block text-[9px] font-semibold tracking-[0.22em] uppercase text-muted-foreground mt-0.5">
-            real scenes for real life
+          <span className="leading-none">
+            <span className="block font-bold text-[17px] lg:text-[19px] tracking-[0.04em] text-primary">
+              YZ ENGLISH
+            </span>
+            <span className="block text-[9px] lg:text-[10px] font-semibold tracking-[0.24em] text-muted-foreground mt-1.5">
+              REAL SCENES FOR REAL LIFE
+            </span>
           </span>
         </Link>
         <div className="ml-auto flex items-center gap-8 lg:gap-10">
@@ -42,6 +49,12 @@ export function DesktopNav() {
             );
           })}
         </div>
+        <Link
+          to="/explore"
+          className="flex-shrink-0 text-[14px] font-bold text-[#F7F4EE] bg-primary rounded-full px-6 py-2.5 hover:opacity-90 transition-opacity"
+        >
+          逛场景库
+        </Link>
       </div>
     </nav>
   );

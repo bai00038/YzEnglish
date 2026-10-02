@@ -47,8 +47,18 @@ const LIBRARY = [
   },
 ] as const;
 
-function LibraryCard({ name, en, desc, scenes, fixedCount }: {
-  name: string; en: string; desc: string; scenes: Scene[]; fixedCount?: number;
+// ─────────────────────────────────────────────
+// Hero ticker — scene names scrolling under the hero, per 方向稿.
+// ─────────────────────────────────────────────
+const TICKER_ITEMS = [
+  { en: "At the dentist", zh: "看牙怎么说" },
+  { en: "At the pharmacy", zh: "药房取药" },
+  { en: "School gate small talk", zh: "校门口寒暄" },
+  { en: "Blood work", zh: "抽血检查" },
+  { en: "Parent-teacher meeting", zh: "家长会" },
+] as const;
+
+function LibraryCard({ name, en, desc, scenes, fixedCount }: {  name: string; en: string; desc: string; scenes: Scene[]; fixedCount?: number;
 }) {
   const photo = scenes.find(s => s.photo)?.photo;
   const count = fixedCount ?? scenes.length;
@@ -148,30 +158,80 @@ export function HomePage() {
   return (
     <div>
       {/* ════════════════════════════════════════
-          HERO — editorial, generous whitespace.
-          No stats, no collage, no dashboard chrome.
+          HERO — editorial two-column, per 方向稿.
+          Left: eyebrow / serif H1 (roman + italic) / Chinese
+          headline / body / dual capsule CTAs.
+          Right: photo card with floating featured-scene card.
           ════════════════════════════════════════ */}
-      <section className="bg-background">
-        <div className="max-w-[1120px] mx-auto px-6 md:px-10 pt-20 pb-16 md:pt-28 md:pb-24 lg:pt-36 lg:pb-32">
-          <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-muted-foreground mb-6">
-            YZ English · Yz影子英语
-          </p>
-          <h1 className="font-display font-semibold text-foreground leading-[1.04] tracking-tight text-[44px] md:text-[60px] lg:text-[84px]">
-            real scenes<br />for real life.
-          </h1>
-          <p className="font-display text-[19px] md:text-[22px] lg:text-[26px] text-foreground/80 mt-7 leading-relaxed">
-            为海外生活而生的真场景英语。
-          </p>
-          <p className="text-[14px] md:text-[15px] text-muted-foreground leading-relaxed mt-4 max-w-md">
-            在真实场景发生之前，先看一遍、听一遍、练一遍。
-          </p>
-          <div className="mt-10">
-            <Link
-              to="/explore"
-              className="inline-flex items-center gap-2 text-[14px] font-bold text-[#F7F4EE] bg-primary rounded-full px-7 py-3.5 hover:opacity-90 transition-opacity"
-            >
-              逛场景库 <ArrowRight size={15} />
-            </Link>
+      <section className="bg-background overflow-hidden">
+        <div className="max-w-[1120px] mx-auto px-6 md:px-10 pt-14 md:pt-20 lg:pt-24 pb-14 md:pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.02fr_0.98fr] gap-12 lg:gap-14 items-center">
+            <div>
+              <p className="text-[11px] font-bold tracking-[0.24em] text-muted-foreground mb-6">
+                —— OTTAWA · 真实生活英语
+              </p>
+              <h1 className="font-display font-semibold text-primary leading-[1.04] tracking-tight text-[44px] md:text-[60px] lg:text-[84px]">
+                Real scenes,<br />
+                <span className="italic">for real life.</span>
+              </h1>
+              <p className="font-display font-semibold text-primary leading-snug text-[28px] md:text-[34px] lg:text-[40px] mt-7">
+                不是背单词，<br />
+                是下一次开口不慌。
+              </p>
+              <p className="text-[15px] md:text-[16px] text-muted-foreground leading-relaxed mt-5 max-w-md">
+                看牙、抽血、校门口寒暄、跟老师谈孩子——每一个场景都聚焦真实生活，做成视频 + 点读 + 跟读。学完，就能用在明天早上。
+              </p>
+              <div className="mt-9 flex flex-wrap items-center gap-4">
+                <Link
+                  to="/explore"
+                  className="inline-flex items-center gap-2 text-[14px] font-bold text-[#F7F4EE] bg-primary rounded-full px-7 py-3.5 hover:opacity-90 transition-opacity"
+                >
+                  进入场景库 <ArrowRight size={15} />
+                </Link>
+                <a
+                  href="#library"
+                  className="inline-flex items-center gap-2 text-[14px] font-bold text-primary border border-primary/25 rounded-full px-7 py-3.5 hover:border-primary/60 transition-colors"
+                >
+                  先试学一课 <span aria-hidden="true">↓</span>
+                </a>
+              </div>
+            </div>
+            <div className="relative rounded-[28px] overflow-hidden bg-secondary">
+              <img
+                src="/images/hero-school-talk.jpg"
+                alt="两位女士在秋日街道上聊天"
+                className="w-full aspect-[4/4.3] sm:aspect-[16/11] lg:aspect-[4/4.6] object-cover"
+              />
+              <div className="absolute inset-x-4 bottom-4 bg-white/95 backdrop-blur rounded-2xl px-5 py-4 shadow-[0_18px_44px_rgba(28,51,41,0.18)] flex items-center gap-4">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-bold text-foreground">本期场景 · 校门口寒暄</p>
+                  <p className="text-[13px] text-muted-foreground leading-relaxed mt-1">
+                    “聊十几分钟不冷场”的固定话题库——孩子近况、课程、老师，下次见面接着聊。
+                  </p>
+                </div>
+                <span className="flex-shrink-0 text-[12px] font-bold text-accent-foreground bg-accent rounded-full px-4 py-2">
+                  人气场景
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Ticker — thin rules top/bottom, slow infinite scroll. */}
+        <div className="border-y border-foreground/10 py-4 overflow-hidden" aria-hidden="true">
+          <div className="ticker-track flex w-max items-baseline">
+            {[0, 1].map((copy) => (
+              <div key={copy} className="flex items-baseline flex-shrink-0">
+                {TICKER_ITEMS.map((item) => (
+                  <span key={`${copy}-${item.en}`} className="flex items-baseline flex-shrink-0">
+                    <span className="font-display italic text-[15px] md:text-[17px] text-muted-foreground whitespace-nowrap">
+                      {item.en} – {item.zh}
+                    </span>
+                    <span className="mx-6 md:mx-8 text-[11px] text-primary/50">◆</span>
+                  </span>
+                ))}
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -196,7 +256,7 @@ export function HomePage() {
       {/* ════════════════════════════════════════
           SCENE LIBRARY — the big cards
           ════════════════════════════════════════ */}
-      <section className="bg-background pb-20 md:pb-28">
+      <section id="library" className="bg-background pb-20 md:pb-28 scroll-mt-24">
         <div className="max-w-[1120px] mx-auto px-6">
           <div className="mb-10 md:mb-14">
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-4">
