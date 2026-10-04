@@ -597,7 +597,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             <span className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary">视频 {scene.duration}</span>
             <span className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary">逐句 {content?.dialogue.length ?? 0} 句</span>
             <span className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary">词汇 {keyExpressionItems.length} 个</span>
-            <span className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary">讲义 PDF</span>
+            {scene.pdfUrl && (
+              <span className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary">讲义 PDF</span>
+            )}
           </div>
         </div>
       </div>
@@ -960,13 +962,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                 {/* PDF download — scene.pdfUrl comes straight from Supabase scenes.pdf_url;
                     never hardcoded and never guessed from the scene id/slug. */}
-                <div className="mb-12 flex flex-col gap-6 rounded-[24px] bg-primary px-6 py-8 text-white md:flex-row md:items-center md:justify-between md:px-8">
-                  <div className="max-w-[720px]">
-                    <p className="text-[11px] font-black uppercase tracking-[0.18em] text-white/65">Step 04 · 本期讲义 PDF</p>
-                    <p className="mt-4 font-serif text-[27px] font-semibold leading-tight md:text-[34px]">把这一课带走，贴在冰箱上练</p>
-                    <p className="mt-3 text-[14px] leading-relaxed text-white/70">完整双语对话 + 核心表达 + 本地文化提示，下载后随时复习。</p>
-                  </div>
-                  {scene.pdfUrl ? (
+                {scene.pdfUrl && (
+                  <div className="mb-12 flex flex-col gap-6 rounded-[24px] bg-primary px-6 py-8 text-white md:flex-row md:items-center md:justify-between md:px-8">
+                    <div className="max-w-[720px]">
+                      <p className="text-[11px] font-black uppercase tracking-[0.18em] text-white/65">Step 04 · 本期讲义 PDF</p>
+                      <p className="mt-4 font-serif text-[27px] font-semibold leading-tight md:text-[34px]">把这一课带走，贴在冰箱上练</p>
+                      <p className="mt-3 text-[14px] leading-relaxed text-white/70">完整双语对话 + 核心表达 + 本地文化提示，下载后随时复习。</p>
+                    </div>
                     <a
                       href={scene.pdfUrl}
                       target="_blank"
@@ -976,10 +978,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     >
                       下载 PDF 讲义 <Download size={15} />
                     </a>
-                  ) : (
-                    <span className="flex-shrink-0 rounded-full border border-white/25 px-5 py-3 text-xs font-bold text-white/65">资料准备中</span>
-                  )}
-                </div>
+                  </div>
+                )}
 
                 {/* Related Scenes */}
                 {related.length > 0 && (
