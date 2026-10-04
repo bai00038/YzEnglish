@@ -155,7 +155,7 @@ function str(v: unknown): string {
 function mapPipelineDetail(
   json: Record<string, unknown>,
   entry: ManifestScene,
-  timing?: Array<{ card: number; start: number; end: number }>
+  timing?: Array<{ card: number; start: number; end: number; en?: string }>
 ): Scene {
   const sceneMeta = (json.scene ?? {}) as Record<string, unknown>;
   const opener = (json.opener ?? {}) as Record<string, unknown>;
@@ -167,13 +167,25 @@ function mapPipelineDetail(
   const canadaTip = (json.canada_tip ?? {}) as Record<string, unknown>;
 
   const dialogueLines: DialogueLine[] = lines.map((l, i) => {
-    const t = timing?.find(entry => entry.card === i);
+    // Match timing by text (not index) — the video subtitles may be a
+    // shortened version of the full dialogue in scene.json. Only lines
+    // with matching text get tap-to-play; others render as plain text.
+    const lineEn = str(l.en);
+    const t = timing?.find(entry => {
+      if (typeof entry.start !== "number" || typeof entry.end !== "number") return false;
+      const timingEn = typeof entry.en === "string" ? entry.en : "";
+      if (!timingEn) return entry.card === i; // fallback to index if no text
+      const norm = (s: string) => s.replace(/[‘’]/g, "'").replace(/\s+/g, " ").trim().toLowerCase();
+      const nLine = norm(lineEn);
+      const nTiming = norm(timingEn);
+      return nLine === nTiming || nLine.includes(nTiming) || nTiming.includes(nLine);
+    });
     return {
       speaker: str(l.speaker),
       speakerZh: speakerZhFor(str(l.speaker)),
-      en: str(l.en),
+      en: lineEn,
       zh: str(l.zh),
-      // Per-line timings from the episode's timing.json (if present) —
+      // Per-line timings from the episode's timing.json (if text matches) —
       // enables tap-to-play on the detail page. Absent = plain text.
       ...(t && typeof t.start === "number" && typeof t.end === "number"
         ? { start: t.start, end: t.end }
@@ -288,7 +300,7 @@ export async function fetchEpisodeDetail(entry: ManifestScene): Promise<Scene> {
   // Pipeline schema: try to load per-line timings from the episode's
   // timing.json (same OSS folder as scene.json). Absent = plain text,
   // never a crash.
-  let timing: Array<{ card: number; start: number; end: number }> | undefined;
+  let timing: Array<{ card: number; start: number; end: number; en?: string }> | undefined;
   try {
     const timingUrl = entry.dataUrl.replace(/\/[^/]+$/, "/timing.json");
     const timingRes = await fetch(timingUrl);
@@ -297,6 +309,7 @@ export async function fetchEpisodeDetail(entry: ManifestScene): Promise<Scene> {
         card: number;
         start: number;
         end: number;
+        en?: string;
       }>;
       if (Array.isArray(timingJson)) {
         timing = timingJson;
