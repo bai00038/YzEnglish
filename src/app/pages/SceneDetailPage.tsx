@@ -14,7 +14,7 @@ import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
 // Fixed short height, two per row on desktop.
 function KeyExpressionCard({ item }: { item: KeyExpressionItem }) {
   return (
-    <div className="border-b border-dashed border-primary/15 py-4 first:pt-0 last:border-0 last:pb-0">
+    <div className="break-inside-avoid border-b border-dashed border-primary/15 py-4 first:pt-0 last:border-0 last:pb-0">
       <p className="font-serif text-[20px] leading-snug text-primary">{item.expressionEn}</p>
       <p className="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">{item.expressionZh}</p>
     </div>
@@ -927,12 +927,12 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 ───────────────────────────────────────────── */}
             <section id="section-language" className="px-5 pb-12 md:px-10 md:pb-16">
               <StepHeading number="03" title="知识点" hint="这一课真正要带走的" />
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="flex flex-col gap-4">
                 {/* Key Expressions — from public.key_expressions (or its legacy-tips fallback) */}
                 {keyExpressionItems.length > 0 && (
-                  <div className={`rounded-[20px] border border-border bg-white p-5 md:p-7 ${cultureTipItems.length === 0 ? "md:col-span-2" : ""}`}>
+                  <div className="rounded-[20px] border border-border bg-white p-5 md:p-7">
                     <h3 className="mb-6 text-[18px] font-black text-primary">核心表达</h3>
-                    <div>
+                    <div className="md:columns-2 md:gap-8">
                       {keyExpressionItems.map((item, i) => (
                         <KeyExpressionCard key={i} item={item} />
                       ))}
@@ -942,7 +942,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                 {/* Culture & Local Tips — from public.culture_tips (or its legacy-tips fallback) */}
                 {cultureTipItems.length > 0 && (
-                  <div className={`rounded-[20px] border border-border bg-white p-5 md:p-7 ${keyExpressionItems.length === 0 ? "md:col-span-2" : ""}`}>
+                  <div className="rounded-[20px] border border-border bg-white p-5 md:p-7">
                     <h3 className="mb-6 text-[18px] font-black text-primary">文化与本地提示</h3>
                     <div>
                       {cultureTipItems.map((item, i) => (
