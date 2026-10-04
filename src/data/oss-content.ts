@@ -171,15 +171,36 @@ function mapPipelineDetail(
     // shortened version of the full dialogue in scene.json. Only lines
     // with matching text get tap-to-play; others render as plain text.
     const lineEn = str(l.en);
-    const t = timing?.find(entry => {
-      if (typeof entry.start !== "number" || typeof entry.end !== "number") return false;
-      const timingEn = typeof entry.en === "string" ? entry.en : "";
-      if (!timingEn) return entry.card === i; // fallback to index if no text
-      const norm = (s: string) => s.replace(/[‘’]/g, "'").replace(/\s+/g, " ").trim().toLowerCase();
-      const nLine = norm(lineEn);
-      const nTiming = norm(timingEn);
-      return nLine === nTiming || nLine.includes(nTiming) || nTiming.includes(nLine);
-    });
+    // Match timing by text (not index) — the video subtitles may be a
+    // shortened version of the full dialogue in scene.json. Find ALL timing
+    // entries whose text is contained in this line, then span the full range
+    // (handles "Looks that way. Oh, the line's moving." matching two cues).
+    // Lines with no matching text get no timing = plain text, no button.
+    const norm = (s: string) =>
+      s
+        .toLowerCase()
+        .replace(/[‘’‛]/g, "'")
+        .replace(/[^a-z0-9'\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    const nLine = norm(lineEn);
+    let t: { start: number; end: number } | undefined;
+    if (timing && nLine) {
+      const matched = timing.filter(entry => {
+        if (typeof entry.start !== "number" || typeof entry.end !== "number") return false;
+        const timingEn = typeof entry.en === "string" ? entry.en : "";
+        if (!timingEn) return entry.card === i; // fallback to index if no text
+        const nTiming = norm(timingEn);
+        if (!nTiming) return false;
+        return nLine === nTiming || nLine.includes(nTiming) || nTiming.includes(nLine);
+      });
+      if (matched.length > 0) {
+        t = {
+          start: Math.min(...matched.map(m => m.start)),
+          end: Math.max(...matched.map(m => m.end)),
+        };
+      }
+    }
     return {
       speaker: str(l.speaker),
       speakerZh: speakerZhFor(str(l.speaker)),
