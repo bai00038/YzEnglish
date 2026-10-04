@@ -166,41 +166,65 @@ function mapPipelineDetail(
   >;
   const canadaTip = (json.canada_tip ?? {}) as Record<string, unknown>;
 
-  const dialogueLines: DialogueLine[] = lines.map((l, i) => {
-    // Match timing by text (not index) — the video subtitles may be a
-    // shortened version of the full dialogue in scene.json. Only lines
-    // with matching text get tap-to-play; others render as plain text.
-    const lineEn = str(l.en);
-    // Match timing by text (not index) — the video subtitles may be a
-    // shortened version of the full dialogue in scene.json. Find ALL timing
-    // entries whose text is contained in this line, then span the full range
-    // (handles "Looks that way. Oh, the line's moving." matching two cues).
-    // Lines with no matching text get no timing = plain text, no button.
-    const norm = (s: string) =>
-      s
-        .toLowerCase()
-        .replace(/[‘’‛]/g, "'")
-        .replace(/[^a-z0-9'\s]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-    const nLine = norm(lineEn);
-    let t: { start: number; end: number } | undefined;
-    if (timing && nLine) {
-      const matched = timing.filter(entry => {
-        if (typeof entry.start !== "number" || typeof entry.end !== "number") return false;
-        const timingEn = typeof entry.en === "string" ? entry.en : "";
-        if (!timingEn) return entry.card === i; // fallback to index if no text
-        const nTiming = norm(timingEn);
-        if (!nTiming) return false;
-        return nLine === nTiming || nLine.includes(nTiming) || nTiming.includes(nLine);
-      });
-      if (matched.length > 0) {
-        t = {
-          start: Math.min(...matched.map(m => m.start)),
-          end: Math.max(...matched.map(m => m.end)),
-        };
-      }
+  const norm = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/[‘’‛]/g, "'")
+      .replace(/[^a-z0-9'\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  // Match timing by text (not index) — the video subtitles may be a
+  // shortened version of the full dialogue in scene.json. Only lines
+  // with matching text get tap-to-play; others render as plain text.
+  //
+  // Monotonic greedy walk: each dialogue line consumes consecutive cues
+  // whose texts concatenate to exactly the line's text (handles "Looks
+  // that way. Oh, the line's moving." spanning two cues). A line that
+  // never reaches an exact match is left unmapped rather than guessing —
+  // a wrong audio range is worse than no range. This is the same
+  // discipline as the legacy cue matcher in SceneDetailPage, and it fixes
+  // the substring bleed where e.g. "Thank you." also matched the
+  // unrelated cue "Thank you for your help.", producing a 6-second
+  // playback window for a 1-second line (NCP-001).
+  const cues = (timing ?? [])
+    .map(entry => ({
+      start: entry.start,
+      end: entry.end,
+      text: typeof entry.en === "string" ? norm(entry.en) : "",
+    }))
+    .filter(
+      c =>
+        typeof c.start === "number" &&
+        typeof c.end === "number" &&
+        c.end > c.start &&
+        c.text.length > 0
+    );
+
+  const lineRanges = new Map<number, { start: number; end: number }>();
+  let cueIndex = 0;
+  lines.forEach((l, i) => {
+    const target = norm(str(l.en));
+    if (!target) return;
+    let acc = "";
+    let start: number | null = null;
+    let end: number | null = null;
+    let j = cueIndex;
+    while (j < cues.length && acc.length < target.length) {
+      acc = acc.length > 0 ? `${acc} ${cues[j].text}` : cues[j].text;
+      if (start === null) start = cues[j].start;
+      end = cues[j].end;
+      j++;
     }
+    if (acc === target && start !== null && end !== null) {
+      lineRanges.set(i, { start, end });
+      cueIndex = j;
+    }
+  });
+
+  const dialogueLines: DialogueLine[] = lines.map((l, i) => {
+    const lineEn = str(l.en);
+    const t = lineRanges.get(i);
     return {
       speaker: str(l.speaker),
       speakerZh: speakerZhFor(str(l.speaker)),
