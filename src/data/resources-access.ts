@@ -1,60 +1,44 @@
-import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { useAsyncData } from "./useAsyncData";
 import { PDF_RESOURCES as MOCK_PDF_RESOURCES } from "./resources";
+import { fetchManifestScenes } from "./oss-content";
 import type { PdfResource } from "./types";
-import type { PdfResourceRow } from "./database.types";
 
-// Dev-only mock fallback — same policy as src/data/scenes-access.ts: only
-// used when Supabase env vars are missing or a request fails, and only in
-// local development. Production surfaces failures as a real error state.
-async function withDevFallback<T>(supabaseCall: () => Promise<T>, mockFallback: () => T, context: string): Promise<T> {
-  if (!isSupabaseConfigured) {
-    if (import.meta.env.DEV) {
-      console.warn(
-        `[dev-only mock fallback] Supabase env vars missing — using mock data for ${context}. ` +
-          `Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to load real data.`
-      );
-      return mockFallback();
-    }
-    throw new Error(`Supabase is not configured (missing VITE_SUPABASE_URL/VITE_SUPABASE_PUBLISHABLE_KEY): ${context}`);
-  }
-
+// ---------------------------------------------------------------------------
+// OSS-backed PDF resources (Supabase retired).
+//
+// Single-scene PDF handouts are derived from the episode manifest: every
+// episode with a published guide PDF becomes one downloadable resource.
+// Episodes without a PDF (cover/asset still in production) are skipped —
+// never a dead download button.
+// ---------------------------------------------------------------------------
+async function withDevFallback<T>(ossCall: () => Promise<T>, mockFallback: () => T, context: string): Promise<T> {
   try {
-    return await supabaseCall();
+    return await ossCall();
   } catch (err) {
     if (import.meta.env.DEV) {
-      console.warn(`[dev-only mock fallback] Supabase request failed for ${context} — using mock data.`, err);
+      console.warn(`[dev-only mock fallback] OSS request failed for ${context} — using mock data.`, err);
       return mockFallback();
     }
     throw err;
   }
 }
 
-function mapPdfResourceRow(row: PdfResourceRow): PdfResource {
-  return {
-    id: row.id,
-    title: row.title,
-    titleZh: row.title_zh,
-    type: row.type,
-    desc: row.description,
-    scenes: row.scene_count,
-    free: row.is_free,
-    category: row.category,
-    filePath: row.file_path ?? undefined,
-  };
-}
-
 async function fetchResources(): Promise<PdfResource[]> {
   return withDevFallback(
-    async () => {
-      const { data, error } = await supabase!
-        .from("pdf_resources")
-        .select("*")
-        .eq("status", "published")
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
-      return (data ?? []).map(mapPdfResourceRow);
-    },
+    async () =>
+      (await fetchManifestScenes())
+        .filter(e => Boolean(e.pdfUrl))
+        .map(e => ({
+          id: e.id,
+          title: e.titleEn,
+          titleZh: e.titleZh,
+          type: "PDF",
+          desc: e.desc,
+          scenes: 1,
+          free: true,
+          category: e.category,
+          filePath: e.pdfUrl,
+        })),
     () => MOCK_PDF_RESOURCES,
     "pdf resources"
   );

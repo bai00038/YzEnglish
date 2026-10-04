@@ -1,235 +1,46 @@
-import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { useAsyncData } from "./useAsyncData";
 import { CATEGORIES as MOCK_CATEGORIES, SCENES as MOCK_SCENES } from "./scenes";
-import type { CultureTip, CultureTipItem, KeyExpressionItem, Scene, TipType } from "./types";
-import type {
-  SceneRow,
-  DialogueLineRow,
-  KeyExpressionRow,
-  CultureTipRow,
-  SceneDialogueJson,
-  SceneExpressionsJson,
-  SceneVocabularyJson,
-  SceneTipsJson,
-  SceneSubtitleCuesJson,
-} from "./database.types";
+import {
+  fetchEpisodeDetail,
+  fetchManifestScenes,
+  manifestEntryToScene,
+  type ManifestScene,
+} from "./oss-content";
+import type { CultureTip, CultureTipItem, KeyExpressionItem, Scene } from "./types";
 
 // ---------------------------------------------------------------------------
-// Dev-only mock fallback
+// OSS-backed data layer (Supabase retired).
 //
-// If Supabase isn't configured (missing env vars) or a request fails, local
-// development falls back to the static mock data in ./scenes so the app
+// List views read the episode manifest; the detail view additionally fetches
+// the episode's scene.json. See src/data/oss-content.ts for the fetch +
+// schema-normalization logic.
+//
+// Dev-only mock fallback policy (unchanged): if the OSS fetch fails in local
+// development, fall back to the static mock data in ./scenes so the app
 // still renders — loudly logged so it's never mistaken for real data.
-// Production never falls back: a missing/broken Supabase connection surfaces
-// as a real error state in the UI instead of silently serving mock content.
+// Production never falls back: a failed fetch surfaces as a real error state
+// in the UI instead of silently serving mock content.
 // ---------------------------------------------------------------------------
-async function withDevFallback<T>(supabaseCall: () => Promise<T>, mockFallback: () => T, context: string): Promise<T> {
-  if (!isSupabaseConfigured) {
-    if (import.meta.env.DEV) {
-      console.warn(
-        `[dev-only mock fallback] Supabase env vars missing — using mock data for ${context}. ` +
-          `Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to load real data.`
-      );
-      return mockFallback();
-    }
-    throw new Error(`Supabase is not configured (missing VITE_SUPABASE_URL/VITE_SUPABASE_PUBLISHABLE_KEY): ${context}`);
-  }
-
+async function withDevFallback<T>(ossCall: () => Promise<T>, mockFallback: () => T, context: string): Promise<T> {
   try {
-    return await supabaseCall();
+    return await ossCall();
   } catch (err) {
     if (import.meta.env.DEV) {
-      console.warn(`[dev-only mock fallback] Supabase request failed for ${context} — using mock data.`, err);
+      console.warn(`[dev-only mock fallback] OSS request failed for ${context} — using mock data.`, err);
       return mockFallback();
     }
     throw err;
   }
 }
 
-type SceneRowWithCategory = SceneRow & { categories: { name_en: string } | null };
-
-const SCENE_SELECT = "*, categories(name_en)";
-
-// Defensive Number() coercion, same rule as the Edge Function's
-// normalizeTimecode (supabase/functions/sync-scene/validation.ts) and
-// Code.gs's hasValidTimecode: never trust that a JSONB number necessarily
-// deserializes as a JS number end-to-end, and never let one malformed
-// cue in scenes.subtitle_cues break the whole page — it's just dropped.
-function normalizeSubtitleCues(raw: unknown): SceneSubtitleCuesJson | undefined {
-  if (!Array.isArray(raw)) return undefined;
-  const cues = (raw as Array<Record<string, unknown>>)
-    .map(cue => ({
-      start: Number(cue.start),
-      end: Number(cue.end),
-      en: typeof cue.en === "string" ? cue.en : "",
-      zh: typeof cue.zh === "string" ? cue.zh : "",
-    }))
-    .filter(
-      cue =>
-        Number.isFinite(cue.start) &&
-        Number.isFinite(cue.end) &&
-        cue.end > cue.start &&
-        cue.en.length > 0 &&
-        cue.zh.length > 0
-    );
-  return cues.length > 0 ? cues : undefined;
-}
-
-// Missing/unrecognized tipType -> "key_expression" — same compat default
-// as the Edge Function's requireTipType (supabase/functions/sync-scene/
-// validation.ts) and Code.gs's loadTipsBySceneId_, for tips synced before
-// tip_type existed. Never throws: a malformed tip here must not break the
-// whole scene page.
-function normalizeTipType(raw: unknown): TipType {
-  return raw === "culture_tip" ? "culture_tip" : "key_expression";
-}
-
-function normalizeTips(raw: SceneTipsJson | null | undefined): CultureTip[] {
-  if (!raw) return [];
-  return raw.map(tip => ({ ...tip, tipType: normalizeTipType(tip.tipType) }));
-}
-
-function mapSceneRow(row: SceneRowWithCategory): Scene {
-  // A scene "has content" (vs. the coming-soon placeholder) when EITHER of
-  // two independent pipelines has populated it:
-  //  - Figma_Data (legacy): dialogue jsonb populated, and expressions/
-  //    vocabulary/tips/setup/goal always seeded together with it.
-  //  - scenes-sync (current): dialogue jsonb is deliberately NEVER set (see
-  //    the header comment in google-apps-script/scenes-sync/Code.gs) — this
-  //    pipeline's scenes are fully on dialogue_lines instead, but still
-  //    seed scene_setup_en/learning_goal_en/tips, so dialogue alone can't be
-  //    the signal or a scenes-sync-only scene (e.g. scene_030) would wrongly
-  //    render as "coming soon" with its real tips/setup/goal silently
-  //    dropped by applyDialogueLinesOverride below.
-  const hasContent = row.dialogue !== null || row.scene_setup_en !== null;
-
-  return {
-    id: row.id,
-    slug: row.slug,
-    titleEn: row.title_en,
-    titleZh: row.title_zh,
-    category: row.categories?.name_en ?? "",
-    region: row.region,
-    level: row.level,
-    duration: row.duration,
-    featured: row.featured,
-    isNew: row.is_new,
-    desc: row.description,
-    photo: row.photo_url ?? undefined,
-    pdfUrl: row.pdf_url ?? undefined,
-    video_url: row.video_url ?? undefined,
-    subtitleCues: normalizeSubtitleCues(row.subtitle_cues),
-    content: hasContent
-      ? {
-          sceneSetup: { en: row.scene_setup_en ?? "", zh: row.scene_setup_zh ?? "" },
-          learningGoal: { en: row.learning_goal_en ?? "", zh: row.learning_goal_zh ?? "" },
-          dialogue: (row.dialogue as unknown as SceneDialogueJson) ?? [],
-          expressions: (row.expressions as unknown as SceneExpressionsJson) ?? [],
-          vocabulary: (row.vocabulary as unknown as SceneVocabularyJson) ?? [],
-          tips: normalizeTips(row.tips as unknown as SceneTipsJson),
-          relatedSceneIds: row.related_scene_ids ?? undefined,
-          prevSceneId: row.prev_scene_id ?? undefined,
-          nextSceneId: row.next_scene_id ?? undefined,
-        }
-      : undefined,
-  };
-}
-
-// Scenes migrated to the dialogue_lines table (see
-// supabase/migrations/0012_add_dialogue_lines.sql) get their
-// content.dialogue overridden here with the row-per-line, natively-timed
-// version — one row = one dialogue line = one subtitle cue (see the
-// scene detail page's dialogueLineAudioRanges, which uses line.start/end
-// directly when present instead of text-matching against subtitle_cues).
-// A scene with no dialogue_lines rows yet is returned unchanged, still
-// rendering from the legacy scenes.dialogue jsonb exactly as before —
-// this is the only place that decides which structure a scene is on,
-// nothing else in the data layer or UI needs to know.
-async function applyDialogueLinesOverride(scene: Scene, sceneId: number): Promise<Scene> {
-  const { data, error } = await supabase!
-    .from("dialogue_lines")
-    .select("*")
-    .eq("scene_id", sceneId)
-    .order("line_order", { ascending: true });
-  if (error) throw error;
-  if (!data || data.length === 0) return scene;
-
-  const dialogue = (data as DialogueLineRow[]).map(row => {
-    // Defensive Number() coercion, same rule as normalizeSubtitleCues
-    // above — dialogue_lines.start_time/end_time are already seconds
-    // (see 0012_add_dialogue_lines.sql and Code.gs's hasValidTimecode),
-    // never milliseconds, so this must never divide by 1000.
-    const start = row.start_time === null || row.start_time === undefined ? undefined : Number(row.start_time);
-    const end = row.end_time === null || row.end_time === undefined ? undefined : Number(row.end_time);
-    return {
-      speaker: row.speaker,
-      speakerZh: row.speaker_zh,
-      en: row.dialogue_en,
-      zh: row.dialogue_zh,
-      start: start !== undefined && Number.isFinite(start) ? start : undefined,
-      end: end !== undefined && Number.isFinite(end) ? end : undefined,
-      externalLineId: row.external_line_id ?? undefined,
-      dialogueLineDbId: row.id,
-    };
-  });
-
-  return {
-    ...scene,
-    content: {
-      sceneSetup: scene.content?.sceneSetup ?? { en: "", zh: "" },
-      learningGoal: scene.content?.learningGoal ?? { en: "", zh: "" },
-      expressions: scene.content?.expressions ?? [],
-      vocabulary: scene.content?.vocabulary ?? [],
-      tips: scene.content?.tips ?? [],
-      relatedSceneIds: scene.content?.relatedSceneIds,
-      prevSceneId: scene.content?.prevSceneId,
-      nextSceneId: scene.content?.nextSceneId,
-      dialogue,
-    },
-  };
-}
-
-// Reads one child table for a scene, never throwing — a failed query for
-// key_expressions must not take down culture_tips or the rest of the
-// page. Returning [] on error also correctly triggers this module's own
-// legacy-tips fallback below, the same as a genuinely-empty table would.
-async function fetchChildRows<T>(table: "key_expressions" | "culture_tips", sceneId: number): Promise<T[]> {
-  try {
-    const { data, error } = await supabase!
-      .from(table)
-      .select("*")
-      .eq("scene_id", sceneId)
-      .order("sort_order", { ascending: true });
-    if (error) throw error;
-    return (data ?? []) as T[];
-  } catch (err) {
-    console.error(`[scenes-access] failed to load ${table} for scene_id=${sceneId}`, err);
-    return [];
-  }
-}
-
-// ─── Temporary legacy Tips fallback ─────────────────────────────────────
+// ─── Legacy Tips fallback (unchanged) ─────────────────────────────────────
 //
-// public.key_expressions/public.culture_tips (see
-// supabase/migrations/0025_create_key_expressions_and_culture_tips.sql)
-// are the new, primary source for the scene detail page's "Learn the
-// Language" module. Until every scene has been re-authored into them,
-// though, most scenes still only have data in the legacy scenes.tips
-// jsonb column (already loaded onto scene.content.tips by mapSceneRow).
-//
-// Fallback is decided independently per module, never both-or-nothing:
-// if key_expressions has any rows for this scene, those rows are used
-// exclusively for the Key Expressions module (legacy key_expression-type
-// tips are ignored); otherwise the legacy tips are used for that module
-// alone. Same independent rule for culture_tips. This guarantees the two
-// sources are never combined for the same module (no duplicates), while
-// still letting a partially-migrated scene (e.g. only Key_Expressions
-// authored so far) render correctly.
-//
-// DELETE THIS WHOLE FUNCTION (and its one call site in fetchSceneDetail
-// below) once every scene has real key_expressions/culture_tips rows and
-// scenes.tips/the old Tips sheet are retired — nothing else needs to
-// change at that point, SceneContent.tips can stay or go independently.
+// The scene detail page's "Learn the Language" module renders
+// content.keyExpressions / content.cultureTips. OSS scene.json files only
+// carry the legacy tips[] array, so those two fields are derived here —
+// the same split rule as before: key_expression-type tips feed the Key
+// Expressions grid, culture_tip-type tips feed the Culture Tips cards.
+// The two sources are never combined for the same module (no duplicates).
 function deriveKeyExpressionsFromLegacyTips(tips: CultureTip[]): KeyExpressionItem[] {
   return tips
     .filter(tip => tip.tipType === "key_expression")
@@ -242,48 +53,24 @@ function deriveCultureTipsFromLegacyTips(tips: CultureTip[]): CultureTipItem[] {
     .map(tip => ({ bodyEn: tip.body, bodyZh: tip.bodyZh }));
 }
 
-async function applyKeyExpressionsAndCultureTips(scene: Scene, sceneId: number): Promise<Scene> {
-  const [keyExpressionRows, cultureTipRows] = await Promise.all([
-    fetchChildRows<KeyExpressionRow>("key_expressions", sceneId),
-    fetchChildRows<CultureTipRow>("culture_tips", sceneId),
-  ]);
-
+function withDerivedLanguageModule(scene: Scene): Scene {
   const legacyTips = scene.content?.tips ?? [];
-
-  const keyExpressions: KeyExpressionItem[] =
-    keyExpressionRows.length > 0
-      ? keyExpressionRows.map(row => ({
-          expressionEn: row.expression_en,
-          expressionZh: row.expression_zh,
-        }))
-      : deriveKeyExpressionsFromLegacyTips(legacyTips);
-
-  const cultureTips: CultureTipItem[] =
-    cultureTipRows.length > 0
-      ? cultureTipRows.map(row => ({
-          bodyEn: row.body_en,
-          bodyZh: row.body_zh,
-        }))
-      : deriveCultureTipsFromLegacyTips(legacyTips);
-
   return {
     ...scene,
-    content: scene.content ? { ...scene.content, keyExpressions, cultureTips } : scene.content,
+    content: scene.content
+      ? {
+          ...scene.content,
+          keyExpressions: deriveKeyExpressionsFromLegacyTips(legacyTips),
+          cultureTips: deriveCultureTipsFromLegacyTips(legacyTips),
+        }
+      : scene.content,
   };
 }
-// ─── End temporary legacy Tips fallback ─────────────────────────────────
+// ─── End legacy Tips fallback ─────────────────────────────────────────────
 
 async function fetchScenes(): Promise<Scene[]> {
   return withDevFallback(
-    async () => {
-      const { data, error } = await supabase!
-        .from("scenes")
-        .select(SCENE_SELECT)
-        .eq("status", "published")
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
-      return ((data ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
-    },
+    async () => (await fetchManifestScenes()).map(manifestEntryToScene),
     () => MOCK_SCENES,
     "scenes list"
   );
@@ -291,16 +78,7 @@ async function fetchScenes(): Promise<Scene[]> {
 
 async function fetchFeaturedScenes(): Promise<Scene[]> {
   return withDevFallback(
-    async () => {
-      const { data, error } = await supabase!
-        .from("scenes")
-        .select(SCENE_SELECT)
-        .eq("status", "published")
-        .eq("featured", true)
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
-      return ((data ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
-    },
+    async () => (await fetchManifestScenes()).filter(e => e.featured).map(manifestEntryToScene),
     () => MOCK_SCENES.filter(s => s.featured),
     "featured scenes"
   );
@@ -308,27 +86,22 @@ async function fetchFeaturedScenes(): Promise<Scene[]> {
 
 // Manually curated Home page "Featured Scenes" — stable slugs, in display
 // order. Update this list (not a `featured` flag) to change what's shown.
-// As of 2026-08-10 these are the only three published scenes.
 const CURATED_FEATURED_SLUGS = [
-  "shopping-for-clothes", // Scene 01 — 买衣服
-  "dining-at-a-turkish-restaurant", // Scene 08 — 土耳其餐厅用餐
-  "getting-a-dental-filling", // Scene 13 — 补牙
+  "returning-clothes-at-a-store", // SH-01-004 — 挑选温和的卸妆产品
+  "ordering-a-pizza-by-phone-for-pickup", // FD-01-001 — 电话订披萨
+  "calling-about-a-childs-fever", // HC-01-002 — 孩子发烧电话约诊
+  "ordering-restaurant-delivery-by-phone", // FD-01-002 — 电话点外卖
 ];
+
+function orderBySlugList(entries: ManifestScene[], slugs: string[]): ManifestScene[] {
+  const bySlug = new Map(entries.map(e => [e.slug, e]));
+  return slugs.map(slug => bySlug.get(slug)).filter((e): e is ManifestScene => Boolean(e));
+}
 
 async function fetchCuratedFeaturedScenes(): Promise<Scene[]> {
   return withDevFallback(
-    async () => {
-      const { data, error } = await supabase!
-        .from("scenes")
-        .select(SCENE_SELECT)
-        .eq("status", "published")
-        .in("slug", CURATED_FEATURED_SLUGS);
-      if (error) throw error;
-      const scenes = ((data ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
-      return CURATED_FEATURED_SLUGS.map(slug => scenes.find(s => s.slug === slug)).filter(
-        (s): s is Scene => Boolean(s)
-      );
-    },
+    async () =>
+      orderBySlugList(await fetchManifestScenes(), CURATED_FEATURED_SLUGS).map(manifestEntryToScene),
     () =>
       CURATED_FEATURED_SLUGS.map(slug => MOCK_SCENES.find(s => s.slug === slug)).filter(
         (s): s is Scene => Boolean(s)
@@ -339,16 +112,11 @@ async function fetchCuratedFeaturedScenes(): Promise<Scene[]> {
 
 async function fetchLatestScenes(limit: number): Promise<Scene[]> {
   return withDevFallback(
-    async () => {
-      const { data, error } = await supabase!
-        .from("scenes")
-        .select(SCENE_SELECT)
-        .eq("status", "published")
-        .order("created_at", { ascending: false })
-        .limit(limit);
-      if (error) throw error;
-      return ((data ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
-    },
+    async () =>
+      [...(await fetchManifestScenes())]
+        .reverse()
+        .slice(0, limit)
+        .map(manifestEntryToScene),
     () => [...MOCK_SCENES].sort((a, b) => b.id - a.id).slice(0, limit),
     "latest scenes"
   );
@@ -356,16 +124,7 @@ async function fetchLatestScenes(limit: number): Promise<Scene[]> {
 
 async function fetchNewScenes(): Promise<Scene[]> {
   return withDevFallback(
-    async () => {
-      const { data, error } = await supabase!
-        .from("scenes")
-        .select(SCENE_SELECT)
-        .eq("status", "published")
-        .eq("is_new", true)
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
-      return ((data ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
-    },
+    async () => (await fetchManifestScenes()).filter(e => e.isNew).map(manifestEntryToScene),
     () => MOCK_SCENES.filter(s => s.isNew),
     "new scenes"
   );
@@ -374,12 +133,11 @@ async function fetchNewScenes(): Promise<Scene[]> {
 async function fetchCategoryNames(): Promise<string[]> {
   return withDevFallback(
     async () => {
-      const { data, error } = await supabase!
-        .from("categories")
-        .select("name_en")
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
-      return (data ?? []).map(c => c.name_en);
+      const seen = new Set<string>();
+      for (const entry of await fetchManifestScenes()) {
+        if (entry.category && !seen.has(entry.category)) seen.add(entry.category);
+      }
+      return [...seen];
     },
     () => MOCK_CATEGORIES,
     "category list"
@@ -396,55 +154,22 @@ export interface SceneDetail {
 async function fetchSceneDetail(slug: string): Promise<SceneDetail> {
   return withDevFallback(
     async () => {
-      const { data, error } = await supabase!
-        .from("scenes")
-        .select(SCENE_SELECT)
-        .eq("status", "published")
-        .eq("slug", slug)
-        .maybeSingle();
-      if (error) throw error;
-      if (!data) return { scene: null, related: [], prevScene: null, nextScene: null };
+      const entries = await fetchManifestScenes();
+      const entry = entries.find(e => e.slug === slug);
+      if (!entry) return { scene: null, related: [], prevScene: null, nextScene: null };
 
-      const row = data as SceneRowWithCategory;
-      let scene = await applyDialogueLinesOverride(mapSceneRow(row), row.id);
-      scene = await applyKeyExpressionsAndCultureTips(scene, row.id);
+      const scene = withDerivedLanguageModule(await fetchEpisodeDetail(entry));
+      const idx = entries.indexOf(entry);
 
-      let related: Scene[] = [];
-      const relatedIds = row.related_scene_ids ?? [];
-      if (relatedIds.length > 0) {
-        const { data: relatedRows, error: relatedError } = await supabase!
-          .from("scenes")
-          .select(SCENE_SELECT)
-          .eq("status", "published")
-          .in("id", relatedIds);
-        if (relatedError) throw relatedError;
-        related = ((relatedRows ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
-      } else {
-        const { data: sameCategoryRows, error: sameCategoryError } = await supabase!
-          .from("scenes")
-          .select(SCENE_SELECT)
-          .eq("status", "published")
-          .eq("category_id", row.category_id)
-          .neq("id", row.id)
-          .limit(3);
-        if (sameCategoryError) throw sameCategoryError;
-        related = ((sameCategoryRows ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
-      }
+      // Related: same-category episodes first (max 3), excluding self.
+      const related = entries
+        .filter(e => e.slug !== slug && e.category === entry.category)
+        .slice(0, 3)
+        .map(manifestEntryToScene);
 
-      let prevScene: Scene | null = null;
-      let nextScene: Scene | null = null;
-      const navIds = [row.prev_scene_id, row.next_scene_id].filter((id): id is number => id != null);
-      if (navIds.length > 0) {
-        const { data: navRows, error: navError } = await supabase!
-          .from("scenes")
-          .select(SCENE_SELECT)
-          .eq("status", "published")
-          .in("id", navIds);
-        if (navError) throw navError;
-        const navScenes = ((navRows ?? []) as SceneRowWithCategory[]).map(mapSceneRow);
-        prevScene = navScenes.find(s => s.id === row.prev_scene_id) ?? null;
-        nextScene = navScenes.find(s => s.id === row.next_scene_id) ?? null;
-      }
+      // Prev/next: manifest order is the curated episode order.
+      const prevScene = idx > 0 ? manifestEntryToScene(entries[idx - 1]) : null;
+      const nextScene = idx < entries.length - 1 ? manifestEntryToScene(entries[idx + 1]) : null;
 
       return { scene, related, prevScene, nextScene };
     },
@@ -452,21 +177,9 @@ async function fetchSceneDetail(slug: string): Promise<SceneDetail> {
       const mockScene = MOCK_SCENES.find(s => s.slug === slug) ?? null;
       if (!mockScene) return { scene: null, related: [], prevScene: null, nextScene: null };
 
-      // Dev-only mock fallback has no database to query key_expressions/
-      // culture_tips from — derive them from the mock's own tips[] so the
-      // Language module still renders locally without Supabase. See
-      // "Temporary legacy Tips fallback" above.
-      const legacyTips = mockScene.content?.tips ?? [];
-      const scene: Scene = {
-        ...mockScene,
-        content: mockScene.content
-          ? {
-              ...mockScene.content,
-              keyExpressions: deriveKeyExpressionsFromLegacyTips(legacyTips),
-              cultureTips: deriveCultureTipsFromLegacyTips(legacyTips),
-            }
-          : mockScene.content,
-      };
+      // Dev-only mock fallback has no database — derive the language module
+      // from the mock's own tips[] so it still renders locally without OSS.
+      const scene = withDerivedLanguageModule(mockScene);
 
       const relatedIds = scene.content?.relatedSceneIds;
       const related = relatedIds
@@ -487,7 +200,7 @@ async function fetchSceneDetail(slug: string): Promise<SceneDetail> {
 }
 
 // ---------------------------------------------------------------------------
-// Public hooks — used directly by pages
+// Public hooks — used directly by pages (signatures unchanged)
 // ---------------------------------------------------------------------------
 export function useScenes() {
   return useAsyncData(fetchScenes, []);

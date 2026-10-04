@@ -12,6 +12,7 @@
 | DL | Daily Life（日常生活） | 2026-10-01 新开 |
 | ST | Small Talk | 另有独立 24 条规划表，见 Small_Talk.xlsx |
 | PET | 宠物英语 | 试水 3 条：pet-02/03/04 |
+| FD | Food（美食点餐英语） | 01=点外卖（2026-10-04 确认） |
 
 ## 已分配编号（2026-10-01）
 | 新编号 | 旧标识 | 标题 | 状态 |
@@ -30,6 +31,19 @@
 | pet-02 | — | 第一次看兽医 | 试水 |
 | pet-03 | — | 狗公园冲突 | 试水 |
 | pet-04 | — | 买狗粮 | 试水 |
+| FD-01-001 | — | 点外卖 | 新管线已发（视频+字幕+封面+guide.pdf） |
+| FD-01-002 | — | （待确认标题） | 素材不全：仅 scene.json+字幕，无视频 |
 
 ## 迁移状态
 - Supabase → 阿里云 OSS 迁移：2026-10-01 完成。7 场景（SH-02-001/002、DL-01-001、HC-02-001/002/003、SF-01-001）素材（cover.jpg/video.mp4/handout.pdf）+ scene.json + content/index.json 已上传至 `content/`，R2 旧链路可退役。Supabase 项目可关闭。
+
+## Bucket 目录结构（2026-10-04 整理后）
+```
+yz-english-videos/
+├── content/<EPISODE>/   # 每个内容包：video 文件 / cover.jpg / scene.json / timing.json / subtitles.srt|csv / guide.pdf / index.html
+│   ├── index.json        # 老7场景总索引（2026-10-01 迁移时建，别动）
+│   └── manifest.json     # 新管线3集索引（2026-10-04 由 scenes/index.json 改写路径生成）
+└── oss-accesslog/        # 访问日志（待关公开读）
+```
+- 2026-10-04 迁移：根目录 HC-01-002/、SH-01-004/、FD-01-001/ 及 scenes/ 并入 content/；HTML 页内视频 URL 已改写；FD-01-002 的 3 个错放文件单独立包 content/FD-01-002/。
+- 包内文件名暂未统一（新老两套），前端静态化时再收敛。

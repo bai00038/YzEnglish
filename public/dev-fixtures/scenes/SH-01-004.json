@@ -1,0 +1,342 @@
+{
+  "id": 1,
+  "slug": "returning-clothes-at-a-store",
+  "titleEn": "Choosing a Gentle Makeup Remover",
+  "titleZh": "挑选温和的卸妆产品",
+  "category": "Shopping & Beauty",
+  "region": "Canada",
+  "level": "Beginner+",
+  "duration": "0:40",
+  "featured": true,
+  "isNew": true,
+  "desc": "卸妆产品刺激眼睛，或卸不干净防水睫毛膏时，学会说明问题、比较配方，并询问正确用法。",
+  "photo": "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/scenes/SH-01-004/cover.jpg",
+  "video_url": "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/SH-01-004/SH-01-004-no-subtitles.mp4",
+  "pdfUrl": "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/scenes/SH-01-004/guide.pdf",
+  "content": {
+    "sceneSetup": {
+      "en": "Aria asks a beauty advisor to help her choose a makeup remover that feels gentle around the eyes and can remove waterproof mascara.",
+      "zh": "Aria 请美容顾问帮她挑选一款眼周使用感温和、又能卸除防水睫毛膏的卸妆产品。"
+    },
+    "learningGoal": {
+      "en": "Explain irritation, compare formulas, and ask how to rinse, cleanse, and emulsify a makeup remover.",
+      "zh": "学会说明刺激问题、比较产品配方，并询问冲洗、清洁和乳化方法。"
+    },
+    "dialogue": [
+      {
+        "speaker": "Beauty Advisor",
+        "speakerZh": "美容顾问",
+        "en": "Hi again, what are you looking for?",
+        "zh": "又见面了，这次想找什么产品？",
+        "start": 0,
+        "end": 2.08
+      },
+      {
+        "speaker": "Aria",
+        "speakerZh": "你",
+        "en": "I need a gentle makeup remover.",
+        "zh": "我需要一款温和的卸妆产品。",
+        "start": 2.18,
+        "end": 3.9
+      },
+      {
+        "speaker": "Beauty Advisor",
+        "speakerZh": "美容顾问",
+        "en": "What kind of makeup?",
+        "zh": "主要卸哪种妆？",
+        "start": 4.26,
+        "end": 5.22
+      },
+      {
+        "speaker": "Aria",
+        "speakerZh": "你",
+        "en": "Mostly foundation and eye makeup.",
+        "zh": "主要是粉底和眼妆。",
+        "start": 5.4,
+        "end": 7.8
+      },
+      {
+        "speaker": "Aria",
+        "speakerZh": "你",
+        "en": "My current remover doesn't work.",
+        "zh": "我现在用的那款不太管用。",
+        "start": 7.88,
+        "end": 9.6
+      },
+      {
+        "speaker": "Beauty Advisor",
+        "speakerZh": "美容顾问",
+        "en": "This bi-phase remover is made for eye makeup.",
+        "zh": "这款水油分离卸妆液是专门用来卸眼妆的。",
+        "start": 9.86,
+        "end": 12.34
+      },
+      {
+        "speaker": "Beauty Advisor",
+        "speakerZh": "美容顾问",
+        "en": "It works well on waterproof mascara.",
+        "zh": "对防水睫毛膏的效果挺好的。",
+        "start": 12.28,
+        "end": 14.38
+      },
+      {
+        "speaker": "Aria",
+        "speakerZh": "你",
+        "en": "Do I need to rinse it off?",
+        "zh": "我需要把它冲洗掉吗？",
+        "start": 14.5,
+        "end": 15.78
+      },
+      {
+        "speaker": "Beauty Advisor",
+        "speakerZh": "美容顾问",
+        "en": "It's best to rinse or cleanse afterward.",
+        "zh": "之后最好冲洗或再次清洁。",
+        "start": 15.88,
+        "end": 18.28
+      },
+      {
+        "speaker": "Beauty Advisor",
+        "speakerZh": "美容顾问",
+        "en": "You could also try a cleansing balm.",
+        "zh": "你也可以试试卸妆膏。",
+        "start": 18.26,
+        "end": 20.04
+      },
+      {
+        "speaker": "Aria",
+        "speakerZh": "你",
+        "en": "Will the cleansing balm remove waterproof mascara too?",
+        "zh": "卸妆膏也能卸掉防水睫毛膏吗？",
+        "start": 20.06,
+        "end": 22.6
+      },
+      {
+        "speaker": "Beauty Advisor",
+        "speakerZh": "美容顾问",
+        "en": "Yes, massage it onto dry skin,",
+        "zh": "可以，先在干燥的皮肤上按摩，",
+        "start": 22.64,
+        "end": 25.02
+      },
+      {
+        "speaker": "Beauty Advisor",
+        "speakerZh": "美容顾问",
+        "en": "add a little water to emulsify it,",
+        "zh": "加一点水把它乳化，",
+        "start": 25.16,
+        "end": 27.6
+      },
+      {
+        "speaker": "Beauty Advisor",
+        "speakerZh": "美容顾问",
+        "en": "then rinse it off thoroughly.",
+        "zh": "然后彻底冲洗干净。",
+        "start": 27.42,
+        "end": 28.88
+      },
+      {
+        "speaker": "Aria",
+        "speakerZh": "你",
+        "en": "Which one feels gentler around the eyes?",
+        "zh": "哪一款用在眼周感觉更温和？",
+        "start": 29.8,
+        "end": 31.5
+      },
+      {
+        "speaker": "Beauty Advisor",
+        "speakerZh": "美容顾问",
+        "en": "The balm has a softer texture.",
+        "zh": "卸妆膏的质地更柔润。",
+        "start": 31.58,
+        "end": 33.26
+      },
+      {
+        "speaker": "Beauty Advisor",
+        "speakerZh": "美容顾问",
+        "en": "Test both on the back of your hand.",
+        "zh": "可以在手背上先试试这两款。",
+        "start": 33.3,
+        "end": 34.92
+      },
+      {
+        "speaker": "Aria",
+        "speakerZh": "你",
+        "en": "The balm feels more comfortable?",
+        "zh": "这款卸妆膏感觉更舒服吗？",
+        "start": 35.24,
+        "end": 36.66
+      },
+      {
+        "speaker": "Beauty Advisor",
+        "speakerZh": "美容顾问",
+        "en": "Sounds good.",
+        "zh": "好的。",
+        "start": 36.76,
+        "end": 37.4
+      },
+      {
+        "speaker": "Beauty Advisor",
+        "speakerZh": "美容顾问",
+        "en": "Remember to emulsify it before rinsing.",
+        "zh": "冲洗之前记得先把它乳化。",
+        "start": 37.4,
+        "end": 39.82
+      }
+    ],
+    "expressions": [
+      {
+        "label": "CORE",
+        "en": "a gentle makeup remover",
+        "zh": "一款温和的卸妆产品",
+        "note": "A makeup remover described as mild rather than harsh."
+      },
+      {
+        "label": "CORE",
+        "en": "irritate my eyes",
+        "zh": "刺激我的眼睛",
+        "note": "Describes discomfort or stinging around the eyes."
+      },
+      {
+        "label": "CORE",
+        "en": "remove waterproof mascara",
+        "zh": "卸除防水睫毛膏",
+        "note": "A natural collocation for taking off waterproof eye makeup."
+      },
+      {
+        "label": "USEFUL",
+        "en": "a bi-phase remover",
+        "zh": "一款水油分离卸妆液",
+        "note": "A remover with two liquid phases that are mixed before use."
+      },
+      {
+        "label": "CORE",
+        "en": "rinse it off",
+        "zh": "把它冲洗掉",
+        "note": "Remove a product with water."
+      },
+      {
+        "label": "CORE",
+        "en": "a cleansing balm",
+        "zh": "一款卸妆膏",
+        "note": "A balm-textured product used to dissolve makeup."
+      },
+      {
+        "label": "CORE",
+        "en": "emulsify it",
+        "zh": "把它乳化",
+        "note": "Mix an oil- or balm-based product with a little water."
+      }
+    ],
+    "vocabulary": [
+      {
+        "word": "gentle",
+        "phonetic": "/ˈdʒentl/",
+        "pos": "adj.",
+        "zh": "温和的",
+        "example": "I need a gentle makeup remover."
+      },
+      {
+        "word": "waterproof",
+        "phonetic": "/ˈwɔːtərpruːf/",
+        "pos": "adj.",
+        "zh": "防水的",
+        "example": "It works well on waterproof mascara."
+      },
+      {
+        "word": "bi-phase",
+        "phonetic": "",
+        "pos": "adj.",
+        "zh": "水油分离的",
+        "example": "This bi-phase remover is made for eye makeup."
+      },
+      {
+        "word": "emulsify",
+        "phonetic": "/ɪˈmʌlsɪfaɪ/",
+        "pos": "v.",
+        "zh": "乳化",
+        "example": "Add a little water to emulsify it."
+      }
+    ],
+    "tips": [
+      {
+        "type": "Core",
+        "tipType": "key_expression",
+        "title": "a gentle makeup remover",
+        "titleZh": "一款温和的卸妆产品",
+        "body": "A makeup remover described as mild rather than harsh.",
+        "bodyZh": "形容卸妆产品温和、不刺激。"
+      },
+      {
+        "type": "Core",
+        "tipType": "key_expression",
+        "title": "irritate my eyes",
+        "titleZh": "刺激我的眼睛",
+        "body": "A natural way to explain discomfort around the eyes.",
+        "bodyZh": "自然说明产品让眼睛感到不适。"
+      },
+      {
+        "type": "Core",
+        "tipType": "key_expression",
+        "title": "remove waterproof mascara",
+        "titleZh": "卸除防水睫毛膏",
+        "body": "Use remove when talking about taking off makeup.",
+        "bodyZh": "表达卸妆时通常使用 remove。"
+      },
+      {
+        "type": "Useful",
+        "tipType": "key_expression",
+        "title": "a bi-phase remover",
+        "titleZh": "一款水油分离卸妆液",
+        "body": "A two-phase remover that is mixed before use.",
+        "bodyZh": "使用前需要摇匀的水油双层卸妆液。"
+      },
+      {
+        "type": "Core",
+        "tipType": "key_expression",
+        "title": "rinse it off",
+        "titleZh": "把它冲洗掉",
+        "body": "Remove the product with water.",
+        "bodyZh": "用水把皮肤上的产品冲掉。"
+      },
+      {
+        "type": "Core",
+        "tipType": "key_expression",
+        "title": "a cleansing balm",
+        "titleZh": "一款卸妆膏",
+        "body": "A balm-textured product used to dissolve makeup.",
+        "bodyZh": "用膏状质地溶解并卸除彩妆的产品。"
+      },
+      {
+        "type": "Useful",
+        "tipType": "key_expression",
+        "title": "emulsify it",
+        "titleZh": "把它乳化",
+        "body": "Mix the balm with a little water until the texture changes.",
+        "bodyZh": "加少量水，让卸妆膏的质地发生变化。"
+      },
+      {
+        "type": "Canada Tip",
+        "tipType": "culture_tip",
+        "title": "Compare texture safely",
+        "titleZh": "安全比较产品质地",
+        "body": "Ask “Can I test them?” before trying beauty products. Follow the advisor's instructions, use clean applicators, and compare textures on the back of your hand.",
+        "bodyZh": "美妆产品的试用方式可能因门店而异。先询问 Can I test them?，再按照店员建议使用干净的试用棒，并在手背比较质地。"
+      },
+      {
+        "type": "Language Tip",
+        "tipType": "culture_tip",
+        "title": "Describe irritation directly",
+        "titleZh": "直接说明刺激感",
+        "body": "“It irritates my eyes” directly describes discomfort. To compare products more gently, ask “Which one feels gentler around the eyes?”",
+        "bodyZh": "It irritates my eyes 直接说明产品会刺激眼睛。比较产品时，可以问 Which one feels gentler around the eyes?"
+      }
+    ],
+    "relatedSceneIds": [
+      10,
+      11
+    ],
+    "nextSceneId": 10
+  },
+  "externalId": "SH-01-004"
+}
