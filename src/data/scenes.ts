@@ -53,7 +53,7 @@ export const SCENES: Scene[] = [
     isNew: true,
     desc: "卸妆产品刺激眼睛，或卸不干净防水睫毛膏时，学会说明问题、比较配方，并询问正确用法。",
     photo: "/scenes/SH-01-004-frame-01.jpg",
-    video_url: "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/SH-01-004/SH-01-004-no-subtitles.mp4",
+    video_url: "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/content/SH-01-004/SH-01-004-no-subtitles.mp4",
     pdfUrl: "/scenes/SH-01-004-guide.pdf",
     content: {
       sceneSetup: {
@@ -238,7 +238,7 @@ export const SCENES: Scene[] = [
     isNew: true,
     desc: "电话订披萨时，练习确认自取、尺寸、配料、饼底、取餐时间和订单姓名，自然完成整通电话。",
     photo: "/scenes/FD-01-001-cover.jpg",
-    video_url: "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/FD-01-001/FD-01-001-no-subtitles.mp4",
+    video_url: "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/content/FD-01-001/FD-01-001-no-subtitles.mp4",
     content: {
       sceneSetup: {
         en: "Aria calls a pizza shop, places a customized order for pickup, and confirms the preparation time, order name, and payment timing.",
@@ -414,7 +414,7 @@ export const SCENES: Scene[] = [
     isNew: true,
     desc: "孩子发烧而常规预约要等几天时，清楚说明年龄、症状和当前状态，并询问当天评估及其他就医选择。",
     photo: "/scenes/HC-01-002-cover.jpg",
-    video_url: "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/HC-01-002/HC-01-002-no-subtitles.mp4",
+    video_url: "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/content/HC-01-002/HC-01-002-no-subtitles.mp4",
     content: {
       sceneSetup: {
         en: "Aria calls a clinic because her eight-year-old son has a 39-degree fever and the next regular appointment is several days away.",
