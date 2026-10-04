@@ -115,12 +115,12 @@ export function HomePage() {
         <div className="grid gap-8 md:grid-cols-[.92fr_1.08fr] md:items-center md:gap-[52px]">
           <div>
             <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Canada · 真实生活英语</p>
-            <h1 className="mt-6 font-normal leading-[0.92] tracking-[-0.03em] text-foreground">
-              <span className="display-serif block text-[42px] font-semibold md:text-[54px]">Real scenes,<br /><em className="font-medium">for real life.</em></span>
-              <span className="mt-4 block font-['Noto_Serif_SC'] text-[22px] font-bold leading-[1.35] md:text-[26px]">真实生活里的英语，提前练一遍。</span>
+            <h1 className="mt-8 font-normal leading-[0.98] tracking-[-0.03em] text-foreground">
+              <span className="display-serif block text-[44px] font-semibold md:text-[56px]">Real scenes,<br /><em className="font-medium">for real life.</em></span>
+              <span className="mt-7 block font-['Noto_Serif_SC'] text-[22px] font-bold leading-[1.4] md:text-[26px]">真实生活里的英语，先练熟再上场。</span>
             </h1>
-            <p className="mt-4 max-w-[480px] text-[15px] leading-[1.75] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄——每一个场景都聚焦真实生活，做成视频、点读和跟读。学完，就能用在下一次真实交流里。</p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <p className="mt-6 max-w-[455px] text-[15px] leading-[1.85] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄。每个场景，都有视频和跟读。练几遍，下次就不慌。</p>
+            <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/explore" className="rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90">进入场景库</Link>
               <Link to="/scenes/ordering-a-pizza-by-phone-for-pickup" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-bold text-foreground">先试学一课 ↓</Link>
             </div>
@@ -157,9 +157,9 @@ export function HomePage() {
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Scene Library</p>
-            <h2 className="mt-2 font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.2] tracking-[-0.02em] md:text-[34px]">按生活逛，不按课本翻。<br /><span className="display-serif font-medium italic">Browse by life, not by textbook.</span></h2>
+            <h2 className="mt-2 font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.2] tracking-[-0.02em] md:text-[34px]">别慌，我们一个一个来。<br /><span className="display-serif font-medium italic">Don't panic. We'll take them one by one.</span></h2>
           </div>
-          <p className="max-w-[360px] text-[13px] leading-relaxed text-muted-foreground">按“你下一次会遇到的事”找场景。先看完整交流如何发生，再练真正会用到的话。</p>
+          <p className="max-w-[360px] text-[13px] leading-relaxed text-muted-foreground">挑一个场景，看完完整对话，把那几句练到脱口而出。</p>
         </div>
 
         <div className="mb-4 flex flex-wrap gap-2">

@@ -236,6 +236,7 @@ export const SCENES: Scene[] = [
     featured: true,
     isNew: true,
     desc: "电话订披萨时，练习确认自取、尺寸、配料、饼底、取餐时间和订单姓名，自然完成整通电话。",
+    photo: "/scenes/FD-01-001-cover.jpg",
     video_url: "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/FD-01-001/FD-01-001-no-subtitles.mp4",
     content: {
       sceneSetup: {
@@ -331,6 +332,7 @@ export const SCENES: Scene[] = [
     featured: true,
     isNew: true,
     desc: "孩子发烧而常规预约要等几天时，清楚说明年龄、症状和当前状态，并询问当天评估及其他就医选择。",
+    photo: "/scenes/HC-01-002-cover.jpg",
     video_url: "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/HC-01-002/HC-01-002-no-subtitles.mp4",
     content: {
       sceneSetup: {
