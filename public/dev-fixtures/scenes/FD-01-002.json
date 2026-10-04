@@ -1,0 +1,316 @@
+{
+  "scene": {
+    "id": "FD-01-002",
+    "number": "01-002",
+    "pack": "Food & Dining English",
+    "category": "Food & Dining",
+    "title_en": "Ordering Restaurant Delivery by Phone",
+    "title_zh": "电话点餐并配送到家",
+    "level": "Beginner"
+  },
+  "opener": {
+    "intro_en": "A restaurant delivery call involves more than ordering food. You also need to confirm delivery, say the address clearly, correct misunderstandings, give the buzzer code, ask about arrival time and arrange payment.",
+    "intro_zh": "打电话点外卖不只是报菜名，还要确认配送、说清地址、纠正听错的信息、提供门禁号码、询问送达时间和付款方式。本场景带你完成整通电话。",
+    "tags": [
+      "Restaurant Delivery",
+      "Phone English",
+      "Address Confirmation"
+    ],
+    "featured_quote": {
+      "text": "Please bring it to the unit door.",
+      "note": "A clear request for the driver to deliver the order directly to the apartment door",
+      "author": "Aria"
+    },
+    "learning_goals": [
+      "Place a food order by phone",
+      "Choose delivery instead of pickup",
+      "Give and correct a delivery address",
+      "Provide a buzzer code and delivery instruction",
+      "Ask about arrival time and card payment"
+    ]
+  },
+  "dialogue": {
+    "format": "dialogue",
+    "title": "Ordering Restaurant Delivery by Phone",
+    "context_en": "Aria calls a restaurant to order two chicken rice bowls and fries for delivery. She gives her address, corrects Avenue versus Street, provides the buzzer code, requests delivery to her unit door and confirms the arrival time and payment method.",
+    "context_zh": "Aria 打电话向餐厅订购两份鸡肉盖饭和薯条并选择配送。她提供地址、纠正 Avenue 与 Street 的误听、说明门禁号码和送到家门口的要求，并确认送达时间与付款方式。",
+    "lines": [
+      {
+        "speaker": "Restaurant",
+        "en": "Thanks for calling. What can I get for you?",
+        "zh": "感谢来电。请问您想点些什么？"
+      },
+      {
+        "speaker": "Aria",
+        "en": "Hi. I’d like two chicken rice bowls—one mild and one medium—and a side of fries.",
+        "zh": "你好。我想要两份鸡肉盖饭，一份微辣，一份中辣，再加一份薯条。"
+      },
+      {
+        "speaker": "Restaurant",
+        "en": "Sure. Will that be for pickup or delivery?",
+        "zh": "好的。请问是自取还是配送？"
+      },
+      {
+        "speaker": "Aria",
+        "en": "Delivery, please.",
+        "zh": "配送，谢谢。"
+      },
+      {
+        "speaker": "Restaurant",
+        "en": "What’s the delivery address?",
+        "zh": "请问配送地址是什么？"
+      },
+      {
+        "speaker": "Aria",
+        "en": "It’s 125 Maple Avenue, Unit 807.",
+        "zh": "地址是 Maple Avenue 125号，807室。"
+      },
+      {
+        "speaker": "Restaurant",
+        "en": "Sorry, was that Maple Street?",
+        "zh": "不好意思，是 Maple Street 吗？"
+      },
+      {
+        "speaker": "Aria",
+        "en": "Maple Avenue—not Maple Street.",
+        "zh": "是 Maple Avenue，不是 Maple Street。"
+      },
+      {
+        "speaker": "Restaurant",
+        "en": "Got it. Is there a buzzer code?",
+        "zh": "明白了。请问有门禁呼叫号码吗？"
+      },
+      {
+        "speaker": "Aria",
+        "en": "Yes, it’s 2412. Please bring it to the unit door.",
+        "zh": "有，是2412。请送到我家门口。"
+      },
+      {
+        "speaker": "Restaurant",
+        "en": "No problem. It should arrive in about forty to forty-five minutes.",
+        "zh": "没问题。大约四十到四十五分钟送到。"
+      },
+      {
+        "speaker": "Aria",
+        "en": "How can I pay? Can I pay by card when it arrives?",
+        "zh": "请问怎么付款？送到时可以刷卡吗？"
+      },
+      {
+        "speaker": "Restaurant",
+        "en": "Yes. The driver can bring a card terminal. Your total is thirty-eight dollars and sixty cents.",
+        "zh": "可以。司机可以带刷卡机。总共是38元60分。"
+      },
+      {
+        "speaker": "Aria",
+        "en": "Perfect. The name is Aria.",
+        "zh": "太好了。订单姓名是 Aria。"
+      },
+      {
+        "speaker": "Restaurant",
+        "en": "Thanks, Aria. We’ll see you in about forty-five minutes.",
+        "zh": "谢谢，Aria。大约四十五分钟后送到。"
+      },
+      {
+        "speaker": "Aria",
+        "en": "Thank you. Bye.",
+        "zh": "谢谢，再见。"
+      },
+      {
+        "speaker": "Restaurant",
+        "en": "Bye.",
+        "zh": "再见。"
+      }
+    ],
+    "canadian_note": {
+      "en": "“Pickup” means you collect the order yourself, while “delivery” means it is brought to you. In an apartment building, “unit” identifies the apartment and a “buzzer code” lets the driver contact or access the building entrance.",
+      "zh": "pickup 表示顾客自己取餐，delivery 表示由餐厅或配送员送来。在公寓楼里，unit 指具体房号，buzzer code 是配送员在楼门口呼叫住户或进入楼宇时使用的门禁号码。"
+    }
+  },
+  "key_expressions": [
+    {
+      "order": 1,
+      "expression": "What can I get for you?",
+      "meaning_zh": "请问您想点些什么？",
+      "explanation_en": "A common restaurant question inviting the customer to place an order.",
+      "example_en": "Thanks for calling. What can I get for you?",
+      "level": "CORE"
+    },
+    {
+      "order": 2,
+      "expression": "I’d like two chicken rice bowls.",
+      "meaning_zh": "我想要两份鸡肉盖饭。",
+      "explanation_en": "A polite way to state the main items in an order.",
+      "example_en": "I’d like two chicken rice bowls—one mild and one medium.",
+      "level": "CORE"
+    },
+    {
+      "order": 3,
+      "expression": "a side of fries",
+      "meaning_zh": "一份配餐薯条",
+      "explanation_en": "An additional serving of fries ordered alongside the main dish.",
+      "example_en": "And a side of fries.",
+      "level": "USEFUL"
+    },
+    {
+      "order": 4,
+      "expression": "pickup or delivery",
+      "meaning_zh": "自取还是配送",
+      "explanation_en": "The two common ways to receive a restaurant order.",
+      "example_en": "Will that be for pickup or delivery?",
+      "level": "CORE"
+    },
+    {
+      "order": 5,
+      "expression": "What’s the delivery address?",
+      "meaning_zh": "配送地址是什么？",
+      "explanation_en": "Asks where the order should be delivered.",
+      "example_en": "What’s the delivery address?",
+      "level": "CORE"
+    },
+    {
+      "order": 6,
+      "expression": "Maple Avenue—not Maple Street.",
+      "meaning_zh": "是 Maple Avenue，不是 Maple Street。",
+      "explanation_en": "Uses “A—not B” to correct a misheard detail clearly and efficiently.",
+      "example_en": "Maple Avenue—not Maple Street.",
+      "level": "CORE"
+    },
+    {
+      "order": 7,
+      "expression": "Is there a buzzer code?",
+      "meaning_zh": "有门禁呼叫号码吗？",
+      "explanation_en": "Asks for the building entry or intercom code needed for delivery.",
+      "example_en": "Got it. Is there a buzzer code?",
+      "level": "CORE"
+    },
+    {
+      "order": 8,
+      "expression": "Please bring it to the unit door.",
+      "meaning_zh": "请送到我家门口。",
+      "explanation_en": "Requests delivery directly to the apartment door rather than the building entrance.",
+      "example_en": "Yes, it’s 2412. Please bring it to the unit door.",
+      "level": "CORE"
+    },
+    {
+      "order": 9,
+      "expression": "It should arrive in about forty to forty-five minutes.",
+      "meaning_zh": "大约四十到四十五分钟送到。",
+      "explanation_en": "Gives an estimated delivery window.",
+      "example_en": "It should arrive in about forty to forty-five minutes.",
+      "level": "CORE"
+    },
+    {
+      "order": 10,
+      "expression": "Can I pay by card when it arrives?",
+      "meaning_zh": "送到时可以刷卡吗？",
+      "explanation_en": "Asks whether card payment is available upon delivery.",
+      "example_en": "How can I pay? Can I pay by card when it arrives?",
+      "level": "CORE"
+    },
+    {
+      "order": 11,
+      "expression": "The driver can bring a card terminal.",
+      "meaning_zh": "司机可以带刷卡机。",
+      "explanation_en": "Confirms that the driver will have a device for card payment.",
+      "example_en": "Yes. The driver can bring a card terminal.",
+      "level": "USEFUL"
+    },
+    {
+      "order": 12,
+      "expression": "Your total is thirty-eight dollars and sixty cents.",
+      "meaning_zh": "总共是38元60分。",
+      "explanation_en": "States the complete price of the order.",
+      "example_en": "Your total is thirty-eight dollars and sixty cents.",
+      "level": "USEFUL"
+    }
+  ],
+  "what_you_may_also_hear": [
+    {
+      "en": "Could you repeat the street name?",
+      "zh": "可以再说一遍街道名称吗？",
+      "note_en": "A useful clarification when part of an address is unclear."
+    },
+    {
+      "en": "Please leave it at my door.",
+      "zh": "请把餐放在我家门口。",
+      "note_en": "A common alternative when asking for the order to be left at the door."
+    },
+    {
+      "en": "Do you accept card at the door?",
+      "zh": "送到门口时接受刷卡吗？",
+      "note_en": "Another concise way to ask about card payment upon delivery."
+    }
+  ],
+  "common_mistakes": [
+    {
+      "wrong": "I want two chicken rice bowls.",
+      "better": "I’d like two chicken rice bowls.",
+      "explanation_zh": "电话点餐时，I’d like… 比 I want… 更自然、更礼貌。"
+    },
+    {
+      "wrong": "Please send it to my home door.",
+      "better": "Please bring it to the unit door.",
+      "explanation_zh": "请配送员把餐送到某处，使用 bring it to… 更自然；公寓家门可说 unit door。"
+    },
+    {
+      "wrong": "Can I pay card when it arrives?",
+      "better": "Can I pay by card when it arrives?",
+      "explanation_zh": "表示使用银行卡付款，需要介词 by：pay by card。"
+    }
+  ],
+  "aria_experience": null,
+  "canada_tip": {
+    "title_en": "Repeat Critical Delivery Details",
+    "title_zh": "关键配送信息要及时纠正并确认",
+    "example_en": "Maple Avenue—not Maple Street.",
+    "example_zh": "是 Maple Avenue，不是 Maple Street。",
+    "body_zh": "电话里容易听错 Avenue、Street、房号或门禁号码。发现错误时，可以直接使用“A—not B”简短纠正，再确认送到楼门口还是 unit door、预计时间和付款方式。具体配送流程以餐厅安排为准。"
+  },
+  "practice": [
+    {
+      "order": 1,
+      "prompt_en": "I’d like ________ and a side of ________.",
+      "prompt_zh": "我想要_______，再加一份_______。",
+      "examples": [
+        "two chicken rice bowls / fries",
+        "one burger / onion rings"
+      ]
+    },
+    {
+      "order": 2,
+      "prompt_en": "It’s ________ Avenue—not ________ Street.",
+      "prompt_zh": "是_______ Avenue，不是_______ Street。",
+      "examples": [
+        "Maple / Maple",
+        "King / King"
+      ]
+    },
+    {
+      "order": 3,
+      "prompt_en": "Please bring it to the ________ door.",
+      "prompt_zh": "请把它送到_______门口。",
+      "examples": [
+        "unit",
+        "front"
+      ]
+    },
+    {
+      "order": 4,
+      "prompt_en": "Can I pay by ________ when it arrives?",
+      "prompt_zh": "送到时可以用_______付款吗？",
+      "examples": [
+        "card",
+        "cash"
+      ]
+    }
+  ],
+  "closing_note": {
+    "text_en": "Practise the call in sequence: order the food, choose delivery, confirm the address, give access details, then ask about timing and payment.",
+    "author": "YZ English"
+  },
+  "assets": {
+    "scene_image": "../02_Storyboard/FD-01-002-frame-01.jpg",
+    "video_url": null,
+    "qr_code": null
+  }
+}
