@@ -14,7 +14,7 @@ import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
 // Fixed short height, two per row on desktop.
 function KeyExpressionCard({ item }: { item: KeyExpressionItem }) {
   return (
-    <div className="break-inside-avoid border-b border-dashed border-primary/15 py-4 first:pt-0 last:border-0 last:pb-0">
+    <div className="border-b border-dashed border-primary/15 py-4 first:pt-0 last:border-0 last:pb-0">
       <p className="font-serif text-[20px] leading-snug text-primary">{item.expressionEn}</p>
       <p className="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">{item.expressionZh}</p>
     </div>
@@ -932,7 +932,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 {keyExpressionItems.length > 0 && (
                   <div className="rounded-[20px] border border-border bg-white p-5 md:p-7">
                     <h3 className="mb-6 text-[18px] font-black text-primary">核心表达</h3>
-                    <div className="md:columns-2 md:gap-8">
+                    <div className="grid grid-cols-1 gap-x-8 md:grid-cols-2">
                       {keyExpressionItems.map((item, i) => (
                         <KeyExpressionCard key={i} item={item} />
                       ))}
