@@ -152,7 +152,11 @@ function str(v: unknown): string {
   return typeof v === "string" ? v : "";
 }
 
-function mapPipelineDetail(json: Record<string, unknown>, entry: ManifestScene): Scene {
+function mapPipelineDetail(
+  json: Record<string, unknown>,
+  entry: ManifestScene,
+  timing?: Array<{ card: number; start: number; end: number }>
+): Scene {
   const sceneMeta = (json.scene ?? {}) as Record<string, unknown>;
   const opener = (json.opener ?? {}) as Record<string, unknown>;
   const dialogue = (json.dialogue ?? {}) as Record<string, unknown>;
@@ -162,14 +166,20 @@ function mapPipelineDetail(json: Record<string, unknown>, entry: ManifestScene):
   >;
   const canadaTip = (json.canada_tip ?? {}) as Record<string, unknown>;
 
-  const dialogueLines: DialogueLine[] = lines.map(l => ({
-    speaker: str(l.speaker),
-    speakerZh: speakerZhFor(str(l.speaker)),
-    en: str(l.en),
-    zh: str(l.zh),
-    // No per-line timings in the pipeline schema — the detail page renders
-    // these as plain, non-interactive text (same as untimed legacy scenes).
-  }));
+  const dialogueLines: DialogueLine[] = lines.map((l, i) => {
+    const t = timing?.find(entry => entry.card === i);
+    return {
+      speaker: str(l.speaker),
+      speakerZh: speakerZhFor(str(l.speaker)),
+      en: str(l.en),
+      zh: str(l.zh),
+      // Per-line timings from the episode's timing.json (if present) —
+      // enables tap-to-play on the detail page. Absent = plain text.
+      ...(t && typeof t.start === "number" && typeof t.end === "number"
+        ? { start: t.start, end: t.end }
+        : {}),
+    };
+  });
 
   const expressions: Expression[] = keyExpressions.map(k => ({
     label: "",
@@ -272,5 +282,28 @@ export async function fetchEpisodeDetail(entry: ManifestScene): Promise<Scene> {
     throw new Error(`scene.json fetch failed (${res.status}): ${entry.dataUrl}`);
   }
   const json = (await res.json()) as Record<string, unknown>;
-  return isPipelineSchema(json) ? mapPipelineDetail(json, entry) : mapFlatDetail(json, entry);
+  if (!isPipelineSchema(json)) {
+    return mapFlatDetail(json, entry);
+  }
+  // Pipeline schema: try to load per-line timings from the episode's
+  // timing.json (same OSS folder as scene.json). Absent = plain text,
+  // never a crash.
+  let timing: Array<{ card: number; start: number; end: number }> | undefined;
+  try {
+    const timingUrl = entry.dataUrl.replace(/\/[^/]+$/, "/timing.json");
+    const timingRes = await fetch(timingUrl);
+    if (timingRes.ok) {
+      const timingJson = (await timingRes.json()) as Array<{
+        card: number;
+        start: number;
+        end: number;
+      }>;
+      if (Array.isArray(timingJson)) {
+        timing = timingJson;
+      }
+    }
+  } catch {
+    // timing.json optional — detail page renders without tap-to-play
+  }
+  return mapPipelineDetail(json, entry, timing);
 }
