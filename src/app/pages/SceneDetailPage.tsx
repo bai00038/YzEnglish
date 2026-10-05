@@ -420,10 +420,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     cancelRangePlayback();
     const requestId = ++playRequestRef.current;
     // timing.json bakes in a 0.25s pre-roll (start = actual - 0.25) which
-    // causes audible bleed from the previous line. Compensate by seeking
-    // to the true speech start. End gets +0.15s padding so the cutoff
-    // doesn't sound clipped.
-    const trueStart = range.start + 0.25;
+    // causes audible bleed from the previous line. Keep 0.15s of it for
+    // a natural lead-in, shave off the excess 0.10s. End gets +0.15s
+    // padding so the cutoff doesn't sound clipped.
+    const trueStart = range.start + 0.10;
     const trueEnd = range.end + 0.15;
     activeEndRef.current = trueEnd;
     setPinnedLineIndex(lineIndex);
