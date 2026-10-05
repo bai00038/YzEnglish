@@ -39,7 +39,7 @@ export interface ManifestScene {
   level: string;
   duration: string;
   featured: boolean;
-  isNew: boolean;
+  publishedAt?: string;
   desc: string;
   photo?: string;
   video_url?: string;
@@ -81,6 +81,15 @@ export function fetchManifestScenes(): Promise<ManifestScene[]> {
 
 // List-level Scene: everything the library cards need, no per-episode
 // fetch. `content` stays undefined until fetchEpisodeDetail() fills it.
+// A scene counts as "New" if published within the last 7 days.
+// Computed from publishedAt so the manifest never needs a manual flag.
+function isNewFromPublishedAt(publishedAt?: string): boolean {
+  if (!publishedAt) return false;
+  const published = new Date(publishedAt).getTime();
+  if (Number.isNaN(published)) return false;
+  return Date.now() - published < 7 * 24 * 60 * 60 * 1000;
+}
+
 export function manifestEntryToScene(entry: ManifestScene): Scene {
   return {
     id: entry.id,
@@ -92,7 +101,7 @@ export function manifestEntryToScene(entry: ManifestScene): Scene {
     level: entry.level,
     duration: entry.duration,
     featured: entry.featured,
-    isNew: entry.isNew,
+    isNew: isNewFromPublishedAt(entry.publishedAt),
     desc: entry.desc,
     photo: entry.photo ?? undefined,
     pdfUrl: entry.pdfUrl ?? undefined,
