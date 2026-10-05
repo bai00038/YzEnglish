@@ -29,6 +29,13 @@ const CONTENT_BASE = import.meta.env.VITE_CONTENT_BASE ?? "https://go.learnyzeng
 export const MANIFEST_URL =
   import.meta.env.VITE_MANIFEST_URL ?? `${CONTENT_BASE}/content/manifest.json`;
 
+// Temporary compatibility map for uploaded files whose OSS object name does
+// not yet match the older guide.pdf value stored in the manifest.
+const PDF_URL_OVERRIDES: Record<string, string> = {
+  "ordering-a-pizza-by-phone-for-pickup":
+    "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/content/FD-01-001/FD-01-001-Ordering%20a%20Pizza%20by%20Phone%20for%20Pickup.pdf",
+};
+
 export interface ManifestScene {
   id: number;
   slug: string;
@@ -95,7 +102,7 @@ export function manifestEntryToScene(entry: ManifestScene): Scene {
     isNew: entry.isNew,
     desc: entry.desc,
     photo: entry.photo ?? undefined,
-    pdfUrl: entry.pdfUrl ?? undefined,
+    pdfUrl: PDF_URL_OVERRIDES[entry.slug] ?? entry.pdfUrl ?? undefined,
     video_url: entry.video_url ?? undefined,
   };
 }

@@ -594,12 +594,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             </p>
           </div>
           <div className="flex flex-wrap gap-2 lg:flex-nowrap lg:justify-self-end">
-            <span className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary">视频 {scene.duration}</span>
-            <span className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary">逐句 {content?.dialogue.length ?? 0} 句</span>
-            <span className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary">词汇 {keyExpressionItems.length} 个</span>
-            {scene.pdfUrl && (
-              <span className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary">讲义 PDF</span>
-            )}
+            <a href="#section-watch" className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">视频 {scene.duration}</a>
+            <a href="#section-dialogue" className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">逐句 {content?.dialogue.length ?? 0} 句</a>
+            <a href="#section-language" className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">词汇 {keyExpressionItems.length} 个</a>
+            <a href="#section-pdf" className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">讲义 PDF</a>
           </div>
         </div>
       </div>
@@ -627,7 +625,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             {/* ─────────────────────────────────────────────
                 Video + playback speed + study tabs
                 ───────────────────────────────────────────── */}
-            <section id="section-watch" className="px-5 pb-12 md:px-10 md:pb-16">
+            <section id="section-watch" className="scroll-mt-24 px-5 pb-12 md:px-10 md:pb-16">
 
               <StepHeading number="01" title="看视频" hint="先完整看一遍，字幕随时开关" />
 
@@ -806,7 +804,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               </div>
 
               {/* ── Study mode tabs ── */}
-              <div className="mt-12 mb-5 flex flex-wrap items-center justify-between gap-4">
+              <div id="section-dialogue" className="scroll-mt-24 mt-12 mb-5 flex flex-wrap items-center justify-between gap-4">
                 <StepHeading number="02" title="逐句精听跟读" hint="点任意一句，单句播放给你跟读" />
                 <div className="flex items-center rounded-full border border-border bg-white p-1">
                 {STUDY_TABS.map(tab => {
@@ -925,7 +923,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             {/* ─────────────────────────────────────────────
                 STAGE 03 · Learn the Language
                 ───────────────────────────────────────────── */}
-            <section id="section-language" className="px-5 pb-12 md:px-10 md:pb-16">
+            <section id="section-language" className="scroll-mt-24 px-5 pb-12 md:px-10 md:pb-16">
               <StepHeading number="03" title="知识点" hint="这一课真正要带走的" />
               <div className="flex flex-col gap-4">
                 {/* Key Expressions — from public.key_expressions (or its legacy-tips fallback) */}
@@ -962,7 +960,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                 {/* PDF download — scene.pdfUrl comes straight from Supabase scenes.pdf_url;
                     never hardcoded and never guessed from the scene id/slug. */}
-                <div className="mb-12 flex flex-col gap-6 rounded-[24px] bg-primary px-6 py-8 text-white md:flex-row md:items-center md:justify-between md:px-8">
+                <div id="section-pdf" className="scroll-mt-24 mb-12 flex flex-col gap-6 rounded-[24px] bg-primary px-6 py-8 text-white md:flex-row md:items-center md:justify-between md:px-8">
                   <div className="max-w-[720px]">
                     <p className="text-[11px] font-black uppercase tracking-[0.18em] text-white/65">Step 04 · 本期讲义 PDF</p>
                     <p className="mt-4 font-serif text-[27px] font-semibold leading-tight md:text-[34px]">把这一课带走，贴在冰箱上练</p>
