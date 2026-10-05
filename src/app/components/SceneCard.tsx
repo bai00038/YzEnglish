@@ -1,23 +1,9 @@
 import { Link } from "react-router";
 import { CATEGORY_BG } from "@/data/scenes";
+import { getSceneCategoryLabel } from "@/data/scene-categories";
 import type { Scene } from "@/data/types";
 import { ImgBox } from "@/app/components/primitives";
 import { DurationLabel } from "@/app/components/badges";
-
-const THEME_LABELS: Record<string, string> = {
-  "Shopping & Beauty": "购物英语",
-  "Shopping & Returns": "购物英语",
-  "Healthcare": "医疗英语",
-  "School & Family": "家校沟通",
-  "Banking & Services": "新移民必备",
-  "Housing": "新移民必备",
-  "Transportation": "新移民必备",
-  "Work": "新移民必备",
-  "Emergencies": "新移民必备",
-  "Food & Restaurants": "日常生活",
-  "Social Life": "日常生活",
-  "Travel": "日常生活",
-};
 
 export function SceneCard({ scene }: { scene: Scene }) {
   const catColor = CATEGORY_BG[scene.category] ?? "bg-secondary";
@@ -36,8 +22,7 @@ export function SceneCard({ scene }: { scene: Scene }) {
           <span className="display-serif absolute right-3.5 top-3.5 rounded-full bg-accent px-3 py-1 text-[12px] font-bold italic tracking-[0.08em] text-accent-foreground">NEW</span>
         )}
         <span className="absolute bottom-3.5 left-3.5 rounded-full bg-primary px-3 py-1.5 text-[12px] font-medium text-white">
-          {THEME_LABELS[scene.category] ?? scene.category}
-          <span className="ml-1 text-[10.5px] uppercase tracking-[0.14em] opacity-75">{scene.category}</span>
+          {getSceneCategoryLabel(scene.category)}
         </span>
       </div>
       <div className="flex flex-1 flex-col px-[22px] pb-[18px] pt-5">

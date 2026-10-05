@@ -3,6 +3,7 @@ import { ArrowRight, Play, Volume2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCuratedFeaturedScenes, useLatestScenes } from "@/data/scenes-access";
 import type { Scene } from "@/data/types";
+import { getSceneCategoryLabel } from "@/data/scene-categories";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 
 function uniqueScenes(primary: Scene[], secondary: Scene[]) {
@@ -37,7 +38,7 @@ function EditorialScene({ scene, large = false }: { scene: Scene; large?: boolea
       <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_32%,rgba(6,20,14,.82))]" />
       <span className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-primary shadow-sm"><Play size={14} fill="currentColor" /></span>
       <div className="absolute inset-x-4 bottom-4 z-10 text-white">
-        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/80">{scene.category}</p>
+        <p className="text-[10px] font-bold tracking-[0.14em] text-white/80">{getSceneCategoryLabel(scene.category)}</p>
         <h3 className="mt-1.5 font-['Noto_Serif_SC'] text-[21px] font-bold leading-tight">{scene.titleZh || scene.titleEn}</h3>
         <p className="mt-1 text-[12.5px] leading-relaxed text-white/85">{scene.titleEn}</p>
       </div>

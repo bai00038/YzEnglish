@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useParams } from "react-router";
 import { ChevronRight, ChevronLeft, Download, Info, Play } from "lucide-react";
 import { useSceneDetail } from "@/data/scenes-access";
+import { getSceneCategoryLabel } from "@/data/scene-categories";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
 import { buildSceneSpeakers, normalizeSpeaker, speakerAvatarLabel, SPEAKER_STYLES } from "@/data/speakerRoles";
@@ -573,7 +574,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             <ChevronLeft size={15} /> 返回场景库
           </Link>
           <div className="flex items-center gap-1">
-            <span>场景库</span><span>/</span><span>{scene.category}</span><span>/</span>
+            <span>场景库</span><span>/</span><span>{getSceneCategoryLabel(scene.category)}</span><span>/</span>
             <span className="text-primary">{scene.titleZh}</span>
           </div>
         </div>
@@ -582,7 +583,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       {/* ─── Lesson identity block (sits between breadcrumb and chapter nav) ─── */}
       <div className="px-5 pb-8 pt-7 md:px-10 md:pb-10 md:pt-8">
         <span className="inline-flex rounded-full bg-primary px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-white">
-          {scene.category} · {scene.region || "Real life"}
+          {getSceneCategoryLabel(scene.category)} · {scene.region || "Real life"}
         </span>
         <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-10">
           <div className="min-w-0 max-w-[760px]">
