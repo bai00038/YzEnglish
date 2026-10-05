@@ -419,7 +419,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     // landed yet — before starting this one.
     cancelRangePlayback();
     const requestId = ++playRequestRef.current;
-    activeEndRef.current = range.end;
+    // timing.json bakes in a 0.25s pre-roll (start = actual - 0.25) which
+    // causes audible bleed from the previous line. Compensate by seeking
+    // to the true speech start. End gets +0.15s padding so the cutoff
+    // doesn't sound clipped.
+    const trueStart = range.start + 0.25;
+    const trueEnd = range.end + 0.15;
+    activeEndRef.current = trueEnd;
     setPinnedLineIndex(lineIndex);
 
     if (isDialogueTimingDebugEnabled()) {
@@ -439,13 +445,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     const beginPlayback = () => {
       if (playRequestRef.current !== requestId) return; // superseded by a later click
       video.play();
-      watchForLineEnd(requestId, range.end);
+      watchForLineEnd(requestId, trueEnd);
     };
 
     // Setting currentTime to (near) its current value seeks nowhere, so
     // no 'seeked' event would ever fire — play immediately in that case
     // rather than hanging.
-    if (Math.abs(video.currentTime - range.start) < 0.005) {
+    if (Math.abs(video.currentTime - trueStart) < 0.005) {
       beginPlayback();
       return;
     }
@@ -459,13 +465,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       // pre-seek position.
       if (playRequestRef.current !== requestId) return; // superseded by a later click
       if (isDialogueTimingDebugEnabled()) {
-        console.table({ requestedStart: range.start, actualSeekedTime: video.currentTime });
+        console.table({ requestedStart: trueStart, actualSeekedTime: video.currentTime });
       }
       beginPlayback();
     };
     pendingSeekedHandlerRef.current = onSeeked;
     video.addEventListener("seeked", onSeeked, { once: true });
-    video.currentTime = range.start;
+    video.currentTime = trueStart;
   }
 
   // Intentionally no auto-scroll here: highlighting must follow
