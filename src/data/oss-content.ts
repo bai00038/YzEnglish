@@ -107,6 +107,7 @@ export function manifestEntryToScene(entry: ManifestScene): Scene {
     featured: entry.featured,
     isNew: isSceneNew(entry.publishedAt),
     isHot: entry.isHot === true,
+    publishedAt: entry.publishedAt,
     desc: entry.desc,
     photo: entry.photo ?? undefined,
     pdfUrl: PDF_URL_OVERRIDES[entry.slug] ?? entry.pdfUrl ?? undefined,

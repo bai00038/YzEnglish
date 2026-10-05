@@ -4,6 +4,7 @@ import { getSceneCategoryLabel } from "@/data/scene-categories";
 import type { Scene } from "@/data/types";
 import { ImgBox } from "@/app/components/primitives";
 import { DurationLabel } from "@/app/components/badges";
+import { SceneBadges } from "@/app/components/SceneBadges";
 
 export function SceneCard({ scene }: { scene: Scene }) {
   const catColor = CATEGORY_BG[scene.category] ?? "bg-secondary";
@@ -18,12 +19,7 @@ export function SceneCard({ scene }: { scene: Scene }) {
           <ImgBox label={scene.category} className={`w-full h-full ${catColor}`} />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
-        {(scene.isNew || scene.isHot) && (
-          <div className="absolute right-3.5 top-3.5 flex items-center gap-1.5">
-            {scene.isNew && <span className="display-serif rounded-full bg-accent px-3 py-1 text-[12px] font-bold italic tracking-[0.08em] text-accent-foreground">NEW</span>}
-            {scene.isHot && <span className="display-serif rounded-full bg-[#FFB35C] px-3 py-1 text-[12px] font-bold italic tracking-[0.08em] text-[#4A2700]">HOT</span>}
-          </div>
-        )}
+        <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-3.5 top-3.5" />
         <span className="absolute bottom-3.5 left-3.5 rounded-full bg-primary px-3 py-1.5 text-[12px] font-medium text-white">
           {getSceneCategoryLabel(scene.category)}
         </span>

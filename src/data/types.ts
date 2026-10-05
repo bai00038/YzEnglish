@@ -134,6 +134,7 @@ export interface Scene {
   featured: boolean;
   isNew: boolean;
   isHot?: boolean;
+  publishedAt?: string;
   desc: string;
   photo?: string;
   pdfUrl?: string;
