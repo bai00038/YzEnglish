@@ -133,6 +133,7 @@ export interface Scene {
   duration: string;
   featured: boolean;
   isNew: boolean;
+  isHot?: boolean;
   desc: string;
   photo?: string;
   pdfUrl?: string;

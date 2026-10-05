@@ -6,6 +6,7 @@ import type {
   SceneContent,
   TipType,
 } from "./types";
+import { isSceneNew } from "./scene-badges";
 
 // ---------------------------------------------------------------------------
 // OSS content source — the static replacement for Supabase.
@@ -46,7 +47,12 @@ export interface ManifestScene {
   level: string;
   duration: string;
   featured: boolean;
-  isNew: boolean;
+  // ISO 8601 timestamp with timezone. NEW displays for seven days after this.
+  publishedAt?: string;
+  // Editorial flag; set manually when a scene has strong viewing numbers.
+  isHot?: boolean;
+  // Legacy flag, no longer used to decide whether NEW is shown.
+  isNew?: boolean;
   desc: string;
   photo?: string;
   video_url?: string;
@@ -99,7 +105,8 @@ export function manifestEntryToScene(entry: ManifestScene): Scene {
     level: entry.level,
     duration: entry.duration,
     featured: entry.featured,
-    isNew: entry.isNew,
+    isNew: isSceneNew(entry.publishedAt),
+    isHot: entry.isHot === true,
     desc: entry.desc,
     photo: entry.photo ?? undefined,
     pdfUrl: PDF_URL_OVERRIDES[entry.slug] ?? entry.pdfUrl ?? undefined,

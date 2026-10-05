@@ -18,8 +18,11 @@ export function SceneCard({ scene }: { scene: Scene }) {
           <ImgBox label={scene.category} className={`w-full h-full ${catColor}`} />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
-        {scene.isNew && (
-          <span className="display-serif absolute right-3.5 top-3.5 rounded-full bg-accent px-3 py-1 text-[12px] font-bold italic tracking-[0.08em] text-accent-foreground">NEW</span>
+        {(scene.isNew || scene.isHot) && (
+          <div className="absolute right-3.5 top-3.5 flex items-center gap-1.5">
+            {scene.isNew && <span className="display-serif rounded-full bg-accent px-3 py-1 text-[12px] font-bold italic tracking-[0.08em] text-accent-foreground">NEW</span>}
+            {scene.isHot && <span className="display-serif rounded-full bg-[#FFB35C] px-3 py-1 text-[12px] font-bold italic tracking-[0.08em] text-[#4A2700]">HOT</span>}
+          </div>
         )}
         <span className="absolute bottom-3.5 left-3.5 rounded-full bg-primary px-3 py-1.5 text-[12px] font-medium text-white">
           {getSceneCategoryLabel(scene.category)}
