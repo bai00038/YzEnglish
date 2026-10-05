@@ -6,6 +6,7 @@ import type {
   SceneContent,
   TipType,
 } from "./types";
+import { isSceneNew } from "./scene-badges";
 
 // ---------------------------------------------------------------------------
 // OSS content source — the static replacement for Supabase.
@@ -29,6 +30,13 @@ const CONTENT_BASE = import.meta.env.VITE_CONTENT_BASE ?? "https://go.learnyzeng
 export const MANIFEST_URL =
   import.meta.env.VITE_MANIFEST_URL ?? `${CONTENT_BASE}/content/manifest.json`;
 
+// Temporary compatibility map for uploaded files whose OSS object name does
+// not yet match the older guide.pdf value stored in the manifest.
+const PDF_URL_OVERRIDES: Record<string, string> = {
+  "ordering-a-pizza-by-phone-for-pickup":
+    "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/content/FD-01-001/FD-01-001-Ordering%20a%20Pizza%20by%20Phone%20for%20Pickup.pdf",
+};
+
 export interface ManifestScene {
   id: number;
   slug: string;
@@ -39,7 +47,12 @@ export interface ManifestScene {
   level: string;
   duration: string;
   featured: boolean;
+  // ISO 8601 timestamp with timezone. NEW displays for seven days after this.
   publishedAt?: string;
+  // Editorial flag; set manually when a scene has strong viewing numbers.
+  isHot?: boolean;
+  // Legacy flag, no longer used to decide whether NEW is shown.
+  isNew?: boolean;
   desc: string;
   photo?: string;
   video_url?: string;
@@ -81,15 +94,6 @@ export function fetchManifestScenes(): Promise<ManifestScene[]> {
 
 // List-level Scene: everything the library cards need, no per-episode
 // fetch. `content` stays undefined until fetchEpisodeDetail() fills it.
-// A scene counts as "New" if published within the last 7 days.
-// Computed from publishedAt so the manifest never needs a manual flag.
-function isNewFromPublishedAt(publishedAt?: string): boolean {
-  if (!publishedAt) return false;
-  const published = new Date(publishedAt).getTime();
-  if (Number.isNaN(published)) return false;
-  return Date.now() - published < 7 * 24 * 60 * 60 * 1000;
-}
-
 export function manifestEntryToScene(entry: ManifestScene): Scene {
   return {
     id: entry.id,
@@ -101,10 +105,12 @@ export function manifestEntryToScene(entry: ManifestScene): Scene {
     level: entry.level,
     duration: entry.duration,
     featured: entry.featured,
-    isNew: isNewFromPublishedAt(entry.publishedAt),
+    isNew: isSceneNew(entry.publishedAt),
+    isHot: entry.isHot === true,
+    publishedAt: entry.publishedAt,
     desc: entry.desc,
     photo: entry.photo ?? undefined,
-    pdfUrl: entry.pdfUrl ?? undefined,
+    pdfUrl: PDF_URL_OVERRIDES[entry.slug] ?? entry.pdfUrl ?? undefined,
     video_url: entry.video_url ?? undefined,
   };
 }

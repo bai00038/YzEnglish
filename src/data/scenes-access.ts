@@ -71,7 +71,15 @@ async function fetchCuratedFeaturedScenes(): Promise<Scene[]> {
 
 async function fetchLatestScenes(limit: number): Promise<Scene[]> {
   const scenes = await fetchVisibleScenes();
-  return [...scenes].sort((a, b) => b.id - a.id).slice(0, limit);
+  return [...scenes].sort((a, b) => {
+    const aPublished = a.publishedAt ? Date.parse(a.publishedAt) : NaN;
+    const bPublished = b.publishedAt ? Date.parse(b.publishedAt) : NaN;
+    const aHasDate = Number.isFinite(aPublished);
+    const bHasDate = Number.isFinite(bPublished);
+    if (aHasDate && bHasDate) return bPublished - aPublished || b.id - a.id;
+    if (aHasDate !== bHasDate) return bHasDate ? 1 : -1;
+    return b.id - a.id;
+  }).slice(0, limit);
 }
 
 async function fetchNewScenes(): Promise<Scene[]> {

@@ -2,14 +2,8 @@ import { Search, X } from "lucide-react";
 import { useScenes } from "@/data/scenes-access";
 import { SceneCard } from "@/app/components/SceneCard";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
+import { getSceneCategoryLabel, PRIMARY_SCENE_CATEGORIES } from "@/data/scene-categories";
 
-const CATEGORY_FILTERS = [
-  { label: "购物英语", categories: ["Shopping & Beauty", "Shopping & Returns"] },
-  { label: "日常生活", categories: ["Food & Restaurants", "Housing", "Transportation", "Social Life", "Work", "Travel", "Emergencies"] },
-  { label: "医疗英语", categories: ["Healthcare"] },
-  { label: "新移民必备", categories: ["Banking & Services", "Housing", "Transportation", "Work", "Emergencies"] },
-  { label: "家校沟通", categories: ["School & Family"] },
-] as const;
 
 export function ExplorePage({
   activeCategory, setActiveCategory,
@@ -20,11 +14,14 @@ export function ExplorePage({
 }) {
   const { data: scenesData, loading: scenesLoading, error: scenesError } = useScenes();
   const scenes = scenesData ?? [];
+  const availableCategories = new Set(scenes.map(s => getSceneCategoryLabel(s.category)));
+  const categoryFilters = [
+    ...PRIMARY_SCENE_CATEGORIES.filter(category => availableCategories.has(category)),
+    ...(availableCategories.has("其他场景") ? ["其他场景"] : []),
+  ];
 
   const filtered = scenes.filter(s => {
-    const selectedFilter = CATEGORY_FILTERS.find(filter => filter.label === activeCategory);
-    const selectedCategories = selectedFilter?.categories as readonly string[] | undefined;
-    const cm = activeCategory === "All" || Boolean(selectedCategories?.includes(s.category));
+    const cm = activeCategory === "All" || getSceneCategoryLabel(s.category) === activeCategory;
     const qm = !searchQuery || s.titleEn.toLowerCase().includes(searchQuery.toLowerCase()) || s.titleZh.includes(searchQuery);
     return cm && qm;
   });
@@ -59,7 +56,7 @@ export function ExplorePage({
           <div className="flex flex-wrap items-center gap-2.5">
             <p className="mr-1 text-[12px] font-medium tracking-[0.18em] text-muted-foreground">场景分类</p>
             <div className="flex flex-wrap gap-2.5">
-              {[{ label: "全部", value: "All" }, ...CATEGORY_FILTERS.map(filter => ({ label: filter.label, value: filter.label }))].map(cat => (
+              {[{ label: "全部", value: "All" }, ...categoryFilters.map(category => ({ label: category, value: category }))].map(cat => (
                 <button key={cat.value} onClick={() => setActiveCategory(cat.value)}
                   className="whitespace-nowrap rounded-full border-[1.5px] px-5 py-2 text-sm leading-none transition-all duration-150"
                   style={activeCategory === cat.value

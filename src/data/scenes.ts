@@ -239,6 +239,7 @@ export const SCENES: Scene[] = [
     desc: "电话订披萨时，练习确认自取、尺寸、配料、饼底、取餐时间和订单姓名，自然完成整通电话。",
     photo: "/scenes/FD-01-001-cover.jpg",
     video_url: "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/content/FD-01-001/FD-01-001-no-subtitles.mp4",
+    pdfUrl: "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/content/FD-01-001/FD-01-001-Ordering%20a%20Pizza%20by%20Phone%20for%20Pickup.pdf",
     content: {
       sceneSetup: {
         en: "Aria calls a pizza shop, places a customized order for pickup, and confirms the preparation time, order name, and payment timing.",
