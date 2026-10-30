@@ -246,17 +246,29 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
               ? <span>中文提示：{currentLine.zh || "暂无中文提示"}</span>
               : <span className="text-muted-foreground/70">需要时可打开中文提示</span>}
           </div>
+          {!checked && (
+            <div className="mt-4 flex justify-end">
+              <button
+                type="button"
+                onClick={handleCheck}
+                disabled={draft.trim().length === 0}
+                className="rounded-full border border-accent bg-accent px-5 py-2.5 text-[12px] font-black text-primary transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                检查答案
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="mt-4 rounded-[18px] border border-primary/10 bg-card p-3.5 md:p-4">
+      <div className="mt-4 rounded-[18px] border border-primary/10 bg-card px-3.5 py-4 md:px-4">
         <div className="flex flex-col items-center">
           <div className="flex items-center justify-center gap-4 md:gap-6">
             <button
               type="button"
               onClick={() => goTo(position - 1)}
               disabled={position === 0}
-              className="rounded-full border border-border bg-white px-4 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35 md:px-5 md:py-3"
+              className="w-[104px] rounded-full border border-border bg-white px-3 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35 md:w-[116px] md:py-3"
             >
               ← 上一句
             </button>
@@ -271,7 +283,7 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
             <button
               type="button"
               onClick={() => goTo(position + 1)}
-              className="rounded-full border border-border bg-white px-4 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary md:px-5 md:py-3"
+              className="w-[104px] rounded-full border border-border bg-white px-3 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary md:w-[116px] md:py-3"
             >
               下一句 →
             </button>
@@ -279,27 +291,6 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
           <span className="mt-2 text-[12px] font-black tabular-nums text-primary">
             {position + 1} / {lines.length}
           </span>
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5 border-t border-border/70 pt-4">
-            {!checked ? (
-              <button
-                type="button"
-                onClick={handleCheck}
-                disabled={draft.trim().length === 0}
-                className="rounded-full border border-accent bg-accent px-5 py-2.5 text-[12px] font-black text-primary transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                检查答案
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => onPlayLine(currentLine.index)}
-                className="rounded-full border border-border bg-white px-5 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary"
-              >
-                再听一次
-              </button>
-            )}
         </div>
       </div>
 
