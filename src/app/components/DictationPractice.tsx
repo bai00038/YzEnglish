@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Play } from "lucide-react";
+import { CornerDownLeft, Play } from "lucide-react";
 import { diffDictationWords, isDictationExactMatch, type DictationToken } from "@/data/dictation";
 import { speakerAvatarLabel, type SpeakerStyle } from "@/data/speakerRoles";
 
@@ -268,22 +268,30 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
             </div>
           </div>
           <label htmlFor="dictation-input" className="sr-only">输入你听到的英文句子</label>
-          <textarea
-            id="dictation-input"
-            ref={textareaRef}
-            value={draft}
-            onChange={e => setDraft(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleCheck();
-              }
-            }}
-            disabled={checked}
-            rows={1}
-            placeholder="输入你听到的英文句子…"
-            className="mt-3 h-[76px] w-full max-w-full resize-none rounded-[14px] border-[0.5px] border-primary/10 bg-[#FAF8F2] px-4 py-2.5 font-serif text-[20px] leading-relaxed text-primary focus:border-primary/20 focus:outline-none focus:ring-0 disabled:bg-[#F7F3EA] disabled:text-muted-foreground md:h-[84px] md:text-[22px]"
-          />
+          <div className="relative mt-3">
+            <textarea
+              id="dictation-input"
+              ref={textareaRef}
+              value={draft}
+              onChange={e => setDraft(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleCheck();
+                }
+              }}
+              disabled={checked}
+              rows={1}
+              placeholder="输入你听到的英文句子…"
+              className="h-[76px] w-full max-w-full resize-none rounded-[14px] border-[0.5px] border-primary/10 bg-[#FAF8F2] px-4 py-2.5 pr-[148px] font-serif text-[20px] leading-relaxed text-primary focus:border-primary/20 focus:outline-none focus:ring-0 disabled:bg-[#F7F3EA] disabled:text-muted-foreground md:h-[84px] md:text-[22px]"
+            />
+            {!checked && (
+              <span className="pointer-events-none absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-white/75 px-2.5 py-1.5 text-[11px] font-bold text-muted-foreground">
+                <CornerDownLeft size={13} strokeWidth={2} />
+                回车检查答案
+              </span>
+            )}
+          </div>
           {checked && diff ? (
             <div className="mt-4 rounded-[16px] border border-primary/10 bg-white/70 p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
@@ -326,18 +334,6 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
             <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
               中文提示：{currentLine.zh || "暂无中文提示"}
             </p>
-          )}
-          {!checked && (
-            <div className="mt-3 flex justify-end">
-              <button
-                type="button"
-                onClick={handleCheck}
-                disabled={draft.trim().length === 0}
-                className="rounded-full border border-accent bg-accent px-5 py-2.5 text-[12px] font-black text-primary transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                检查答案
-              </button>
-            </div>
           )}
         </div>
       </div>
