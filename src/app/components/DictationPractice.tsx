@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Play } from "lucide-react";
 import { diffDictationWords, isDictationExactMatch, type DictationToken } from "@/data/dictation";
-import { SpeechBubbleLabel } from "@/app/components/brand";
-import type { SpeakerStyle } from "@/data/speakerRoles";
+import { speakerAvatarLabel, type SpeakerStyle } from "@/data/speakerRoles";
 
 // One valid, playable dialogue line, pre-filtered by the parent
 // (SceneDetailPage) to lines that both have an exact start/end range AND
@@ -202,84 +201,105 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
   if (!currentLine) return null;
 
   return (
-    <div className="rounded-2xl px-4 py-6 md:px-6 md:py-7" style={{ backgroundColor: "#EFF4F1" }}>
-      {/* Progress + speaker — never the line's English/Chinese text itself */}
-      <div className="flex items-center justify-between gap-3 mb-5 pb-5 border-b border-black/8">
-        <span className="text-xs font-bold text-muted-foreground tabular-nums">{position + 1} / {lines.length}</span>
-        <SpeechBubbleLabel label={currentLine.speakerLabel} style={currentLine.speakerStyle} />
+    <div className="min-h-[520px] rounded-[24px] border border-border bg-white p-3 shadow-[0_14px_38px_rgba(15,53,39,0.08)] md:p-5">
+      {/* Match the listening card's speaker-led upper panel without revealing the answer. */}
+      <div className="grid min-h-[250px] w-full grid-cols-[56px_minmax(0,1fr)] items-center gap-5 rounded-[20px] bg-[#F5F1E8] px-5 py-8 text-left md:grid-cols-[68px_minmax(0,1fr)] md:gap-8 md:px-10 md:py-10">
+        <span
+          className="flex h-14 w-14 items-center justify-center rounded-full text-[14px] font-black text-white md:h-[68px] md:w-[68px] md:text-[16px]"
+          style={{ backgroundColor: currentLine.speakerStyle.color }}
+        >
+          {speakerAvatarLabel(currentLine.speakerLabel)}
+        </span>
+        <span className="min-w-0">
+          <span className="block text-[15px] font-black text-primary md:text-[17px]">
+            {currentLine.speakerLabel}
+          </span>
+          <span className="mt-3 block font-serif text-[25px] leading-snug text-primary md:text-[34px]">
+            听一遍，写下你听到的句子
+          </span>
+          <span className="mt-3 block text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
+            答案会在检查后显示
+          </span>
+        </span>
       </div>
 
-      <button
-        type="button"
-        onClick={() => onPlayLine(currentLine.index)}
-        className="flex items-center gap-2 text-sm font-bold rounded-full px-4 py-2.5 mb-5 transition-opacity hover:opacity-90"
-        style={{ backgroundColor: "#0F3527", color: "#F4EFE6" }}
-      >
-        <Play size={13} className="fill-current" />
-        播放本句 · Play sentence
-      </button>
+      <div className="mt-4 rounded-[18px] border border-primary/10 bg-card p-3.5 md:p-4">
+        <div className="flex flex-col items-center">
+          <div className="flex items-center justify-center gap-4 md:gap-6">
+            <button
+              type="button"
+              onClick={() => goTo(position - 1)}
+              disabled={position === 0}
+              className="rounded-full border border-border bg-white px-4 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35 md:px-5 md:py-3"
+            >
+              ← 上一句
+            </button>
+            <button
+              type="button"
+              onClick={() => onPlayLine(currentLine.index)}
+              aria-label="播放当前听写句"
+              className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-[0_8px_18px_rgba(15,53,39,0.2)] transition-transform hover:scale-105 md:h-16 md:w-16"
+            >
+              <Play className="ml-0.5 h-5 w-5 fill-current" />
+            </button>
+            <button
+              type="button"
+              onClick={() => goTo(position + 1)}
+              className="rounded-full border border-border bg-white px-4 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary md:px-5 md:py-3"
+            >
+              下一句 →
+            </button>
+          </div>
+          <span className="mt-2 text-[12px] font-black tabular-nums text-primary">
+            {position + 1} / {lines.length}
+          </span>
+        </div>
 
-      <label htmlFor="dictation-input" className="block text-xs font-bold text-muted-foreground mb-1.5">
-        Type what you hear · 输入你听到的内容
-      </label>
-      <textarea
-        id="dictation-input"
-        ref={textareaRef}
-        value={draft}
-        onChange={e => setDraft(e.target.value)}
-        onKeyDown={e => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            handleCheck();
-          }
-        }}
-        disabled={checked}
-        rows={2}
-        placeholder="Listen, then type the sentence here…"
-        className="w-full max-w-full rounded-xl border border-border bg-white px-3.5 py-2.5 text-sm leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:bg-muted disabled:text-muted-foreground"
-      />
+        <div className="mt-4 border-t border-border/70 pt-4">
+          <label htmlFor="dictation-input" className="mb-2 block text-[12px] font-bold text-muted-foreground">
+            输入你听到的内容
+          </label>
+          <textarea
+            id="dictation-input"
+            ref={textareaRef}
+            value={draft}
+            onChange={e => setDraft(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleCheck();
+              }
+            }}
+            disabled={checked}
+            rows={2}
+            placeholder="在这里输入听到的英文句子…"
+            className="w-full max-w-full resize-none rounded-[16px] border border-border bg-white px-4 py-3 text-[14px] leading-relaxed text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-muted disabled:text-muted-foreground md:text-[15px]"
+          />
 
-      <div className="flex flex-wrap items-center gap-2.5 mt-3">
-        {!checked ? (
-          <button
-            type="button"
-            onClick={handleCheck}
-            disabled={draft.trim().length === 0}
-            className="text-sm font-bold rounded-full px-4 py-2 transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ backgroundColor: "#C8F169", color: "#12241C" }}
-          >
-            检查 · Check
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => onPlayLine(currentLine.index)}
-            className="text-sm font-bold rounded-full px-4 py-2 border transition-colors hover:bg-white"
-            style={{ borderColor: "rgba(15,53,39,0.3)", color: "#0F3527" }}
-          >
-            再听一次 · Listen again
-          </button>
-        )}
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2.5">
+            {!checked ? (
+              <button
+                type="button"
+                onClick={handleCheck}
+                disabled={draft.trim().length === 0}
+                className="rounded-full border border-accent bg-accent px-5 py-2.5 text-[12px] font-black text-primary transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                检查答案
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onPlayLine(currentLine.index)}
+                className="rounded-full border border-border bg-white px-5 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary"
+              >
+                再听一次
+              </button>
+            )}
+          </div>
+        </div>
 
-        <button
-          type="button"
-          onClick={() => goTo(position - 1)}
-          disabled={position === 0}
-          className="text-sm font-bold rounded-full px-4 py-2 border border-border text-foreground transition-colors hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          上一句 · Previous
-        </button>
-        <button
-          type="button"
-          onClick={() => goTo(position + 1)}
-          className="text-sm font-bold rounded-full px-4 py-2 border border-border text-foreground transition-colors hover:bg-white"
-        >
-          下一句 · Next
-        </button>
-      </div>
-
-      {checked && diff && (
-        <div className="mt-6 pt-5 border-t border-black/8 space-y-4">
+        {checked && diff && (
+          <div className="mt-5 space-y-4 border-t border-border/70 pt-4">
           <div>
             <p className="text-xs font-bold text-muted-foreground mb-1.5">Your answer · 你的答案</p>
             <p className="text-base leading-[1.9]">
@@ -308,8 +328,9 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
               {showZh && <p className="text-sm text-muted-foreground mt-1.5">{currentLine.zh}</p>}
             </div>
           )}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
