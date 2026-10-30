@@ -52,13 +52,6 @@ function StepHeading({ number, title, hint }: { number: string; title: string; h
   );
 }
 
-function formatTimestamp(seconds?: number) {
-  if (seconds === undefined || Number.isNaN(seconds)) return "";
-  const minutes = Math.floor(seconds / 60);
-  const remainder = Math.max(0, Math.floor(seconds % 60));
-  return `${minutes}:${String(remainder).padStart(2, "0")}`;
-}
-
 // Playback-speed control — the same rate applies to normal continuous
 // playback, single-line playback, repeat playback, and any future
 // dictation mode, since they all drive the one shared <video> element
@@ -897,12 +890,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               ) : (
                 <div className="min-h-[520px] rounded-[24px] border border-border bg-white p-3 shadow-[0_14px_38px_rgba(15,53,39,0.08)] md:p-5">
                   {currentStudyLine && currentStudyLineIndex !== null ? (
-                    <button
-                      type="button"
-                      onClick={toggleCurrentStudyLine}
-                      className="grid min-h-[250px] w-full grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-4 rounded-[20px] bg-[#F5F1E8] px-5 py-8 text-left transition-colors hover:bg-[#EEE7D8] md:grid-cols-[68px_minmax(0,1fr)_112px] md:gap-6 md:px-8 md:py-10"
-                      aria-label="播放当前句"
-                    >
+                    <div className="grid min-h-[250px] w-full grid-cols-[56px_minmax(0,1fr)] items-center gap-5 rounded-[20px] bg-[#F5F1E8] px-5 py-8 text-left md:grid-cols-[68px_minmax(0,1fr)] md:gap-8 md:px-10 md:py-10">
                       <span
                         className="flex h-14 w-14 items-center justify-center rounded-full text-[14px] font-black text-white md:h-[68px] md:w-[68px] md:text-[16px]"
                         style={{ backgroundColor: currentStudyIsLearner ? "#0F3A2B" : "#9A7533" }}
@@ -924,17 +912,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         )}
                       </span>
 
-                      <span className="flex items-center justify-end gap-3">
-                        <span className="hidden text-[14px] tabular-nums text-muted-foreground sm:inline">
-                          {formatTimestamp(dialogueLineRawRanges.get(currentStudyLineIndex)?.start)}
-                        </span>
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white text-primary md:h-14 md:w-14">
-                          {isCurrentStudyLinePlaying
-                            ? <Pause className="h-4 w-4 fill-current" />
-                            : <Play className="ml-0.5 h-4 w-4 fill-current" />}
-                        </span>
-                      </span>
-                    </button>
+                    </div>
                   ) : (
                     <div className="flex min-h-[250px] items-center justify-center rounded-[20px] bg-secondary px-6 text-center text-sm font-semibold text-muted-foreground">
                       该场景暂未配置逐句播放时间点。
@@ -942,8 +920,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   )}
 
                   <div className="mt-4 rounded-[18px] border border-primary/10 bg-card p-3.5 md:p-4">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div className="flex items-center gap-3 md:gap-4">
+                    <div className="flex justify-center">
+                      <div className="flex items-center justify-center gap-4 md:gap-6">
                         <button
                           type="button"
                           onClick={() => moveStudyLine(-1)}
@@ -952,17 +930,22 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         >
                           ← 上一句
                         </button>
-                        <button
-                          type="button"
-                          onClick={toggleCurrentStudyLine}
-                          disabled={currentStudyLineIndex === null}
-                          className="inline-flex min-w-[112px] items-center justify-center gap-2.5 rounded-full bg-primary px-5 py-2.5 text-[13px] font-black text-white disabled:opacity-40 md:min-w-[132px] md:px-6 md:py-3 md:text-[14px]"
-                        >
-                          {isCurrentStudyLinePlaying
-                            ? <Pause className="h-3.5 w-3.5 fill-current" />
-                            : <Play className="h-3.5 w-3.5 fill-current" />}
-                          <span>{currentStudyLinePosition + 1} / {playableDialogueLineIndexes.length}</span>
-                        </button>
+                        <div className="flex flex-col items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={toggleCurrentStudyLine}
+                            disabled={currentStudyLineIndex === null}
+                            aria-label={isCurrentStudyLinePlaying ? "暂停当前句" : "播放当前句"}
+                            className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-[0_8px_18px_rgba(15,53,39,0.2)] transition-transform hover:scale-105 disabled:opacity-40 md:h-16 md:w-16"
+                          >
+                            {isCurrentStudyLinePlaying
+                              ? <Pause className="h-5 w-5 fill-current" />
+                              : <Play className="ml-0.5 h-5 w-5 fill-current" />}
+                          </button>
+                          <span className="text-[12px] font-black tabular-nums text-primary">
+                            {currentStudyLinePosition + 1} / {playableDialogueLineIndexes.length}
+                          </span>
+                        </div>
                         <button
                           type="button"
                           onClick={() => moveStudyLine(1)}
@@ -972,18 +955,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                           下一句 →
                         </button>
                       </div>
-
-                      <button
-                        type="button"
-                        onClick={() => setRepeatLine(value => !value)}
-                        aria-pressed={repeatLine}
-                        className={`rounded-full px-3.5 py-2 text-[12px] font-black transition-colors ${repeatLine ? "bg-accent text-primary" : "border border-border bg-white text-primary"}`}
-                      >
-                        循环 · {repeatLine ? "开" : "关"}
-                      </button>
                     </div>
 
-                    <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-border/70 pt-3">
+                    <div className="mt-4 flex flex-wrap items-center justify-center gap-4 border-t border-border/70 pt-4 md:gap-7">
                       <div className="flex items-center gap-2">
                         <span className="text-[11px] font-bold text-muted-foreground">速度</span>
                         <div className="flex items-center rounded-full bg-secondary p-1">
@@ -1000,6 +974,15 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                           ))}
                         </div>
                       </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setRepeatLine(value => !value)}
+                        aria-pressed={repeatLine}
+                        className={`rounded-full px-4 py-2 text-[12px] font-black transition-colors ${repeatLine ? "bg-accent text-primary" : "border border-border bg-white text-primary"}`}
+                      >
+                        循环 · {repeatLine ? "开" : "关"}
+                      </button>
 
                       <div className="flex items-center gap-2">
                         <span className="text-[11px] font-bold text-muted-foreground">文本</span>
