@@ -13,9 +13,19 @@ import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
 // example_en/example_zh were dropped entirely — see
 // supabase/migrations/0026_simplify_key_expressions_and_culture_tips.sql).
 // Fixed short height, two per row on desktop.
-function KeyExpressionCard({ item }: { item: KeyExpressionItem }) {
+function KeyExpressionCard({
+  item,
+  isFirstRow,
+  isLastRow,
+  isLastItem,
+}: {
+  item: KeyExpressionItem;
+  isFirstRow: boolean;
+  isLastRow: boolean;
+  isLastItem: boolean;
+}) {
   return (
-    <div className="border-b border-dashed border-primary/15 py-4 first:pt-0 last:border-0 last:pb-0">
+    <div className={`border-b border-dashed border-primary/15 py-4 first:pt-0 ${isFirstRow ? "md:pt-0" : ""} ${isLastRow ? "md:border-b-0 md:pb-0" : ""} ${isLastItem ? "border-b-0 pb-0" : ""}`}>
       <p className="font-serif text-[20px] leading-snug text-primary">{item.expressionEn}</p>
       <p className="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">{item.expressionZh}</p>
     </div>
@@ -1006,9 +1016,18 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   <div className="rounded-[20px] border border-border bg-white p-5 md:p-7">
                     <h3 className="mb-6 text-[18px] font-black text-primary">核心表达</h3>
                     <div className="grid grid-cols-1 gap-x-8 md:grid-cols-2">
-                      {keyExpressionItems.map((item, i) => (
-                        <KeyExpressionCard key={i} item={item} />
-                      ))}
+                      {keyExpressionItems.map((item, i) => {
+                        const lastRowStart = keyExpressionItems.length - (keyExpressionItems.length % 2 || 2);
+                        return (
+                          <KeyExpressionCard
+                            key={i}
+                            item={item}
+                            isFirstRow={i < 2}
+                            isLastRow={i >= lastRowStart}
+                            isLastItem={i === keyExpressionItems.length - 1}
+                          />
+                        );
+                      })}
                     </div>
                   </div>
                 )}
