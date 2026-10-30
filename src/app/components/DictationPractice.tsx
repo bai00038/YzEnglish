@@ -178,6 +178,18 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
     }
   }
 
+  function handleRetryCurrentLine() {
+    if (!currentLine) return;
+    onStopPlayback();
+    setRecords(previous => {
+      const next = { ...previous };
+      delete next[currentLine.index];
+      return next;
+    });
+    setDraft("");
+    window.requestAnimationFrame(() => textareaRef.current?.focus());
+  }
+
   if (lines.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-border bg-card px-6 py-16 text-center">
@@ -273,22 +285,34 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
             className="mt-3 h-[76px] w-full max-w-full resize-none rounded-[14px] border-[0.5px] border-primary/10 bg-[#FAF8F2] px-4 py-2.5 font-serif text-[20px] leading-relaxed text-primary focus:border-primary/20 focus:outline-none focus:ring-0 disabled:bg-[#F7F3EA] disabled:text-muted-foreground md:h-[84px] md:text-[22px]"
           />
           {checked && diff ? (
-            <div className="mt-4 grid gap-4 rounded-[16px] border border-primary/10 bg-white/70 p-4 md:grid-cols-2 md:gap-6">
-              <div>
-                <p className="mb-1.5 text-[12px] font-bold text-muted-foreground">你的答案</p>
-                <p className="text-[15px] leading-[1.8] md:text-[16px]">
-                  {diff.userTokens.length === 0 ? (
-                    <span className="text-sm italic text-muted-foreground">未作答</span>
-                  ) : (
-                    diff.userTokens.map((token, i) => <WordToken key={i} token={token} />)
-                  )}
-                </p>
+            <div className="mt-4 rounded-[16px] border border-primary/10 bg-white/70 p-4">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <span className="text-[12px] font-black text-primary">检查结果</span>
+                <button
+                  type="button"
+                  onClick={handleRetryCurrentLine}
+                  className="rounded-full border border-border bg-white px-3.5 py-1.5 text-[11px] font-black text-primary transition-colors hover:bg-secondary"
+                >
+                  重做本句
+                </button>
               </div>
-              <div>
-                <p className="mb-1.5 text-[12px] font-bold text-muted-foreground">正确答案</p>
-                <p className="text-[15px] leading-[1.8] md:text-[16px]">
-                  {diff.correctTokens.map((token, i) => <WordToken key={i} token={token} />)}
-                </p>
+              <div className="grid gap-4 md:grid-cols-2 md:gap-6">
+                <div>
+                  <p className="mb-1.5 text-[12px] font-bold text-muted-foreground">你的答案</p>
+                  <p className="text-[15px] leading-[1.8] md:text-[16px]">
+                    {diff.userTokens.length === 0 ? (
+                      <span className="text-sm italic text-muted-foreground">未作答</span>
+                    ) : (
+                      diff.userTokens.map((token, i) => <WordToken key={i} token={token} />)
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <p className="mb-1.5 text-[12px] font-bold text-muted-foreground">正确答案</p>
+                  <p className="text-[15px] leading-[1.8] md:text-[16px]">
+                    {diff.correctTokens.map((token, i) => <WordToken key={i} token={token} />)}
+                  </p>
+                </div>
               </div>
             </div>
           ) : (
