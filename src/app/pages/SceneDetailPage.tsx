@@ -493,11 +493,6 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     video.currentTime = trueStart;
   }
 
-  // Intentionally no auto-scroll here: highlighting must follow
-  // video.currentTime / clicked-line state without ever moving the page's
-  // scroll position. See SceneDetailPage playback-scroll fix.
-  const dialogueRowRefs = useRef<Array<HTMLDivElement | null>>([]);
-
   const playableDialogueLineIndexes = useMemo(
     () => Array.from(dialogueLineRawRanges.keys()).sort((a, b) => a - b),
     [dialogueLineRawRanges]
@@ -508,16 +503,20 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const currentStudyLinePosition = currentStudyLineIndex === null
     ? -1
     : playableDialogueLineIndexes.indexOf(currentStudyLineIndex);
+  const currentStudyLine = currentStudyLineIndex === null
+    ? null
+    : (content?.dialogue[currentStudyLineIndex] ?? null);
+  const currentStudySpeakerKey = currentStudyLine ? normalizeSpeaker(currentStudyLine.speaker) : "";
+  const currentStudySpeaker = currentStudyLine ? sceneSpeakers.get(currentStudySpeakerKey) : undefined;
+  const currentStudyIsLearner = ["you", "aria", "customer", "patient", "parent", "guest", "shopper"].includes(currentStudySpeakerKey);
+  const currentStudySpeakerLabel = currentStudyLine
+    ? (currentStudyIsLearner ? "You" : (currentStudySpeaker?.en ?? currentStudyLine.speaker))
+    : "";
 
-  function playAndFocusDialogueLine(lineIndex: number, shouldScroll = true) {
+  function playStudyLine(lineIndex: number) {
     const range = dialogueLineRawRanges.get(lineIndex);
     if (!range) return;
     playDialogueLine(lineIndex, range);
-    if (shouldScroll) {
-      requestAnimationFrame(() => {
-        dialogueRowRefs.current[lineIndex]?.scrollIntoView({ behavior: "smooth", block: "center" });
-      });
-    }
   }
 
   function moveStudyLine(offset: number) {
@@ -526,7 +525,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       playableDialogueLineIndexes.length - 1,
       Math.max(0, currentStudyLinePosition + offset)
     );
-    playAndFocusDialogueLine(playableDialogueLineIndexes[nextPosition]);
+    playStudyLine(playableDialogueLineIndexes[nextPosition]);
   }
 
   // Switching between "单句精听"/Sentence Listening and "听写"/Dictation
@@ -867,89 +866,6 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 </div>
               </div>
 
-              {studyTab === "listening" && (
-                <div className="sticky top-3 z-30 mb-5 rounded-[20px] border border-primary/15 bg-white/95 p-3.5 shadow-[0_14px_34px_rgba(15,53,39,0.16)] backdrop-blur-md md:p-4">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => moveStudyLine(-1)}
-                        disabled={currentStudyLinePosition <= 0}
-                        className="rounded-full border border-border bg-white px-3.5 py-2 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35"
-                      >
-                        ← 上一句
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => currentStudyLineIndex !== null && playAndFocusDialogueLine(currentStudyLineIndex)}
-                        disabled={currentStudyLineIndex === null}
-                        className="min-w-[76px] rounded-full bg-primary px-3.5 py-2 text-[12px] font-black text-white disabled:opacity-40"
-                      >
-                        ▶ {currentStudyLinePosition + 1} / {playableDialogueLineIndexes.length}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => moveStudyLine(1)}
-                        disabled={currentStudyLinePosition < 0 || currentStudyLinePosition >= playableDialogueLineIndexes.length - 1}
-                        className="rounded-full border border-border bg-white px-3.5 py-2 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35"
-                      >
-                        下一句 →
-                      </button>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setRepeatLine(value => !value)}
-                      aria-pressed={repeatLine}
-                      className={`rounded-full px-3.5 py-2 text-[12px] font-black transition-colors ${repeatLine ? "bg-accent text-primary" : "border border-border bg-white text-primary"}`}
-                    >
-                      循环 · {repeatLine ? "开" : "关"}
-                    </button>
-                  </div>
-
-                  <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-border/70 pt-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold text-muted-foreground">速度</span>
-                      <div className="flex items-center rounded-full bg-secondary p-1">
-                        {PLAYBACK_RATES.map(rate => (
-                          <button
-                            key={rate}
-                            type="button"
-                            onClick={() => setPlaybackRate(rate)}
-                            aria-pressed={playbackRate === rate}
-                            className={`rounded-full px-3 py-1.5 text-[11px] font-black transition-colors ${playbackRate === rate ? "bg-accent text-primary" : "text-primary"}`}
-                          >
-                            {rate}×
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold text-muted-foreground">文本</span>
-                      <div className="flex items-center rounded-full bg-secondary p-1">
-                        <button
-                          type="button"
-                          onClick={() => setBilingualMode(false)}
-                          aria-pressed={!bilingualMode}
-                          className={`rounded-full px-3 py-1.5 text-[11px] font-black transition-colors ${!bilingualMode ? "bg-primary text-white" : "text-primary"}`}
-                        >
-                          英文
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setBilingualMode(true)}
-                          aria-pressed={bilingualMode}
-                          className={`rounded-full px-3 py-1.5 text-[11px] font-black transition-colors ${bilingualMode ? "bg-primary text-white" : "text-primary"}`}
-                        >
-                          双语
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {studyTab === "dictation" ? (
                 <DictationPractice
                   sceneId={scene.id}
@@ -958,81 +874,131 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   onStopPlayback={stopDictationPlayback}
                 />
               ) : (
-              <div className="rounded-[22px] border border-border bg-white p-2.5 md:p-3">
-
-                {/* Transcript rows — no scroll container of its own; the
-                    lines expand naturally and only the page scrollbar
-                    applies. Highlighting never triggers scrolling. */}
-                <div>
-                  {content.dialogue.map((line, i) => {
-                    const speakerKey = normalizeSpeaker(line.speaker);
-                    const speaker = sceneSpeakers.get(speakerKey);
-                    const isLearnerSpeaker = ["you", "aria", "customer", "patient", "parent", "guest", "shopper"].includes(speakerKey);
-                    const label = isLearnerSpeaker ? "You" : (speaker?.en ?? line.speaker);
-                    const avatarColor = isLearnerSpeaker ? "#0F3A2B" : "#9A7533";
-                    const audioRange = dialogueLineAudioRanges.get(i);
-                    const isActiveLine = highlightedLineIndex === i;
-                    // Prefer the permanent external_line_id (Phase A-0 —
-                    // see supabase/migrations/0013_add_external_ids.sql),
-                    // then the dialogue_lines row's own internal database
-                    // id, and only fall back to array index for scenes
-                    // still on the legacy scenes.dialogue jsonb (which has
-                    // no per-line identity at all). Playback/highlight
-                    // logic (dialogueLineAudioRanges, activeDialogueLineIndex)
-                    // stays index-keyed on purpose — it's positional state
-                    // scoped to one render, not a React reconciliation key.
-                    const rowKey = line.externalLineId ?? line.dialogueLineDbId ?? i;
-                    return (
-                      <div key={rowKey}
-                        ref={el => { dialogueRowRefs.current[i] = el; }}
-                        className={`mx-0 grid min-h-[104px] grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-4 rounded-[18px] px-4 py-6 transition-colors md:min-h-[126px] md:grid-cols-[56px_minmax(0,1fr)_104px] md:gap-5 md:px-5 md:py-7 ${audioRange ? "cursor-pointer hover:bg-secondary/45" : ""} ${isActiveLine ? "bg-[#EEE7D8]" : "bg-white"}`}
-                        role={audioRange ? "button" : undefined}
-                        tabIndex={audioRange ? 0 : undefined}
-                        aria-pressed={audioRange ? isActiveLine : undefined}
-                        aria-label={audioRange ? "Play English audio" : undefined}
-                        onClick={audioRange ? () => playAndFocusDialogueLine(i, false) : undefined}
-                        onKeyDown={audioRange ? e => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            playAndFocusDialogueLine(i, false);
-                          }
-                        } : undefined}
+                <div className="min-h-[520px] rounded-[24px] border border-border bg-white p-3 shadow-[0_14px_38px_rgba(15,53,39,0.08)] md:p-5">
+                  {currentStudyLine && currentStudyLineIndex !== null ? (
+                    <button
+                      type="button"
+                      onClick={() => playStudyLine(currentStudyLineIndex)}
+                      className="grid min-h-[250px] w-full grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-4 rounded-[20px] bg-[#F5F1E8] px-5 py-8 text-left transition-colors hover:bg-[#EEE7D8] md:grid-cols-[68px_minmax(0,1fr)_112px] md:gap-6 md:px-8 md:py-10"
+                      aria-label="播放当前句"
+                    >
+                      <span
+                        className="flex h-14 w-14 items-center justify-center rounded-full text-[14px] font-black text-white md:h-[68px] md:w-[68px] md:text-[16px]"
+                        style={{ backgroundColor: currentStudyIsLearner ? "#0F3A2B" : "#9A7533" }}
                       >
+                        {speakerAvatarLabel(currentStudySpeakerLabel)}
+                      </span>
 
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full text-center text-[13px] font-black leading-tight text-white md:h-14 md:w-14 md:text-[14px]"
-                          style={{ backgroundColor: avatarColor }}>
-                          {speakerAvatarLabel(label)}
-                        </div>
-
-                        <div className="min-w-0">
-                          <p className="text-[15px] font-black leading-none text-primary md:text-[16px]">{isLearnerSpeaker ? "你" : (speaker?.zh || label)}</p>
-                          <p className={`mt-1.5 font-serif text-[20px] leading-snug transition-colors md:text-[24px] ${isActiveLine ? "text-primary" : "text-foreground"}`}>
-                            {line.en}
-                          </p>
-                          {bilingualMode && (
-                            <p className="mt-1.5 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">{line.zh}</p>
-                          )}
-                        </div>
-
-                        <div className="flex items-center justify-end gap-3">
-                          <span className="hidden text-[13px] tabular-nums text-muted-foreground sm:inline md:text-[14px]">
-                            {formatTimestamp(dialogueLineRawRanges.get(i)?.start)}
+                      <span className="min-w-0">
+                        <span className="block text-[15px] font-black text-primary md:text-[17px]">
+                          {currentStudyIsLearner ? "你" : (currentStudySpeaker?.zh || currentStudySpeakerLabel)}
+                        </span>
+                        <span className="mt-3 block font-serif text-[25px] leading-snug text-primary md:text-[34px]">
+                          {currentStudyLine.en}
+                        </span>
+                        {bilingualMode && (
+                          <span className="mt-3 block text-[15px] leading-relaxed text-muted-foreground md:text-[18px]">
+                            {currentStudyLine.zh}
                           </span>
-                          {audioRange && (
-                            <span aria-hidden="true" className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-border bg-white text-primary transition-colors md:h-12 md:w-12">
-                              <Play className="ml-0.5 h-3.5 w-3.5 fill-current" />
-                            </span>
-                          )}
-                        </div>
+                        )}
+                      </span>
 
+                      <span className="flex items-center justify-end gap-3">
+                        <span className="hidden text-[14px] tabular-nums text-muted-foreground sm:inline">
+                          {formatTimestamp(dialogueLineRawRanges.get(currentStudyLineIndex)?.start)}
+                        </span>
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white text-primary md:h-14 md:w-14">
+                          <Play className="ml-0.5 h-4 w-4 fill-current" />
+                        </span>
+                      </span>
+                    </button>
+                  ) : (
+                    <div className="flex min-h-[250px] items-center justify-center rounded-[20px] bg-secondary px-6 text-center text-sm font-semibold text-muted-foreground">
+                      该场景暂未配置逐句播放时间点。
+                    </div>
+                  )}
+
+                  <div className="mt-4 rounded-[18px] border border-primary/10 bg-card p-3.5 md:p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => moveStudyLine(-1)}
+                          disabled={currentStudyLinePosition <= 0}
+                          className="rounded-full border border-border bg-white px-3.5 py-2 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35"
+                        >
+                          ← 上一句
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => currentStudyLineIndex !== null && playStudyLine(currentStudyLineIndex)}
+                          disabled={currentStudyLineIndex === null}
+                          className="min-w-[76px] rounded-full bg-primary px-3.5 py-2 text-[12px] font-black text-white disabled:opacity-40"
+                        >
+                          ▶ {currentStudyLinePosition + 1} / {playableDialogueLineIndexes.length}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => moveStudyLine(1)}
+                          disabled={currentStudyLinePosition < 0 || currentStudyLinePosition >= playableDialogueLineIndexes.length - 1}
+                          className="rounded-full border border-border bg-white px-3.5 py-2 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35"
+                        >
+                          下一句 →
+                        </button>
                       </div>
-                    );
-                  })}
+
+                      <button
+                        type="button"
+                        onClick={() => setRepeatLine(value => !value)}
+                        aria-pressed={repeatLine}
+                        className={`rounded-full px-3.5 py-2 text-[12px] font-black transition-colors ${repeatLine ? "bg-accent text-primary" : "border border-border bg-white text-primary"}`}
+                      >
+                        循环 · {repeatLine ? "开" : "关"}
+                      </button>
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-border/70 pt-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold text-muted-foreground">速度</span>
+                        <div className="flex items-center rounded-full bg-secondary p-1">
+                          {PLAYBACK_RATES.map(rate => (
+                            <button
+                              key={rate}
+                              type="button"
+                              onClick={() => setPlaybackRate(rate)}
+                              aria-pressed={playbackRate === rate}
+                              className={`rounded-full px-3 py-1.5 text-[11px] font-black transition-colors ${playbackRate === rate ? "bg-accent text-primary" : "text-primary"}`}
+                            >
+                              {rate}×
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold text-muted-foreground">文本</span>
+                        <div className="flex items-center rounded-full bg-secondary p-1">
+                          <button
+                            type="button"
+                            onClick={() => setBilingualMode(false)}
+                            aria-pressed={!bilingualMode}
+                            className={`rounded-full px-3 py-1.5 text-[11px] font-black transition-colors ${!bilingualMode ? "bg-primary text-white" : "text-primary"}`}
+                          >
+                            英文
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setBilingualMode(true)}
+                            aria-pressed={bilingualMode}
+                            className={`rounded-full px-3 py-1.5 text-[11px] font-black transition-colors ${bilingualMode ? "bg-primary text-white" : "text-primary"}`}
+                          >
+                            双语
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <p className="border-t border-border px-3 pt-4 text-center text-[12px] text-muted-foreground">
-                  整句可点，播完自动停；也可以使用上方控制栏逐句练习。
-                </p>
-              </div>
               )}
 
             </section>
