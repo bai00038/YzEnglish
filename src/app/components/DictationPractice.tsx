@@ -241,13 +241,39 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
             placeholder="输入你听到的英文句子…"
             className="mt-3 w-full max-w-full resize-none rounded-[16px] border border-primary/15 bg-white/90 px-4 py-3 font-serif text-[20px] leading-relaxed text-primary shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-white/45 disabled:text-muted-foreground md:text-[24px]"
           />
-          <div className="mt-3 min-h-6 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
-            {showZh
-              ? <span>中文提示：{currentLine.zh || "暂无中文提示"}</span>
-              : <span className="text-muted-foreground/70">需要时可打开中文提示</span>}
-          </div>
+          {checked && diff ? (
+            <div className="mt-4 grid gap-4 rounded-[16px] border border-primary/10 bg-white/70 p-4 md:grid-cols-2 md:gap-6">
+              <div>
+                <p className="mb-1.5 text-[12px] font-bold text-muted-foreground">你的答案</p>
+                <p className="text-[15px] leading-[1.8] md:text-[16px]">
+                  {diff.userTokens.length === 0 ? (
+                    <span className="text-sm italic text-muted-foreground">未作答</span>
+                  ) : (
+                    diff.userTokens.map((token, i) => <WordToken key={i} token={token} />)
+                  )}
+                </p>
+              </div>
+              <div>
+                <p className="mb-1.5 text-[12px] font-bold text-muted-foreground">正确答案</p>
+                <p className="text-[15px] leading-[1.8] md:text-[16px]">
+                  {diff.correctTokens.map((token, i) => <WordToken key={i} token={token} />)}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-3 min-h-6 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
+              {showZh
+                ? <span>中文提示：{currentLine.zh || "暂无中文提示"}</span>
+                : <span className="text-muted-foreground/70">需要时可打开中文提示</span>}
+            </div>
+          )}
+          {checked && showZh && (
+            <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
+              中文提示：{currentLine.zh || "暂无中文提示"}
+            </p>
+          )}
           {!checked && (
-            <div className="mt-4 flex justify-end">
+            <div className="mt-3 flex justify-end">
               <button
                 type="button"
                 onClick={handleCheck}
@@ -294,26 +320,6 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
         </div>
       </div>
 
-      {checked && diff && (
-        <div className="mt-4 space-y-4 rounded-[18px] border border-primary/10 bg-card p-4 md:p-5">
-          <div>
-            <p className="text-xs font-bold text-muted-foreground mb-1.5">Your answer · 你的答案</p>
-            <p className="text-base leading-[1.9]">
-              {diff.userTokens.length === 0 ? (
-                <span className="text-muted-foreground italic text-sm">(empty · 未作答)</span>
-              ) : (
-                diff.userTokens.map((token, i) => <WordToken key={i} token={token} />)
-              )}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs font-bold text-muted-foreground mb-1.5">Correct answer · 正确答案</p>
-            <p className="text-base leading-[1.9]">
-              {diff.correctTokens.map((token, i) => <WordToken key={i} token={token} />)}
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
