@@ -24,6 +24,7 @@ interface DictationRecord {
 }
 
 type DictationRecords = Record<number, DictationRecord>;
+const DICTATION_SHOW_ZH_STORAGE_KEY = "yzenglish:dictation:showZh";
 
 interface StoredDictationState {
   position: number;
@@ -71,7 +72,14 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
   const [position, setPosition] = useState(0);
   const [records, setRecords] = useState<DictationRecords>({});
   const [draft, setDraft] = useState("");
-  const [showZh, setShowZh] = useState(false);
+  const [showZh, setShowZh] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      return window.localStorage.getItem(DICTATION_SHOW_ZH_STORAGE_KEY) === "true";
+    } catch {
+      return false;
+    }
+  });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   // Guards the persist effect below from firing on the very same render
   // that just restored (or reset) state from storage — without it, a
@@ -110,6 +118,18 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
     }
   }, [sceneId, position, records]);
 
+  // Chinese hints are a learner preference, not per-sentence state. Once
+  // the learner turns them on or off, keep that choice across sentence
+  // navigation, scene switches, tab switches, and page reloads.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(DICTATION_SHOW_ZH_STORAGE_KEY, String(showZh));
+    } catch {
+      // Storage unavailable — the preference still persists for this render session.
+    }
+  }, [showZh]);
+
   const currentLine = position < lines.length ? lines[position] : null;
   const currentRecord = currentLine ? records[currentLine.index] : undefined;
   const isComplete = lines.length > 0 && position >= lines.length;
@@ -122,7 +142,6 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
   // again (dictation spec §7) with no extra bookkeeping.
   useEffect(() => {
     setDraft(currentRecord?.input ?? "");
-    setShowZh(false);
     if (!currentRecord?.checked) textareaRef.current?.focus();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [position, currentLine?.index]);
