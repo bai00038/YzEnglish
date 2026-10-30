@@ -381,6 +381,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   function watchForLineEnd(
     requestId: number,
     endTime: number,
+    startTime: number,
     lineIndex: number,
     range: { start: number; end: number }
   ) {
@@ -388,19 +389,28 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     if (!video) return;
 
     const stopAt = (t: number) => {
-      video.pause(); // triggers onPause below, which clears activeEndRef
-      video.currentTime = endTime;
-      setVideoCurrentTime(t);
       if (isDialogueTimingDebugEnabled()) {
         console.table({ expectedEnd: endTime, actualPauseTime: t, overrun: t - endTime });
       }
+
       if (repeatLineRef.current && playRequestRef.current === requestId) {
-        requestAnimationFrame(() => {
-          if (repeatLineRef.current && playRequestRef.current === requestId) {
-            playDialogueLine(lineIndex, range);
-          }
-        });
+        const restartAfterSeek = () => {
+          pendingSeekedHandlerRef.current = null;
+          if (!repeatLineRef.current || playRequestRef.current !== requestId) return;
+          activeEndRef.current = endTime;
+          setVideoCurrentTime(startTime);
+          if (video.paused) video.play();
+          watchForLineEnd(requestId, endTime, startTime, lineIndex, range);
+        };
+        pendingSeekedHandlerRef.current = restartAfterSeek;
+        video.addEventListener("seeked", restartAfterSeek, { once: true });
+        video.currentTime = startTime;
+        return;
       }
+
+      video.pause(); // triggers onPause below, which clears activeEndRef
+      video.currentTime = endTime;
+      setVideoCurrentTime(t);
     };
 
     if (typeof video.requestVideoFrameCallback === "function") {
@@ -464,7 +474,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     const beginPlayback = () => {
       if (playRequestRef.current !== requestId) return; // superseded by a later click
       video.play();
-      watchForLineEnd(requestId, trueEnd, lineIndex, range);
+      watchForLineEnd(requestId, trueEnd, trueStart, lineIndex, range);
     };
 
     // Setting currentTime to (near) its current value seeks nowhere, so
