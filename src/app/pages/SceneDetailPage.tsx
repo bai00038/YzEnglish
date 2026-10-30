@@ -841,19 +841,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 )}
               </div>
 
-              <div className="mt-4 flex justify-center">
-                <a
-                  href="#section-dialogue"
-                  className="group inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white px-5 py-2.5 text-[13px] font-black text-primary shadow-[0_6px_18px_rgba(15,53,39,0.06)] transition-colors hover:border-primary hover:bg-primary hover:text-white"
-                >
-                  <span>进入单句精听</span>
-                  <span className="text-[11px] font-bold opacity-55 group-hover:opacity-75">{content.dialogue.length} 句</span>
-                  <span aria-hidden="true" className="transition-transform group-hover:translate-y-0.5">↓</span>
-                </a>
-              </div>
-
               {/* ── Study mode tabs ── */}
-              <div id="section-dialogue" className="scroll-mt-24 mt-8 mb-5 flex flex-wrap items-center justify-between gap-4">
+              <div id="section-dialogue" className="scroll-mt-24 mt-7 mb-5 flex flex-wrap items-center justify-between gap-4">
                 <StepHeading number="02" title="逐句精听跟读" hint="点任意一句，单句播放给你跟读" />
                 <div className="flex items-center rounded-full border border-border bg-white p-1">
                 {STUDY_TABS.map(tab => {
