@@ -210,17 +210,43 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
         >
           {speakerAvatarLabel(currentLine.speakerLabel)}
         </span>
-        <span className="min-w-0">
-          <span className="block text-[15px] font-black text-primary md:text-[17px]">
-            {currentLine.speakerLabel}
-          </span>
-          <span className="mt-3 block font-serif text-[25px] leading-snug text-primary md:text-[34px]">
-            听一遍，写下你听到的句子
-          </span>
-          <span className="mt-3 block text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
-            答案会在检查后显示
-          </span>
-        </span>
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="block text-[15px] font-black text-primary md:text-[17px]">
+              {currentLine.speakerLabel}
+            </span>
+            <button
+              type="button"
+              onClick={() => setShowZh(value => !value)}
+              aria-pressed={showZh}
+              className={`rounded-full border px-4 py-2 text-[12px] font-black transition-colors ${showZh ? "border-accent bg-accent text-primary" : "border-border bg-white text-primary"}`}
+            >
+              中文提示 · {showZh ? "开" : "关"}
+            </button>
+          </div>
+          <label htmlFor="dictation-input" className="sr-only">输入你听到的英文句子</label>
+          <textarea
+            id="dictation-input"
+            ref={textareaRef}
+            value={draft}
+            onChange={e => setDraft(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleCheck();
+              }
+            }}
+            disabled={checked}
+            rows={2}
+            placeholder="输入你听到的英文句子…"
+            className="mt-3 w-full max-w-full resize-none rounded-[16px] border border-primary/15 bg-white/90 px-4 py-3 font-serif text-[20px] leading-relaxed text-primary shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-white/45 disabled:text-muted-foreground md:text-[24px]"
+          />
+          <div className="mt-3 min-h-6 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
+            {showZh
+              ? <span>中文提示：{currentLine.zh || "暂无中文提示"}</span>
+              : <span className="text-muted-foreground/70">需要时可打开中文提示</span>}
+          </div>
+        </div>
       </div>
 
       <div className="mt-4 rounded-[18px] border border-primary/10 bg-card p-3.5 md:p-4">
@@ -255,28 +281,7 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
           </span>
         </div>
 
-        <div className="mt-4 border-t border-border/70 pt-4">
-          <label htmlFor="dictation-input" className="mb-2 block text-[12px] font-bold text-muted-foreground">
-            输入你听到的内容
-          </label>
-          <textarea
-            id="dictation-input"
-            ref={textareaRef}
-            value={draft}
-            onChange={e => setDraft(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleCheck();
-              }
-            }}
-            disabled={checked}
-            rows={2}
-            placeholder="在这里输入听到的英文句子…"
-            className="w-full max-w-full resize-none rounded-[16px] border border-border bg-white px-4 py-3 text-[14px] leading-relaxed text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-muted disabled:text-muted-foreground md:text-[15px]"
-          />
-
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-2.5">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5 border-t border-border/70 pt-4">
             {!checked ? (
               <button
                 type="button"
@@ -295,11 +300,11 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
                 再听一次
               </button>
             )}
-          </div>
         </div>
+      </div>
 
-        {checked && diff && (
-          <div className="mt-5 space-y-4 border-t border-border/70 pt-4">
+      {checked && diff && (
+        <div className="mt-4 space-y-4 rounded-[18px] border border-primary/10 bg-card p-4 md:p-5">
           <div>
             <p className="text-xs font-bold text-muted-foreground mb-1.5">Your answer · 你的答案</p>
             <p className="text-base leading-[1.9]">
@@ -316,21 +321,8 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
               {diff.correctTokens.map((token, i) => <WordToken key={i} token={token} />)}
             </p>
           </div>
-          {currentLine.zh && (
-            <div>
-              <button
-                type="button"
-                onClick={() => setShowZh(v => !v)}
-                className="text-xs font-bold text-primary hover:opacity-70 transition-opacity"
-              >
-                {showZh ? "隐藏中文 · Hide Chinese" : "查看中文 · Show Chinese"}
-              </button>
-              {showZh && <p className="text-sm text-muted-foreground mt-1.5">{currentLine.zh}</p>}
-            </div>
-          )}
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
