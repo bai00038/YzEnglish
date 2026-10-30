@@ -632,12 +632,12 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   }
 
   return (
-    <div className="bg-background px-3 py-4 md:px-6 md:py-8">
+    <div className="bg-background px-3 py-4 md:px-6 md:py-5">
       <div className="mx-auto max-w-[1240px] overflow-hidden rounded-[28px] border border-primary/15 bg-card shadow-[0_12px_40px_rgba(15,53,39,0.04)]">
 
       {/* Breadcrumb */}
-      <div className="px-5 pt-6 md:px-10 md:pt-8">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-5 text-[13px] font-semibold text-muted-foreground md:text-[14px]">
+      <div className="px-5 pt-4 md:px-10 md:pt-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3 text-[12px] font-semibold text-muted-foreground md:text-[13px]">
           <Link to="/explore" className="inline-flex items-center gap-1 text-primary transition-opacity hover:opacity-65">
             <ChevronLeft size={15} /> 返回场景库
           </Link>
@@ -649,24 +649,24 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       </div>
 
       {/* ─── Lesson identity block (sits between breadcrumb and chapter nav) ─── */}
-      <div className="px-5 pb-8 pt-7 md:px-10 md:pb-10 md:pt-8">
-        <span className="inline-flex rounded-full bg-primary px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-white">
+      <div className="px-5 pb-5 pt-4 md:px-10 md:pb-6 md:pt-5">
+        <span className="inline-flex rounded-full bg-primary px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-white">
           {getSceneCategoryLabel(scene.category)} · {scene.region || "Real life"}
         </span>
-        <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-10">
+        <div className="mt-3 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-8">
           <div className="min-w-0 max-w-[760px]">
-            <h1 className="font-serif text-[38px] font-semibold leading-[1.08] tracking-[-0.025em] text-primary md:text-[50px] lg:text-[56px]">
+            <h1 className="font-serif text-[34px] font-semibold leading-[1.08] tracking-[-0.025em] text-primary md:text-[44px] lg:text-[48px]">
               {scene.titleZh}
             </h1>
-            <p className="mt-3 max-w-[690px] text-[15px] leading-relaxed text-[#3A4A42] md:text-[17px]">
+            <p className="mt-2 max-w-[690px] text-[14px] leading-relaxed text-[#3A4A42] md:text-[15px]">
               {scene.desc || scene.titleEn}
             </p>
           </div>
           <div className="flex flex-wrap gap-2 lg:flex-nowrap lg:justify-self-end">
-            <a href="#section-watch" className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">视频 {scene.duration}</a>
-            <a href="#section-dialogue" className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">逐句 {content?.dialogue.length ?? 0} 句</a>
-            <a href="#section-language" className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">词汇 {keyExpressionItems.length} 个</a>
-            <a href="#section-pdf" className="whitespace-nowrap rounded-full border border-border bg-white px-4 py-2 text-center text-[13px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">讲义 PDF</a>
+            <a href="#section-watch" className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">视频 {scene.duration}</a>
+            <a href="#section-dialogue" className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">逐句 {content?.dialogue.length ?? 0} 句</a>
+            <a href="#section-language" className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">词汇 {keyExpressionItems.length} 个</a>
+            <a href="#section-pdf" className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">讲义 PDF</a>
           </div>
         </div>
       </div>
@@ -694,7 +694,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             {/* ─────────────────────────────────────────────
                 Video + playback speed + study tabs
                 ───────────────────────────────────────────── */}
-            <section id="section-watch" className="scroll-mt-24 px-5 pb-12 md:px-10 md:pb-16">
+            <section id="section-watch" className="scroll-mt-24 px-5 pb-10 md:px-10 md:pb-12">
 
               <StepHeading number="01" title="看视频" hint="先完整看一遍，字幕随时开关" />
 
@@ -841,23 +841,19 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 )}
               </div>
 
-              <a
-                href="#section-dialogue"
-                className="mt-5 flex w-full items-center justify-between gap-4 rounded-[18px] bg-primary px-5 py-4 text-left text-white shadow-[0_10px_24px_rgba(15,53,39,0.14)] transition-transform hover:-translate-y-0.5 md:px-6"
-              >
-                <span>
-                  <span className="block text-[17px] font-black md:text-[19px]">开始逐句精听 →</span>
-                  <span className="mt-1 block text-[12px] font-semibold text-white/70 md:text-[13px]">
-                    {content.dialogue.length} 句话 · 可循环播放 · 支持听写
-                  </span>
-                </span>
-                <span className="hidden rounded-full bg-accent px-4 py-2 text-[12px] font-black text-primary sm:inline-flex">
-                  开始学习
-                </span>
-              </a>
+              <div className="mt-4 flex justify-center">
+                <a
+                  href="#section-dialogue"
+                  className="group inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white px-5 py-2.5 text-[13px] font-black text-primary shadow-[0_6px_18px_rgba(15,53,39,0.06)] transition-colors hover:border-primary hover:bg-primary hover:text-white"
+                >
+                  <span>进入单句精听</span>
+                  <span className="text-[11px] font-bold opacity-55 group-hover:opacity-75">{content.dialogue.length} 句</span>
+                  <span aria-hidden="true" className="transition-transform group-hover:translate-y-0.5">↓</span>
+                </a>
+              </div>
 
               {/* ── Study mode tabs ── */}
-              <div id="section-dialogue" className="scroll-mt-24 mt-12 mb-5 flex flex-wrap items-center justify-between gap-4">
+              <div id="section-dialogue" className="scroll-mt-24 mt-8 mb-5 flex flex-wrap items-center justify-between gap-4">
                 <StepHeading number="02" title="逐句精听跟读" hint="点任意一句，单句播放给你跟读" />
                 <div className="flex items-center rounded-full border border-border bg-white p-1">
                 {STUDY_TABS.map(tab => {
