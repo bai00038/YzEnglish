@@ -240,9 +240,10 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
                 type="button"
                 onClick={handleRestart}
                 disabled={checkedCount === 0 && draft.trim().length === 0 && position === 0}
+                title="清空本场景全部听写记录，并从第 1 句重新开始"
                 className="rounded-full border border-border bg-white px-4 py-2 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35"
               >
-                重新听写
+                全文重新听写
               </button>
               <button
                 type="button"
