@@ -905,7 +905,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   )}
 
                   <div className="mt-4 rounded-[18px] border border-primary/10 bg-card p-3.5 md:p-4">
-                    <div className="flex justify-center">
+                    <div className="flex flex-col items-center">
                       <div className="flex items-center justify-center gap-4 md:gap-6">
                         <button
                           type="button"
@@ -915,22 +915,17 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         >
                           ← 上一句
                         </button>
-                        <div className="flex flex-col items-center gap-1.5">
-                          <button
-                            type="button"
-                            onClick={toggleCurrentStudyLine}
-                            disabled={currentStudyLineIndex === null}
-                            aria-label={isCurrentStudyLinePlaying ? "暂停当前句" : "播放当前句"}
-                            className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-[0_8px_18px_rgba(15,53,39,0.2)] transition-transform hover:scale-105 disabled:opacity-40 md:h-16 md:w-16"
-                          >
-                            {isCurrentStudyLinePlaying
-                              ? <Pause className="h-5 w-5 fill-current" />
-                              : <Play className="ml-0.5 h-5 w-5 fill-current" />}
-                          </button>
-                          <span className="text-[12px] font-black tabular-nums text-primary">
-                            {currentStudyLinePosition + 1} / {playableDialogueLineIndexes.length}
-                          </span>
-                        </div>
+                        <button
+                          type="button"
+                          onClick={toggleCurrentStudyLine}
+                          disabled={currentStudyLineIndex === null}
+                          aria-label={isCurrentStudyLinePlaying ? "暂停当前句" : "播放当前句"}
+                          className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-[0_8px_18px_rgba(15,53,39,0.2)] transition-transform hover:scale-105 disabled:opacity-40 md:h-16 md:w-16"
+                        >
+                          {isCurrentStudyLinePlaying
+                            ? <Pause className="h-5 w-5 fill-current" />
+                            : <Play className="ml-0.5 h-5 w-5 fill-current" />}
+                        </button>
                         <button
                           type="button"
                           onClick={() => moveStudyLine(1)}
@@ -940,6 +935,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                           下一句 →
                         </button>
                       </div>
+                      <span className="mt-2 text-[12px] font-black tabular-nums text-primary">
+                        {currentStudyLinePosition + 1} / {playableDialogueLineIndexes.length}
+                      </span>
                     </div>
 
                     <div className="mt-4 flex flex-wrap items-center justify-center gap-4 border-t border-border/70 pt-4 md:gap-7">
