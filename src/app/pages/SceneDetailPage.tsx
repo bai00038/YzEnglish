@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useParams } from "react-router";
-import { ChevronRight, ChevronLeft, Download, Info, Play } from "lucide-react";
+import { ChevronRight, ChevronLeft, Download, Info, Pause, Play } from "lucide-react";
 import { useSceneDetail } from "@/data/scenes-access";
 import { getSceneCategoryLabel } from "@/data/scene-categories";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
@@ -522,11 +522,22 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const currentStudySpeakerLabel = currentStudyLine
     ? (currentStudyIsLearner ? "You" : (currentStudySpeaker?.en ?? currentStudyLine.speaker))
     : "";
+  const isCurrentStudyLinePlaying = !videoPaused
+    && currentStudyLineIndex !== null
+    && pinnedLineIndex === currentStudyLineIndex;
 
   function playStudyLine(lineIndex: number) {
     const range = dialogueLineRawRanges.get(lineIndex);
     if (!range) return;
     playDialogueLine(lineIndex, range);
+  }
+
+  function toggleCurrentStudyLine() {
+    if (isCurrentStudyLinePlaying) {
+      videoRef.current?.pause();
+      return;
+    }
+    if (currentStudyLineIndex !== null) playStudyLine(currentStudyLineIndex);
   }
 
   function moveStudyLine(offset: number) {
@@ -888,7 +899,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   {currentStudyLine && currentStudyLineIndex !== null ? (
                     <button
                       type="button"
-                      onClick={() => playStudyLine(currentStudyLineIndex)}
+                      onClick={toggleCurrentStudyLine}
                       className="grid min-h-[250px] w-full grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-4 rounded-[20px] bg-[#F5F1E8] px-5 py-8 text-left transition-colors hover:bg-[#EEE7D8] md:grid-cols-[68px_minmax(0,1fr)_112px] md:gap-6 md:px-8 md:py-10"
                       aria-label="播放当前句"
                     >
@@ -918,7 +929,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                           {formatTimestamp(dialogueLineRawRanges.get(currentStudyLineIndex)?.start)}
                         </span>
                         <span className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white text-primary md:h-14 md:w-14">
-                          <Play className="ml-0.5 h-4 w-4 fill-current" />
+                          {isCurrentStudyLinePlaying
+                            ? <Pause className="h-4 w-4 fill-current" />
+                            : <Play className="ml-0.5 h-4 w-4 fill-current" />}
                         </span>
                       </span>
                     </button>
@@ -930,28 +943,31 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                   <div className="mt-4 rounded-[18px] border border-primary/10 bg-card p-3.5 md:p-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3 md:gap-4">
                         <button
                           type="button"
                           onClick={() => moveStudyLine(-1)}
                           disabled={currentStudyLinePosition <= 0}
-                          className="rounded-full border border-border bg-white px-3.5 py-2 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35"
+                          className="rounded-full border border-border bg-white px-4 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35 md:px-5 md:py-3"
                         >
                           ← 上一句
                         </button>
                         <button
                           type="button"
-                          onClick={() => currentStudyLineIndex !== null && playStudyLine(currentStudyLineIndex)}
+                          onClick={toggleCurrentStudyLine}
                           disabled={currentStudyLineIndex === null}
-                          className="min-w-[76px] rounded-full bg-primary px-3.5 py-2 text-[12px] font-black text-white disabled:opacity-40"
+                          className="inline-flex min-w-[112px] items-center justify-center gap-2.5 rounded-full bg-primary px-5 py-2.5 text-[13px] font-black text-white disabled:opacity-40 md:min-w-[132px] md:px-6 md:py-3 md:text-[14px]"
                         >
-                          ▶ {currentStudyLinePosition + 1} / {playableDialogueLineIndexes.length}
+                          {isCurrentStudyLinePlaying
+                            ? <Pause className="h-3.5 w-3.5 fill-current" />
+                            : <Play className="h-3.5 w-3.5 fill-current" />}
+                          <span>{currentStudyLinePosition + 1} / {playableDialogueLineIndexes.length}</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => moveStudyLine(1)}
                           disabled={currentStudyLinePosition < 0 || currentStudyLinePosition >= playableDialogueLineIndexes.length - 1}
-                          className="rounded-full border border-border bg-white px-3.5 py-2 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35"
+                          className="rounded-full border border-border bg-white px-4 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35 md:px-5 md:py-3"
                         >
                           下一句 →
                         </button>
