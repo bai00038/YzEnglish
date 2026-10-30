@@ -239,7 +239,7 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
             disabled={checked}
             rows={2}
             placeholder="输入你听到的英文句子…"
-            className="mt-3 w-full max-w-full resize-none rounded-[16px] border border-primary/15 bg-white/90 px-4 py-3 font-serif text-[20px] leading-relaxed text-primary shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-white/45 disabled:text-muted-foreground md:text-[24px]"
+            className="mt-3 w-full max-w-full resize-none rounded-[16px] border border-primary/10 bg-[#FAF8F2] px-4 py-3 font-serif text-[20px] leading-relaxed text-primary focus:border-primary/20 focus:outline-none focus:ring-1 focus:ring-primary/10 disabled:bg-[#F7F3EA] disabled:text-muted-foreground md:text-[24px]"
           />
           {checked && diff ? (
             <div className="mt-4 grid gap-4 rounded-[16px] border border-primary/10 bg-white/70 p-4 md:grid-cols-2 md:gap-6">
