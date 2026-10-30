@@ -170,6 +170,7 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
     onStopPlayback();
     setRecords({});
     setPosition(0);
+    setDraft("");
     try {
       window.localStorage.removeItem(storageKey(sceneId));
     } catch {
@@ -234,14 +235,24 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
             <span className="block text-[15px] font-black text-primary md:text-[17px]">
               {currentLine.speakerLabel}
             </span>
-            <button
-              type="button"
-              onClick={() => setShowZh(value => !value)}
-              aria-pressed={showZh}
-              className={`rounded-full border px-4 py-2 text-[12px] font-black transition-colors ${showZh ? "border-accent bg-accent text-primary" : "border-border bg-white text-primary"}`}
-            >
-              中文提示 · {showZh ? "开" : "关"}
-            </button>
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={handleRestart}
+                disabled={checkedCount === 0 && draft.trim().length === 0 && position === 0}
+                className="rounded-full border border-border bg-white px-4 py-2 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35"
+              >
+                重新听写
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowZh(value => !value)}
+                aria-pressed={showZh}
+                className={`rounded-full border px-4 py-2 text-[12px] font-black transition-colors ${showZh ? "border-accent bg-accent text-primary" : "border-border bg-white text-primary"}`}
+              >
+                中文提示 · {showZh ? "开" : "关"}
+              </button>
+            </div>
           </div>
           <label htmlFor="dictation-input" className="sr-only">输入你听到的英文句子</label>
           <textarea
