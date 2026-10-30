@@ -111,7 +111,7 @@ export function HomePage() {
             <p className="mt-6 max-w-[455px] text-[15px] leading-[1.85] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄。每个场景，都有视频和跟读。练几遍，下次就不慌。</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/explore" className="rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90">进入场景库</Link>
-              <Link to="/scenes/ordering-a-pizza-by-phone-for-pickup" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-bold text-foreground">先试学一课 ↓</Link>
+              <Link to="/scenes/ordering-a-pizza-by-phone-for-pickup#section-dialogue" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-bold text-foreground transition-colors hover:border-primary/30 hover:bg-primary/5">免费体验单句精听 ↓</Link>
             </div>
           </div>
 

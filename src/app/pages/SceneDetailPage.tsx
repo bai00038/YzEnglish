@@ -779,6 +779,21 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 )}
               </div>
 
+              <a
+                href="#section-dialogue"
+                className="mt-5 flex w-full items-center justify-between gap-4 rounded-[18px] bg-primary px-5 py-4 text-left text-white shadow-[0_10px_24px_rgba(15,53,39,0.14)] transition-transform hover:-translate-y-0.5 md:px-6"
+              >
+                <span>
+                  <span className="block text-[17px] font-black md:text-[19px]">开始逐句精听 →</span>
+                  <span className="mt-1 block text-[12px] font-semibold text-white/70 md:text-[13px]">
+                    {content.dialogue.length} 句话 · 可循环播放 · 支持听写
+                  </span>
+                </span>
+                <span className="hidden rounded-full bg-accent px-4 py-2 text-[12px] font-black text-primary sm:inline-flex">
+                  开始学习
+                </span>
+              </a>
+
               {/* ── Playback speed ── */}
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <span className="text-[13px] font-black text-primary">字幕</span>
