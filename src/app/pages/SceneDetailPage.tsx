@@ -587,6 +587,24 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     playDialogueLine(lineIndex, range);
   }
 
+  function startSentenceListening() {
+    repeatLineRef.current = false;
+    setRepeatLine(false);
+    setStudyTab("listening");
+
+    const firstLineIndex = playableDialogueLineIndexes[0];
+    if (firstLineIndex !== undefined) {
+      playStudyLine(firstLineIndex);
+    } else {
+      videoRef.current?.pause();
+      cancelRangePlayback();
+    }
+
+    window.requestAnimationFrame(() => {
+      studySectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
   function toggleCurrentStudyLine() {
     if (isCurrentStudyLinePlaying) {
       videoRef.current?.pause();
@@ -912,6 +930,20 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     <p className="text-white/70 text-xs mt-1">Video coming soon · 视频准备中</p>
                   </div>
                 )}
+              </div>
+
+              <div className="mt-4 flex justify-center">
+                <button
+                  type="button"
+                  onClick={startSentenceListening}
+                  disabled={playableDialogueLineIndexes.length === 0}
+                  className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-white px-5 py-2.5 text-[13px] font-black text-primary shadow-[0_8px_20px_rgba(15,53,39,0.08)] transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40 md:px-6 md:py-3 md:text-[14px]"
+                >
+                  <Play className="h-4 w-4 fill-current" />
+                  开始单句精听
+                  <span className="text-muted-foreground">{playableDialogueLineIndexes.length} 句</span>
+                  <span aria-hidden="true">↓</span>
+                </button>
               </div>
 
               {/* ── Study mode tabs ── */}
