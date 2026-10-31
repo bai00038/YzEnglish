@@ -64,7 +64,7 @@ interface DictationPracticeProps {
   lines: DictationLineInput[];
   /** Plays exactly this line's start->end range via the parent's existing single-line player — see playDialogueLine in SceneDetailPage. Never a second/competing playback path. */
   onPlayLine: (lineIndex: number) => void;
-  /** Pauses the shared <video> element — called before any navigation so a line change never leaves stray audio running. */
+  /** Pauses the shared <video> element when resetting/retrying or leaving the final sentence. */
   onStopPlayback: () => void;
 }
 
@@ -93,7 +93,10 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
     hasRestoredRef.current = false;
     const stored = loadStoredState(sceneId);
     if (stored) {
-      setPosition(Math.min(Math.max(0, stored.position), lines.length));
+      // Each entry into Dictation is a new listening pass from sentence 1,
+      // while the learner's earlier answers remain available when they
+      // navigate back through the scene.
+      setPosition(0);
       setRecords(stored.records);
     } else {
       setPosition(0);
@@ -162,8 +165,14 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
   }
 
   function goTo(nextPosition: number) {
-    onStopPlayback();
-    setPosition(Math.max(0, nextPosition));
+    const boundedPosition = Math.min(lines.length, Math.max(0, nextPosition));
+    setPosition(boundedPosition);
+    const nextLine = lines[boundedPosition];
+    if (nextLine) {
+      onPlayLine(nextLine.index);
+    } else {
+      onStopPlayback();
+    }
   }
 
   function handleRestart() {

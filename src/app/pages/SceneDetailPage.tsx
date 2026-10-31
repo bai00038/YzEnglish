@@ -335,6 +335,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // ending," and end_time must play in full.
   const frameRequestRef = useRef<number | null>(null);
   const videoFrameRequestRef = useRef<number | null>(null);
+  // Moving directly from one sentence to another briefly pauses the
+  // shared video while it seeks. That internal pause must not be treated
+  // as the learner stopping playback, or onPause would tear down the new
+  // sentence's range watcher before the seek finishes.
+  const suppressNextPauseCleanupRef = useRef(false);
   // The 'seeked' listener currently pending after a click set currentTime
   // but before the browser finished the seek — must be individually
   // removable so a second line click while the first seek is still in
@@ -457,6 +462,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     // padding so the cutoff doesn't sound clipped.
     const trueStart = range.start + 0.10;
     const trueEnd = range.end + 0.15;
+    if (!video.paused) {
+      suppressNextPauseCleanupRef.current = true;
+      video.pause();
+    }
     activeEndRef.current = trueEnd;
     setPinnedLineIndex(lineIndex);
 
@@ -488,7 +497,6 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       return;
     }
 
-    video.pause();
     const onSeeked = () => {
       pendingSeekedHandlerRef.current = null;
       // video.currentTime is only updated to the seek target once this
@@ -561,6 +569,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     if (tab === studyTab) return;
     videoRef.current?.pause();
     cancelRangePlayback();
+    if (tab === "dictation") {
+      // Dictation always starts as a fresh pass from sentence 1. Repeating
+      // a hidden sentence after changing modes would be confusing, so the
+      // mode also starts with sentence looping explicitly off.
+      repeatLineRef.current = false;
+      setRepeatLine(false);
+    }
     setStudyTab(tab);
   }
 
@@ -744,6 +759,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       onPlaying={() => setVideoPaused(false)}
                       onPause={() => {
                         setVideoPaused(true);
+                        if (suppressNextPauseCleanupRef.current) {
+                          suppressNextPauseCleanupRef.current = false;
+                          return;
+                        }
                         // Any pause — manual, native-controls, or the
                         // frame watcher's own auto-stop (see
                         // watchForLineEnd) — ends single-line mode.
@@ -970,7 +989,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                       <button
                         type="button"
-                        onClick={() => setRepeatLine(value => !value)}
+                        onClick={() => setRepeatLine(value => {
+                          const nextValue = !value;
+                          repeatLineRef.current = nextValue;
+                          return nextValue;
+                        })}
                         aria-pressed={repeatLine}
                         className={`rounded-full border px-4 py-2 text-[12px] font-black transition-colors ${repeatLine ? "border-accent bg-accent text-primary" : "border-border bg-white text-primary"}`}
                       >
