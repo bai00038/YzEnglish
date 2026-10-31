@@ -41,15 +41,15 @@ export function ContactPage() {
     <div>
       {/* ══ HERO ══════════════════════════════════════════════════════════════ */}
       <section className="bg-background border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 md:px-8 pt-12 pb-14 md:pt-16 md:pb-20">
-          <span className="inline-flex items-center text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-6"
+        <div className="max-w-5xl mx-auto px-4 py-9 md:px-8 md:py-11">
+          <span className="inline-flex items-center text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-3.5"
             style={{ backgroundColor: "#C8F169", color: "#12241C" }}>
             Contact · 联系我们
           </span>
-          <h1 className="display-serif text-[40px] md:text-[62px] font-bold leading-[1.06] tracking-[-0.01em] text-foreground mb-3">
+          <h1 className="display-serif text-[36px] md:text-[50px] font-bold leading-[1.06] tracking-[-0.01em] text-foreground mb-2">
             Let's stay connected
           </h1>
-          <p className="font-['Noto_Serif_SC'] text-lg md:text-xl font-bold mb-6" style={{ color: "#0F3527" }}>扫码关注，保持联系</p>
+          <p className="font-['Noto_Serif_SC'] text-lg md:text-xl font-bold mb-4" style={{ color: "#0F3527" }}>扫码关注，保持联系</p>
           <p
             className="display-serif text-sm md:text-base italic text-muted-foreground leading-relaxed max-w-xl mb-3"
             style={oneLineWidth ? { maxWidth: oneLineWidth } : undefined}

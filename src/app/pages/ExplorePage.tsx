@@ -35,12 +35,12 @@ export function ExplorePage({
 
   return (
     <div>
-      <header className="mx-auto max-w-[1180px] px-5 pb-10 pt-12 md:px-8 md:pb-12 md:pt-16">
-        <p className="editorial-kicker mb-4">Scene library · 场景库</p>
-        <h1 className="display-serif mb-4 text-[40px] font-semibold leading-[1.04] tracking-[-0.01em] text-primary md:text-[60px]">
+      <header className="mx-auto max-w-[1180px] px-5 pb-8 pt-8 md:px-8 md:pb-9 md:pt-10">
+        <p className="editorial-kicker mb-2.5">Scene library · 场景库</p>
+        <h1 className="display-serif mb-3 text-[36px] font-semibold leading-[1.04] tracking-[-0.01em] text-primary md:text-[48px]">
           Choose a collection,<br /><em className="font-normal">then enter the scene.</em>
         </h1>
-        <p className="mb-8 text-[14px] text-foreground md:text-base">按真实生活任务学习，而不是零散背句子。</p>
+        <p className="mb-5 text-[14px] text-foreground md:text-[15px]">按真实生活任务学习，而不是零散背句子。</p>
         <form className="flex max-w-[680px] items-center gap-3 rounded-full border border-border bg-card py-2 pl-5 pr-2 shadow-[0_10px_30px_rgba(18,36,28,0.06)] transition-colors focus-within:border-primary/50 md:pl-6" onSubmit={event => event.preventDefault()}>
           <Search size={19} className="flex-shrink-0 text-muted-foreground" />
           <input value={searchQuery} onChange={event => setSearchQuery(event.target.value)}

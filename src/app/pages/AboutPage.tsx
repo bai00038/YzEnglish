@@ -26,22 +26,22 @@ function ExploreButton() {
 
 export function AboutPage() {
   return (
-    <div className="bg-background pt-[52px] md:pt-[72px]">
+    <div className="bg-background pt-9 md:pt-11">
       <section className="mx-auto max-w-[1180px] px-5 md:px-8">
         <p className="editorial-kicker">About · 关于我们</p>
-        <h1 className="display-serif mt-4 text-[40px] font-bold leading-[1.06] tracking-[-0.01em] text-primary md:text-[62px]">
+        <h1 className="display-serif mt-2.5 text-[36px] font-bold leading-[1.06] tracking-[-0.01em] text-primary md:text-[50px]">
           Real scenes for real life.
         </h1>
-        <p className="mt-3 font-['Noto_Serif_SC'] text-[19px] font-bold text-foreground md:text-[24px]">
+        <p className="mt-2 font-['Noto_Serif_SC'] text-[18px] font-bold text-foreground md:text-[21px]">
           为真实生活，练真场景英语。
         </p>
-        <p className="display-serif mt-6 max-w-[640px] text-[17px] italic leading-relaxed text-secondary-foreground">
+        <p className="display-serif mt-4 max-w-[640px] text-[16px] italic leading-relaxed text-secondary-foreground">
           YZ English turns real overseas life into watchable, practicable English scenes — so you walk in prepared, not surprised.
         </p>
         <p className="mt-2 max-w-[640px] text-base leading-relaxed text-secondary-foreground">
           把海外真实生活做成看得见、练得出的英语场景，让你有准备地走进每一个场景。
         </p>
-        <div className="mt-7"><ExploreButton /></div>
+        <div className="mt-5"><ExploreButton /></div>
 
         <section className="mt-12 md:mt-16">
           <h2 className="flex items-baseline gap-3 font-['Noto_Serif_SC'] text-[24px] font-bold text-foreground">
