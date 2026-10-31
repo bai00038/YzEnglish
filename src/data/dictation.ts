@@ -25,8 +25,51 @@ export function normalizeDictationText(text: string): string {
     .trim();
 }
 
+// Dictation checks listening comprehension, so a standard contraction and
+// its written-out form are equivalent. Ambiguous contractions intentionally
+// expose both valid expansions ("he's" = "he is" / "he has"), and the full
+// sentence still has to match one complete expansion before it is accepted.
+function expandContractionToken(token: string): string[] {
+  const fixed: Record<string, string[]> = {
+    "can't": ["can not"],
+    cannot: ["can not"],
+    "won't": ["will not"],
+    "shan't": ["shall not"],
+    "let's": ["let us"],
+    "y'all": ["you all"],
+  };
+  if (fixed[token]) return fixed[token];
+
+  const endings: Array<[RegExp, (stem: string) => string[]]> = [
+    [/^(.+)'m$/, stem => [`${stem} am`]],
+    [/^(.+)'re$/, stem => [`${stem} are`]],
+    [/^(.+)'ve$/, stem => [`${stem} have`]],
+    [/^(.+)'ll$/, stem => [`${stem} will`]],
+    [/^(.+)'d$/, stem => [`${stem} would`, `${stem} had`]],
+    [/^(.+)'s$/, stem => [`${stem} is`, `${stem} has`]],
+    [/^(.+)n't$/, stem => [`${stem} not`]],
+  ];
+
+  for (const [pattern, expand] of endings) {
+    const match = token.match(pattern);
+    if (match) return expand(match[1]);
+  }
+  return [token];
+}
+
+function dictationComparisonVariants(text: string): string[] {
+  const normalized = normalizeDictationText(text);
+  if (!normalized) return [""];
+
+  return normalized.split(" ").reduce<string[]>((variants, token) => {
+    const expansions = expandContractionToken(token);
+    return variants.flatMap(prefix => expansions.map(expansion => prefix ? `${prefix} ${expansion}` : expansion));
+  }, [""]);
+}
+
 export function isDictationExactMatch(correctText: string, userText: string): boolean {
-  return normalizeDictationText(correctText) === normalizeDictationText(userText);
+  const correctVariants = new Set(dictationComparisonVariants(correctText));
+  return dictationComparisonVariants(userText).some(variant => correctVariants.has(variant));
 }
 
 interface DictationTokenSource {
@@ -77,6 +120,18 @@ export interface DictationDiff {
 export function diffDictationWords(correctText: string, userText: string): DictationDiff {
   const correct = tokenize(correctText);
   const user = tokenize(userText);
+
+  // When the full sentences are equivalent after contraction expansion,
+  // preserve each side's original spelling while marking every token right.
+  // This keeps "what're" visible as typed without falsely contrasting it
+  // against the authored "what are".
+  if (isDictationExactMatch(correctText, userText)) {
+    return {
+      userTokens: user.map(token => ({ text: token.raw, status: "correct" })),
+      correctTokens: correct.map(token => ({ text: token.raw, status: "correct" })),
+    };
+  }
+
   const n = correct.length;
   const m = user.length;
 
