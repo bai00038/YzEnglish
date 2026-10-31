@@ -5,6 +5,7 @@ import { useSceneDetail } from "@/data/scenes-access";
 import { getSceneCategoryLabel } from "@/data/scene-categories";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
+import { MemberContentNotice } from "@/app/components/MemberContentNotice";
 import { buildSceneSpeakers, normalizeSpeaker, speakerAvatarLabel, SPEAKER_STYLES } from "@/data/speakerRoles";
 import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
 
@@ -69,6 +70,11 @@ function StepHeading({ number, title, hint }: { number: string; title: string; h
 const PLAYBACK_RATES = [0.8, 1, 1.2] as const;
 const PLAYBACK_RATE_STORAGE_KEY = "yzenglish:playbackRate";
 
+// Prompt 3 prepares the paywall surface; Prompt 4 will replace this switch
+// with real signed-in membership state. Keep it off until accounts exist so
+// today's published lessons do not become unreachable for every visitor.
+const MEMBERSHIP_GATE_ENABLED = false;
+
 const STUDY_TABS = [
   { key: "listening", num: "01", en: "Sentence Listening", zh: "单句精听" },
   { key: "dictation", num: "02", en: "Dictation", zh: "听写" },
@@ -93,6 +99,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const cultureTipItems = content?.cultureTips ?? [];
   const prevScene = data?.prevScene ?? undefined;
   const nextScene = data?.nextScene ?? undefined;
+  const canAccessMemberContent = !MEMBERSHIP_GATE_ENABLED || scene?.isFreeExperience === true;
 
   // Unique speakers for this scene, in first-occurrence order, each with a
   // stable color — shared by the legend and every dialogue row below.
@@ -790,7 +797,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   image) or, before scene.video_url is synced from the Google
                   Sheet, as a poster-style background — never shown as a bare
                   standalone image. ── */}
-              <div className="w-full overflow-hidden rounded-[20px] border border-primary/10 bg-black shadow-[0_16px_40px_rgba(15,53,39,0.12)]" style={{ aspectRatio: "16 / 9" }}>
+              <div className="relative w-full overflow-hidden rounded-[20px] border border-primary/10 bg-black shadow-[0_16px_40px_rgba(15,53,39,0.12)]" style={{ aspectRatio: "16 / 9" }}>
                 {scene.video_url ? (
                   <div className="relative w-full h-full">
                     <video
@@ -928,6 +935,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   <div className="w-full h-full flex flex-col items-center justify-center px-6 text-center">
                     <p className="text-white text-sm font-bold">{scene.titleEn}</p>
                     <p className="text-white/70 text-xs mt-1">Video coming soon · 视频准备中</p>
+                  </div>
+                )}
+                {!canAccessMemberContent && (
+                  <div className="absolute inset-0 z-20 bg-card p-5 md:p-8">
+                    <MemberContentNotice />
                   </div>
                 )}
               </div>
@@ -1163,7 +1175,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     <p className="mt-4 font-serif text-[27px] font-semibold leading-tight md:text-[34px]">把这一课带走，贴在冰箱上练</p>
                     <p className="mt-3 text-[14px] leading-relaxed text-white/70">完整双语对话 + 核心表达 + 本地文化提示，下载后随时复习。</p>
                   </div>
-                  {scene.pdfUrl ? (
+                  {!canAccessMemberContent ? (
+                    <MemberContentNotice compact />
+                  ) : scene.pdfUrl ? (
                     <a
                       href={scene.pdfUrl}
                       target="_blank"

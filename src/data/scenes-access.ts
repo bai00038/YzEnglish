@@ -28,7 +28,9 @@ const CURATED_FEATURED_SLUGS = [
 // The manifest IS the visible list — every entry in it is a published episode.
 async function fetchVisibleScenes(): Promise<Scene[]> {
   const entries = await fetchManifestScenes();
-  return entries.map(manifestEntryToScene);
+  return entries
+    .map(manifestEntryToScene)
+    .filter(scene => scene.status === "live" && Boolean(scene.collectionId));
 }
 
 function deriveLanguageModules(scene: Scene): Scene {

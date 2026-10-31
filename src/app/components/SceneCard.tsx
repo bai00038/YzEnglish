@@ -6,7 +6,7 @@ import { ImgBox } from "@/app/components/primitives";
 import { DurationLabel } from "@/app/components/badges";
 import { SceneBadges } from "@/app/components/SceneBadges";
 
-export function SceneCard({ scene }: { scene: Scene }) {
+export function SceneCard({ scene, collectionLabels = [] }: { scene: Scene; collectionLabels?: string[] }) {
   const catColor = CATEGORY_BG[scene.category] ?? "bg-secondary";
   return (
     <Link to={`/scenes/${scene.slug}`} className="group flex h-full w-full flex-col overflow-hidden rounded-[22px] border border-border bg-card text-left transition-all duration-200 hover:-translate-y-[5px] hover:shadow-[0_22px_44px_rgba(18,36,28,0.13)]">
@@ -25,8 +25,10 @@ export function SceneCard({ scene }: { scene: Scene }) {
         </span>
       </div>
       <div className="flex flex-1 flex-col px-[22px] pb-[18px] pt-5">
+        {scene.isFreeExperience && <span className="mb-3 w-fit rounded-full bg-accent/45 px-3 py-1 text-[11px] font-bold text-primary">免费体验</span>}
         <p className="display-serif text-[20.5px] font-semibold leading-[1.25] text-foreground transition-colors group-hover:text-primary">{scene.titleEn}</p>
         <p className="mb-3.5 mt-1 font-['Noto_Serif_SC'] text-[15px] text-muted-foreground">{scene.titleZh}</p>
+        {collectionLabels.length > 0 && <p className="mb-3 text-[12px] leading-relaxed text-muted-foreground">收录于：{collectionLabels.join("、")}</p>}
         <div className="mt-auto flex items-center border-t border-border pt-3.5">
           <span className="ml-auto"><DurationLabel duration={scene.duration} /></span>
         </div>

@@ -3,10 +3,12 @@ import type {
   DialogueLine,
   Expression,
   Scene,
+  SceneCollection,
   SceneContent,
   TipType,
 } from "./types";
 import { isSceneNew } from "./scene-badges";
+import { CURRENT_SCENE_METADATA, DEFAULT_COLLECTIONS, PLANNED_FREE_SCENES } from "./content-collections";
 
 // ---------------------------------------------------------------------------
 // OSS content source — the static replacement for Supabase.
@@ -16,9 +18,10 @@ import { isSceneNew } from "./scene-badges";
 // episode = uploading its content package to OSS + appending one entry to
 // the manifest — no rebuild, no redeploy.
 //
-// The manifest this module reads is content/manifest.json on OSS. Its schema
-// is documented by the canonical copy at tools/oss-manifest/manifest.json
-// (the file that gets uploaded to OSS).
+// The manifest this module reads is content/manifest.json on OSS. The
+// collection fields and upload rules are documented in
+// tools/oss-manifest/UPLOAD-SCHEMA.md and validated before publishing by
+// tools/oss-manifest/validate-collections.mjs.
 //
 // Env overrides (local dev only):
 //   VITE_MANIFEST_URL  — point at a local fixture, e.g. /dev-fixtures/manifest.json
@@ -59,44 +62,63 @@ export interface ManifestScene {
   pdfUrl?: string;
   externalId: string;
   dataUrl?: string;
+  collectionId?: string;
+  collectionOrder?: number;
+  tags?: string[];
+  status?: "live" | "coming";
+  isFreeExperience?: boolean;
 }
 
 interface ContentManifest {
   schemaVersion: number;
   updatedAt: string;
   scenes: ManifestScene[];
+  collections?: SceneCollection[];
 }
 
 // One cached in-flight request — every hook on a page shares it.
-let manifestPromise: Promise<ManifestScene[]> | null = null;
+let manifestPromise: Promise<ContentManifest> | null = null;
 
-export function fetchManifestScenes(): Promise<ManifestScene[]> {
+async function fetchContentManifest(): Promise<ContentManifest> {
   if (!manifestPromise) {
     manifestPromise = (async () => {
       const res = await fetch(MANIFEST_URL);
-      if (!res.ok) {
-        throw new Error(`manifest fetch failed (${res.status}): ${MANIFEST_URL}`);
-      }
+      if (!res.ok) throw new Error(`manifest fetch failed (${res.status}): ${MANIFEST_URL}`);
       const json = (await res.json()) as ContentManifest;
-      if (!json || !Array.isArray(json.scenes)) {
-        throw new Error(`manifest has no scenes array: ${MANIFEST_URL}`);
-      }
-      return json.scenes;
+      if (!json || !Array.isArray(json.scenes)) throw new Error(`manifest has no scenes array: ${MANIFEST_URL}`);
+      const remoteIds = new Set(json.scenes.map(scene => scene.externalId));
+      return {
+        ...json,
+        scenes: [
+          ...json.scenes,
+          ...PLANNED_FREE_SCENES.filter(scene => !remoteIds.has(scene.externalId)),
+        ],
+      };
     })();
-    // Don't cache a rejection forever — a transient network blip in dev
-    // shouldn't poison every later navigation until reload.
-    manifestPromise.catch(() => {
-      manifestPromise = null;
-    });
+    manifestPromise.catch(() => { manifestPromise = null; });
   }
   return manifestPromise;
+}
+
+export function fetchManifestScenes(): Promise<ManifestScene[]> {
+  return fetchContentManifest().then(manifest => manifest.scenes);
+}
+
+export function fetchManifestCollections(): Promise<SceneCollection[]> {
+  return fetchContentManifest().then(manifest =>
+    (manifest.collections?.length ? manifest.collections : DEFAULT_COLLECTIONS)
+      .slice()
+      .sort((a, b) => a.shelfOrder - b.shelfOrder)
+  );
 }
 
 // List-level Scene: everything the library cards need, no per-episode
 // fetch. `content` stays undefined until fetchEpisodeDetail() fills it.
 export function manifestEntryToScene(entry: ManifestScene): Scene {
+  const fallback = CURRENT_SCENE_METADATA[entry.externalId];
   return {
     id: entry.id,
+    externalId: entry.externalId,
     slug: entry.slug,
     titleEn: entry.titleEn,
     titleZh: entry.titleZh,
@@ -112,6 +134,11 @@ export function manifestEntryToScene(entry: ManifestScene): Scene {
     photo: entry.photo ?? undefined,
     pdfUrl: PDF_URL_OVERRIDES[entry.slug] ?? entry.pdfUrl ?? undefined,
     video_url: entry.video_url ?? undefined,
+    collectionId: entry.collectionId ?? fallback?.collectionId,
+    collectionOrder: entry.collectionOrder ?? fallback?.collectionOrder,
+    tags: entry.tags ?? fallback?.tags ?? [],
+    status: entry.status ?? fallback?.status ?? "live",
+    isFreeExperience: entry.isFreeExperience ?? fallback?.isFreeExperience ?? false,
   };
 }
 

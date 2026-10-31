@@ -124,6 +124,9 @@ export interface SceneContent {
 
 export interface Scene {
   id: number;
+  // Stable content identity used by uploads and collection membership.
+  // Unlike the numeric id or slug, this must never be recycled or renamed.
+  externalId?: string;
   slug: string;
   titleEn: string;
   titleZh: string;
@@ -141,6 +144,27 @@ export interface Scene {
   video_url?: string | null;
   subtitleCues?: SubtitleCue[] | null;
   content?: SceneContent;
+  collectionId?: string;
+  collectionOrder?: number;
+  tags?: string[];
+  status?: "live" | "coming";
+  isFreeExperience?: boolean;
+}
+
+export interface SceneCollection {
+  id: string;
+  tagId: string;
+  name: string;
+  titleEn: string;
+  tagline: string;
+  shelfOrder: number;
+  status: "live" | "coming";
+  coverImage?: string;
+}
+
+export interface CollectionTag {
+  id: string;
+  label: string;
 }
 
 export interface PdfResource {

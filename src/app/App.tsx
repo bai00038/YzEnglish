@@ -7,6 +7,8 @@ import { ExplorePage } from "@/app/pages/ExplorePage";
 import { SceneDetailPage } from "@/app/pages/SceneDetailPage";
 import { AboutPage } from "@/app/pages/AboutPage";
 import { ContactPage } from "@/app/pages/ContactPage";
+import { FreeTrialPage } from "@/app/pages/FreeTrialPage";
+import { CollectionPage } from "@/app/pages/CollectionPage";
 
 // Manage scroll ourselves: forward/replace navigations start at the top,
 // but a browser Back/Forward (POP) restores the scroll position the user
@@ -73,6 +75,8 @@ export default function App() {
             path="/scenes/:slug"
             element={<SceneDetailPage bilingualMode={bilingualMode} setBilingualMode={setBilingualMode} />}
           />
+          <Route path="/free-trial" element={<FreeTrialPage />} />
+          <Route path="/collections/:collectionId" element={<CollectionPage />} />
           <Route path="/resources" element={<Navigate to="/explore" replace />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
