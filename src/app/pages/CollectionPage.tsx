@@ -19,31 +19,34 @@ export function CollectionPage() {
   return (
     <div>
       <header className="border-b border-border bg-secondary">
-        <div className="mx-auto max-w-[1180px] px-5 py-12 md:px-8 md:py-16">
-          <Link to="/explore" className="mb-7 inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary"><ArrowLeft size={16} /> 返回场景库</Link>
-          <p className="editorial-kicker">{collection.id} · Collection</p>
-          <h1 className="mt-3 font-['Noto_Serif_SC'] text-[42px] font-bold text-primary md:text-[58px]">{collection.name}</h1>
-          <p className="display-serif mt-1 text-xl italic text-muted-foreground">{collection.titleEn}</p>
-          <p className="mt-5 max-w-[680px] text-base leading-relaxed text-secondary-foreground">{collection.tagline}</p>
-          <p className="mt-5 text-sm font-semibold">共 {collection.scenes.length} 集 · 已上线 {liveCount} 集</p>
+        <div className="mx-auto max-w-[1180px] px-5 py-5 md:px-8">
+          <div className="mb-2 flex items-center justify-between gap-4 text-sm">
+            <Link to="/explore" className="inline-flex items-center gap-2 font-semibold text-muted-foreground hover:text-primary"><ArrowLeft size={16} /> 返回场景库</Link>
+            <p className="font-semibold text-foreground">共 {collection.scenes.length} 集 · 已上线 {liveCount} 集</p>
+          </div>
+          <h1 className="flex flex-wrap items-baseline gap-x-3 gap-y-0 font-['Noto_Serif_SC'] text-[40px] font-bold leading-[1.15] text-primary md:text-[44px]">
+            {collection.name}
+            <span className="display-serif text-[17px] font-normal italic text-muted-foreground md:text-[19px]">{collection.titleEn}</span>
+          </h1>
+          <p className="mt-1.5 max-w-[760px] text-[15px] leading-relaxed text-secondary-foreground md:text-base">{collection.tagline}</p>
         </div>
       </header>
 
-      <main className="mx-auto max-w-[1180px] px-5 py-10 md:px-8 md:py-14">
+      <main className="mx-auto max-w-[1180px] px-5 py-6 md:px-8 md:py-7">
         <div className="overflow-hidden rounded-[24px] border border-border bg-card">
           {collection.scenes.length ? collection.scenes.map((scene, index) => {
             const isLive = scene.status === "live";
             const number = String(scene.collectionOrder ?? index + 1).padStart(2, "0");
             const row = (
-              <div className={`grid gap-4 p-5 md:grid-cols-[56px_180px_1fr_auto] md:items-center md:gap-6 md:p-6 ${isLive ? "transition-colors hover:bg-secondary/60" : "bg-secondary/55 text-muted-foreground grayscale"}`}>
-                <span className="display-serif text-[30px] italic text-primary/60">{number}</span>
-                <div className="aspect-[16/9] overflow-hidden rounded-[14px] bg-primary/90">
+              <div className={`grid gap-4 p-4 md:min-h-[120px] md:grid-cols-[48px_200px_minmax(0,1fr)_auto] md:items-center md:p-3 ${isLive ? "transition-colors hover:bg-secondary/60" : "bg-secondary/55 text-muted-foreground grayscale"}`}>
+                <span className="display-serif text-[27px] italic text-primary/60">{number}</span>
+                <div className="aspect-[16/9] overflow-hidden rounded-[12px] bg-primary/90 md:h-24 md:w-[200px] md:aspect-auto">
                   {scene.photo ? <img src={scene.photo} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[radial-gradient(circle_at_70%_30%,rgba(200,241,105,.3),transparent_26%),linear-gradient(145deg,#315848,#0f3527)]" />}
                 </div>
                 <div>
-                  <h2 className="display-serif text-[22px] font-semibold leading-tight text-primary">{scene.titleEn}</h2>
-                  <p className="mt-1 font-['Noto_Serif_SC'] text-sm text-muted-foreground">{scene.titleZh}</p>
-                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-secondary-foreground">{scene.desc}</p>
+                  <h2 className="display-serif text-[19px] font-semibold leading-tight text-primary md:text-[20px]">{scene.titleEn}</h2>
+                  <p className="mt-0.5 font-['Noto_Serif_SC'] text-[13px] text-muted-foreground">{scene.titleZh}</p>
+                  <p className="mt-1 line-clamp-1 text-[13px] leading-relaxed text-secondary-foreground">{scene.desc}</p>
                 </div>
                 <div className="flex items-center gap-2 text-sm font-semibold md:justify-end">
                   {isLive ? <><FileText size={17} /><span>讲义 PDF</span><ArrowRight size={16} /></> : <><LockKeyhole size={16} /><span>制作中</span></>}
