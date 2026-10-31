@@ -327,10 +327,20 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
               </div>
             </div>
           ) : (
-            <div className="mt-3 min-h-6 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
-              {showZh
-                ? <span>中文提示：{currentLine.zh || "暂无中文提示"}</span>
-                : <span className="text-muted-foreground/70">需要时可打开中文提示</span>}
+            <div className="mt-3 flex min-h-9 items-center justify-between gap-3 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
+              <span className="min-w-0">
+                {showZh
+                  ? <>中文提示：{currentLine.zh || "暂无中文提示"}</>
+                  : <span className="text-muted-foreground/70">需要时可打开中文提示</span>}
+              </span>
+              <button
+                type="button"
+                onClick={handleCheck}
+                disabled={draft.trim().length === 0}
+                className="shrink-0 rounded-full bg-primary px-4 py-2 text-[12px] font-black text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-primary/10 disabled:text-muted-foreground/60"
+              >
+                检查答案
+              </button>
             </div>
           )}
           {checked && showZh && (
