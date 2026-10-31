@@ -108,6 +108,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const [studyTab, setStudyTab] = useState<StudyTabKey>("listening");
   const [repeatLine, setRepeatLine] = useState(false);
   const repeatLineRef = useRef(false);
+  const studySectionRef = useRef<HTMLDivElement>(null);
   // Selected playback speed — applies to the one shared <video> element no
   // matter which mode is driving it (continuous play, single-line play,
   // repeat, future dictation), so it lives here rather than per-mode.
@@ -164,6 +165,49 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   useEffect(() => {
     repeatLineRef.current = repeatLine;
   }, [repeatLine]);
+
+  // Once the study heading reaches roughly the middle of the viewport on a
+  // downward scroll, settle it just below the sticky navigation. This is a
+  // one-way, once-per-pass assist rather than a page-wide scroll lock: the
+  // learner can keep scrolling through the lesson normally, and scrolling
+  // back above the video re-arms the gentle snap for the next pass.
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let hasSnapped = false;
+    let frameId: number | null = null;
+
+    const checkPosition = () => {
+      frameId = null;
+      const section = studySectionRef.current;
+      if (!section) return;
+
+      const currentScrollY = window.scrollY;
+      const scrollingDown = currentScrollY > lastScrollY;
+      lastScrollY = currentScrollY;
+      const sectionTop = section.getBoundingClientRect().top;
+
+      if (sectionTop > window.innerHeight * 0.8) hasSnapped = false;
+      if (
+        scrollingDown &&
+        !hasSnapped &&
+        sectionTop > 96 &&
+        sectionTop <= window.innerHeight * 0.55
+      ) {
+        hasSnapped = true;
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+
+    const handleScroll = () => {
+      if (frameId === null) frameId = window.requestAnimationFrame(checkPosition);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
+    };
+  }, []);
 
   // True unmount (navigating away from this page entirely) — the
   // scene-switch effect above only fires on a scene?.id change, not on
@@ -871,7 +915,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               </div>
 
               {/* ── Study mode tabs ── */}
-              <div id="section-dialogue" className="scroll-mt-24 mt-7 mb-5 flex flex-wrap items-center justify-between gap-4">
+              <div
+                ref={studySectionRef}
+                id="section-dialogue"
+                className="scroll-mt-24 mt-7 mb-5 flex flex-wrap items-center justify-between gap-4"
+              >
                 <StepHeading number="02" title="逐句精听跟读" hint="点任意一句，单句播放给你跟读" />
                 <div className="flex items-center rounded-full border border-border bg-white p-1">
                 {STUDY_TABS.map(tab => {
