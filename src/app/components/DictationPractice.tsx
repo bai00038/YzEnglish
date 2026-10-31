@@ -297,10 +297,6 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
             {!checked && draft.length === 0 && (
               <span className="pointer-events-none absolute left-4 top-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground/65">
                 <span className="font-serif text-[20px] leading-relaxed md:text-[22px]">输入你听到的英文句子…</span>
-                <span className="inline-flex items-center gap-1 text-[11px] font-bold">
-                  <CornerDownLeft size={13} strokeWidth={2} />
-                  回车检查答案
-                </span>
               </span>
             )}
           </div>
@@ -336,20 +332,26 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
               </div>
             </div>
           ) : (
-            <div className="mt-3 flex min-h-9 items-center justify-between gap-3 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
+            <div className="mt-3 flex min-h-9 flex-wrap items-center justify-between gap-3 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
               <span className="min-w-0">
                 {showZh
                   ? <>中文提示：{currentLine.zh || "暂无中文提示"}</>
                   : <span className="text-muted-foreground/70">需要时可打开中文提示</span>}
               </span>
-              <button
-                type="button"
-                onClick={handleCheck}
-                disabled={draft.trim().length === 0}
-                className="shrink-0 rounded-full bg-primary px-4 py-2 text-[12px] font-black text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-primary/10 disabled:text-muted-foreground/60"
-              >
-                检查答案
-              </button>
+              <span className="flex shrink-0 items-center gap-3">
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-muted-foreground/75 md:text-[12px]">
+                  <CornerDownLeft size={14} strokeWidth={2} />
+                  回车检查答案
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCheck}
+                  disabled={draft.trim().length === 0}
+                  className="shrink-0 rounded-full bg-primary px-4 py-2 text-[12px] font-black text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-primary/10 disabled:text-muted-foreground/60"
+                >
+                  检查答案
+                </button>
+              </span>
             </div>
           )}
           {checked && showZh && (
