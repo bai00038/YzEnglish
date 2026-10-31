@@ -16,6 +16,10 @@ export function ExplorePage({
   const { data: collectionsData, loading, error } = useCollections();
   const { data: freeData, loading: freeLoading, error: freeError } = useFreeTrialScenes();
   const collections = collectionsData ?? [];
+  const catalogueTags = [{ id: "All", label: "全部" }, ...COLLECTION_TAGS];
+  const filteredCollections = activeCategory === "All"
+    ? collections
+    : collections.filter(collection => collection.tagId === activeCategory);
   const collectionNames = new Map(collections.map(collection => [collection.id, collection.name]));
   const allLiveScenes = collections
     .flatMap(collection => collection.scenes)
@@ -49,6 +53,23 @@ export function ExplorePage({
           {searchQuery && <button type="button" onClick={() => setSearchQuery("")} aria-label="清除搜索" className="text-muted-foreground hover:text-foreground"><X size={14} /></button>}
           <button type="submit" className="flex-shrink-0 rounded-full bg-accent px-4 py-2.5 text-sm font-bold text-accent-foreground transition-[filter] hover:brightness-95 md:px-6">搜索</button>
         </form>
+        <div className="mt-4 flex max-w-[900px] flex-wrap items-center gap-2">
+          <span className="mr-1 text-[11px] font-bold tracking-[0.14em] text-muted-foreground">筛选场景</span>
+          {catalogueTags.map(tag => (
+            <button
+              key={tag.id}
+              type="button"
+              aria-pressed={activeCategory === tag.id}
+              onClick={() => setActiveCategory(tag.id)}
+              className="whitespace-nowrap rounded-full border px-4 py-2 text-[13px] leading-none transition-colors"
+              style={activeCategory === tag.id
+                ? { backgroundColor: "#C8F169", color: "#12241C", borderColor: "#C8F169", fontWeight: 700 }
+                : { backgroundColor: "rgba(255,255,255,.55)", color: "#3A4A42", borderColor: "rgba(18,36,28,.16)" }}
+            >
+              {tag.label}
+            </button>
+          ))}
+        </div>
       </header>
 
       <section className="border-y border-primary/10 bg-[#EEF1E8]">
@@ -73,7 +94,7 @@ export function ExplorePage({
         </div>
         {loading ? <LoadingState label="Loading collections…" /> : error ? <ErrorState message={error} /> : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {collections.map(collection => <CollectionCard key={collection.id} collection={collection} />)}
+            {filteredCollections.map(collection => <CollectionCard key={collection.id} collection={collection} />)}
           </div>
         )}
       </section>
@@ -83,18 +104,6 @@ export function ExplorePage({
           <div className="mb-7">
             <p className="editorial-kicker">All scenes</p>
             <h2 className="mt-2 font-['Noto_Serif_SC'] text-[30px] font-bold text-primary md:text-[36px]">全部场景 · 快速查找</h2>
-          </div>
-          <div className="mb-8 flex flex-wrap items-center gap-2.5 border-y border-border py-4">
-            <p className="mr-1 text-[12px] font-medium tracking-[0.18em] text-muted-foreground">筛选场景</p>
-            {[{ id: "All", label: "全部" }, ...COLLECTION_TAGS].map(tag => (
-              <button key={tag.id} onClick={() => setActiveCategory(tag.id)}
-                className="whitespace-nowrap rounded-full border-[1.5px] px-5 py-2 text-sm leading-none transition-all duration-150"
-                style={activeCategory === tag.id
-                  ? { backgroundColor: "#C8F169", color: "#12241C", borderColor: "#C8F169", fontWeight: 700 }
-                  : { backgroundColor: "transparent", color: "#3A4A42", borderColor: "rgba(18,36,28,0.22)" }}>
-                {tag.label}
-              </button>
-            ))}
           </div>
           <div className="mb-6 flex items-baseline gap-4">
             <p className="text-[15px] text-foreground">共 <b className="display-serif mx-0.5 text-[22px] text-primary">{filteredScenes.length}</b> 个场景</p>
