@@ -601,7 +601,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     }
 
     window.requestAnimationFrame(() => {
-      studySectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      studySectionRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
     });
   }
 
