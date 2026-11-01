@@ -66,9 +66,11 @@ interface DictationPracticeProps {
   onPlayLine: (lineIndex: number) => void;
   /** Pauses the shared <video> element when resetting/retrying or leaving the final sentence. */
   onStopPlayback: () => void;
+  /** Records one submitted, fully checked dictation pass. Accuracy does not affect completion. */
+  onComplete: () => void;
 }
 
-export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }: DictationPracticeProps) {
+export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback, onComplete }: DictationPracticeProps) {
   const [position, setPosition] = useState(0);
   const [records, setRecords] = useState<DictationRecords>({});
   const [draft, setDraft] = useState("");
@@ -172,6 +174,7 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback }
       onPlayLine(nextLine.index);
     } else {
       onStopPlayback();
+      if (checkedCount === lines.length) onComplete();
     }
   }
 

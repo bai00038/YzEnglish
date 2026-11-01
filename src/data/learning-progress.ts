@@ -7,6 +7,13 @@ export const LEARNING_PROGRESS_EVENT = "yz-progress-change";
 export type LearningStep = "watch" | "dialogue" | "language" | "pdf";
 
 export interface LearningProgress {
+  videoPercent: number;
+  sentencesDone: number;
+  sentencesTotal: number;
+  completedSentenceIndexes: number[];
+  dictationDone: boolean;
+  dictationAvailable: boolean;
+  downloadedPdf: boolean;
   percent: number;
   lastStep: LearningStep;
   videoTime: number;
@@ -14,6 +21,13 @@ export interface LearningProgress {
 }
 
 const DEFAULT_PROGRESS: LearningProgress = {
+  videoPercent: 0,
+  sentencesDone: 0,
+  sentencesTotal: 0,
+  completedSentenceIndexes: [],
+  dictationDone: false,
+  dictationAvailable: false,
+  downloadedPdf: false,
   percent: 0,
   lastStep: "watch",
   videoTime: 0,
@@ -28,14 +42,59 @@ function isLearningStep(value: unknown): value is LearningStep {
   return value === "watch" || value === "dialogue" || value === "language" || value === "pdf";
 }
 
+function clampPercent(value: unknown): number {
+  return Math.max(0, Math.min(100, Number(value) || 0));
+}
+
+function calculatePercent(progress: Pick<LearningProgress, "videoPercent" | "sentencesDone" | "sentencesTotal" | "dictationDone" | "dictationAvailable">): number {
+  const videoRatio = clampPercent(progress.videoPercent) / 100;
+  const sentenceRatio = progress.sentencesTotal > 0
+    ? Math.min(1, progress.sentencesDone / progress.sentencesTotal)
+    : 0;
+
+  if (progress.sentencesTotal <= 0) return Math.round(videoRatio * 100);
+  if (!progress.dictationAvailable) return Math.round((videoRatio * 40) + (sentenceRatio * 60));
+  return Math.round((videoRatio * 30) + (sentenceRatio * 40) + (progress.dictationDone ? 30 : 0));
+}
+
 function normalizeProgress(value: unknown): LearningProgress {
   if (!value || typeof value !== "object") return DEFAULT_PROGRESS;
   const record = value as Partial<LearningProgress>;
-  return {
-    percent: Math.max(0, Math.min(100, Math.round(Number(record.percent) || 0))),
+  // Records created by the former section-based system only had percent,
+  // lastStep and videoTime. Keep their resume position, but deliberately do
+  // not carry the old artificial percentage into the action-based model.
+  const hasActionProgress = "videoPercent" in record
+    || "sentencesDone" in record
+    || "dictationDone" in record;
+  const completedSentenceIndexes = Array.isArray(record.completedSentenceIndexes)
+    ? Array.from(new Set(record.completedSentenceIndexes
+      .map(index => Math.floor(Number(index)))
+      .filter(index => Number.isFinite(index) && index >= 0)))
+    : [];
+  const sentencesTotal = Math.max(0, Math.floor(Number(record.sentencesTotal) || 0));
+  const sentencesDone = Math.min(
+    sentencesTotal,
+    Math.max(completedSentenceIndexes.length, Math.floor(Number(record.sentencesDone) || 0)),
+  );
+  const normalized: LearningProgress = {
+    videoPercent: hasActionProgress ? clampPercent(record.videoPercent) : 0,
+    sentencesDone: hasActionProgress ? sentencesDone : 0,
+    sentencesTotal: hasActionProgress ? sentencesTotal : 0,
+    completedSentenceIndexes: hasActionProgress ? completedSentenceIndexes : [],
+    dictationDone: hasActionProgress && record.dictationDone === true,
+    dictationAvailable: hasActionProgress && record.dictationAvailable === true,
+    downloadedPdf: record.downloadedPdf === true,
+    percent: 0,
     lastStep: isLearningStep(record.lastStep) ? record.lastStep : "watch",
     videoTime: Math.max(0, Number(record.videoTime) || 0),
     updatedAt: typeof record.updatedAt === "string" ? record.updatedAt : "",
+  };
+  const calculatedPercent = calculatePercent(normalized);
+  return {
+    ...normalized,
+    percent: hasActionProgress
+      ? Math.max(calculatedPercent, Math.round(clampPercent(record.percent)))
+      : 0,
   };
 }
 
@@ -51,13 +110,31 @@ export function readLearningProgress(sceneId: string): LearningProgress {
 
 export function writeLearningProgress(
   sceneId: string,
-  update: Partial<Omit<LearningProgress, "updatedAt">>,
+  update: Partial<Omit<LearningProgress, "updatedAt" | "percent" | "sentencesDone">>,
 ): LearningProgress {
   if (!sceneId || typeof window === "undefined") return DEFAULT_PROGRESS;
   const current = readLearningProgress(sceneId);
+  const completedSentenceIndexes = Array.from(new Set([
+    ...current.completedSentenceIndexes,
+    ...(update.completedSentenceIndexes ?? []),
+  ])).sort((a, b) => a - b);
+  const sentencesTotal = update.sentencesTotal === undefined
+    ? current.sentencesTotal
+    : Math.max(0, Math.floor(update.sentencesTotal));
+  const components = {
+    videoPercent: Math.max(current.videoPercent, clampPercent(update.videoPercent)),
+    sentencesDone: Math.min(sentencesTotal, Math.max(current.sentencesDone, completedSentenceIndexes.length)),
+    sentencesTotal,
+    completedSentenceIndexes,
+    dictationDone: current.dictationDone || update.dictationDone === true,
+    dictationAvailable: update.dictationAvailable ?? current.dictationAvailable,
+    downloadedPdf: current.downloadedPdf || update.downloadedPdf === true,
+  };
   const next = normalizeProgress({
     ...current,
     ...update,
+    ...components,
+    percent: Math.max(current.percent, calculatePercent(components)),
     updatedAt: new Date().toISOString(),
   });
   try {
@@ -67,6 +144,13 @@ export function writeLearningProgress(
     // Storage may be disabled. The lesson remains usable without persistence.
   }
   return next;
+}
+
+export function updateLearningPosition(
+  sceneId: string,
+  update: Pick<LearningProgress, "lastStep" | "videoTime">,
+): LearningProgress {
+  return writeLearningProgress(sceneId, update);
 }
 
 export function readAllLearningProgress(): Record<string, LearningProgress> {

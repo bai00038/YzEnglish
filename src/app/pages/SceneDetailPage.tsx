@@ -8,7 +8,7 @@ import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
 import { MemberContentNotice } from "@/app/components/MemberContentNotice";
 import { buildSceneSpeakers, normalizeSpeaker, speakerAvatarLabel, SPEAKER_STYLES } from "@/data/speakerRoles";
-import { getSceneProgressId, readLearningProgress, writeLearningProgress, type LearningStep } from "@/data/learning-progress";
+import { getSceneProgressId, readLearningProgress, updateLearningPosition, writeLearningProgress, type LearningStep } from "@/data/learning-progress";
 import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
 
 // Key Expressions card — expressionEn/expressionZh, the only two fields
@@ -146,11 +146,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // handler), so time-based tracking takes back over.
   const [pinnedLineIndex, setPinnedLineIndex] = useState<number | null>(null);
 
-  function reportLearningProgress(step: LearningStep, minimumPercent: number, videoTime?: number) {
+  function saveLearningPosition(step: LearningStep, videoTime?: number) {
     if (!progressSceneId) return;
     const current = readLearningProgress(progressSceneId);
-    writeLearningProgress(progressSceneId, {
-      percent: Math.max(current.percent, minimumPercent),
+    updateLearningPosition(progressSceneId, {
       lastStep: step,
       videoTime: videoTime ?? videoRef.current?.currentTime ?? current.videoTime,
     });
@@ -217,11 +216,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
   useEffect(() => {
     if (!progressSceneId) return;
-    const steps: Array<{ id: string; step: LearningStep; minimumPercent: number }> = [
-      { id: "section-watch", step: "watch", minimumPercent: 1 },
-      { id: "section-dialogue", step: "dialogue", minimumPercent: 25 },
-      { id: "section-language", step: "language", minimumPercent: 50 },
-      { id: "section-pdf", step: "pdf", minimumPercent: 75 },
+    // Scrolling only updates the resume destination. It never contributes
+    // to the action-based completion percentage.
+    const steps: Array<{ id: string; step: LearningStep }> = [
+      { id: "section-watch", step: "watch" },
+      { id: "section-dialogue", step: "dialogue" },
+      { id: "section-language", step: "language" },
+      { id: "section-pdf", step: "pdf" },
     ];
     const observer = new IntersectionObserver((entries) => {
       const visible = entries
@@ -231,8 +232,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       const config = steps.find(item => item.id === visible.target.id);
       if (!config) return;
       const current = readLearningProgress(progressSceneId);
-      writeLearningProgress(progressSceneId, {
-        percent: Math.max(current.percent, config.minimumPercent),
+      updateLearningPosition(progressSceneId, {
         lastStep: config.step,
         videoTime: videoRef.current?.currentTime ?? current.videoTime,
       });
@@ -443,6 +443,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // frame watcher below checks each tick to know single-line mode is
   // still (still means: not superseded, not manually paused) in effect.
   const activeEndRef = useRef<number | null>(null);
+  const activeLineIndexRef = useRef<number | null>(null);
 
   // Frame-accurate end-of-line watcher. video.currentTime as read from a
   // requestAnimationFrame poll is the browser's best-effort estimate of
@@ -500,6 +501,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       pendingSeekedHandlerRef.current = null;
     }
     activeEndRef.current = null;
+    activeLineIndexRef.current = null;
   }
 
   // Polls playback position every rendered frame and pauses the instant
@@ -522,6 +524,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       if (isDialogueTimingDebugEnabled()) {
         console.table({ expectedEnd: endTime, actualPauseTime: t, overrun: t - endTime });
       }
+
+      markSentenceCompleted(lineIndex, endTime);
 
       if (repeatLineRef.current && playRequestRef.current === requestId) {
         const restartAfterSeek = () => {
@@ -589,6 +593,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       video.pause();
     }
     activeEndRef.current = trueEnd;
+    activeLineIndexRef.current = lineIndex;
     setPinnedLineIndex(lineIndex);
 
     if (isDialogueTimingDebugEnabled()) {
@@ -662,14 +667,12 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   function playStudyLine(lineIndex: number) {
     const range = dialogueLineRawRanges.get(lineIndex);
     if (!range) return;
-    const linePosition = playableDialogueLineIndexes.indexOf(lineIndex);
-    const isLastLine = linePosition === playableDialogueLineIndexes.length - 1;
-    reportLearningProgress("dialogue", isLastLine ? 50 : 25, range.start);
+    saveLearningPosition("dialogue", range.start);
     playDialogueLine(lineIndex, range);
   }
 
   function startSentenceListening() {
-    reportLearningProgress("dialogue", 25);
+    saveLearningPosition("dialogue");
     repeatLineRef.current = false;
     setRepeatLine(false);
     setStudyTab("listening");
@@ -711,7 +714,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // the user's selected playbackRate untouched.
   function switchStudyTab(tab: StudyTabKey) {
     if (tab === studyTab) return;
-    reportLearningProgress("dialogue", 25);
+    saveLearningPosition("dialogue");
     videoRef.current?.pause();
     cancelRangePlayback();
     if (tab === "dictation") {
@@ -748,12 +751,35 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       });
   }, [content?.dialogue, dialogueLineRawRanges, sceneSpeakers]);
 
+  function markSentenceCompleted(lineIndex: number, videoTime: number) {
+    if (!progressSceneId) return;
+    writeLearningProgress(progressSceneId, {
+      completedSentenceIndexes: [lineIndex],
+      sentencesTotal: playableDialogueLineIndexes.length,
+      dictationAvailable: dictationLines.length > 0,
+      lastStep: "dialogue",
+      videoTime,
+    });
+  }
+
+  function markDictationCompleted() {
+    if (!progressSceneId) return;
+    writeLearningProgress(progressSceneId, {
+      dictationDone: true,
+      sentencesTotal: playableDialogueLineIndexes.length,
+      dictationAvailable: dictationLines.length > 0,
+      lastStep: "dialogue",
+      videoTime: videoRef.current?.currentTime ?? 0,
+    });
+  }
+
   // Reuses the exact same single-line player used by "单句精听" (see
   // playDialogueLine above) with the line's own exact start/end — no
   // second playback path, no padding/offset/tolerance of any kind.
   function playDictationLine(lineIndex: number) {
     const range = dialogueLineRawRanges.get(lineIndex);
     if (!range) return;
+    saveLearningPosition("dialogue", range.start);
     playDialogueLine(lineIndex, range);
   }
 
@@ -842,10 +868,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             </p>
           </div>
           <div className="flex flex-wrap gap-2 lg:flex-nowrap lg:justify-self-end">
-            <a href="#section-watch" onClick={() => reportLearningProgress("watch", 1)} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">视频 {scene.duration}</a>
-            <a href="#section-dialogue" onClick={() => reportLearningProgress("dialogue", 25)} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">逐句 {content?.dialogue.length ?? 0} 句</a>
-            <a href="#section-language" onClick={() => reportLearningProgress("language", 50)} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">词汇 {keyExpressionItems.length} 个</a>
-            <a href="#section-pdf" onClick={() => reportLearningProgress("pdf", 75)} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">讲义 PDF</a>
+            <a href="#section-watch" onClick={() => saveLearningPosition("watch")} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">视频 {scene.duration}</a>
+            <a href="#section-dialogue" onClick={() => saveLearningPosition("dialogue")} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">逐句 {content?.dialogue.length ?? 0} 句</a>
+            <a href="#section-language" onClick={() => saveLearningPosition("language")} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">词汇 {keyExpressionItems.length} 个</a>
+            <a href="#section-pdf" onClick={() => saveLearningPosition("pdf")} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">讲义 PDF</a>
           </div>
         </div>
       </div>
@@ -908,7 +934,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         // line was last clicked.
                         if (activeEndRef.current === null) {
                           setPinnedLineIndex(null);
-                          reportLearningProgress("watch", 1, videoRef.current?.currentTime ?? 0);
+                          saveLearningPosition("watch", videoRef.current?.currentTime ?? 0);
                         }
                       }}
                       onPlaying={() => setVideoPaused(false)}
@@ -917,6 +943,23 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         if (suppressNextPauseCleanupRef.current) {
                           suppressNextPauseCleanupRef.current = false;
                           return;
+                        }
+                        const video = videoRef.current;
+                        const isDialoguePlayback = activeEndRef.current !== null;
+                        if (
+                          !isDialoguePlayback
+                          && progressSceneId
+                          && video
+                          && Number.isFinite(video.duration)
+                          && video.duration > 0
+                        ) {
+                          writeLearningProgress(progressSceneId, {
+                            videoPercent: (video.currentTime / video.duration) * 100,
+                            sentencesTotal: playableDialogueLineIndexes.length,
+                            dictationAvailable: dictationLines.length > 0,
+                            lastStep: "watch",
+                            videoTime: video.currentTime,
+                          });
                         }
                         // Any pause — manual, native-controls, or the
                         // frame watcher's own auto-stop (see
@@ -940,11 +983,32 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         if (now - lastVideoProgressWriteRef.current >= 1500) {
                           lastVideoProgressWriteRef.current = now;
                           const isDialoguePlayback = activeEndRef.current !== null;
-                          reportLearningProgress(isDialoguePlayback ? "dialogue" : "watch", isDialoguePlayback ? 25 : 1, e.currentTarget.currentTime);
+                          if (isDialoguePlayback) {
+                            saveLearningPosition("dialogue", e.currentTarget.currentTime);
+                          } else if (progressSceneId && Number.isFinite(e.currentTarget.duration) && e.currentTarget.duration > 0) {
+                            writeLearningProgress(progressSceneId, {
+                              videoPercent: (e.currentTarget.currentTime / e.currentTarget.duration) * 100,
+                              sentencesTotal: playableDialogueLineIndexes.length,
+                              dictationAvailable: dictationLines.length > 0,
+                              lastStep: "watch",
+                              videoTime: e.currentTarget.currentTime,
+                            });
+                          }
                         }
                       }}
                       onEnded={e => {
-                        reportLearningProgress("watch", 25, 0);
+                        const completedDialogueLine = activeLineIndexRef.current;
+                        if (completedDialogueLine !== null) {
+                          markSentenceCompleted(completedDialogueLine, e.currentTarget.duration);
+                        } else if (progressSceneId) {
+                          writeLearningProgress(progressSceneId, {
+                            videoPercent: 100,
+                            sentencesTotal: playableDialogueLineIndexes.length,
+                            dictationAvailable: dictationLines.length > 0,
+                            lastStep: "watch",
+                            videoTime: 0,
+                          });
+                        }
                         cancelRangePlayback();
                         e.currentTarget.currentTime = 0;
                         setVideoCurrentTime(0);
@@ -1092,6 +1156,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   lines={dictationLines}
                   onPlayLine={playDictationLine}
                   onStopPlayback={stopDictationPlayback}
+                  onComplete={markDictationCompleted}
                 />
               ) : (
                 <div className="min-h-[520px] rounded-[24px] border border-border bg-white p-3 shadow-[0_14px_38px_rgba(15,53,39,0.08)] md:p-5">
@@ -1282,7 +1347,14 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       href={scene.pdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => reportLearningProgress("pdf", 100)}
+                      onClick={() => {
+                        if (!progressSceneId) return;
+                        writeLearningProgress(progressSceneId, {
+                          downloadedPdf: true,
+                          lastStep: "pdf",
+                          videoTime: videoRef.current?.currentTime ?? 0,
+                        });
+                      }}
                       className="flex flex-shrink-0 items-center justify-center gap-2 rounded-full px-6 py-4 text-[14px] font-black transition-transform hover:scale-[1.02]"
                       style={{ backgroundColor: "#C8F169", color: "#12241C" }}
                     >
@@ -1326,7 +1398,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     {prevScene ? (
                       <Link
                         to={`/scenes/${prevScene.slug}`}
-                        className="group flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-secondary p-6 text-left transition-colors hover:bg-card/55"
+                        className="group flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-white p-6 text-left transition-colors hover:bg-secondary"
                       >
                         <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
                           Previous episode · 上一集
@@ -1344,7 +1416,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         </div>
                       </Link>
                     ) : (
-                      <div className="flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-secondary p-6">
+                      <div className="flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-white p-6">
                         <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
                           Current episode · 当前集
                         </span>
@@ -1360,7 +1432,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     {nextScene ? (
                       <Link
                         to={`/scenes/${nextScene.slug}`}
-                        className="group flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-secondary p-6 text-left transition-colors hover:bg-card/55 md:text-right"
+                        className="group flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-white p-6 text-left transition-colors hover:bg-secondary md:text-right"
                       >
                         <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
                           Next episode · 下一集
@@ -1378,7 +1450,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         </div>
                       </Link>
                     ) : (
-                      <div className="flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-secondary p-6 text-left md:text-right">
+                      <div className="flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-white p-6 text-left md:text-right">
                         <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
                           Collection complete · 合集进度
                         </span>
