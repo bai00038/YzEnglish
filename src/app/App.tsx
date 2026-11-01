@@ -30,13 +30,17 @@ function ScrollToTop() {
     }
     prevKeyRef.current = location.key;
 
-    if (navigationType === "POP" && scrollPositions.current.has(location.key)) {
+    if (location.hash) {
+      requestAnimationFrame(() => {
+        document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    } else if (navigationType === "POP" && scrollPositions.current.has(location.key)) {
       const savedY = scrollPositions.current.get(location.key)!;
       requestAnimationFrame(() => window.scrollTo({ top: savedY, behavior: "auto" }));
     } else {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [location.key, navigationType]);
+  }, [location.hash, location.key, navigationType]);
 
   return null;
 }

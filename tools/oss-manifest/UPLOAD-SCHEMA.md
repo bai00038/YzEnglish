@@ -32,6 +32,6 @@
 1. 本地场景文件夹名称建议直接使用稳定 `externalId`，例如 `DL-01-007`。
 2. 上传媒体后，只在 manifest 中补齐现有 OSS URL；不要因合集调整移动或重命名媒体。
 3. 新场景先确定唯一 `collectionId` 和未占用的 `collectionOrder`。
-4. 发布前运行 `node tools/oss-manifest/validate-collections.mjs`。也可把待检查 manifest 路径作为第一个参数传入。
+4. 发布前运行 `npm run validate:collections`（或 `node tools/oss-manifest/validate-collections.mjs`）。也可把待检查 manifest 路径作为第一个参数传入。
 
 校验失败时会列出具体场景名。

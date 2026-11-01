@@ -1,76 +1,13 @@
 {
-  "scenes": [
-    {
-      "category": "Shopping & Beauty",
-      "dataUrl": "/dev-fixtures/scenes/SH-01-004.json",
-      "desc": "卸妆产品刺激眼睛，或卸不干净防水睫毛膏时，学会说明问题、比较配方，并询问正确用法。",
-      "duration": "0:40",
-      "externalId": "SH-01-004",
-      "featured": true,
-      "id": 1,
-      "isNew": true,
-      "level": "Beginner+",
-      "pdfUrl": "https://go.learnyzenglish.com/content/SH-01-004/guide.pdf",
-      "photo": "https://go.learnyzenglish.com/content/SH-01-004/cover.jpg",
-      "region": "Canada",
-      "slug": "returning-clothes-at-a-store",
-      "titleEn": "Choosing a Gentle Makeup Remover",
-      "titleZh": "挑选温和的卸妆产品",
-      "video_url": "https://go.learnyzenglish.com/content/SH-01-004/SH-01-004-no-subtitles.mp4"
-    },
-    {
-      "category": "Food & Restaurants",
-      "dataUrl": "/dev-fixtures/scenes/FD-01-001.json",
-      "desc": "电话订披萨时，练习确认自取、尺寸、配料、饼底、取餐时间和订单姓名，自然完成整通电话。",
-      "duration": "0:48",
-      "externalId": "FD-01-001",
-      "featured": true,
-      "id": 10,
-      "isNew": true,
-      "level": "Beginner",
-      "pdfUrl": "https://go.learnyzenglish.com/content/FD-01-001/guide.pdf",
-      "photo": "https://go.learnyzenglish.com/content/FD-01-001/cover.jpg",
-      "region": "Canada",
-      "slug": "ordering-a-pizza-by-phone-for-pickup",
-      "titleEn": "Ordering a Pizza by Phone for Pickup",
-      "titleZh": "电话订披萨并到店自取",
-      "video_url": "https://go.learnyzenglish.com/content/FD-01-001/FD-01-001-no-subtitles.mp4"
-    },
-    {
-      "category": "Healthcare",
-      "dataUrl": "/dev-fixtures/scenes/HC-01-002.json",
-      "desc": "孩子发烧而常规预约要等几天时，清楚说明年龄、症状和当前状态，并询问当天评估及其他就医选择。",
-      "duration": "0:33",
-      "externalId": "HC-01-002",
-      "featured": true,
-      "id": 11,
-      "isNew": true,
-      "level": "Beginner+",
-      "pdfUrl": "https://go.learnyzenglish.com/content/HC-01-002/guide.pdf",
-      "photo": "https://go.learnyzenglish.com/content/HC-01-002/cover.jpg",
-      "region": "Canada",
-      "slug": "calling-about-a-childs-fever",
-      "titleEn": "Calling About a Child's Fever",
-      "titleZh": "孩子发烧时电话约诊",
-      "video_url": "https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-no-subtitles.mp4"
-    },
-    {
-      "category": "Food & Dining",
-      "dataUrl": "/dev-fixtures/scenes/FD-01-002.json",
-      "desc": "打电话点外卖不只是报菜名，还要确认配送、说清地址、纠正听错的信息、提供门禁号码、询问送达时间和付款方式。本场景带你完成整通电话。",
-      "duration": "0:45",
-      "externalId": "FD-01-002",
-      "featured": true,
-      "id": 12,
-      "isNew": true,
-      "level": "Beginner",
-      "region": "Canada",
-      "slug": "ordering-restaurant-delivery-by-phone",
-      "titleEn": "Ordering Restaurant Delivery by Phone",
-      "titleZh": "电话点餐并配送到家",
-      "video_url": "https://go.learnyzenglish.com/content/FD-01-002/FD-01-002-no-subtitles.mp4"
-    }
-  ],
   "schemaVersion": 1,
-  "updatedAt": "2026-10-04T11:21:00-04:00"
+  "updatedAt": "2026-11-01T00:00:00-04:00",
+  "scenes": [
+    {"category":"Shopping & Beauty","dataUrl":"/dev-fixtures/scenes/SH-01-004.json","desc":"卸妆产品刺激眼睛，或卸不干净防水睫毛膏时，学会说明问题、比较配方，并询问正确用法。","duration":"0:40","externalId":"SH-01-004","featured":true,"id":1,"isNew":true,"level":"Beginner+","pdfUrl":"https://go.learnyzenglish.com/content/SH-01-004/guide.pdf","photo":"https://go.learnyzenglish.com/content/SH-01-004/cover.jpg","region":"Canada","slug":"returning-clothes-at-a-store","titleEn":"Choosing a Gentle Makeup Remover","titleZh":"挑选温和的卸妆产品","video_url":"https://go.learnyzenglish.com/content/SH-01-004/SH-01-004-no-subtitles.mp4","collectionId":"C8","collectionOrder":1,"tags":["shopping"],"status":"live","isFreeExperience":false},
+    {"category":"Food & Restaurants","dataUrl":"/dev-fixtures/scenes/FD-01-001.json","desc":"电话订披萨时，练习确认自取、尺寸、配料、饼底、取餐时间和订单姓名，自然完成整通电话。","duration":"0:48","externalId":"FD-01-001","featured":true,"id":10,"isNew":true,"level":"Beginner","pdfUrl":"https://go.learnyzenglish.com/content/FD-01-001/guide.pdf","photo":"https://go.learnyzenglish.com/content/FD-01-001/cover.jpg","region":"Canada","slug":"ordering-a-pizza-by-phone-for-pickup","titleEn":"Ordering a Pizza by Phone for Pickup","titleZh":"电话订披萨并到店自取","video_url":"https://go.learnyzenglish.com/content/FD-01-001/FD-01-001-no-subtitles.mp4","collectionId":"C7","collectionOrder":1,"tags":["dining","daily"],"status":"live","isFreeExperience":false},
+    {"category":"Healthcare","dataUrl":"/dev-fixtures/scenes/HC-01-002.json","desc":"孩子发烧而常规预约要等几天时，清楚说明年龄、症状和当前状态，并询问当天评估及其他就医选择。","duration":"0:33","externalId":"HC-01-002","featured":true,"id":11,"isNew":true,"level":"Beginner+","pdfUrl":"https://go.learnyzenglish.com/content/HC-01-002/guide.pdf","photo":"https://go.learnyzenglish.com/content/HC-01-002/cover.jpg","region":"Canada","slug":"calling-about-a-childs-fever","titleEn":"Calling About a Child's Fever","titleZh":"孩子发烧时电话约诊","video_url":"https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-no-subtitles.mp4","collectionId":"C2","collectionOrder":1,"tags":["medical","parenting"],"status":"live","isFreeExperience":false},
+    {"category":"Food & Dining","dataUrl":"/dev-fixtures/scenes/FD-01-002.json","desc":"打电话点外卖不只是报菜名，还要确认配送、说清地址、纠正听错的信息、提供门禁号码、询问送达时间和付款方式。","duration":"0:45","externalId":"FD-01-002","featured":true,"id":12,"isNew":true,"level":"Beginner","region":"Canada","slug":"ordering-restaurant-delivery-by-phone","titleEn":"Ordering Restaurant Delivery by Phone","titleZh":"电话点餐并配送到家","video_url":"https://go.learnyzenglish.com/content/FD-01-002/FD-01-002-no-subtitles.mp4","collectionId":"C7","collectionOrder":2,"tags":["dining","daily"],"status":"live","isFreeExperience":false},
+    {"category":"Shopping & Beauty","desc":"在超市自助结账时遇到条码无法扫描，学习如何说明问题并向店员求助。","duration":"","externalId":"SH-01-007","featured":false,"id":16,"level":"Beginner","region":"Canada","slug":"self-checkout-barcode-wont-scan","titleEn":"When a Barcode Won't Scan at Self-Checkout","titleZh":"自助结账时条码扫不上","collectionId":"C8","collectionOrder":2,"tags":["shopping"],"status":"coming","isFreeExperience":true},
+    {"category":"Social English","desc":"用一句问候、一个轻松问题和自然的结束语完成友好的电梯寒暄。","duration":"","externalId":"ST-01-001","featured":false,"id":13,"level":"Beginner","region":"Canada","slug":"elevator-small-talk","titleEn":"Elevator Small Talk","titleZh":"电梯里的简短寒暄","collectionId":"C5","collectionOrder":1,"tags":["daily"],"status":"coming","isFreeExperience":true},
+    {"category":"Food & Dining","desc":"在早午餐餐厅听懂鸡蛋做法、配菜和连续选择题，自然完成点单。","duration":"","externalId":"DL-01-007","featured":false,"id":17,"level":"Beginner","region":"Canada","slug":"weekend-brunch-how-would-you-like-your-eggs","titleEn":"Weekend Brunch: How Would You Like Your Eggs?","titleZh":"早午餐鸡蛋怎么点","collectionId":"C7","collectionOrder":3,"tags":["dining","daily"],"status":"coming","isFreeExperience":true}
+  ]
 }

@@ -24,7 +24,9 @@ export function CollectionPage() {
             <Link to="/explore" className="inline-flex items-center gap-2 font-semibold text-muted-foreground hover:text-primary"><ArrowLeft size={16} /> 返回场景库</Link>
             <p className="font-semibold text-foreground">共 {collection.scenes.length} 集 · 已上线 {liveCount} 集</p>
           </div>
-          <h1 className="font-['Noto_Serif_SC'] text-[40px] font-bold leading-[1.15] text-primary md:text-[44px]">{collection.name}</h1>
+          <h1 className="flex flex-wrap items-baseline gap-x-3 font-['Noto_Serif_SC'] text-[40px] font-bold leading-[1.15] text-primary md:text-[44px]">
+            {collection.name}<span className="display-serif text-[18px] font-medium italic text-muted-foreground md:text-[20px]">{collection.titleEn}</span>
+          </h1>
           <p className="mt-1.5 max-w-[760px] text-[15px] leading-relaxed text-secondary-foreground md:text-base">{collection.tagline}</p>
         </div>
       </header>
@@ -35,9 +37,9 @@ export function CollectionPage() {
             const isLive = scene.status === "live";
             const number = String(scene.collectionOrder ?? index + 1).padStart(2, "0");
             const row = (
-              <div className={`grid gap-4 p-4 md:min-h-[120px] md:grid-cols-[48px_192px_minmax(0,1fr)_auto] md:items-center md:p-3 ${isLive ? "transition-colors hover:bg-secondary/60" : "bg-secondary/55 text-muted-foreground grayscale"}`}>
+              <div className={`grid gap-4 p-4 md:min-h-[120px] md:grid-cols-[48px_184px_minmax(0,1fr)_auto] md:items-center md:p-2.5 ${isLive ? "transition-colors hover:bg-secondary/60" : "bg-secondary/55 text-muted-foreground grayscale"}`}>
                 <span className="display-serif text-[27px] font-bold italic text-primary/70">{number}</span>
-                <div className="aspect-video w-full overflow-hidden rounded-[12px] bg-primary/90 md:w-[192px]">
+                <div className="aspect-video w-full overflow-hidden rounded-[12px] bg-primary/90 md:w-[184px]">
                   {scene.photo ? <img src={scene.photo} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[radial-gradient(circle_at_70%_30%,rgba(200,241,105,.3),transparent_26%),linear-gradient(145deg,#315848,#0f3527)]" />}
                 </div>
                 <div>

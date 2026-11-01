@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "validate:collections": "node tools/oss-manifest/validate-collections.mjs tools/oss-manifest/manifest.json"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

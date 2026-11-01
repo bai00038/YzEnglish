@@ -21,7 +21,7 @@ export function DesktopNav() {
               {label}
             </Link>
           ))}
-          <Link to="/free-trial" className="ml-1 rounded-full border border-accent bg-accent px-5 py-3 font-semibold text-primary transition-[filter] hover:brightness-95">免费体验</Link>
+          <a href="/#free" className="ml-1 rounded-full border border-accent bg-accent px-5 py-3 font-semibold text-primary transition-[filter] hover:brightness-95">免费体验</a>
         </div>
       </div>
     </nav>

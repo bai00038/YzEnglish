@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
-const defaultManifestUrl = new URL("../../../05_Publish/content/manifest.json", import.meta.url);
+const defaultManifestUrl = new URL("./manifest.json", import.meta.url);
 const collectionsUrl = new URL("./collections.json", import.meta.url);
 const manifestPath = process.argv[2] || fileURLToPath(defaultManifestUrl);
 
