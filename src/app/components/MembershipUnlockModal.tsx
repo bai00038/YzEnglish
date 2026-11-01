@@ -73,7 +73,11 @@ export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void 
             <span className="whitespace-nowrap">¥12.9/月</span>
           </div>
         </div>
-        <p className="mt-5 text-sm font-bold leading-7 text-secondary-foreground">扫码添加 Aria 企业微信，付款后她发你专属兑换码，回来输入即可解锁。</p>
+        <p className="mt-5 text-sm font-bold leading-8 text-secondary-foreground">
+          ① 扫码添加 Aria 企业微信<br />
+          ② 微信转账付款<br />
+          ③ Aria 发你专属兑换码，回来输入即可解锁
+        </p>
         <div className="mt-5 flex items-center gap-5">
           <div className="relative grid h-32 w-32 flex-none place-items-center overflow-hidden rounded-[14px] border border-primary/15 bg-white p-1.5">
             {!qrMissing && <img src="/images/wecom-qr.png" alt="企业微信二维码" className="h-full w-full object-contain" onError={() => setQrMissing(true)} />}
