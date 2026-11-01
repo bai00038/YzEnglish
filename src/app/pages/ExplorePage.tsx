@@ -105,7 +105,7 @@ export function ExplorePage({
                     ))}
                     <Link
                       to={`/collections/${collection.id}`}
-                      className="flex w-[78vw] flex-none snap-start items-center justify-center rounded-[16px] border border-border bg-card text-[14px] font-bold text-primary transition-colors hover:border-primary/30"
+                      className="flex w-[78vw] flex-none snap-start items-center justify-center rounded-[16px] border border-border bg-transparent text-[14px] font-bold text-primary transition-colors hover:border-primary/30"
                     >
                       查看全部 →
                     </Link>
