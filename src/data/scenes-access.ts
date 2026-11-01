@@ -123,11 +123,15 @@ async function fetchSceneDetail(slug: string): Promise<SceneDetail> {
         .slice(0, 3)
         .map((candidate) => ({ ...candidate }));
 
-  const prevScene = fullScene.content?.prevSceneId
-    ? scenes.find((candidate) => candidate.id === fullScene.content?.prevSceneId) ?? null
-    : null;
-  const nextScene = fullScene.content?.nextSceneId
-    ? scenes.find((candidate) => candidate.id === fullScene.content?.nextSceneId) ?? null
+  const collectionScenes = fullScene.collectionId
+    ? scenes
+        .filter((candidate) => candidate.collectionId === fullScene.collectionId)
+        .sort((a, b) => (a.collectionOrder ?? Number.MAX_SAFE_INTEGER) - (b.collectionOrder ?? Number.MAX_SAFE_INTEGER))
+    : [];
+  const collectionIndex = collectionScenes.findIndex((candidate) => candidate.id === fullScene.id);
+  const prevScene = collectionIndex > 0 ? collectionScenes[collectionIndex - 1] : null;
+  const nextScene = collectionIndex >= 0 && collectionIndex < collectionScenes.length - 1
+    ? collectionScenes[collectionIndex + 1]
     : null;
 
   return {

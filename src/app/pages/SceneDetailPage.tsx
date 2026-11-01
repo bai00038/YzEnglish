@@ -1219,13 +1219,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   </div>
                 )}
 
-                {/* Prev / Next scene */}
+                {/* Previous / next live episode in this collection */}
                 {(prevScene || nextScene) && (
                   <div className="grid grid-cols-2 gap-3 pt-8 border-t border-border">
                     {prevScene ? (
                       <Link to={`/scenes/${prevScene.slug}`} className="border border-border rounded-xl p-4 text-left bg-card hover:border-primary/30 hover:shadow-sm transition-all">
                         <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-2">
-                          <ChevronLeft size={10} />Previous scene
+                          <ChevronLeft size={10} />同合集 · 上一集
                         </div>
                         <p className="text-xs font-bold text-foreground leading-snug">{prevScene.titleEn}</p>
                         <p className="text-[11px] text-primary mt-1">{prevScene.titleZh}</p>
@@ -1234,7 +1234,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     {nextScene ? (
                       <Link to={`/scenes/${nextScene.slug}`} className="border border-border rounded-xl p-4 text-right bg-card hover:border-primary/30 hover:shadow-sm transition-all">
                         <div className="flex items-center gap-1 justify-end text-[10px] text-muted-foreground mb-2">
-                          Next scene<ChevronRight size={10} />
+                          同合集 · 下一集<ChevronRight size={10} />
                         </div>
                         <p className="text-xs font-bold text-foreground leading-snug">{nextScene.titleEn}</p>
                         <p className="text-[11px] text-primary mt-1">{nextScene.titleZh}</p>
