@@ -1322,16 +1322,17 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                 {/* Previous / next live episode in this collection */}
                 {scene.collectionId && (
-                  <div className="grid overflow-hidden rounded-[22px] border border-primary/15 bg-secondary md:grid-cols-2">
+                  <div className="grid gap-4 md:grid-cols-2">
                     {prevScene ? (
                       <Link
                         to={`/scenes/${prevScene.slug}`}
-                        className="group flex min-h-[142px] flex-col justify-between border-b border-primary/10 p-6 text-left transition-colors hover:bg-card/55 md:border-b-0 md:border-r"
+                        className="group flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-secondary p-6 text-left transition-colors hover:bg-card/55"
                       >
                         <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
                           Previous episode · 上一集
                         </span>
-                        <div className="mt-5 flex items-end justify-between gap-4">
+                        <div className="mt-5 flex items-end gap-4">
+                          <span className="mb-0.5 flex-shrink-0 text-[27px] font-light leading-none text-primary transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
                           <div className="min-w-0">
                             <p className="font-['Noto_Serif_SC'] text-[20px] font-bold leading-snug text-primary">
                               {prevScene.titleZh}
@@ -1340,11 +1341,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                               {prevScene.titleEn}
                             </p>
                           </div>
-                          <ChevronLeft size={22} className="mb-1 flex-shrink-0 text-primary transition-transform group-hover:-translate-x-1" />
                         </div>
                       </Link>
                     ) : (
-                      <div className="flex min-h-[142px] flex-col justify-between border-b border-primary/10 p-6 md:border-b-0 md:border-r">
+                      <div className="flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-secondary p-6">
                         <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
                           Current episode · 当前集
                         </span>
@@ -1360,13 +1360,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     {nextScene ? (
                       <Link
                         to={`/scenes/${nextScene.slug}`}
-                        className="group flex min-h-[142px] flex-col justify-between p-6 text-left transition-colors hover:bg-card/55 md:text-right"
+                        className="group flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-secondary p-6 text-left transition-colors hover:bg-card/55 md:text-right"
                       >
                         <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
                           Next episode · 下一集
                         </span>
-                        <div className="mt-5 flex items-end justify-between gap-4 md:flex-row-reverse">
-                          <div className="min-w-0 md:text-right">
+                        <div className="mt-5 flex items-end justify-between gap-4">
+                          <div className="min-w-0 flex-1 md:text-right">
                             <p className="font-['Noto_Serif_SC'] text-[20px] font-bold leading-snug text-primary">
                               {nextScene.titleZh}
                             </p>
@@ -1374,11 +1374,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                               {nextScene.titleEn}
                             </p>
                           </div>
-                          <ChevronRight size={22} className="mb-1 flex-shrink-0 text-primary transition-transform group-hover:translate-x-1" />
+                          <span className="mb-0.5 flex-shrink-0 text-[27px] font-light leading-none text-primary transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
                         </div>
                       </Link>
                     ) : (
-                      <div className="flex min-h-[142px] flex-col justify-between p-6 text-left md:text-right">
+                      <div className="flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-secondary p-6 text-left md:text-right">
                         <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
                           Collection complete · 合集进度
                         </span>
