@@ -1343,19 +1343,32 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 {keyExpressionItems.length > 0 && (
                   <div className="rounded-[20px] border border-border bg-white p-5 md:p-7">
                     <h3 className="mb-6 text-[18px] font-black text-primary">核心表达</h3>
-                    <div className="grid grid-cols-1 gap-x-8 md:grid-cols-2">
-                      {keyExpressionItems.map((item, i) => {
-                        const lastRowStart = keyExpressionItems.length - (keyExpressionItems.length % 2 || 2);
-                        return (
-                          <KeyExpressionCard
-                            key={i}
-                            item={item}
-                            isFirstRow={i < 2}
-                            isLastRow={i >= lastRowStart}
-                            isLastItem={i === keyExpressionItems.length - 1}
-                          />
-                        );
-                      })}
+                    <div className="relative overflow-hidden rounded-[16px]">
+                      <div className={`grid grid-cols-1 gap-x-8 transition-all md:grid-cols-2 ${!canAccessMemberContent ? "pointer-events-none select-none blur-[7px] opacity-40" : ""}`} aria-hidden={!canAccessMemberContent}>
+                        {keyExpressionItems.map((item, i) => {
+                          const lastRowStart = keyExpressionItems.length - (keyExpressionItems.length % 2 || 2);
+                          return (
+                            <KeyExpressionCard
+                              key={i}
+                              item={item}
+                              isFirstRow={i < 2}
+                              isLastRow={i >= lastRowStart}
+                              isLastItem={i === keyExpressionItems.length - 1}
+                            />
+                          );
+                        })}
+                      </div>
+                      {!canAccessMemberContent && (
+                        <button
+                          type="button"
+                          onClick={() => setMembershipModalOpen(true)}
+                          className="absolute inset-0 flex items-center justify-center bg-white/35 backdrop-blur-[2px]"
+                        >
+                          <span className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-black text-white shadow-lg">
+                            <LockKeyhole size={16} /> 解锁完整核心表达
+                          </span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 )}
@@ -1364,10 +1377,23 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 {cultureTipItems.length > 0 && (
                   <div className="rounded-[20px] border border-border bg-white p-5 md:p-7">
                     <h3 className="mb-6 text-[18px] font-black text-primary">文化与本地提示</h3>
-                    <div>
-                      {cultureTipItems.map((item, i) => (
-                        <CultureTipCard key={i} item={item} tipNumber={i + 1} />
-                      ))}
+                    <div className="relative min-h-[120px] overflow-hidden rounded-[16px]">
+                      <div className={`transition-all ${!canAccessMemberContent ? "pointer-events-none select-none blur-[7px] opacity-40" : ""}`} aria-hidden={!canAccessMemberContent}>
+                        {cultureTipItems.map((item, i) => (
+                          <CultureTipCard key={i} item={item} tipNumber={i + 1} />
+                        ))}
+                      </div>
+                      {!canAccessMemberContent && (
+                        <button
+                          type="button"
+                          onClick={() => setMembershipModalOpen(true)}
+                          className="absolute inset-0 flex items-center justify-center bg-white/35 backdrop-blur-[2px]"
+                        >
+                          <span className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-black text-white shadow-lg">
+                            <LockKeyhole size={16} /> 解锁完整文化与本地提示
+                          </span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 )}
