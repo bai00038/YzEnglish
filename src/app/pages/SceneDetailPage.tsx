@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useParams } from "react-router";
 import { ChevronRight, ChevronLeft, Download, Info, Pause, Play } from "lucide-react";
 import { useSceneDetail } from "@/data/scenes-access";
-import { getSceneCategoryLabel } from "@/data/scene-categories";
+import { getSceneCategoryLabel, getSceneCategoryTagId } from "@/data/scene-categories";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
 import { MemberContentNotice } from "@/app/components/MemberContentNotice";
@@ -99,6 +99,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const cultureTipItems = content?.cultureTips ?? [];
   const prevScene = data?.prevScene ?? undefined;
   const nextScene = data?.nextScene ?? undefined;
+  const categoryTagId = scene ? getSceneCategoryTagId(scene.category) : null;
   const canAccessMemberContent = !MEMBERSHIP_GATE_ENABLED || scene?.isFreeExperience === true;
 
   // Unique speakers for this scene, in first-occurrence order, each with a
@@ -735,10 +736,18 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
           <Link to="/explore" className="inline-flex items-center gap-1 text-primary transition-opacity hover:opacity-65">
             <ChevronLeft size={15} /> 返回场景库
           </Link>
-          <div className="flex items-center gap-1">
-            <span>场景库</span><span>/</span><span>{getSceneCategoryLabel(scene.category)}</span><span>/</span>
+          <nav aria-label="场景路径" className="flex items-center gap-1">
+            <Link to="/explore" className="transition-colors hover:text-primary">场景库</Link>
+            <span aria-hidden="true">/</span>
+            <Link
+              to={categoryTagId ? `/explore?tag=${categoryTagId}` : "/explore"}
+              className="transition-colors hover:text-primary"
+            >
+              {getSceneCategoryLabel(scene.category)}
+            </Link>
+            <span aria-hidden="true">/</span>
             <span className="text-primary">{scene.titleZh}</span>
-          </div>
+          </nav>
         </div>
       </div>
 

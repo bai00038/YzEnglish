@@ -1,9 +1,12 @@
+import { useEffect } from "react";
 import { Search, X } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { SceneCard } from "@/app/components/SceneCard";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { useCollections } from "@/data/collections-access";
 import { COLLECTION_TAGS } from "@/data/content-collections";
+
+const CATALOGUE_TAGS = [{ id: "All", label: "全部" }, ...COLLECTION_TAGS];
 
 export function ExplorePage({
   activeCategory, setActiveCategory,
@@ -12,9 +15,17 @@ export function ExplorePage({
   activeCategory: string; setActiveCategory: (c: string) => void;
   searchQuery: string; setSearchQuery: (q: string) => void;
 }) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { data: collectionsData, loading, error } = useCollections();
   const collections = collectionsData ?? [];
-  const catalogueTags = [{ id: "All", label: "全部" }, ...COLLECTION_TAGS];
+  const requestedTag = searchParams.get("tag");
+
+  useEffect(() => {
+    if (requestedTag && CATALOGUE_TAGS.some(tag => tag.id === requestedTag)) {
+      setActiveCategory(requestedTag);
+      setSearchQuery("");
+    }
+  }, [requestedTag, setActiveCategory, setSearchQuery]);
   const query = searchQuery.trim().toLowerCase();
   const hasActiveFilter = activeCategory !== "All" || Boolean(query);
   const collectionNames = new Map(collections.map(collection => [collection.id, collection.name]));
@@ -41,13 +52,14 @@ export function ExplorePage({
             <button type="submit" className="flex-shrink-0 rounded-full bg-accent px-4 py-1.5 text-[13px] font-bold text-accent-foreground transition-[filter] hover:brightness-95 md:px-5">搜索</button>
           </form>
           <div className="mt-2 flex items-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {catalogueTags.map(tag => (
+          {CATALOGUE_TAGS.map(tag => (
             <button
               key={tag.id}
               type="button"
               aria-pressed={activeCategory === tag.id}
               onClick={() => {
                 setActiveCategory(tag.id);
+                setSearchParams(tag.id === "All" ? {} : { tag: tag.id }, { replace: true });
                 if (tag.id === "All") setSearchQuery("");
               }}
               className="flex-none whitespace-nowrap rounded-full border px-4 py-1.5 text-[13px] leading-none transition-colors"
