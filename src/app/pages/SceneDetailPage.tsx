@@ -1321,26 +1321,75 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 )}
 
                 {/* Previous / next live episode in this collection */}
-                {(prevScene || nextScene) && (
-                  <div className="grid grid-cols-2 gap-3 pt-8 border-t border-border">
+                {scene.collectionId && (
+                  <div className="grid overflow-hidden rounded-[22px] border border-primary/15 bg-secondary md:grid-cols-2">
                     {prevScene ? (
-                      <Link to={`/scenes/${prevScene.slug}`} className="border border-border rounded-xl p-4 text-left bg-card hover:border-primary/30 hover:shadow-sm transition-all">
-                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-2">
-                          <ChevronLeft size={10} />同合集 · 上一集
+                      <Link
+                        to={`/scenes/${prevScene.slug}`}
+                        className="group flex min-h-[142px] flex-col justify-between border-b border-primary/10 p-6 text-left transition-colors hover:bg-card/55 md:border-b-0 md:border-r"
+                      >
+                        <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
+                          Previous episode · 上一集
+                        </span>
+                        <div className="mt-5 flex items-end justify-between gap-4">
+                          <div className="min-w-0">
+                            <p className="font-['Noto_Serif_SC'] text-[20px] font-bold leading-snug text-primary">
+                              {prevScene.titleZh}
+                            </p>
+                            <p className="mt-1 truncate text-[12px] font-semibold text-muted-foreground">
+                              {prevScene.titleEn}
+                            </p>
+                          </div>
+                          <ChevronLeft size={22} className="mb-1 flex-shrink-0 text-primary transition-transform group-hover:-translate-x-1" />
                         </div>
-                        <p className="text-xs font-bold text-foreground leading-snug">{prevScene.titleEn}</p>
-                        <p className="text-[11px] text-primary mt-1">{prevScene.titleZh}</p>
                       </Link>
-                    ) : <div />}
+                    ) : (
+                      <div className="flex min-h-[142px] flex-col justify-between border-b border-primary/10 p-6 md:border-b-0 md:border-r">
+                        <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
+                          Current episode · 当前集
+                        </span>
+                        <div className="mt-5">
+                          <p className="font-['Noto_Serif_SC'] text-[20px] font-bold leading-snug text-primary">
+                            当前正在学习第一集
+                          </p>
+                          <p className="mt-1 text-[12px] font-semibold text-muted-foreground">{scene.titleZh}</p>
+                        </div>
+                      </div>
+                    )}
+
                     {nextScene ? (
-                      <Link to={`/scenes/${nextScene.slug}`} className="border border-border rounded-xl p-4 text-right bg-card hover:border-primary/30 hover:shadow-sm transition-all">
-                        <div className="flex items-center gap-1 justify-end text-[10px] text-muted-foreground mb-2">
-                          同合集 · 下一集<ChevronRight size={10} />
+                      <Link
+                        to={`/scenes/${nextScene.slug}`}
+                        className="group flex min-h-[142px] flex-col justify-between p-6 text-left transition-colors hover:bg-card/55 md:text-right"
+                      >
+                        <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
+                          Next episode · 下一集
+                        </span>
+                        <div className="mt-5 flex items-end justify-between gap-4 md:flex-row-reverse">
+                          <div className="min-w-0 md:text-right">
+                            <p className="font-['Noto_Serif_SC'] text-[20px] font-bold leading-snug text-primary">
+                              {nextScene.titleZh}
+                            </p>
+                            <p className="mt-1 truncate text-[12px] font-semibold text-muted-foreground">
+                              {nextScene.titleEn}
+                            </p>
+                          </div>
+                          <ChevronRight size={22} className="mb-1 flex-shrink-0 text-primary transition-transform group-hover:translate-x-1" />
                         </div>
-                        <p className="text-xs font-bold text-foreground leading-snug">{nextScene.titleEn}</p>
-                        <p className="text-[11px] text-primary mt-1">{nextScene.titleZh}</p>
                       </Link>
-                    ) : <div />}
+                    ) : (
+                      <div className="flex min-h-[142px] flex-col justify-between p-6 text-left md:text-right">
+                        <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
+                          Collection complete · 合集进度
+                        </span>
+                        <div className="mt-5">
+                          <p className="font-['Noto_Serif_SC'] text-[20px] font-bold leading-snug text-primary">
+                            当前已是本合集最后一集
+                          </p>
+                          <p className="mt-1 text-[12px] font-semibold text-muted-foreground">{scene.titleZh}</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
