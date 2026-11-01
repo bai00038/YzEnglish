@@ -6,7 +6,7 @@ import { useCollection } from "@/data/collections-access";
 import { getSceneCategoryLabel } from "@/data/scene-categories";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
-import { MembershipUnlockModal, MembershipUnlockPanel } from "@/app/components/MembershipUnlockModal";
+import { MembershipUnlockModal } from "@/app/components/MembershipUnlockModal";
 import { buildSceneSpeakers, normalizeSpeaker, speakerAvatarLabel, SPEAKER_STYLES } from "@/data/speakerRoles";
 import { getSceneProgressId, readLearningProgress, updateLearningPosition, writeLearningProgress, type LearningStep } from "@/data/learning-progress";
 import { useMembershipAccess } from "@/data/membership";
@@ -168,6 +168,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     if (videoRef.current) videoRef.current.playbackRate = playbackRate;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene?.id]);
+
+  // Member scenes open the single shared unlock modal on entry. Closing
+  // it reveals the real lesson page underneath; protected controls can
+  // reopen this same modal without rendering a second paywall in-page.
+  useEffect(() => {
+    if (scene && !canAccessMemberContent) setMembershipModalOpen(true);
+  }, [scene?.id, canAccessMemberContent]);
 
   useEffect(() => {
     if (!scene || !progressSceneId || !shouldResumeProgress) return;
@@ -908,9 +915,29 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   standalone image. ── */}
               <div className="relative w-full overflow-hidden rounded-[20px] border border-primary/10 bg-black shadow-[0_16px_40px_rgba(15,53,39,0.12)]" style={{ aspectRatio: "16 / 9" }}>
                 {!canAccessMemberContent ? (
-                  <div className="h-full w-full overflow-y-auto bg-secondary p-3 md:p-6">
-                    <MembershipUnlockPanel />
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setMembershipModalOpen(true)}
+                    className="group relative h-full w-full overflow-hidden text-left"
+                    aria-label="会员内容，点击输入兑换码解锁"
+                  >
+                    {scene.photo ? (
+                      <img
+                        src={scene.photo}
+                        alt={scene.title_zh}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.015]"
+                        draggable={false}
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-gradient-to-br from-primary/80 to-primary" />
+                    )}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30 transition-colors group-hover:bg-black/38">
+                      <span className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-primary/90 px-5 py-3 text-sm font-black text-white shadow-lg backdrop-blur-sm md:text-base">
+                        <LockKeyhole size={18} />
+                        会员内容 · 点击输入兑换码解锁
+                      </span>
+                    </div>
+                  </button>
                 ) : scene.video_url ? (
                   <div className="relative w-full h-full">
                     <video
