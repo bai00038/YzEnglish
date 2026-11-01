@@ -71,7 +71,9 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
               <img
                 src="/hero-v7-final.webp"
                 alt="窗边书架旁，Aria 坐着向镜头展示手机里的英语学习场景"
-                className="block aspect-[4/5] w-full rounded-[26px] object-cover shadow-[0_26px_52px_rgba(18,36,28,.22)]"
+                width={1296}
+                height={1397}
+                className="block h-auto w-full rounded-[26px] shadow-[0_26px_52px_rgba(18,36,28,.22)]"
               />
               <figcaption className="absolute -left-2 top-[15%] flex max-w-[66%] items-start gap-2 rounded-[13px] border border-border bg-white px-3 py-2 shadow-[0_12px_24px_rgba(18,36,28,.12)] md:-left-[18px]">
                 <span className="mt-[5px] h-[7px] w-[7px] flex-none rounded-full bg-accent" />
