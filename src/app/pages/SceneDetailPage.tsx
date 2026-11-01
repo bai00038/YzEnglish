@@ -1,14 +1,15 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useParams, useSearchParams } from "react-router";
-import { ChevronRight, ChevronLeft, Download, Info, Pause, Play } from "lucide-react";
+import { ChevronRight, ChevronLeft, Download, Info, LockKeyhole, Pause, Play } from "lucide-react";
 import { useSceneDetail } from "@/data/scenes-access";
 import { useCollection } from "@/data/collections-access";
 import { getSceneCategoryLabel } from "@/data/scene-categories";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
-import { MemberContentNotice } from "@/app/components/MemberContentNotice";
+import { MembershipUnlockModal, MembershipUnlockPanel } from "@/app/components/MembershipUnlockModal";
 import { buildSceneSpeakers, normalizeSpeaker, speakerAvatarLabel, SPEAKER_STYLES } from "@/data/speakerRoles";
 import { getSceneProgressId, readLearningProgress, updateLearningPosition, writeLearningProgress, type LearningStep } from "@/data/learning-progress";
+import { useMembershipAccess } from "@/data/membership";
 import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
 
 // Key Expressions card — expressionEn/expressionZh, the only two fields
@@ -72,11 +73,6 @@ function StepHeading({ number, title, hint }: { number: string; title: string; h
 const PLAYBACK_RATES = [0.8, 1, 1.2] as const;
 const PLAYBACK_RATE_STORAGE_KEY = "yzenglish:playbackRate";
 
-// Prompt 3 prepares the paywall surface; Prompt 4 will replace this switch
-// with real signed-in membership state. Keep it off until accounts exist so
-// today's published lessons do not become unreachable for every visitor.
-const MEMBERSHIP_GATE_ENABLED = false;
-
 const STUDY_TABS = [
   { key: "listening", num: "01", en: "Sentence Listening", zh: "单句精听" },
   { key: "dictation", num: "02", en: "Dictation", zh: "听写" },
@@ -90,6 +86,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
   const { data, loading, error } = useSceneDetail(slug ?? "");
+  const { isUnlocked } = useMembershipAccess();
+  const [membershipModalOpen, setMembershipModalOpen] = useState(false);
   const scene = data?.scene ?? null;
   const progressSceneId = scene ? getSceneProgressId(scene) : "";
   const shouldResumeProgress = searchParams.get("resume") === "1";
@@ -105,7 +103,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const cultureTipItems = content?.cultureTips ?? [];
   const prevScene = data?.prevScene ?? undefined;
   const nextScene = data?.nextScene ?? undefined;
-  const canAccessMemberContent = !MEMBERSHIP_GATE_ENABLED || scene?.isFreeExperience === true;
+  const canAccessMemberContent = scene?.isFreeExperience === true || isUnlocked;
 
   // Unique speakers for this scene, in first-occurrence order, each with a
   // stable color — shared by the legend and every dialogue row below.
@@ -868,10 +866,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             </p>
           </div>
           <div className="flex flex-wrap gap-2 lg:flex-nowrap lg:justify-self-end">
-            <a href="#section-watch" onClick={() => saveLearningPosition("watch")} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">视频 {scene.duration}</a>
-            <a href="#section-dialogue" onClick={() => saveLearningPosition("dialogue")} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">逐句 {content?.dialogue.length ?? 0} 句</a>
+            <a href="#section-watch" onClick={event => { if (!canAccessMemberContent) { event.preventDefault(); setMembershipModalOpen(true); } else saveLearningPosition("watch"); }} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">视频 {scene.duration}</a>
+            <a href="#section-dialogue" onClick={event => { if (!canAccessMemberContent) { event.preventDefault(); setMembershipModalOpen(true); } else saveLearningPosition("dialogue"); }} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">逐句 {content?.dialogue.length ?? 0} 句</a>
             <a href="#section-language" onClick={() => saveLearningPosition("language")} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">词汇 {keyExpressionItems.length} 个</a>
-            <a href="#section-pdf" onClick={() => saveLearningPosition("pdf")} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">讲义 PDF</a>
+            <a href="#section-pdf" onClick={event => { if (!canAccessMemberContent) { event.preventDefault(); setMembershipModalOpen(true); } else saveLearningPosition("pdf"); }} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">讲义 PDF</a>
           </div>
         </div>
       </div>
@@ -909,7 +907,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   Sheet, as a poster-style background — never shown as a bare
                   standalone image. ── */}
               <div className="relative w-full overflow-hidden rounded-[20px] border border-primary/10 bg-black shadow-[0_16px_40px_rgba(15,53,39,0.12)]" style={{ aspectRatio: "16 / 9" }}>
-                {scene.video_url ? (
+                {!canAccessMemberContent ? (
+                  <div className="h-full w-full overflow-y-auto bg-secondary p-3 md:p-6">
+                    <MembershipUnlockPanel />
+                  </div>
+                ) : scene.video_url ? (
                   <div className="relative w-full h-full">
                     <video
                       ref={videoRef}
@@ -1101,18 +1103,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     <p className="text-white/70 text-xs mt-1">Video coming soon · 视频准备中</p>
                   </div>
                 )}
-                {!canAccessMemberContent && (
-                  <div className="absolute inset-0 z-20 bg-card p-5 md:p-8">
-                    <MemberContentNotice />
-                  </div>
-                )}
               </div>
 
               <div className="mt-4 flex justify-center">
                 <button
                   type="button"
-                  onClick={startSentenceListening}
-                  disabled={playableDialogueLineIndexes.length === 0}
+                  onClick={() => canAccessMemberContent ? startSentenceListening() : setMembershipModalOpen(true)}
+                  disabled={canAccessMemberContent && playableDialogueLineIndexes.length === 0}
                   className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-white px-5 py-2.5 text-[13px] font-black text-primary shadow-[0_8px_20px_rgba(15,53,39,0.08)] transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40 md:px-6 md:py-3 md:text-[14px]"
                 >
                   <Play className="h-4 w-4 fill-current" />
@@ -1136,7 +1133,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     <button
                       key={tab.key}
                       type="button"
-                      onClick={() => switchStudyTab(tab.key)}
+                      onClick={() => canAccessMemberContent ? switchStudyTab(tab.key) : setMembershipModalOpen(true)}
                       className="cursor-pointer rounded-full px-4 py-2 text-[12px] font-bold transition-colors"
                       style={isActive
                         ? { backgroundColor: "#0F3527", color: "#FFFFFF" }
@@ -1150,7 +1147,31 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 </div>
               </div>
 
-              {studyTab === "dictation" ? (
+              {!canAccessMemberContent ? (
+                <button
+                  type="button"
+                  onClick={() => setMembershipModalOpen(true)}
+                  className="block w-full rounded-[24px] border border-border bg-white p-4 text-left shadow-[0_14px_38px_rgba(15,53,39,0.08)] md:p-6"
+                >
+                  {content.dialogue[0] ? (
+                    <div className="rounded-[18px] bg-secondary px-5 py-6 md:px-8">
+                      <p className="text-[12px] font-black uppercase tracking-[.14em] text-muted-foreground">第一句免费预览</p>
+                      <p className="mt-3 font-serif text-[23px] leading-snug text-primary md:text-[29px]">{content.dialogue[0].en}</p>
+                      {content.dialogue[0].zh && <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{content.dialogue[0].zh}</p>}
+                    </div>
+                  ) : null}
+                  <div className="mt-3 space-y-2">
+                    {content.dialogue.slice(1, 4).map((line, index) => (
+                      <div key={index} className="flex items-center gap-3 rounded-[14px] border border-border bg-background px-4 py-3 text-muted-foreground">
+                        <LockKeyhole size={15} className="flex-none" />
+                        <span className="h-2.5 flex-1 rounded-full bg-primary/10" />
+                        <span className="text-xs font-bold">会员专属</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-4 text-center text-sm font-black text-primary">解锁完整逐句精听与听写 →</p>
+                </button>
+              ) : studyTab === "dictation" ? (
                 <DictationPractice
                   sceneId={scene.id}
                   lines={dictationLines}
@@ -1341,7 +1362,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     <p className="mt-3 text-[14px] leading-relaxed text-white/70">完整双语对话 + 核心表达 + 本地文化提示，下载后随时复习。</p>
                   </div>
                   {!canAccessMemberContent ? (
-                    <MemberContentNotice compact />
+                    <button
+                      type="button"
+                      onClick={() => setMembershipModalOpen(true)}
+                      className="inline-flex flex-shrink-0 items-center justify-center gap-2 rounded-full bg-accent px-6 py-4 text-[14px] font-black text-primary transition-transform hover:scale-[1.02]"
+                    >
+                      <LockKeyhole size={16} /> 会员内容 · 开通会员后可学
+                    </button>
                   ) : scene.pdfUrl ? (
                     <a
                       href={scene.pdfUrl}
@@ -1472,6 +1499,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
         </>
       )}
       </div>
+      <MembershipUnlockModal open={membershipModalOpen} onOpenChange={setMembershipModalOpen} />
     </div>
   );
 }

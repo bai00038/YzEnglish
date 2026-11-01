@@ -1,0 +1,20 @@
+[
+  {
+    "code": "02cc5b0644c57404a24a3fc1517600585fab28fd78d841f6f52f417866f167aa",
+    "type": "founder",
+    "expiresAt": null,
+    "disabled": false
+  },
+  {
+    "code": "01c4e4a36281af962686de9ddd428d9b4a4b01f3f8a6e9900933afedef79f28e",
+    "type": "year",
+    "expiresAt": "2027-12-31T23:59:59-05:00",
+    "disabled": false
+  },
+  {
+    "code": "4b30e366ef441f0097394e813d90224bfe907e8c4bbe2736a8c30736fcfe6df1",
+    "type": "month",
+    "expiresAt": "2026-12-31T23:59:59-05:00",
+    "disabled": false
+  }
+]

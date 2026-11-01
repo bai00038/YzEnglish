@@ -9,6 +9,7 @@ export function FreeExperienceCard({ scene, collectionLabel, compact = false }: 
       <>
         <div className="relative h-full w-[116px] flex-none overflow-hidden bg-primary/90 sm:w-[128px]">
           {scene.photo ? <img src={scene.photo} alt="" className={`h-full w-full object-cover ${isLive ? "" : "grayscale opacity-45"}`} /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_25%,rgba(200,241,105,.35),transparent_28%),linear-gradient(145deg,#315848,#0f3527)]" />}
+          <span className="absolute left-2 top-2 rounded-full bg-accent px-2 py-1 text-[9px] font-bold text-primary">免费体验</span>
           <span className="absolute bottom-2 right-2 grid h-7 w-7 place-items-center rounded-full bg-white/90 text-primary">{isLive ? <Play size={11} fill="currentColor" /> : <Clock3 size={13} />}</span>
         </div>
         <div className="flex min-w-0 flex-1 flex-col p-3">
@@ -29,6 +30,7 @@ export function FreeExperienceCard({ scene, collectionLabel, compact = false }: 
     <>
       <div className="relative aspect-[16/9] overflow-hidden bg-primary/90">
         {scene.photo ? <img src={scene.photo} alt="" className={`h-full w-full object-cover ${isLive ? "" : "grayscale opacity-45"}`} /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_25%,rgba(200,241,105,.35),transparent_28%),linear-gradient(145deg,#315848,#0f3527)]" />}
+        <span className="absolute left-3 top-3 rounded-full bg-accent px-3 py-1.5 text-[11px] font-bold text-primary">免费体验</span>
         <span className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-primary">{isLive ? <Play size={14} fill="currentColor" /> : <Clock3 size={16} />}</span>
       </div>
       <div className="p-5">
