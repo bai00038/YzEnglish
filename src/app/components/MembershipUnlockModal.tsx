@@ -79,7 +79,7 @@ export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void 
           ③ Aria 发你专属兑换码，回来输入即可解锁
         </p>
         <div className="mt-5 flex items-center gap-5">
-          <div className="relative grid h-32 w-32 flex-none place-items-center overflow-hidden rounded-[14px] border border-primary/15 bg-white p-1.5">
+          <div className="relative grid h-32 w-32 flex-none place-items-center overflow-hidden rounded-[14px] border border-primary/15 bg-white p-0.5">
             {!qrMissing && <img src="/images/wecom-qr.png" alt="企业微信二维码" className="h-full w-full object-contain" onError={() => setQrMissing(true)} />}
             {qrMissing && <div className="text-center text-primary"><QrCode className="mx-auto h-9 w-9" /><span className="mt-1 block text-[10px] font-bold">企业微信二维码<br />待替换</span></div>}
           </div>
