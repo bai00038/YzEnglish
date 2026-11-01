@@ -56,10 +56,23 @@ export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void 
         <p className="text-[11px] font-black uppercase tracking-[.16em] text-muted-foreground">还没有兑换码</p>
         <h3 className="mt-3 font-['Noto_Serif_SC'] text-2xl font-bold text-primary">开通会员</h3>
         <p className="mt-4 text-sm leading-relaxed text-secondary-foreground">会员可学全部场景：完整视频 + 逐句精听 + 配套讲义 PDF。</p>
-        <p className="mt-4 text-sm font-black leading-relaxed text-primary">创始会员 ¥199 终身（限 50 席） · 年会员 ¥99/年 · 月会员 ¥12.9/月</p>
+        <div className="mt-4 overflow-hidden rounded-[14px] border border-primary/15 bg-white/55 text-sm font-black text-primary">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-primary/10 px-4 py-2.5">
+            <span>创始会员</span>
+            <span className="whitespace-nowrap">¥199 终身（限 50 席）</span>
+          </div>
+          <div className="flex items-baseline justify-between gap-4 border-b border-primary/10 px-4 py-2.5">
+            <span>年会员</span>
+            <span className="whitespace-nowrap">¥99/年</span>
+          </div>
+          <div className="flex items-baseline justify-between gap-4 px-4 py-2.5">
+            <span>月会员</span>
+            <span className="whitespace-nowrap">¥12.9/月</span>
+          </div>
+        </div>
         <p className="mt-5 text-sm font-semibold leading-8 text-secondary-foreground">① 扫码添加企业微信<br />② 微信转账付款<br />③ 我发你专属兑换码，回来输入即可解锁</p>
         <div className="mt-5 flex items-center gap-5">
-          <div className="relative grid h-28 w-28 flex-none place-items-center overflow-hidden rounded-[14px] border border-primary/15 bg-white p-2">
+          <div className="relative grid h-32 w-32 flex-none place-items-center overflow-hidden rounded-[14px] border border-primary/15 bg-white p-1.5">
             {!qrMissing && <img src="/images/wecom-qr.png" alt="企业微信二维码" className="h-full w-full object-contain" onError={() => setQrMissing(true)} />}
             {qrMissing && <div className="text-center text-primary"><QrCode className="mx-auto h-9 w-9" /><span className="mt-1 block text-[10px] font-bold">企业微信二维码<br />待替换</span></div>}
           </div>
