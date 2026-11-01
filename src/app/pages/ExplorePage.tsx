@@ -46,7 +46,10 @@ export function ExplorePage({
               key={tag.id}
               type="button"
               aria-pressed={activeCategory === tag.id}
-              onClick={() => setActiveCategory(tag.id)}
+              onClick={() => {
+                setActiveCategory(tag.id);
+                if (tag.id === "All") setSearchQuery("");
+              }}
               className="flex-none whitespace-nowrap rounded-full border px-4 py-1.5 text-[13px] leading-none transition-colors"
               style={activeCategory === tag.id
                 ? { backgroundColor: "#C8F169", color: "#12241C", borderColor: "#C8F169", fontWeight: 700 }
@@ -67,7 +70,7 @@ export function ExplorePage({
               <p className="text-[13px] font-semibold text-muted-foreground">共 {filteredScenes.length} 个场景</p>
             </div>
             {filteredScenes.length ? (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {filteredScenes.map(scene => <SceneCard compact key={scene.externalId ?? scene.id} scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />)}
               </div>
             ) : <div className="rounded-2xl border border-dashed border-border py-10 text-center text-sm text-muted-foreground">没有找到匹配的场景，换个关键词或标签试试。</div>}
@@ -75,7 +78,7 @@ export function ExplorePage({
         ) : (
           <div className="space-y-4">
             {collections.map(collection => {
-              const liveScenes = collection.scenes.filter(scene => scene.status === "live").slice(0, 8);
+              const liveScenes = collection.scenes.filter(scene => scene.status === "live");
               if (liveScenes.length === 0) {
                 return (
                   <div key={collection.id} className="flex h-10 items-center justify-between rounded-[14px] border border-border bg-secondary/55 px-4 text-muted-foreground">
@@ -94,8 +97,21 @@ export function ExplorePage({
                     </div>
                     <Link to={`/collections/${collection.id}`} className="shrink-0 text-[13px] font-bold text-primary hover:underline">查看全部 →</Link>
                   </div>
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    {liveScenes.map(scene => <SceneCard compact key={scene.externalId ?? scene.id} scene={scene} collectionLabels={[collection.name]} />)}
+                  <div className="flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden">
+                    {liveScenes.slice(0, 10).map(scene => (
+                      <div key={scene.externalId ?? scene.id} className="flex w-[78vw] flex-none snap-start">
+                        <SceneCard compact scene={scene} collectionLabels={[collection.name]} />
+                      </div>
+                    ))}
+                    <Link
+                      to={`/collections/${collection.id}`}
+                      className="flex w-[78vw] flex-none snap-start items-center justify-center rounded-[16px] border border-border bg-card text-[14px] font-bold text-primary transition-colors hover:border-primary/30"
+                    >
+                      查看全部 →
+                    </Link>
+                  </div>
+                  <div className="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
+                    {liveScenes.slice(0, 8).map(scene => <SceneCard compact key={scene.externalId ?? scene.id} scene={scene} collectionLabels={[collection.name]} />)}
                   </div>
                 </section>
               );
