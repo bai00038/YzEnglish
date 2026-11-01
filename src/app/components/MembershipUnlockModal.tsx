@@ -59,9 +59,9 @@ export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void 
       <section className="rounded-[20px] border border-primary/15 bg-secondary p-6 md:rounded-l-none md:border-l-0 md:p-8">
         {TEST_MODE ? (
           <div className="flex h-full min-h-[280px] flex-col justify-center">
-            <h3 className="font-['Noto_Serif_SC'] text-lg font-bold text-primary">想参加测试？</h3>
+            <h3 className="font-['Noto_Serif_SC'] text-lg font-bold text-primary">测试阶段</h3>
             <p className="mt-3 text-sm font-semibold leading-7 text-secondary-foreground">
-              现在是测试阶段，会员暂未开放购买。兑换码由 Aria 发给测试用户，扫码添加 Aria 企业微信就能领。
+              会员暂未开放购买。首页有 3 集免费体验，先学完看看合不合你的节奏，会员开放时会在粉丝群和公众号通知。有问题可以扫码添加 Aria 企业微信问我。
             </p>
             <figure className="mt-5 flex w-fit flex-col items-center">
               <div className="relative grid h-32 w-32 place-items-center overflow-hidden rounded-[14px] border border-primary/15 bg-white p-0.5">
