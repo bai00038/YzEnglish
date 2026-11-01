@@ -69,8 +69,8 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
             <span className="pointer-events-none absolute -bottom-5 -left-3 z-0 h-[230px] w-[230px] rounded-full bg-accent/25 md:-bottom-7 md:left-0 md:h-[270px] md:w-[270px]" />
             <figure className="relative z-10 w-[84%] max-w-[320px]">
               <img
-                src="/hero-aria-cafe.jpg"
-                alt="咖啡馆窗边，Aria 微笑着低头看自己的手机，自然地学英语"
+                src="/hero-v7-final.webp"
+                alt="窗边书架旁，Aria 坐着向镜头展示手机里的英语学习场景"
                 className="block aspect-[4/5] w-full rounded-[26px] object-cover shadow-[0_26px_52px_rgba(18,36,28,.22)]"
               />
               <figcaption className="absolute -left-2 top-[15%] flex max-w-[66%] items-start gap-2 rounded-[13px] border border-border bg-white px-3 py-2 shadow-[0_12px_24px_rgba(18,36,28,.12)] md:-left-[18px]">
