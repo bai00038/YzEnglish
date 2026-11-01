@@ -58,10 +58,20 @@ export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void 
 
       <section className="rounded-[20px] border border-primary/15 bg-secondary p-6 md:rounded-l-none md:border-l-0 md:p-8">
         {TEST_MODE ? (
-          <div className="flex h-full min-h-[220px] items-center">
-            <p className="font-['Noto_Serif_SC'] text-lg font-bold leading-9 text-primary">
-              现在是测试阶段，会员暂未开放购买。兑换码由 Aria 发给测试用户，拿到码后在左侧输入即可解锁。
+          <div className="flex h-full min-h-[280px] flex-col justify-center">
+            <h3 className="font-['Noto_Serif_SC'] text-lg font-bold text-primary">想参加测试？</h3>
+            <p className="mt-3 text-sm font-semibold leading-7 text-secondary-foreground">
+              现在是测试阶段，会员暂未开放购买。兑换码由 Aria 发给测试用户，扫码添加 Aria 企业微信就能领。
             </p>
+            <figure className="mt-5 flex w-fit flex-col items-center">
+              <div className="relative grid h-32 w-32 place-items-center overflow-hidden rounded-[14px] border border-primary/15 bg-white p-0.5">
+                {!qrMissing && <img src="/images/wecom-qr.png" alt="企业微信二维码" className="h-full w-full object-contain" onError={() => setQrMissing(true)} />}
+                {qrMissing && <div className="text-center text-primary"><QrCode className="mx-auto h-9 w-9" /><span className="mt-1 block text-[10px] font-bold">企业微信二维码<br />待替换</span></div>}
+              </div>
+              <figcaption className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">
+                扫码后请备注：<strong className="text-primary">YZ English 会员</strong>
+              </figcaption>
+            </figure>
           </div>
         ) : (
           <>
