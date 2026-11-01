@@ -26,28 +26,6 @@ const CATEGORY_LABELS: Record<string, string> = {
   Immigration: "安家办事",
 };
 
-const CATEGORY_TAG_IDS: Record<string, string> = {
-  "Shopping & Beauty": "shopping",
-  "Shopping & Returns": "shopping",
-  "Food & Restaurants": "daily",
-  "Food & Dining": "daily",
-  "Social Life": "daily",
-  "Social English": "daily",
-  Travel: "daily",
-  Healthcare: "medical",
-  "School & Family": "school",
-  "Banking & Services": "settling-in",
-  Housing: "settling-in",
-  Transportation: "settling-in",
-  Work: "settling-in",
-  Emergencies: "settling-in",
-  Immigration: "settling-in",
-};
-
 export function getSceneCategoryLabel(category: string): string {
   return CATEGORY_LABELS[category] ?? "其他场景";
-}
-
-export function getSceneCategoryTagId(category: string): string | null {
-  return CATEGORY_TAG_IDS[category] ?? null;
 }

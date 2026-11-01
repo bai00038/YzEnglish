@@ -2,7 +2,8 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useParams } from "react-router";
 import { ChevronRight, ChevronLeft, Download, Info, Pause, Play } from "lucide-react";
 import { useSceneDetail } from "@/data/scenes-access";
-import { getSceneCategoryLabel, getSceneCategoryTagId } from "@/data/scene-categories";
+import { useCollection } from "@/data/collections-access";
+import { getSceneCategoryLabel } from "@/data/scene-categories";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
 import { MemberContentNotice } from "@/app/components/MemberContentNotice";
@@ -88,6 +89,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const { slug } = useParams<{ slug: string }>();
   const { data, loading, error } = useSceneDetail(slug ?? "");
   const scene = data?.scene ?? null;
+  const { data: collection } = useCollection(scene?.collectionId ?? "");
   const content = scene?.content;
   const related = data?.related ?? [];
   // Language module data — sourced from public.key_expressions/
@@ -99,7 +101,6 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const cultureTipItems = content?.cultureTips ?? [];
   const prevScene = data?.prevScene ?? undefined;
   const nextScene = data?.nextScene ?? undefined;
-  const categoryTagId = scene ? getSceneCategoryTagId(scene.category) : null;
   const canAccessMemberContent = !MEMBERSHIP_GATE_ENABLED || scene?.isFreeExperience === true;
 
   // Unique speakers for this scene, in first-occurrence order, each with a
@@ -739,12 +740,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
           <nav aria-label="场景路径" className="flex items-center gap-1">
             <Link to="/explore" className="transition-colors hover:text-primary">场景库</Link>
             <span aria-hidden="true">/</span>
-            <Link
-              to={categoryTagId ? `/explore?tag=${categoryTagId}` : "/explore"}
-              className="transition-colors hover:text-primary"
-            >
-              {getSceneCategoryLabel(scene.category)}
-            </Link>
+            {scene.collectionId ? (
+              <Link to={`/collections/${scene.collectionId}`} className="transition-colors hover:text-primary">
+                {collection?.name ?? getSceneCategoryLabel(scene.category)}
+              </Link>
+            ) : (
+              <span>{getSceneCategoryLabel(scene.category)}</span>
+            )}
             <span aria-hidden="true">/</span>
             <span className="text-primary">{scene.titleZh}</span>
           </nav>
