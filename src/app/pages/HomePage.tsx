@@ -66,8 +66,8 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
           </div>
 
           <div className="relative isolate flex min-h-0 items-center justify-center px-1 py-1 md:min-h-[360px] md:py-1.5">
-            <span className="pointer-events-none absolute -bottom-5 -left-3 z-0 h-[230px] w-[230px] rounded-full bg-accent/25 md:-bottom-7 md:left-0 md:h-[270px] md:w-[270px]" />
-            <figure className="relative z-10 w-[84%] max-w-[320px]">
+            <span className="pointer-events-none absolute -bottom-5 left-1 z-0 h-[230px] w-[230px] rounded-full bg-accent/25 md:-bottom-7 md:left-5 md:h-[270px] md:w-[270px]" />
+            <figure className="relative z-10 w-[90%] max-w-[360px]">
               <img
                 src="/hero-v7-final.webp"
                 alt="窗边书架旁，Aria 坐着向镜头展示手机里的英语学习场景"
