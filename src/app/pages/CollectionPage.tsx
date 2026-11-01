@@ -2,10 +2,12 @@ import { ArrowLeft, ArrowRight, FileText, LockKeyhole } from "lucide-react";
 import { Link, useParams } from "react-router";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { useCollections } from "@/data/collections-access";
+import { getCollectionLearningProgress, getSceneProgressId, useAllLearningProgress } from "@/data/learning-progress";
 
 export function CollectionPage() {
   const { collectionId = "" } = useParams();
   const { data, loading, error } = useCollections();
+  const progressByScene = useAllLearningProgress();
   if (loading) return <div className="mx-auto max-w-[1180px] px-5 py-16 md:px-8"><LoadingState label="Loading collection…" /></div>;
   if (error) return <div className="mx-auto max-w-[1180px] px-5 py-16 md:px-8"><ErrorState message={error} /></div>;
 
@@ -13,7 +15,9 @@ export function CollectionPage() {
   const collection = collections.find(item => item.id === collectionId);
   if (!collection) return <div className="mx-auto max-w-[1180px] px-5 py-20 text-center md:px-8"><h1 className="text-3xl font-bold">没有找到这个合集</h1><Link to="/explore" className="mt-5 inline-block underline">返回场景库</Link></div>;
 
-  const liveCount = collection.scenes.filter(scene => scene.status === "live").length;
+  const liveScenes = collection.scenes.filter(scene => scene.status === "live");
+  const liveCount = liveScenes.length;
+  const learningProgress = getCollectionLearningProgress(liveScenes, progressByScene);
   const nextCollection = collections.find(item => item.shelfOrder > collection.shelfOrder);
 
   return (
@@ -22,12 +26,27 @@ export function CollectionPage() {
         <div className="mx-auto max-w-[1180px] px-5 py-5 md:px-8">
           <div className="mb-2 flex items-center justify-between gap-4 text-sm">
             <Link to="/explore" className="inline-flex items-center gap-2 font-semibold text-muted-foreground hover:text-primary"><ArrowLeft size={16} /> 返回场景库</Link>
-            <p className="font-semibold text-foreground">共 {collection.scenes.length} 集 · 已上线 {liveCount} 集</p>
+            <p className="font-semibold text-foreground">
+              {learningProgress.hasAnyProgress
+                ? `已学完 ${learningProgress.completedCount} / ${learningProgress.totalCount} 集`
+                : `共 ${collection.scenes.length} 集 · 已上线 ${liveCount} 集`}
+            </p>
           </div>
           <h1 className="flex flex-wrap items-baseline gap-x-3 font-['Noto_Serif_SC'] text-[40px] font-bold leading-[1.15] text-primary md:text-[44px]">
             {collection.name}<span className="display-serif text-[18px] font-medium italic text-muted-foreground md:text-[20px]">{collection.titleEn}</span>
           </h1>
           <p className="mt-1.5 max-w-[760px] text-[15px] leading-relaxed text-secondary-foreground md:text-base">{collection.tagline}</p>
+          {learningProgress.hasAnyProgress && (
+            <div className="mt-3">
+              <div className="mb-1 flex items-center justify-between text-[12px] font-bold text-secondary-foreground">
+                <span>{learningProgress.isComplete ? "✓ 整套已学完" : `已学完 ${learningProgress.completedCount} / ${learningProgress.totalCount} 集`}</span>
+                <span>{learningProgress.percent}%</span>
+              </div>
+              <div role="progressbar" aria-label={`${collection.name}合集进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={learningProgress.percent} className="h-1.5 overflow-hidden rounded-full bg-primary/10">
+                <div className="h-full rounded-full bg-primary transition-[width]" style={{ width: `${learningProgress.percent}%` }} />
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -35,12 +54,21 @@ export function CollectionPage() {
         <div className="overflow-hidden rounded-[24px] border border-border bg-card">
           {collection.scenes.length ? collection.scenes.map((scene, index) => {
             const isLive = scene.status === "live";
+            const sceneProgress = progressByScene[getSceneProgressId(scene)];
+            const sceneIsComplete = sceneProgress?.percent === 100;
+            const sceneIsInProgress = Boolean(sceneProgress && sceneProgress.percent > 0 && sceneProgress.percent < 100);
             const number = String(scene.collectionOrder ?? index + 1).padStart(2, "0");
             const row = (
               <div className={`grid gap-4 p-4 md:min-h-[120px] md:grid-cols-[48px_184px_minmax(0,1fr)_auto] md:items-center md:p-2.5 ${isLive ? "transition-colors hover:bg-secondary/60" : "bg-secondary/55 text-muted-foreground grayscale"}`}>
                 <span className="display-serif text-[27px] font-bold italic text-primary/70">{number}</span>
-                <div className="aspect-video w-full overflow-hidden rounded-[12px] bg-primary/90 md:w-[184px]">
+                <div className="relative aspect-video w-full overflow-hidden rounded-[12px] bg-primary/90 md:w-[184px]">
                   {scene.photo ? <img src={scene.photo} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[radial-gradient(circle_at_70%_30%,rgba(200,241,105,.3),transparent_26%),linear-gradient(145deg,#315848,#0f3527)]" />}
+                  {sceneIsComplete && <span className="absolute right-2 top-2 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold text-white">✓ 已学完</span>}
+                  {sceneIsInProgress && (
+                    <span role="progressbar" aria-label={`${scene.titleZh}学习进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={sceneProgress.percent} className="absolute inset-x-0 bottom-0 h-1 bg-white/35">
+                      <span className="block h-full bg-accent" style={{ width: `${sceneProgress.percent}%` }} />
+                    </span>
+                  )}
                 </div>
                 <div>
                   <h2 className="font-['Noto_Serif_SC'] text-[19px] font-bold leading-tight text-primary md:text-[21px]">{scene.titleZh}</h2>

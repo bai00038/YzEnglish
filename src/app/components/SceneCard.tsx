@@ -5,12 +5,17 @@ import type { Scene } from "@/data/types";
 import { ImgBox } from "@/app/components/primitives";
 import { DurationLabel } from "@/app/components/badges";
 import { SceneBadges } from "@/app/components/SceneBadges";
+import { getSceneProgressId, useLearningProgress } from "@/data/learning-progress";
 
-export function SceneCard({ scene, collectionLabels = [], compact = false }: { scene: Scene; collectionLabels?: string[]; compact?: boolean }) {
+export function SceneCard({ scene, collectionLabels = [], compact = false, resume = false }: { scene: Scene; collectionLabels?: string[]; compact?: boolean; resume?: boolean }) {
   const catColor = CATEGORY_BG[scene.category] ?? "bg-secondary";
+  const progress = useLearningProgress(getSceneProgressId(scene));
+  const isComplete = progress.percent === 100;
+  const isInProgress = progress.percent > 0 && progress.percent < 100;
+  const sceneHref = `/scenes/${scene.slug}${resume ? "?resume=1" : ""}`;
   if (compact) {
     return (
-      <Link to={`/scenes/${scene.slug}`} className="group flex h-full w-full flex-col overflow-hidden rounded-[16px] border border-border bg-card text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(18,36,28,0.09)]">
+      <Link to={sceneHref} className="group flex h-full w-full flex-col overflow-hidden rounded-[16px] border border-border bg-card text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(18,36,28,0.09)]">
         <div className="relative aspect-video shrink-0 overflow-hidden">
           {scene.photo ? (
             <img src={scene.photo} alt={scene.titleEn} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
@@ -20,8 +25,17 @@ export function SceneCard({ scene, collectionLabels = [], compact = false }: { s
             <ImgBox label={scene.category} className={`h-full w-full ${catColor}`} />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-          <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-2.5 top-2.5" />
+          {isComplete ? (
+            <span className="absolute right-2.5 top-2.5 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold text-white">✓ 已学完</span>
+          ) : (
+            <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-2.5 top-2.5" />
+          )}
           <span className="absolute bottom-2.5 left-2.5 rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-medium text-white">{getSceneCategoryLabel(scene.category)}</span>
+          {isInProgress && (
+            <span role="progressbar" aria-label={`${scene.titleZh}学习进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percent} className="absolute inset-x-0 bottom-0 h-1 bg-white/35">
+              <span className="block h-full bg-accent" style={{ width: `${progress.percent}%` }} />
+            </span>
+          )}
         </div>
         <div className="flex flex-1 flex-col p-3">
           <p className="display-serif line-clamp-2 text-[16px] font-semibold leading-[1.2] text-foreground group-hover:text-primary">{scene.titleEn}</p>
@@ -33,7 +47,7 @@ export function SceneCard({ scene, collectionLabels = [], compact = false }: { s
   }
 
   return (
-    <Link to={`/scenes/${scene.slug}`} className="group flex h-full w-full flex-col overflow-hidden rounded-[22px] border border-border bg-card text-left transition-all duration-200 hover:-translate-y-[5px] hover:shadow-[0_22px_44px_rgba(18,36,28,0.13)]">
+    <Link to={sceneHref} className="group flex h-full w-full flex-col overflow-hidden rounded-[22px] border border-border bg-card text-left transition-all duration-200 hover:-translate-y-[5px] hover:shadow-[0_22px_44px_rgba(18,36,28,0.13)]">
       <div className="relative aspect-[16/10] shrink-0 overflow-hidden">
         {scene.photo ? (
           <img src={scene.photo} alt={scene.titleEn} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
@@ -43,10 +57,19 @@ export function SceneCard({ scene, collectionLabels = [], compact = false }: { s
           <ImgBox label={scene.category} className={`w-full h-full ${catColor}`} />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
-        <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-3.5 top-3.5" />
+        {isComplete ? (
+          <span className="absolute right-3.5 top-3.5 rounded-full bg-primary px-3 py-1.5 text-[11px] font-bold text-white">✓ 已学完</span>
+        ) : (
+          <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-3.5 top-3.5" />
+        )}
         <span className="absolute bottom-3.5 left-3.5 rounded-full bg-primary px-3 py-1.5 text-[12px] font-medium text-white">
           {getSceneCategoryLabel(scene.category)}
         </span>
+        {isInProgress && (
+          <span role="progressbar" aria-label={`${scene.titleZh}学习进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percent} className="absolute inset-x-0 bottom-0 h-1 bg-white/35">
+            <span className="block h-full bg-accent" style={{ width: `${progress.percent}%` }} />
+          </span>
+        )}
       </div>
       <div className="flex flex-1 flex-col px-[22px] pb-[18px] pt-5">
         {scene.isFreeExperience && <span className="mb-3 w-fit rounded-full bg-accent/45 px-3 py-1 text-[11px] font-bold text-primary">免费体验</span>}

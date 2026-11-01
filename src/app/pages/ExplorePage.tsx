@@ -5,6 +5,7 @@ import { SceneCard } from "@/app/components/SceneCard";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { useCollections } from "@/data/collections-access";
 import { COLLECTION_TAGS } from "@/data/content-collections";
+import { getCollectionLearningProgress, getSceneProgressId, useAllLearningProgress } from "@/data/learning-progress";
 
 const CATALOGUE_TAGS = [{ id: "All", label: "全部" }, ...COLLECTION_TAGS];
 
@@ -18,6 +19,7 @@ export function ExplorePage({
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: collectionsData, loading, error } = useCollections();
   const collections = collectionsData ?? [];
+  const progressByScene = useAllLearningProgress();
   const requestedTag = searchParams.get("tag");
 
   useEffect(() => {
@@ -37,6 +39,18 @@ export function ExplorePage({
       const matchesQuery = !query || [scene.titleEn, scene.titleZh, scene.desc]
         .some(value => value.toLowerCase().includes(query));
       return matchesTag && matchesQuery;
+    });
+  const continueScenes = collections
+    .flatMap(collection => collection.scenes)
+    .filter(scene => scene.status === "live")
+    .filter(scene => {
+      const percent = progressByScene[getSceneProgressId(scene)]?.percent ?? 0;
+      return percent > 0 && percent < 100;
+    })
+    .sort((a, b) => {
+      const aUpdated = progressByScene[getSceneProgressId(a)]?.updatedAt ?? "";
+      const bUpdated = progressByScene[getSceneProgressId(b)]?.updatedAt ?? "";
+      return bUpdated.localeCompare(aUpdated);
     });
 
   return (
@@ -89,6 +103,27 @@ export function ExplorePage({
           </section>
         ) : (
           <div className="space-y-4">
+            {continueScenes.length > 0 && (
+              <section aria-labelledby="continue-learning-heading">
+                <div className="mb-2 flex items-end justify-between gap-4 border-b border-border pb-2">
+                  <div className="min-w-0 md:flex md:items-baseline md:gap-3">
+                    <h2 id="continue-learning-heading" className="shrink-0 font-['Noto_Serif_SC'] text-[22px] font-bold leading-tight text-primary">继续学习</h2>
+                    <p className="mt-1 truncate text-[12px] text-muted-foreground md:mt-0">从上次停下的地方接着学</p>
+                    <span className="mt-1 block shrink-0 text-[12px] font-semibold text-secondary-foreground md:mt-0">共 {continueScenes.length} 集</span>
+                  </div>
+                </div>
+                <div className="flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden">
+                  {continueScenes.map(scene => (
+                    <div key={scene.externalId ?? scene.id} className="flex w-[78vw] flex-none snap-start">
+                      <SceneCard compact resume scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />
+                    </div>
+                  ))}
+                </div>
+                <div className="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
+                  {continueScenes.map(scene => <SceneCard compact resume key={scene.externalId ?? scene.id} scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />)}
+                </div>
+              </section>
+            )}
             {collections.map(collection => {
               const liveScenes = collection.scenes.filter(scene => scene.status === "live");
               if (liveScenes.length === 0) {
@@ -99,16 +134,28 @@ export function ExplorePage({
                   </div>
                 );
               }
+              const collectionProgress = getCollectionLearningProgress(liveScenes, progressByScene);
               return (
                 <section key={collection.id} aria-labelledby={`collection-${collection.id}`}>
                   <div className="mb-2 flex items-end justify-between gap-4 border-b border-border pb-2">
                     <div className="min-w-0 md:flex md:items-baseline md:gap-3">
                       <h2 id={`collection-${collection.id}`} className="shrink-0 font-['Noto_Serif_SC'] text-[22px] font-bold leading-tight text-primary">{collection.name}</h2>
                       <p className="mt-1 truncate text-[12px] text-muted-foreground md:mt-0">{collection.tagline}</p>
-                      <span className="mt-1 block shrink-0 text-[12px] font-semibold text-secondary-foreground md:mt-0">共 {collection.scenes.length} 集</span>
+                      <span className="mt-1 block shrink-0 text-[12px] font-semibold text-secondary-foreground md:mt-0">
+                        {collectionProgress.isComplete
+                          ? `共 ${collectionProgress.totalCount} 集 · ✓ 整套已学完`
+                          : collectionProgress.hasAnyProgress
+                            ? `共 ${collectionProgress.totalCount} 集 · 已学完 ${collectionProgress.completedCount} 集`
+                            : `共 ${collectionProgress.totalCount} 集`}
+                      </span>
                     </div>
                     <Link to={`/collections/${collection.id}`} className="shrink-0 text-[13px] font-bold text-primary hover:underline">查看全部 →</Link>
                   </div>
+                  {collectionProgress.hasAnyProgress && (
+                    <div role="progressbar" aria-label={`${collection.name}合集进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={collectionProgress.percent} className="mb-2 h-[3px] overflow-hidden rounded-full bg-primary/10">
+                      <div className="h-full rounded-full bg-primary transition-[width]" style={{ width: `${collectionProgress.percent}%` }} />
+                    </div>
+                  )}
                   <div className="flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden">
                     {liveScenes.slice(0, 10).map(scene => (
                       <div key={scene.externalId ?? scene.id} className="flex w-[78vw] flex-none snap-start">

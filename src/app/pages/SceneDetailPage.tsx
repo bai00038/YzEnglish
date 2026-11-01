@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useParams, useSearchParams } from "react-router";
 import { ChevronRight, ChevronLeft, Download, Info, Pause, Play } from "lucide-react";
 import { useSceneDetail } from "@/data/scenes-access";
 import { useCollection } from "@/data/collections-access";
@@ -8,6 +8,7 @@ import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
 import { MemberContentNotice } from "@/app/components/MemberContentNotice";
 import { buildSceneSpeakers, normalizeSpeaker, speakerAvatarLabel, SPEAKER_STYLES } from "@/data/speakerRoles";
+import { getSceneProgressId, readLearningProgress, writeLearningProgress, type LearningStep } from "@/data/learning-progress";
 import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
 
 // Key Expressions card — expressionEn/expressionZh, the only two fields
@@ -87,8 +88,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   setBilingualMode: (v: boolean) => void;
 }) {
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
   const { data, loading, error } = useSceneDetail(slug ?? "");
   const scene = data?.scene ?? null;
+  const progressSceneId = scene ? getSceneProgressId(scene) : "";
+  const shouldResumeProgress = searchParams.get("resume") === "1";
   const { data: collection } = useCollection(scene?.collectionId ?? "");
   const content = scene?.content;
   const related = data?.related ?? [];
@@ -111,6 +115,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   );
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  const pendingRestoreVideoTimeRef = useRef<number | null>(null);
+  const lastVideoProgressWriteRef = useRef(0);
   const [videoPaused, setVideoPaused] = useState(true);
   const [subtitleLang, setSubtitleLang] = useState<"off" | "en" | "zh">("off");
   const [videoCurrentTime, setVideoCurrentTime] = useState(0);
@@ -140,6 +146,16 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // handler), so time-based tracking takes back over.
   const [pinnedLineIndex, setPinnedLineIndex] = useState<number | null>(null);
 
+  function reportLearningProgress(step: LearningStep, minimumPercent: number, videoTime?: number) {
+    if (!progressSceneId) return;
+    const current = readLearningProgress(progressSceneId);
+    writeLearningProgress(progressSceneId, {
+      percent: Math.max(current.percent, minimumPercent),
+      lastStep: step,
+      videoTime: videoTime ?? videoRef.current?.currentTime ?? current.videoTime,
+    });
+  }
+
   // Switching scenes re-renders this same component with new data (the
   // route param changes, not the component identity) — without this, a
   // stale videoCurrentTime from the previous scene would briefly compute
@@ -155,6 +171,30 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     if (videoRef.current) videoRef.current.playbackRate = playbackRate;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene?.id]);
+
+  useEffect(() => {
+    if (!scene || !progressSceneId || !shouldResumeProgress) return;
+    const saved = readLearningProgress(progressSceneId);
+    pendingRestoreVideoTimeRef.current = saved.videoTime;
+    const video = videoRef.current;
+    if (video && video.readyState >= 1) {
+      const maxTime = Number.isFinite(video.duration) ? Math.max(0, video.duration - 0.1) : saved.videoTime;
+      const restoredTime = Math.min(saved.videoTime, maxTime);
+      video.currentTime = restoredTime;
+      setVideoCurrentTime(restoredTime);
+      pendingRestoreVideoTimeRef.current = null;
+    }
+    const sectionId = {
+      watch: "section-watch",
+      dialogue: "section-dialogue",
+      language: "section-language",
+      pdf: "section-pdf",
+    }[saved.lastStep];
+    const timeoutId = window.setTimeout(() => {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: "auto", block: "start" });
+    }, 80);
+    return () => window.clearTimeout(timeoutId);
+  }, [progressSceneId, scene, shouldResumeProgress]);
 
   // Applies the selected speed to the live <video> element immediately on
   // change, and persists it — this is the ONLY place playbackRate is
@@ -174,6 +214,35 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   useEffect(() => {
     repeatLineRef.current = repeatLine;
   }, [repeatLine]);
+
+  useEffect(() => {
+    if (!progressSceneId) return;
+    const steps: Array<{ id: string; step: LearningStep; minimumPercent: number }> = [
+      { id: "section-watch", step: "watch", minimumPercent: 1 },
+      { id: "section-dialogue", step: "dialogue", minimumPercent: 25 },
+      { id: "section-language", step: "language", minimumPercent: 50 },
+      { id: "section-pdf", step: "pdf", minimumPercent: 75 },
+    ];
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      const config = steps.find(item => item.id === visible.target.id);
+      if (!config) return;
+      const current = readLearningProgress(progressSceneId);
+      writeLearningProgress(progressSceneId, {
+        percent: Math.max(current.percent, config.minimumPercent),
+        lastStep: config.step,
+        videoTime: videoRef.current?.currentTime ?? current.videoTime,
+      });
+    }, { threshold: 0.35, rootMargin: "-12% 0px -45% 0px" });
+    steps.forEach(({ id }) => {
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
+    });
+    return () => observer.disconnect();
+  }, [progressSceneId]);
 
   // Once the study heading reaches roughly the middle of the viewport on a
   // downward scroll, settle it just below the sticky navigation. This is a
@@ -593,10 +662,14 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   function playStudyLine(lineIndex: number) {
     const range = dialogueLineRawRanges.get(lineIndex);
     if (!range) return;
+    const linePosition = playableDialogueLineIndexes.indexOf(lineIndex);
+    const isLastLine = linePosition === playableDialogueLineIndexes.length - 1;
+    reportLearningProgress("dialogue", isLastLine ? 50 : 25, range.start);
     playDialogueLine(lineIndex, range);
   }
 
   function startSentenceListening() {
+    reportLearningProgress("dialogue", 25);
     repeatLineRef.current = false;
     setRepeatLine(false);
     setStudyTab("listening");
@@ -638,6 +711,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // the user's selected playbackRate untouched.
   function switchStudyTab(tab: StudyTabKey) {
     if (tab === studyTab) return;
+    reportLearningProgress("dialogue", 25);
     videoRef.current?.pause();
     cancelRangePlayback();
     if (tab === "dictation") {
@@ -768,10 +842,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             </p>
           </div>
           <div className="flex flex-wrap gap-2 lg:flex-nowrap lg:justify-self-end">
-            <a href="#section-watch" className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">视频 {scene.duration}</a>
-            <a href="#section-dialogue" className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">逐句 {content?.dialogue.length ?? 0} 句</a>
-            <a href="#section-language" className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">词汇 {keyExpressionItems.length} 个</a>
-            <a href="#section-pdf" className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">讲义 PDF</a>
+            <a href="#section-watch" onClick={() => reportLearningProgress("watch", 1)} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">视频 {scene.duration}</a>
+            <a href="#section-dialogue" onClick={() => reportLearningProgress("dialogue", 25)} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">逐句 {content?.dialogue.length ?? 0} 句</a>
+            <a href="#section-language" onClick={() => reportLearningProgress("language", 50)} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">词汇 {keyExpressionItems.length} 个</a>
+            <a href="#section-pdf" onClick={() => reportLearningProgress("pdf", 75)} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">讲义 PDF</a>
           </div>
         </div>
       </div>
@@ -834,6 +908,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         // line was last clicked.
                         if (activeEndRef.current === null) {
                           setPinnedLineIndex(null);
+                          reportLearningProgress("watch", 1, videoRef.current?.currentTime ?? 0);
                         }
                       }}
                       onPlaying={() => setVideoPaused(false)}
@@ -861,8 +936,15 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       onTimeUpdate={e => {
                         setVideoCurrentTime(e.currentTarget.currentTime);
                         if (!e.currentTarget.paused) setVideoPaused(false);
+                        const now = Date.now();
+                        if (now - lastVideoProgressWriteRef.current >= 1500) {
+                          lastVideoProgressWriteRef.current = now;
+                          const isDialoguePlayback = activeEndRef.current !== null;
+                          reportLearningProgress(isDialoguePlayback ? "dialogue" : "watch", isDialoguePlayback ? 25 : 1, e.currentTarget.currentTime);
+                        }
                       }}
                       onEnded={e => {
+                        reportLearningProgress("watch", 25, 0);
                         cancelRangePlayback();
                         e.currentTarget.currentTime = 0;
                         setVideoCurrentTime(0);
@@ -874,6 +956,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       // playbackRate effect above.
                       onLoadedMetadata={e => {
                         e.currentTarget.playbackRate = playbackRate;
+                        if (pendingRestoreVideoTimeRef.current !== null) {
+                          const maxTime = Number.isFinite(e.currentTarget.duration) ? Math.max(0, e.currentTarget.duration - 0.1) : pendingRestoreVideoTimeRef.current;
+                          const restoredTime = Math.min(pendingRestoreVideoTimeRef.current, maxTime);
+                          e.currentTarget.currentTime = restoredTime;
+                          setVideoCurrentTime(restoredTime);
+                          pendingRestoreVideoTimeRef.current = null;
+                        }
                       }}
                     >
                       <source src={scene.video_url} />
@@ -1193,6 +1282,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       href={scene.pdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => reportLearningProgress("pdf", 100)}
                       className="flex flex-shrink-0 items-center justify-center gap-2 rounded-full px-6 py-4 text-[14px] font-black transition-transform hover:scale-[1.02]"
                       style={{ backgroundColor: "#C8F169", color: "#12241C" }}
                     >

@@ -30,17 +30,24 @@ function ScrollToTop() {
     }
     prevKeyRef.current = location.key;
 
+    const isProgressResume = location.pathname.startsWith("/scenes/")
+      && new URLSearchParams(location.search).get("resume") === "1";
+
     if (location.hash) {
       requestAnimationFrame(() => {
         document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
+    } else if (isProgressResume) {
+      // SceneDetailPage restores the saved lesson step and video time.
+      // Do not start a competing smooth scroll to the top first.
+      return;
     } else if (navigationType === "POP" && scrollPositions.current.has(location.key)) {
       const savedY = scrollPositions.current.get(location.key)!;
       requestAnimationFrame(() => window.scrollTo({ top: savedY, behavior: "auto" }));
     } else {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [location.hash, location.key, navigationType]);
+  }, [location.hash, location.key, location.pathname, location.search, navigationType]);
 
   return null;
 }
