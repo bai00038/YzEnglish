@@ -10,8 +10,7 @@ import { getSceneProgressId, useLearningProgress } from "@/data/learning-progres
 export function SceneCard({ scene, collectionLabels = [], compact = false, resume = false }: { scene: Scene; collectionLabels?: string[]; compact?: boolean; resume?: boolean }) {
   const catColor = CATEGORY_BG[scene.category] ?? "bg-secondary";
   const progress = useLearningProgress(getSceneProgressId(scene));
-  const isComplete = progress.percent === 100;
-  const isInProgress = progress.percent > 0 && progress.percent < 100;
+  const hasProgress = progress.percent > 0;
   const sceneHref = `/scenes/${scene.slug}${resume ? "?resume=1" : ""}`;
   if (compact) {
     return (
@@ -25,13 +24,9 @@ export function SceneCard({ scene, collectionLabels = [], compact = false, resum
             <ImgBox label={scene.category} className={`h-full w-full ${catColor}`} />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-          {isComplete ? (
-            <span className="absolute right-2.5 top-2.5 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold text-white">✓ 已学完</span>
-          ) : (
-            <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-2.5 top-2.5" />
-          )}
+          <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-2.5 top-2.5" />
           <span className="absolute bottom-2.5 left-2.5 rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-medium text-white">{getSceneCategoryLabel(scene.category)}</span>
-          {isInProgress && (
+          {hasProgress && (
             <span role="progressbar" aria-label={`${scene.titleZh}学习进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percent} className="absolute inset-x-0 bottom-0 h-1 bg-white/35">
               <span className="block h-full bg-accent" style={{ width: `${progress.percent}%` }} />
             </span>
@@ -57,15 +52,11 @@ export function SceneCard({ scene, collectionLabels = [], compact = false, resum
           <ImgBox label={scene.category} className={`w-full h-full ${catColor}`} />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
-        {isComplete ? (
-          <span className="absolute right-3.5 top-3.5 rounded-full bg-primary px-3 py-1.5 text-[11px] font-bold text-white">✓ 已学完</span>
-        ) : (
-          <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-3.5 top-3.5" />
-        )}
+        <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-3.5 top-3.5" />
         <span className="absolute bottom-3.5 left-3.5 rounded-full bg-primary px-3 py-1.5 text-[12px] font-medium text-white">
           {getSceneCategoryLabel(scene.category)}
         </span>
-        {isInProgress && (
+        {hasProgress && (
           <span role="progressbar" aria-label={`${scene.titleZh}学习进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percent} className="absolute inset-x-0 bottom-0 h-1 bg-white/35">
             <span className="block h-full bg-accent" style={{ width: `${progress.percent}%` }} />
           </span>

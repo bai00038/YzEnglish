@@ -55,16 +55,14 @@ export function CollectionPage() {
           {collection.scenes.length ? collection.scenes.map((scene, index) => {
             const isLive = scene.status === "live";
             const sceneProgress = progressByScene[getSceneProgressId(scene)];
-            const sceneIsComplete = sceneProgress?.percent === 100;
-            const sceneIsInProgress = Boolean(sceneProgress && sceneProgress.percent > 0 && sceneProgress.percent < 100);
+            const sceneHasProgress = Boolean(sceneProgress && sceneProgress.percent > 0);
             const number = String(scene.collectionOrder ?? index + 1).padStart(2, "0");
             const row = (
               <div className={`grid gap-4 p-4 md:min-h-[120px] md:grid-cols-[48px_184px_minmax(0,1fr)_auto] md:items-center md:p-2.5 ${isLive ? "transition-colors hover:bg-secondary/60" : "bg-secondary/55 text-muted-foreground grayscale"}`}>
                 <span className="display-serif text-[27px] font-bold italic text-primary/70">{number}</span>
                 <div className="relative aspect-video w-full overflow-hidden rounded-[12px] bg-primary/90 md:w-[184px]">
                   {scene.photo ? <img src={scene.photo} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[radial-gradient(circle_at_70%_30%,rgba(200,241,105,.3),transparent_26%),linear-gradient(145deg,#315848,#0f3527)]" />}
-                  {sceneIsComplete && <span className="absolute right-2 top-2 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold text-white">✓ 已学完</span>}
-                  {sceneIsInProgress && (
+                  {sceneHasProgress && (
                     <span role="progressbar" aria-label={`${scene.titleZh}学习进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={sceneProgress.percent} className="absolute inset-x-0 bottom-0 h-1 bg-white/35">
                       <span className="block h-full bg-accent" style={{ width: `${sceneProgress.percent}%` }} />
                     </span>
