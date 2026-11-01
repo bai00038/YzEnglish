@@ -3,6 +3,7 @@ import { ArrowRight, CheckCircle2, LockKeyhole, QrCode } from "lucide-react";
 import { Link } from "react-router";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/app/components/ui/dialog";
 import { membershipTypeLabel, redeemMembershipCode } from "@/data/membership";
+import { TEST_MODE } from "@/config/site";
 
 export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void }) {
   const [code, setCode] = useState("");
@@ -56,35 +57,45 @@ export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void 
       </section>
 
       <section className="rounded-[20px] border border-primary/15 bg-secondary p-6 md:rounded-l-none md:border-l-0 md:p-8">
-        <p className="text-[11px] font-black uppercase tracking-[.16em] text-muted-foreground">还没有兑换码</p>
-        <h3 className="mt-3 font-['Noto_Serif_SC'] text-2xl font-bold text-primary">开通会员</h3>
-        <p className="mt-4 text-sm leading-relaxed text-secondary-foreground">会员可学全部场景：完整视频 + 逐句精听 + 配套讲义 PDF。</p>
-        <div className="mt-4 overflow-hidden rounded-[14px] border border-primary/15 bg-white/55 text-sm font-black text-primary">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-primary/10 px-4 py-2.5">
-            <span>创始会员</span>
-            <span className="whitespace-nowrap">¥199 终身（限 50 席）</span>
+        {TEST_MODE ? (
+          <div className="flex h-full min-h-[220px] items-center">
+            <p className="font-['Noto_Serif_SC'] text-lg font-bold leading-9 text-primary">
+              现在是测试阶段，会员暂未开放购买。兑换码由 Aria 发给测试用户，拿到码后在左侧输入即可解锁。
+            </p>
           </div>
-          <div className="flex items-baseline justify-between gap-4 border-b border-primary/10 px-4 py-2.5">
-            <span>年会员</span>
-            <span className="whitespace-nowrap">¥99/年</span>
-          </div>
-          <div className="flex items-baseline justify-between gap-4 px-4 py-2.5">
-            <span>月会员</span>
-            <span className="whitespace-nowrap">¥12.9/月</span>
-          </div>
-        </div>
-        <p className="mt-5 text-sm font-bold leading-8 text-secondary-foreground">
-          ① 扫码添加 Aria 企业微信<br />
-          ② 微信转账付款<br />
-          ③ Aria 发你专属兑换码，回来输入即可解锁
-        </p>
-        <div className="mt-5 flex items-center gap-5">
-          <div className="relative grid h-32 w-32 flex-none place-items-center overflow-hidden rounded-[14px] border border-primary/15 bg-white p-0.5">
-            {!qrMissing && <img src="/images/wecom-qr.png" alt="企业微信二维码" className="h-full w-full object-contain" onError={() => setQrMissing(true)} />}
-            {qrMissing && <div className="text-center text-primary"><QrCode className="mx-auto h-9 w-9" /><span className="mt-1 block text-[10px] font-bold">企业微信二维码<br />待替换</span></div>}
-          </div>
-          <p className="text-xs leading-relaxed text-muted-foreground">扫码后请备注<br /><strong className="text-primary">YZ English 会员</strong></p>
-        </div>
+        ) : (
+          <>
+            <p className="text-[11px] font-black uppercase tracking-[.16em] text-muted-foreground">还没有兑换码</p>
+            <h3 className="mt-3 font-['Noto_Serif_SC'] text-2xl font-bold text-primary">开通会员</h3>
+            <p className="mt-4 text-sm leading-relaxed text-secondary-foreground">会员可学全部场景：完整视频 + 逐句精听 + 配套讲义 PDF。</p>
+            <div className="mt-4 overflow-hidden rounded-[14px] border border-primary/15 bg-white/55 text-sm font-black text-primary">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-primary/10 px-4 py-2.5">
+                <span>创始会员</span>
+                <span className="whitespace-nowrap">¥199 终身（限 50 席）</span>
+              </div>
+              <div className="flex items-baseline justify-between gap-4 border-b border-primary/10 px-4 py-2.5">
+                <span>年会员</span>
+                <span className="whitespace-nowrap">¥99/年</span>
+              </div>
+              <div className="flex items-baseline justify-between gap-4 px-4 py-2.5">
+                <span>月会员</span>
+                <span className="whitespace-nowrap">¥12.9/月</span>
+              </div>
+            </div>
+            <p className="mt-5 text-sm font-bold leading-8 text-secondary-foreground">
+              ① 扫码添加 Aria 企业微信<br />
+              ② 微信转账付款<br />
+              ③ Aria 发你专属兑换码，回来输入即可解锁
+            </p>
+            <div className="mt-5 flex items-center gap-5">
+              <div className="relative grid h-32 w-32 flex-none place-items-center overflow-hidden rounded-[14px] border border-primary/15 bg-white p-0.5">
+                {!qrMissing && <img src="/images/wecom-qr.png" alt="企业微信二维码" className="h-full w-full object-contain" onError={() => setQrMissing(true)} />}
+                {qrMissing && <div className="text-center text-primary"><QrCode className="mx-auto h-9 w-9" /><span className="mt-1 block text-[10px] font-bold">企业微信二维码<br />待替换</span></div>}
+              </div>
+              <p className="text-xs leading-relaxed text-muted-foreground">扫码后请备注<br /><strong className="text-primary">YZ English 会员</strong></p>
+            </div>
+          </>
+        )}
       </section>
 
       <Link to="/#free" className="inline-flex items-center gap-1 text-sm font-bold text-primary underline-offset-4 hover:underline md:col-span-2 md:mt-3 md:justify-center">
