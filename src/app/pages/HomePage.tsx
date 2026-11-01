@@ -99,7 +99,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
 
       <section className="mx-auto max-w-[1180px] border-t border-border px-5 pb-2 pt-9 md:px-8" id="scenes">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
-          <h2 className="font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">别慌，我们一个一个来。 <span className="display-serif text-[17px] font-medium italic text-muted-foreground">Don't panic. We'll take them one by one.</span></h2>
+          <h2 className="font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">免费体验区</h2>
           <p className="max-w-[360px] text-[13px] leading-relaxed text-muted-foreground">挑一个场景，看完完整对话，把那几句练到脱口而出。</p>
         </div>
 

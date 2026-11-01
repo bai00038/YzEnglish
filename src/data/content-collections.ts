@@ -82,6 +82,7 @@ export const PLANNED_FREE_SCENES = [
     duration: "",
     featured: false,
     desc: "在早午餐餐厅听懂鸡蛋做法、配菜和连续选择题，自然完成点单。",
+    photo: "/scenes/DL-01-007-brunch-eggs.jpg",
     collectionId: "C7",
     collectionOrder: 3,
     tags: ["dining", "daily"],

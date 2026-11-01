@@ -40,6 +40,12 @@ const PDF_URL_OVERRIDES: Record<string, string> = {
     "https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/content/FD-01-001/FD-01-001-Ordering%20a%20Pizza%20by%20Phone%20for%20Pickup.pdf",
 };
 
+// Keep the established Brunch artwork available while the planned episode is
+// still missing a cover URL in the remote manifest.
+const PHOTO_URL_OVERRIDES: Record<string, string> = {
+  "DL-01-007": "/scenes/DL-01-007-brunch-eggs.jpg",
+};
+
 export interface ManifestScene {
   id: number;
   slug: string;
@@ -131,7 +137,7 @@ export function manifestEntryToScene(entry: ManifestScene): Scene {
     isHot: entry.isHot === true,
     publishedAt: entry.publishedAt,
     desc: entry.desc,
-    photo: entry.photo ?? undefined,
+    photo: PHOTO_URL_OVERRIDES[entry.externalId] ?? entry.photo ?? undefined,
     pdfUrl: PDF_URL_OVERRIDES[entry.slug] ?? entry.pdfUrl ?? undefined,
     video_url: entry.video_url ?? undefined,
     collectionId: entry.collectionId ?? fallback?.collectionId,
