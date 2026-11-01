@@ -1,7 +1,6 @@
 import { Search, X } from "lucide-react";
 import { CollectionCard } from "@/app/components/CollectionCard";
 import { FreeExperienceCard } from "@/app/components/FreeExperienceCard";
-import { SceneCard } from "@/app/components/SceneCard";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { useCollections, useFreeTrialScenes } from "@/data/collections-access";
 import { COLLECTION_TAGS } from "@/data/content-collections";
@@ -17,25 +16,15 @@ export function ExplorePage({
   const { data: freeData, loading: freeLoading, error: freeError } = useFreeTrialScenes();
   const collections = collectionsData ?? [];
   const catalogueTags = [{ id: "All", label: "全部" }, ...COLLECTION_TAGS];
-  const filteredCollections = activeCategory === "All"
-    ? collections
-    : collections.filter(collection => collection.tagId === activeCategory);
-  const collectionNames = new Map(collections.map(collection => [collection.id, collection.name]));
-  const allLiveScenes = collections
-    .flatMap(collection => collection.scenes)
-    .filter(scene => scene.status === "live");
   const query = searchQuery.trim().toLowerCase();
-  const filteredScenes = allLiveScenes.filter(scene => {
-    const matchesTag = activeCategory === "All" || (scene.tags ?? []).includes(activeCategory);
-    const matchesQuery = !query || [scene.titleEn, scene.titleZh, scene.desc]
-      .some(value => value.toLowerCase().includes(query));
+  const filteredCollections = collections.filter(collection => {
+    const matchesTag = activeCategory === "All" || collection.tagId === activeCategory;
+    const matchesQuery = !query || [collection.name, collection.titleEn, collection.tagline]
+      .some(value => value.toLowerCase().includes(query))
+      || collection.scenes.some(scene => [scene.titleEn, scene.titleZh, scene.desc]
+        .some(value => value.toLowerCase().includes(query)));
     return matchesTag && matchesQuery;
   });
-
-  const clearFilters = () => {
-    setActiveCategory("All");
-    setSearchQuery("");
-  };
 
   return (
     <div>
@@ -92,36 +81,15 @@ export function ExplorePage({
           <p className="editorial-kicker">Collections · 合集货架</p>
           <h2 className="mt-2 font-['Noto_Serif_SC'] text-[30px] font-bold text-primary md:text-[36px]">按一条完整内容线来学</h2>
         </div>
-        {loading ? <LoadingState label="Loading collections…" /> : error ? <ErrorState message={error} /> : (
+        {loading ? <LoadingState label="Loading collections…" /> : error ? <ErrorState message={error} /> : filteredCollections.length ? (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {filteredCollections.map(collection => <CollectionCard key={collection.id} collection={collection} />)}
           </div>
+        ) : (
+          <div className="rounded-2xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">没有找到匹配的合集，换个关键词或标签试试。</div>
         )}
       </section>
 
-      <section className="border-t border-border bg-secondary">
-        <div className="mx-auto max-w-[1180px] px-5 py-12 md:px-8 md:py-16">
-          <div className="mb-7">
-            <p className="editorial-kicker">All scenes</p>
-            <h2 className="mt-2 font-['Noto_Serif_SC'] text-[30px] font-bold text-primary md:text-[36px]">全部场景 · 快速查找</h2>
-          </div>
-          <div className="mb-6 flex items-baseline gap-4">
-            <p className="text-[15px] text-foreground">共 <b className="display-serif mx-0.5 text-[22px] text-primary">{filteredScenes.length}</b> 个场景</p>
-            {(activeCategory !== "All" || searchQuery) && <button onClick={clearFilters} className="text-sm text-muted-foreground underline underline-offset-4 hover:text-primary">清除筛选</button>}
-          </div>
-          {filteredScenes.length ? (
-            <div className="grid grid-cols-1 gap-[26px] sm:grid-cols-2 lg:grid-cols-3">
-              {filteredScenes.map(scene => <SceneCard key={scene.externalId ?? scene.id} scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />)}
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-dashed border-border py-16 text-center text-muted-foreground">
-              <Search size={28} className="mx-auto mb-3 opacity-30" />
-              <p className="font-['Noto_Serif_SC'] text-[20px] font-bold text-foreground">没有找到匹配的场景</p>
-              <p className="mt-1 text-sm">换个关键词或清除筛选试试。</p>
-            </div>
-          )}
-        </div>
-      </section>
     </div>
   );
 }
