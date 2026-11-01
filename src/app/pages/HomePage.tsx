@@ -50,7 +50,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
   const scenes = (freeData ?? []).map(({ scene }) => scene);
   return (
     <div className="bg-background">
-      <header className="mx-auto max-w-[1180px] px-5 py-7 md:px-8 md:py-9">
+      <header className="mx-auto max-w-[1180px] px-5 py-6 md:px-8 md:py-7">
         <div className="grid gap-7 md:grid-cols-[.9fr_1.1fr] md:items-center md:gap-10">
           <div>
             <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Canada · 真实生活英语</p>
@@ -65,24 +65,24 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
             </div>
           </div>
 
-          <div className="relative isolate flex min-h-0 items-center justify-center px-1 py-2 md:min-h-[430px] md:py-2.5">
-            <span className="pointer-events-none absolute -bottom-6 -left-5 z-0 h-[280px] w-[280px] rounded-full bg-accent/25 md:-bottom-9 md:-left-10 md:h-[340px] md:w-[340px]" />
-            <figure className="relative z-10 w-[92%] max-w-[380px]">
+          <div className="relative isolate flex min-h-0 items-center justify-center px-1 py-1 md:min-h-[360px] md:py-1.5">
+            <span className="pointer-events-none absolute -bottom-5 -left-3 z-0 h-[230px] w-[230px] rounded-full bg-accent/25 md:-bottom-7 md:left-0 md:h-[270px] md:w-[270px]" />
+            <figure className="relative z-10 w-[84%] max-w-[320px]">
               <img
                 src="/hero-aria-cafe.jpg"
                 alt="咖啡馆窗边，Aria 微笑着低头看自己的手机，自然地学英语"
                 className="block aspect-[4/5] w-full rounded-[26px] object-cover shadow-[0_26px_52px_rgba(18,36,28,.22)]"
               />
-              <figcaption className="absolute -left-2 top-[15%] flex max-w-[62%] items-start gap-2 rounded-[14px] border border-border bg-white px-3.5 py-2.5 shadow-[0_14px_30px_rgba(18,36,28,.14)] md:-left-[22px]">
+              <figcaption className="absolute -left-2 top-[15%] flex max-w-[66%] items-start gap-2 rounded-[13px] border border-border bg-white px-3 py-2 shadow-[0_12px_24px_rgba(18,36,28,.12)] md:-left-[18px]">
                 <span className="mt-[5px] h-[7px] w-[7px] flex-none rounded-full bg-accent" />
-                <p className="text-[13.5px] font-semibold leading-[1.5] text-foreground">每天几分钟，吃透一个场景</p>
+                <p className="text-[12.5px] font-semibold leading-[1.5] text-foreground">每天几分钟，吃透一个场景</p>
               </figcaption>
             </figure>
           </div>
         </div>
       </header>
 
-      <section className="mx-auto max-w-[1180px] scroll-mt-24 border-t border-border px-5 pb-2 pt-9 md:px-8" id="free">
+      <section className="mx-auto max-w-[1180px] scroll-mt-24 px-5 pb-2 pt-7 md:px-8" id="free">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Free Experience</p>
