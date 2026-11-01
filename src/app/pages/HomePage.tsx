@@ -1,6 +1,5 @@
 import { Link } from "react-router";
-import { ArrowRight, Clock3, Play, Volume2 } from "lucide-react";
-import { useLatestScenes } from "@/data/scenes-access";
+import { ArrowRight, Play, Volume2 } from "lucide-react";
 import { useFreeTrialScenes } from "@/data/collections-access";
 import type { Scene } from "@/data/types";
 import { getSceneCategoryLabel } from "@/data/scene-categories";
@@ -47,9 +46,8 @@ const demoLines = [
 ];
 
 export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
-  const { data: latestData, loading: latestLoading, error: latestError } = useLatestScenes(3);
   const { data: freeData, loading: freeLoading, error: freeError } = useFreeTrialScenes();
-  const scenes = latestData ?? [];
+  const scenes = (freeData ?? []).map(({ scene }) => scene);
   return (
     <div className="bg-background">
       <header className="mx-auto max-w-[1180px] px-5 py-7 md:px-8 md:py-9">
@@ -67,43 +65,33 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
             </div>
           </div>
 
-          <div id="free" className="scroll-mt-4 rounded-[22px] border border-primary/15 bg-secondary/70 p-4 md:p-5">
-            <div className="mb-3 flex items-baseline justify-between gap-3">
-              <h2 className="font-['Noto_Serif_SC'] text-[18px] font-bold text-primary">免费体验 · 先学完一整集</h2>
-              <span className="text-[11px] text-muted-foreground">无需注册</span>
-            </div>
-            {freeLoading ? <LoadingState label="Loading free experience…" /> : freeError ? <ErrorState message={freeError} /> : (
-              <div className="space-y-2.5">
-                {(freeData ?? []).map(({ scene, collectionLabel }) => {
-                  const isLive = scene.status === "live";
-                  const content = (
-                    <>
-                      <div className="h-[68px] w-[120px] flex-none overflow-hidden rounded-[10px] bg-primary/90">
-                        {scene.photo ? <img src={scene.photo} alt="" className={`h-full w-full object-cover ${isLive ? "" : "grayscale opacity-45"}`} /> : <div className="h-full w-full bg-[radial-gradient(circle_at_70%_25%,rgba(200,241,105,.35),transparent_28%),linear-gradient(145deg,#315848,#0f3527)]" />}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-[10px] font-bold text-muted-foreground">{collectionLabel}</p>
-                        <p className="mt-1 truncate font-['Noto_Serif_SC'] text-[14px] font-bold text-primary">{scene.titleZh || scene.titleEn}</p>
-                      </div>
-                      <span className="flex shrink-0 items-center gap-1 text-[12px] font-bold text-primary">{isLive ? <>开始学习 <ArrowRight size={13} /></> : <><Clock3 size={13} /> 即将上线</>}</span>
-                    </>
-                  );
-                  const className = "flex h-[82px] items-center gap-3 rounded-[14px] border border-border bg-card p-1.5 pr-3";
-                  return isLive ? <Link key={scene.externalId ?? scene.id} to={`/scenes/${scene.slug}`} className={`${className} transition-colors hover:border-primary/30`}>{content}</Link> : <div key={scene.externalId ?? scene.id} className={`${className} opacity-75`} aria-disabled="true">{content}</div>;
-                })}
-              </div>
-            )}
+          <div className="relative isolate flex min-h-0 items-center justify-center px-1 py-2 md:min-h-[430px] md:py-2.5">
+            <span className="pointer-events-none absolute -bottom-6 -left-5 z-0 h-[280px] w-[280px] rounded-full bg-accent/25 md:-bottom-9 md:-left-10 md:h-[340px] md:w-[340px]" />
+            <figure className="relative z-10 w-[92%] max-w-[380px]">
+              <img
+                src="/hero-aria-cafe.jpg"
+                alt="咖啡馆窗边，Aria 微笑着低头看自己的手机，自然地学英语"
+                className="block aspect-[4/5] w-full rounded-[26px] object-cover shadow-[0_26px_52px_rgba(18,36,28,.22)]"
+              />
+              <figcaption className="absolute -left-2 top-[15%] flex max-w-[62%] items-start gap-2 rounded-[14px] border border-border bg-white px-3.5 py-2.5 shadow-[0_14px_30px_rgba(18,36,28,.14)] md:-left-[22px]">
+                <span className="mt-[5px] h-[7px] w-[7px] flex-none rounded-full bg-accent" />
+                <p className="text-[13.5px] font-semibold leading-[1.5] text-foreground">每天几分钟，吃透一个场景</p>
+              </figcaption>
+            </figure>
           </div>
         </div>
       </header>
 
-      <section className="mx-auto max-w-[1180px] border-t border-border px-5 pb-2 pt-9 md:px-8" id="scenes">
+      <section className="mx-auto max-w-[1180px] scroll-mt-24 border-t border-border px-5 pb-2 pt-9 md:px-8" id="free">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
-          <h2 className="font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">免费体验区</h2>
-          <p className="max-w-[360px] text-[13px] leading-relaxed text-muted-foreground">挑一个场景，看完完整对话，把那几句练到脱口而出。</p>
+          <div>
+            <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Free Experience</p>
+            <h2 className="mt-2 font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">免费体验区</h2>
+          </div>
+          <p className="max-w-[360px] text-[13px] leading-relaxed text-muted-foreground">无需注册</p>
         </div>
 
-        {latestLoading ? <LoadingState label="Loading scenes…" /> : latestError ? <ErrorState message={latestError} /> : scenes.length ? (
+        {freeLoading ? <LoadingState label="Loading free experience…" /> : freeError ? <ErrorState message={freeError} /> : scenes.length ? (
           <div className="grid gap-3.5 md:grid-cols-[1.25fr_.85fr_.85fr]">{scenes.map((scene, index) => <EditorialScene key={scene.id} scene={scene} large={index === 0} />)}</div>
         ) : <EmptyState title="No scenes yet." />}
         <div className="mt-5 text-center"><Link to="/explore" onClick={onExploreEnter} className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white">进入场景库 <ArrowRight size={15} /></Link></div>
