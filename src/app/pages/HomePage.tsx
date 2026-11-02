@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, Play } from "lucide-react";
 import { useFreeTrialScenes } from "@/data/collections-access";
@@ -5,7 +6,7 @@ import type { Scene } from "@/data/types";
 import { getSceneCategoryLabel } from "@/data/scene-categories";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 import { SceneBadges } from "@/app/components/SceneBadges";
-import { DialogueTranscriptCard } from "@/app/components/DialogueTranscriptCard";
+import { SentenceListeningCard } from "@/app/components/SentenceListeningCard";
 
 function EditorialScene({ scene, large = false }: { scene: Scene; large?: boolean }) {
   return (
@@ -45,6 +46,41 @@ const demoLines = [
   { speaker: "You", speakerZh: "你", en: "Yes — and this tooth has been bothering me.", zh: "来过，而且这颗牙最近有点不舒服。" },
   { speaker: "Front", speakerZh: "前台", en: "We'll take a look first, then go from there.", zh: "我们先检查一下，再决定下一步。" },
 ];
+
+function SentenceListeningDemo() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState(1);
+  const [repeatLine, setRepeatLine] = useState(false);
+  const [bilingualMode, setBilingualMode] = useState(true);
+  const line = demoLines[activeIndex];
+
+  function moveLine(direction: -1 | 1) {
+    setIsPlaying(false);
+    setActiveIndex(index => Math.min(demoLines.length - 1, Math.max(0, index + direction)));
+  }
+
+  return (
+    <SentenceListeningCard
+      line={line}
+      speakerLabel={line.speaker}
+      speakerZh={line.speakerZh}
+      isLearner={line.speaker.toLowerCase() === "you"}
+      position={activeIndex}
+      total={demoLines.length}
+      isPlaying={isPlaying}
+      onTogglePlay={() => setIsPlaying(value => !value)}
+      onPrevious={() => moveLine(-1)}
+      onNext={() => moveLine(1)}
+      playbackRate={playbackRate}
+      onPlaybackRateChange={setPlaybackRate}
+      repeatLine={repeatLine}
+      onRepeatLineChange={setRepeatLine}
+      bilingualMode={bilingualMode}
+      onBilingualModeChange={setBilingualMode}
+    />
+  );
+}
 
 export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
   const { data: freeData, loading: freeLoading, error: freeError } = useFreeTrialScenes();
@@ -119,7 +155,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
             </div>
 
             <div className="min-w-0 text-foreground">
-              <DialogueTranscriptCard lines={demoLines} initialActiveIndex={0} />
+              <SentenceListeningDemo />
             </div>
           </div>
         </div>

@@ -1,13 +1,14 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useParams, useSearchParams } from "react-router";
-import { ChevronRight, ChevronLeft, Download, Info, LockKeyhole, Pause, Play } from "lucide-react";
+import { ChevronRight, ChevronLeft, Download, Info, LockKeyhole, Play } from "lucide-react";
 import { useSceneDetail } from "@/data/scenes-access";
 import { useCollection } from "@/data/collections-access";
 import { getSceneCategoryLabel } from "@/data/scene-categories";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
 import { MembershipUnlockModal } from "@/app/components/MembershipUnlockModal";
-import { buildSceneSpeakers, normalizeSpeaker, speakerAvatarLabel, SPEAKER_STYLES } from "@/data/speakerRoles";
+import { SentenceListeningCard } from "@/app/components/SentenceListeningCard";
+import { buildSceneSpeakers, normalizeSpeaker, SPEAKER_STYLES } from "@/data/speakerRoles";
 import { getSceneProgressId, readLearningProgress, updateLearningPosition, writeLearningProgress, type LearningStep } from "@/data/learning-progress";
 import { useMembershipAccess } from "@/data/membership";
 import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
@@ -1207,128 +1208,27 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   onComplete={markDictationCompleted}
                 />
               ) : (
-                <div className="min-h-[520px] rounded-[24px] border border-border bg-white p-3 shadow-[0_14px_38px_rgba(15,53,39,0.08)] md:p-5">
-                  {currentStudyLine && currentStudyLineIndex !== null ? (
-                    <div className="grid min-h-[250px] w-full grid-cols-[56px_minmax(0,1fr)] items-center gap-5 rounded-[20px] bg-[#F5F1E8] px-5 py-8 text-left md:grid-cols-[68px_minmax(0,1fr)] md:gap-8 md:px-10 md:py-10">
-                      <span
-                        className="flex h-14 w-14 items-center justify-center rounded-full text-[14px] font-black text-white md:h-[68px] md:w-[68px] md:text-[16px]"
-                        style={{ backgroundColor: currentStudyIsLearner ? "#0F3A2B" : "#9A7533" }}
-                      >
-                        {speakerAvatarLabel(currentStudySpeakerLabel)}
-                      </span>
-
-                      <span className="min-w-0">
-                        <span className="block text-[15px] font-black text-primary md:text-[17px]">
-                          {currentStudyIsLearner ? "你" : (currentStudySpeaker?.zh || currentStudySpeakerLabel)}
-                        </span>
-                        <span className="mt-3 block font-serif text-[25px] leading-snug text-primary md:text-[34px]">
-                          {currentStudyLine.en}
-                        </span>
-                        {bilingualMode && (
-                          <span className="mt-3 block text-[15px] leading-relaxed text-muted-foreground md:text-[18px]">
-                            {currentStudyLine.zh}
-                          </span>
-                        )}
-                      </span>
-
-                    </div>
-                  ) : (
-                    <div className="flex min-h-[250px] items-center justify-center rounded-[20px] bg-secondary px-6 text-center text-sm font-semibold text-muted-foreground">
-                      该场景暂未配置逐句播放时间点。
-                    </div>
-                  )}
-
-                  <div className="mt-4 rounded-[18px] border border-primary/10 bg-card p-3.5 md:p-4">
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-center justify-center gap-4 md:gap-6">
-                        <button
-                          type="button"
-                          onClick={() => moveStudyLine(-1)}
-                          disabled={currentStudyLinePosition <= 0}
-                          className="rounded-full border border-border bg-white px-4 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35 md:px-5 md:py-3"
-                        >
-                          ← 上一句
-                        </button>
-                        <button
-                          type="button"
-                          onClick={toggleCurrentStudyLine}
-                          disabled={currentStudyLineIndex === null}
-                          aria-label={isCurrentStudyLinePlaying ? "暂停当前句" : "播放当前句"}
-                          className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-[0_8px_18px_rgba(15,53,39,0.2)] transition-transform hover:scale-105 disabled:opacity-40 md:h-16 md:w-16"
-                        >
-                          {isCurrentStudyLinePlaying
-                            ? <Pause className="h-5 w-5 fill-current" />
-                            : <Play className="ml-0.5 h-5 w-5 fill-current" />}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => moveStudyLine(1)}
-                          disabled={currentStudyLinePosition < 0 || currentStudyLinePosition >= playableDialogueLineIndexes.length - 1}
-                          className="rounded-full border border-border bg-white px-4 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35 md:px-5 md:py-3"
-                        >
-                          下一句 →
-                        </button>
-                      </div>
-                      <span className="mt-2 text-[12px] font-black tabular-nums text-primary">
-                        {currentStudyLinePosition + 1} / {playableDialogueLineIndexes.length}
-                      </span>
-                    </div>
-
-                    <div className="mt-4 flex flex-wrap items-center justify-center gap-4 border-t border-border/70 pt-4 md:gap-7">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[12px] font-bold text-muted-foreground">速度</span>
-                        <div className="flex items-center gap-2">
-                          {PLAYBACK_RATES.map(rate => (
-                            <button
-                              key={rate}
-                              type="button"
-                              onClick={() => setPlaybackRate(rate)}
-                              aria-pressed={playbackRate === rate}
-                              className={`rounded-full border px-4 py-2 text-[12px] font-black transition-colors ${playbackRate === rate ? "border-accent bg-accent text-primary" : "border-border bg-white text-primary"}`}
-                            >
-                              {rate}×
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => setRepeatLine(value => {
-                          const nextValue = !value;
-                          repeatLineRef.current = nextValue;
-                          return nextValue;
-                        })}
-                        aria-pressed={repeatLine}
-                        className={`rounded-full border px-4 py-2 text-[12px] font-black transition-colors ${repeatLine ? "border-accent bg-accent text-primary" : "border-border bg-white text-primary"}`}
-                      >
-                        循环 · {repeatLine ? "开" : "关"}
-                      </button>
-
-                      <div className="flex items-center gap-2">
-                        <span className="text-[12px] font-bold text-muted-foreground">文本</span>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setBilingualMode(false)}
-                            aria-pressed={!bilingualMode}
-                            className={`rounded-full border px-4 py-2 text-[12px] font-black transition-colors ${!bilingualMode ? "border-accent bg-accent text-primary" : "border-border bg-white text-primary"}`}
-                          >
-                            英文
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setBilingualMode(true)}
-                            aria-pressed={bilingualMode}
-                            className={`rounded-full border px-4 py-2 text-[12px] font-black transition-colors ${bilingualMode ? "border-accent bg-accent text-primary" : "border-border bg-white text-primary"}`}
-                          >
-                            双语
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <SentenceListeningCard
+                  line={currentStudyLine ?? null}
+                  speakerLabel={currentStudySpeakerLabel}
+                  speakerZh={currentStudyIsLearner ? "你" : (currentStudySpeaker?.zh || currentStudySpeakerLabel)}
+                  isLearner={currentStudyIsLearner}
+                  position={currentStudyLinePosition}
+                  total={playableDialogueLineIndexes.length}
+                  isPlaying={isCurrentStudyLinePlaying}
+                  onTogglePlay={toggleCurrentStudyLine}
+                  onPrevious={() => moveStudyLine(-1)}
+                  onNext={() => moveStudyLine(1)}
+                  playbackRate={playbackRate}
+                  onPlaybackRateChange={setPlaybackRate}
+                  repeatLine={repeatLine}
+                  onRepeatLineChange={value => {
+                    repeatLineRef.current = value;
+                    setRepeatLine(value);
+                  }}
+                  bilingualMode={bilingualMode}
+                  onBilingualModeChange={setBilingualMode}
+                />
               )}
 
             </section>
