@@ -5,7 +5,7 @@ import { SceneCard } from "@/app/components/SceneCard";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { useCollections } from "@/data/collections-access";
 import { COLLECTION_TAGS } from "@/data/content-collections";
-import { getCollectionLearningProgress, getSceneProgressId, useAllLearningProgress } from "@/data/learning-progress";
+import { getSceneProgressId, useAllLearningProgress } from "@/data/learning-progress";
 
 const CATALOGUE_TAGS = [{ id: "All", label: "全部" }, ...COLLECTION_TAGS];
 
@@ -97,7 +97,7 @@ export function ExplorePage({
             </div>
             {filteredScenes.length ? (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                {filteredScenes.map(scene => <SceneCard compact key={scene.externalId ?? scene.id} scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />)}
+                {filteredScenes.map(scene => <SceneCard compact showProgress={false} key={scene.externalId ?? scene.id} scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />)}
               </div>
             ) : <div className="rounded-2xl border border-dashed border-border py-10 text-center text-sm text-muted-foreground">没有找到匹配的场景，换个关键词或标签试试。</div>}
           </section>
@@ -115,12 +115,12 @@ export function ExplorePage({
                 <div className="flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden">
                   {continueScenes.map(scene => (
                     <div key={scene.externalId ?? scene.id} className="flex w-[78vw] flex-none snap-start">
-                      <SceneCard compact resume scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />
+                      <SceneCard compact resume showProgress={false} scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />
                     </div>
                   ))}
                 </div>
                 <div className="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
-                  {continueScenes.map(scene => <SceneCard compact resume key={scene.externalId ?? scene.id} scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />)}
+                  {continueScenes.map(scene => <SceneCard compact resume showProgress={false} key={scene.externalId ?? scene.id} scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />)}
                 </div>
               </section>
             )}
@@ -134,32 +134,20 @@ export function ExplorePage({
                   </div>
                 );
               }
-              const collectionProgress = getCollectionLearningProgress(liveScenes, progressByScene);
               return (
                 <section key={collection.id} aria-labelledby={`collection-${collection.id}`}>
                   <div className="mb-2 flex items-end justify-between gap-4 border-b border-border pb-2">
                     <div className="min-w-0 md:flex md:items-baseline md:gap-3">
                       <h2 id={`collection-${collection.id}`} className="shrink-0 font-['Noto_Serif_SC'] text-[22px] font-bold leading-tight text-primary">{collection.name}</h2>
                       <p className="mt-1 truncate text-[12px] text-muted-foreground md:mt-0">{collection.tagline}</p>
-                      <span className="mt-1 block shrink-0 text-[12px] font-semibold text-secondary-foreground md:mt-0">
-                        {collectionProgress.isComplete
-                          ? `共 ${collectionProgress.totalCount} 集 · ✓ 整套已学完`
-                          : collectionProgress.hasAnyProgress
-                            ? `共 ${collectionProgress.totalCount} 集 · 已学完 ${collectionProgress.completedCount} 集`
-                            : `共 ${collectionProgress.totalCount} 集`}
-                      </span>
+                      <span className="mt-1 block shrink-0 text-[12px] font-semibold text-secondary-foreground md:mt-0">共 {liveScenes.length} 集</span>
                     </div>
                     <Link to={`/collections/${collection.id}`} className="shrink-0 text-[13px] font-bold text-primary hover:underline">查看全部 →</Link>
                   </div>
-                  {collectionProgress.hasAnyProgress && (
-                    <div role="progressbar" aria-label={`${collection.name}合集进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={collectionProgress.percent} className="mb-2 h-[3px] overflow-hidden rounded-full bg-primary/10">
-                      <div className="h-full rounded-full bg-primary transition-[width]" style={{ width: `${collectionProgress.percent}%` }} />
-                    </div>
-                  )}
                   <div className="flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden">
                     {liveScenes.slice(0, 10).map(scene => (
                       <div key={scene.externalId ?? scene.id} className="flex w-[78vw] flex-none snap-start">
-                        <SceneCard compact scene={scene} collectionLabels={[collection.name]} />
+                        <SceneCard compact showProgress={false} scene={scene} collectionLabels={[collection.name]} />
                       </div>
                     ))}
                     <Link
@@ -170,7 +158,7 @@ export function ExplorePage({
                     </Link>
                   </div>
                   <div className="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
-                    {liveScenes.slice(0, 8).map(scene => <SceneCard compact key={scene.externalId ?? scene.id} scene={scene} collectionLabels={[collection.name]} />)}
+                    {liveScenes.slice(0, 8).map(scene => <SceneCard compact showProgress={false} key={scene.externalId ?? scene.id} scene={scene} collectionLabels={[collection.name]} />)}
                   </div>
                 </section>
               );

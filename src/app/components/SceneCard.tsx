@@ -9,11 +9,11 @@ import { SceneBadges } from "@/app/components/SceneBadges";
 import { getSceneProgressId, useLearningProgress } from "@/data/learning-progress";
 import { useMembershipAccess } from "@/data/membership";
 
-export function SceneCard({ scene, collectionLabels = [], compact = false, resume = false }: { scene: Scene; collectionLabels?: string[]; compact?: boolean; resume?: boolean }) {
+export function SceneCard({ scene, collectionLabels = [], compact = false, resume = false, showProgress = true }: { scene: Scene; collectionLabels?: string[]; compact?: boolean; resume?: boolean; showProgress?: boolean }) {
   const catColor = CATEGORY_BG[scene.category] ?? "bg-secondary";
   const progress = useLearningProgress(getSceneProgressId(scene));
   const { isUnlocked } = useMembershipAccess();
-  const hasProgress = progress.percent > 0;
+  const hasProgress = showProgress && progress.percent > 0;
   const isMemberOnly = !scene.isFreeExperience && !isUnlocked;
   const sceneHref = `/scenes/${scene.slug}${resume ? "?resume=1" : ""}`;
   if (compact) {
