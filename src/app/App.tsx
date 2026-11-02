@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Routes, Route, Navigate, useLocation, useNavigationType } from "react-router";
 import { DesktopNav } from "@/app/components/DesktopNav";
+import { MobileNav } from "@/app/components/MobileNav";
 import { Footer } from "@/app/components/Footer";
 import { HomePage } from "@/app/pages/HomePage";
 import { ExplorePage } from "@/app/pages/ExplorePage";
@@ -9,6 +10,7 @@ import { AboutPage } from "@/app/pages/AboutPage";
 import { ContactPage } from "@/app/pages/ContactPage";
 import { FreeTrialPage } from "@/app/pages/FreeTrialPage";
 import { CollectionPage } from "@/app/pages/CollectionPage";
+import { MembershipPage } from "@/app/pages/MembershipPage";
 
 // Manage scroll ourselves: forward/replace navigations start at the top,
 // but a browser Back/Forward (POP) restores the scroll position the user
@@ -67,7 +69,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="mobile-nav-page-padding min-h-screen bg-background text-foreground">
       <ScrollToTop />
       <DesktopNav />
       <main>
@@ -88,12 +90,14 @@ export default function App() {
           />
           <Route path="/free-trial" element={<FreeTrialPage />} />
           <Route path="/collections/:collectionId" element={<CollectionPage />} />
+          <Route path="/membership" element={<MembershipPage />} />
           <Route path="/resources" element={<Navigate to="/explore" replace />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
         </Routes>
         <Footer />
       </main>
+      <MobileNav />
     </div>
   );
 }

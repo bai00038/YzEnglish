@@ -1,14 +1,14 @@
 import { Link, useLocation } from "react-router";
-import { Home, Grid, Info, Mail } from "lucide-react";
+import { Home, Grid, Info, UserRound } from "lucide-react";
 import { isNavActive } from "@/app/components/nav-utils";
 
 export function MobileNav() {
   const { pathname } = useLocation();
   const items = [
-    { label: "Home", path: "/", Icon: Home },
-    { label: "Explore", path: "/explore", Icon: Grid },
-    { label: "About", path: "/about", Icon: Info },
-    { label: "Contact", path: "/contact", Icon: Mail },
+    { label: "首页", path: "/", Icon: Home },
+    { label: "场景库", path: "/explore", Icon: Grid },
+    { label: "我的会员", path: "/membership", Icon: UserRound },
+    { label: "关于", path: "/about", Icon: Info },
   ];
   return (
     <nav

@@ -20,14 +20,14 @@ const MEMBERSHIP_STORAGE_KEY = "yz_membership_unlock";
 const MEMBERSHIP_CHANGE_EVENT = "yz-membership-change";
 const codes = membershipCodes as MembershipCode[];
 
-function isValidUnlock(value: unknown): value is MembershipUnlock {
+function isStoredUnlock(value: unknown): value is MembershipUnlock {
   if (!value || typeof value !== "object") return false;
   const unlock = value as MembershipUnlock;
   if (!["founder", "year", "month"].includes(unlock.type)) return false;
   if (unlock.type === "founder") return unlock.expiresAt === null;
   if (!unlock.expiresAt) return false;
   const expiresAt = new Date(unlock.expiresAt).getTime();
-  return Number.isFinite(expiresAt) && expiresAt > Date.now();
+  return Number.isFinite(expiresAt);
 }
 
 function readStoredUnlock(): MembershipUnlock | null {
@@ -36,7 +36,7 @@ function readStoredUnlock(): MembershipUnlock | null {
     const raw = window.localStorage.getItem(MEMBERSHIP_STORAGE_KEY);
     if (!raw) return null;
     const parsed: unknown = JSON.parse(raw);
-    if (isValidUnlock(parsed)) return parsed;
+    if (isStoredUnlock(parsed)) return parsed;
     window.localStorage.removeItem(MEMBERSHIP_STORAGE_KEY);
   } catch {
     // Malformed or unavailable storage means the visitor stays locked.
@@ -64,7 +64,8 @@ function subscribeToMembership(onStoreChange: () => void) {
 export function useMembershipAccess() {
   useSyncExternalStore(subscribeToMembership, getMembershipSnapshot, () => "");
   const unlock = readStoredUnlock();
-  return { isUnlocked: Boolean(unlock), unlock };
+  const isExpired = Boolean(unlock?.expiresAt && new Date(unlock.expiresAt).getTime() <= Date.now());
+  return { isUnlocked: Boolean(unlock) && !isExpired, isExpired, unlock };
 }
 
 async function hashMembershipCode(input: string): Promise<string> {
