@@ -16,5 +16,11 @@
     "type": "month",
     "expiresAt": "2026-12-31T23:59:59-05:00",
     "disabled": false
+  },
+  {
+    "code": "d546deee280723bd81ba2e06be8b13b8ae6b6bed86cc83376a033c4cfe5e8f0d",
+    "type": "year",
+    "expiresAt": "2027-12-31T23:59:59-05:00",
+    "disabled": false
   }
 ]
