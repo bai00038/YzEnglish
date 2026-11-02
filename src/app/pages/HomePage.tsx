@@ -103,7 +103,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
             </div>
           </div>
 
-          <div className="relative isolate min-h-[355px] md:min-h-[430px] md:-translate-x-12">
+          <div className="relative isolate min-h-[355px] md:min-h-[430px] md:-translate-x-12 md:scale-[1.06]">
             <span className="pointer-events-none absolute -right-[2%] top-[-1%] z-0 h-[350px] w-[350px] rounded-full bg-[rgba(223,233,197,.34)] md:-right-[5%] md:top-[-5%] md:h-[460px] md:w-[460px]" />
             <span className="pointer-events-none absolute right-[3%] top-[1%] z-0 h-11 w-11 rounded-full border-2 border-primary/15 md:right-[1%] md:top-[4%]" />
             <span className="pointer-events-none absolute left-[13%] top-[9%] z-0 h-4 w-4 rotate-45 rounded-[3px] bg-accent md:left-[17%]" />
