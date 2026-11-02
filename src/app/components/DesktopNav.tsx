@@ -1,8 +1,10 @@
 import { Link, useLocation } from "react-router";
 import { isNavActive } from "@/app/components/nav-utils";
+import { useMembershipAccess } from "@/data/membership";
 
 export function DesktopNav() {
   const { pathname } = useLocation();
+  const { isUnlocked } = useMembershipAccess();
   return (
     <nav className="bg-background">
       <div className="mx-auto flex max-w-[1180px] items-center gap-5 px-5 py-4 md:px-8 md:py-5">
@@ -21,7 +23,7 @@ export function DesktopNav() {
               {label}
             </Link>
           ))}
-          <a href="/#free" className="ml-1 rounded-full border border-accent bg-accent px-5 py-3 font-semibold text-primary transition-[filter] hover:brightness-95">免费体验</a>
+          {!isUnlocked && <a href="/#free" className="ml-1 rounded-full border border-accent bg-accent px-5 py-3 font-semibold text-primary transition-[filter] hover:brightness-95">免费体验</a>}
         </div>
       </div>
     </nav>

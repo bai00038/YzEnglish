@@ -16,7 +16,7 @@ export function ExplorePage({
   activeCategory: string; setActiveCategory: (c: string) => void;
   searchQuery: string; setSearchQuery: (q: string) => void;
 }) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { data: collectionsData, loading, error } = useCollections();
   const collections = collectionsData ?? [];
   const progressByScene = useAllLearningProgress();
@@ -55,7 +55,7 @@ export function ExplorePage({
 
   return (
     <div className="pb-10">
-      <div className="sticky top-0 z-40 border-b border-border bg-background/95 shadow-[0_8px_24px_rgba(18,36,28,.05)] backdrop-blur-md">
+      <div className="sticky top-0 z-40 bg-background">
         <div className="mx-auto max-w-[1180px] px-4 py-2 md:px-8">
           <form className="flex w-full items-center gap-3 rounded-full border border-border bg-card py-1 pl-4 pr-1 transition-colors focus-within:border-primary/50 md:pl-5" onSubmit={event => event.preventDefault()}>
             <Search size={18} className="flex-shrink-0 text-muted-foreground" />
@@ -65,26 +65,6 @@ export function ExplorePage({
             {searchQuery && <button type="button" onClick={() => setSearchQuery("")} aria-label="清除搜索" className="text-muted-foreground hover:text-foreground"><X size={14} /></button>}
             <button type="submit" className="flex-shrink-0 rounded-full bg-accent px-4 py-1.5 text-[13px] font-bold text-accent-foreground transition-[filter] hover:brightness-95 md:px-5">搜索</button>
           </form>
-          <div className="mt-2 flex items-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {CATALOGUE_TAGS.map(tag => (
-            <button
-              key={tag.id}
-              type="button"
-              aria-pressed={activeCategory === tag.id}
-              onClick={() => {
-                setActiveCategory(tag.id);
-                setSearchParams(tag.id === "All" ? {} : { tag: tag.id }, { replace: true });
-                if (tag.id === "All") setSearchQuery("");
-              }}
-              className="flex-none whitespace-nowrap rounded-full border px-4 py-1.5 text-[13px] leading-none transition-colors"
-              style={activeCategory === tag.id
-                ? { backgroundColor: "#C8F169", color: "#12241C", borderColor: "#C8F169", fontWeight: 700 }
-                : { backgroundColor: "rgba(255,255,255,.55)", color: "#3A4A42", borderColor: "rgba(18,36,28,.16)" }}
-            >
-              {tag.label}
-            </button>
-          ))}
-          </div>
         </div>
       </div>
 
