@@ -1,10 +1,11 @@
 import { Link } from "react-router";
-import { ArrowRight, Play, Volume2 } from "lucide-react";
+import { ArrowRight, Play } from "lucide-react";
 import { useFreeTrialScenes } from "@/data/collections-access";
 import type { Scene } from "@/data/types";
 import { getSceneCategoryLabel } from "@/data/scene-categories";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 import { SceneBadges } from "@/app/components/SceneBadges";
+import { DialogueTranscriptCard } from "@/app/components/DialogueTranscriptCard";
 
 function EditorialScene({ scene, large = false }: { scene: Scene; large?: boolean }) {
   return (
@@ -39,10 +40,10 @@ function EditorialScene({ scene, large = false }: { scene: Scene; large?: boolea
 }
 
 const demoLines = [
-  { role: "You", zhRole: "你", en: "Hi, I'd like to book a cleaning, please.", zh: "你好，我想约一个洗牙。", person: true },
-  { role: "Front", zhRole: "前台", en: "Of course. Have you been here before?", zh: "好的，您之前来过我们这儿吗？" },
-  { role: "You", zhRole: "你", en: "Yes — and this tooth has been bothering me.", zh: "来过，而且这颗牙最近有点不舒服。", person: true },
-  { role: "Front", zhRole: "前台", en: "We'll take a look first, then go from there.", zh: "我们先检查一下，再决定下一步。" },
+  { speaker: "You", speakerZh: "你", en: "Hi, I'd like to book a cleaning, please.", zh: "你好，我想约一个洗牙。" },
+  { speaker: "Front", speakerZh: "前台", en: "Of course. Have you been here before?", zh: "好的，您之前来过我们这儿吗？" },
+  { speaker: "You", speakerZh: "你", en: "Yes — and this tooth has been bothering me.", zh: "来过，而且这颗牙最近有点不舒服。" },
+  { speaker: "Front", speakerZh: "前台", en: "We'll take a look first, then go from there.", zh: "我们先检查一下，再决定下一步。" },
 ];
 
 export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
@@ -109,26 +110,16 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
         </div>
 
         <div className="rounded-[24px] bg-primary p-6 text-white md:p-12">
-          <div className="grid gap-6 md:grid-cols-[1fr_1.12fr] md:items-start md:gap-12">
+          <div className="grid gap-6 lg:grid-cols-[1fr_1.12fr] lg:items-start lg:gap-12">
             <div className="pt-1.5">
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/65">Featured Scene · HC 医疗系列</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/65">Featured Scene · 看病就医</p>
               <h3 className="mt-3.5 font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.45]">在牙科前台：<br />“我想约一个洗牙，<br />顺便看看这颗牙。”</h3>
               <p className="mt-4 max-w-[34em] text-[14.5px] leading-[1.9] text-white/75">先看一遍视频，再逐句点读，最后跟读录一遍。每句都放回真实流程里学——不是课本腔，是前台真的会这样说。</p>
               <div className="mt-6 flex flex-wrap gap-2.5">{["视频", "点读", "跟读"].map((label) => <span key={label} className="rounded-full border border-white/30 px-3.5 py-2 text-xs font-bold">{label}</span>)}</div>
             </div>
 
-            <div>
-              <div className="rounded-2xl bg-card p-2 text-foreground">
-                {demoLines.map((line, index) => (
-                  <div key={line.en} className={`flex gap-3 rounded-xl border p-3 ${index === 0 ? "border-[#D6E8A8] bg-[#EEF6D8]" : "border-transparent"}`}>
-                    <span className={`grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full text-[10px] font-extrabold text-white ${line.person ? "bg-primary" : "bg-[#8A6D3B]"}`}>{line.role}</span>
-                    <div className="min-w-0"><b className="text-[13px]">{line.zhRole}</b><p className="display-serif mt-0.5 text-base">{line.en}</p><p className="mt-0.5 text-xs text-muted-foreground">{line.zh}</p></div>
-                    <Volume2 size={14} className="ml-auto mt-1 shrink-0 text-muted-foreground" />
-                  </div>
-                ))}
-              </div>
-              <div className="mx-1 mt-3 h-1.5 overflow-hidden rounded-full bg-white/15"><span className="block h-full w-1/4 bg-accent" /></div>
-              <div className="mx-1 mt-2 flex justify-between gap-3 text-xs text-white/55"><span>已点读 1 / 4 句</span><span>跟读清单 · 学完去生活里试一次</span></div>
+            <div className="min-w-0 text-foreground">
+              <DialogueTranscriptCard lines={demoLines} initialActiveIndex={0} />
             </div>
           </div>
         </div>
