@@ -96,14 +96,14 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
               <span className="display-serif block text-[46px] font-semibold md:text-[58px]">Real scenes<br /><em className="mt-2 inline-block bg-[linear-gradient(transparent_72%,rgba(190,244,91,.34)_72%)] pb-1 font-medium">for real life</em></span>
               <span className="mt-7 block border-l-[3px] border-accent pl-4 font-['Noto_Serif_SC'] text-[21px] font-bold leading-[1.55] md:text-[22px]">真实生活里的英语，先练熟再上场。</span>
             </h1>
-            <p className="mt-5 max-w-[520px] text-[15px] leading-[1.9] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄——每个场景都有视频和跟读，练几遍，下次就不慌。</p>
+            <p className="mt-5 max-w-[520px] text-[15px] leading-[1.9] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄——每个场景都有视频和跟读，练几遍，<br />下次就不慌。</p>
             <div className="mt-8 flex flex-wrap gap-3.5">
               <Link to="/explore" onClick={onExploreEnter} className="rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90">进入场景库</Link>
               <a href="#free" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-bold text-foreground transition-colors hover:border-primary/30 hover:bg-primary/5">免费体验课程 →</a>
             </div>
           </div>
 
-          <div className="relative isolate min-h-[355px] md:min-h-[430px] md:-translate-x-7">
+          <div className="relative isolate min-h-[355px] md:min-h-[430px] md:-translate-x-12">
             <span className="pointer-events-none absolute -right-[2%] top-[-1%] z-0 h-[350px] w-[350px] rounded-full bg-[rgba(223,233,197,.34)] md:-right-[5%] md:top-[-5%] md:h-[460px] md:w-[460px]" />
             <span className="pointer-events-none absolute right-[3%] top-[1%] z-0 h-11 w-11 rounded-full border-2 border-primary/15 md:right-[1%] md:top-[4%]" />
             <span className="pointer-events-none absolute left-[13%] top-[9%] z-0 h-4 w-4 rotate-45 rounded-[3px] bg-accent md:left-[17%]" />
@@ -149,7 +149,6 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
             <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Free Experience</p>
             <h2 className="mt-2 font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">免费体验区</h2>
           </div>
-          <p className="max-w-[360px] text-[13px] leading-relaxed text-muted-foreground">无需注册</p>
         </div>
 
         {freeLoading ? <LoadingState label="Loading free experience…" /> : freeError ? <ErrorState message={freeError} /> : scenes.length ? (
