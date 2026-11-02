@@ -104,7 +104,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
           </div>
 
           <div className="relative isolate min-h-[355px] md:min-h-[430px]">
-            <span className="pointer-events-none absolute right-[2%] top-[4%] z-0 h-[310px] w-[310px] rounded-full bg-[#DFE9C5] md:h-[390px] md:w-[390px]" />
+            <span className="pointer-events-none absolute -right-[2%] top-[-1%] z-0 h-[350px] w-[350px] rounded-full bg-[rgba(223,233,197,.34)] md:-right-[5%] md:top-[-5%] md:h-[460px] md:w-[460px]" />
             <span className="pointer-events-none absolute right-[3%] top-[1%] z-0 h-11 w-11 rounded-full border-2 border-primary/15 md:right-[1%] md:top-[4%]" />
             <span className="pointer-events-none absolute left-[13%] top-[9%] z-0 h-4 w-4 rotate-45 rounded-[3px] bg-accent md:left-[17%]" />
             <div className="pointer-events-none absolute right-[2%] top-[29%] z-0 grid grid-cols-3 gap-2 opacity-55" aria-hidden="true">
@@ -112,11 +112,11 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
             </div>
 
             <img
-              src="/hero-aria-laptop-cutout-v2.png"
+              src="/hero-aria-macbook-cutout-v4.png"
               alt="Aria 坐在电脑前练习真实场景英语"
-              width={1312}
-              height={1199}
-              className="pointer-events-none absolute bottom-0 right-[-2%] z-10 h-[92%] w-auto max-w-none object-contain object-bottom drop-shadow-[0_22px_24px_rgba(18,36,28,.16)] md:right-[-5%] md:h-[96%]"
+              width={1536}
+              height={1024}
+              className="pointer-events-none absolute bottom-[5%] right-[-1%] z-10 h-[76%] w-auto max-w-none object-contain object-bottom drop-shadow-[0_18px_22px_rgba(18,36,28,.12)] md:bottom-[4%] md:right-[-4%] md:h-[82%]"
             />
 
             <div className="absolute left-0 top-[20%] z-20 w-[184px] rounded-[17px] border border-white/80 bg-white/95 p-3.5 shadow-[0_18px_38px_rgba(18,36,28,.15)] backdrop-blur-sm md:left-[3%] md:top-[23%] md:w-[210px] md:p-4">
