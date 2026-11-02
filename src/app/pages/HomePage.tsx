@@ -104,7 +104,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
           </div>
 
           <div className="relative isolate aspect-[31/23] w-full max-w-[620px] justify-self-center [container-type:inline-size]">
-            <span className="pointer-events-none absolute right-[1%] top-[1%] z-0 aspect-square w-[76%] rounded-full bg-[rgba(223,233,197,.34)]" />
+            <span className="pointer-events-none absolute right-[1%] top-[1%] z-0 aspect-square w-[76%] rounded-full bg-[rgba(216,229,183,.46)]" />
             <span className="pointer-events-none absolute right-[6%] top-[6%] z-0 aspect-square h-[9%] rounded-full border-2 border-primary/15" />
             <span className="pointer-events-none absolute left-[19%] top-[10%] z-0 aspect-square h-[4%] rotate-45 rounded-[3px] bg-accent" />
             <div className="pointer-events-none absolute right-[4%] top-[31%] z-0 grid grid-cols-3 gap-[clamp(5px,1.2cqw,8px)] opacity-55" aria-hidden="true">
@@ -116,7 +116,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
               alt="Aria 坐在电脑前练习真实场景英语"
               width={1536}
               height={1024}
-              className="pointer-events-none absolute bottom-[2%] right-[-1%] z-10 h-[88%] w-auto max-w-none object-contain object-bottom drop-shadow-[0_18px_22px_rgba(18,36,28,.12)]"
+              className="pointer-events-none absolute bottom-[1%] right-[-2%] z-10 h-[93%] w-auto max-w-none object-contain object-bottom drop-shadow-[0_18px_22px_rgba(18,36,28,.12)]"
             />
 
             <div className="absolute left-0 top-[21%] z-20 w-[40%] min-w-[170px] max-w-[230px] rounded-[clamp(15px,2.8cqw,18px)] border border-white/80 bg-white/95 p-[clamp(12px,2.4cqw,16px)] shadow-[0_18px_38px_rgba(18,36,28,.15)] backdrop-blur-sm">
