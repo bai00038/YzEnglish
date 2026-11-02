@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { ArrowRight, Check, Headphones, Play } from "lucide-react";
+import { ArrowRight, Headphones, PenLine, Play } from "lucide-react";
 import { useFreeTrialScenes } from "@/data/collections-access";
 import type { Scene } from "@/data/types";
 import { getSceneCategoryLabel } from "@/data/scene-categories";
@@ -99,7 +99,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
             <p className="mt-5 max-w-[520px] text-[15px] leading-[1.9] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄——每个场景都有视频和跟读，练几遍，<br />下次就不慌。</p>
             <div className="mt-8 flex flex-wrap gap-3.5">
               <Link to="/explore" onClick={onExploreEnter} className="rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90">进入场景库</Link>
-              <a href="#free" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-bold text-foreground transition-colors hover:border-primary/30 hover:bg-primary/5">免费体验课程 →</a>
+              <a href="#free" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-bold text-foreground transition-colors hover:border-primary/30 hover:bg-primary/5">先免费学 3 集 →</a>
             </div>
           </div>
 
@@ -132,10 +132,10 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
 
             <div className="absolute bottom-[4%] right-0 z-20 w-[180px] rounded-[17px] border border-white/80 bg-white/95 p-3.5 shadow-[0_18px_38px_rgba(18,36,28,.15)] backdrop-blur-sm md:-right-[1%] md:bottom-[5%] md:w-[205px] md:p-4">
               <div className="flex items-center gap-3">
-                <span className="grid h-10 w-10 flex-none place-items-center rounded-[12px] bg-primary text-white"><Check size={19} strokeWidth={2.5} /></span>
+                <span className="grid h-10 w-10 flex-none place-items-center rounded-[12px] bg-primary text-white"><PenLine size={19} strokeWidth={2.4} /></span>
                 <div>
-                  <p className="text-[13px] font-black text-foreground md:text-[14px]">学完接着练</p>
-                  <p className="mt-0.5 text-[10.5px] text-muted-foreground md:text-[11px]">进度自动保存在这里</p>
+                  <p className="text-[13px] font-black text-foreground md:text-[14px]">听写巩固</p>
+                  <p className="mt-0.5 text-[10.5px] text-muted-foreground md:text-[11px]">听完写下来，记得更牢</p>
                 </div>
               </div>
             </div>
