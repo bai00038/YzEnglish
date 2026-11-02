@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Check, Headphones, Play } from "lucide-react";
 import { useFreeTrialScenes } from "@/data/collections-access";
 import type { Scene } from "@/data/types";
 import { getSceneCategoryLabel } from "@/data/scene-categories";
@@ -103,21 +103,42 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
             </div>
           </div>
 
-          <div className="relative isolate flex min-h-0 items-center justify-center px-1 py-1 md:min-h-[360px] md:py-1.5">
-            <span className="pointer-events-none absolute -bottom-5 left-1 z-0 h-[230px] w-[230px] rounded-full bg-accent/25 md:-bottom-7 md:left-5 md:h-[270px] md:w-[270px]" />
-            <figure className="relative z-10 w-[90%] max-w-[360px]">
-              <img
-                src="/hero-v7-final.webp"
-                alt="窗边书架旁，Aria 坐着向镜头展示手机里的英语学习场景"
-                width={1296}
-                height={1397}
-                className="block h-auto w-full rounded-[26px] shadow-[0_26px_52px_rgba(18,36,28,.22)]"
-              />
-              <figcaption className="absolute -left-2 top-[15%] flex max-w-[66%] items-start gap-2 rounded-[13px] border border-border bg-white px-3 py-2 shadow-[0_12px_24px_rgba(18,36,28,.12)] md:-left-[18px]">
-                <span className="mt-[5px] h-[7px] w-[7px] flex-none rounded-full bg-accent" />
-                <p className="text-[12.5px] font-semibold leading-[1.5] text-foreground">每天几分钟，吃透一个场景</p>
-              </figcaption>
-            </figure>
+          <div className="relative isolate min-h-[355px] md:min-h-[430px]">
+            <span className="pointer-events-none absolute right-[2%] top-[4%] z-0 h-[310px] w-[310px] rounded-full bg-[#DFE9C5] md:h-[390px] md:w-[390px]" />
+            <span className="pointer-events-none absolute right-[3%] top-[1%] z-0 h-11 w-11 rounded-full border-2 border-primary/15 md:right-[1%] md:top-[4%]" />
+            <span className="pointer-events-none absolute left-[13%] top-[9%] z-0 h-4 w-4 rotate-45 rounded-[3px] bg-accent md:left-[17%]" />
+            <div className="pointer-events-none absolute right-[2%] top-[29%] z-0 grid grid-cols-3 gap-2 opacity-55" aria-hidden="true">
+              {Array.from({ length: 9 }).map((_, index) => <span key={index} className="h-1.5 w-1.5 rounded-full bg-primary/55" />)}
+            </div>
+
+            <img
+              src="/hero-aria-laptop-cutout-v2.png"
+              alt="Aria 坐在电脑前练习真实场景英语"
+              width={1312}
+              height={1199}
+              className="pointer-events-none absolute bottom-0 right-[-2%] z-10 h-[92%] w-auto max-w-none object-contain object-bottom drop-shadow-[0_22px_24px_rgba(18,36,28,.16)] md:right-[-5%] md:h-[96%]"
+            />
+
+            <div className="absolute left-0 top-[20%] z-20 w-[184px] rounded-[17px] border border-white/80 bg-white/95 p-3.5 shadow-[0_18px_38px_rgba(18,36,28,.15)] backdrop-blur-sm md:left-[3%] md:top-[23%] md:w-[210px] md:p-4">
+              <div className="flex items-center gap-3">
+                <span className="grid h-10 w-10 flex-none place-items-center rounded-[12px] bg-accent/35 text-primary"><Headphones size={19} strokeWidth={2.3} /></span>
+                <div>
+                  <p className="text-[13px] font-black text-foreground md:text-[14px]">逐句精听</p>
+                  <p className="mt-0.5 text-[10.5px] text-muted-foreground md:text-[11px]">一句一句，练到会说</p>
+                </div>
+              </div>
+              <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-secondary"><span className="block h-full w-[72%] rounded-full bg-accent" /></div>
+            </div>
+
+            <div className="absolute bottom-[4%] right-0 z-20 w-[180px] rounded-[17px] border border-white/80 bg-white/95 p-3.5 shadow-[0_18px_38px_rgba(18,36,28,.15)] backdrop-blur-sm md:-right-[1%] md:bottom-[5%] md:w-[205px] md:p-4">
+              <div className="flex items-center gap-3">
+                <span className="grid h-10 w-10 flex-none place-items-center rounded-[12px] bg-primary text-white"><Check size={19} strokeWidth={2.5} /></span>
+                <div>
+                  <p className="text-[13px] font-black text-foreground md:text-[14px]">学完接着练</p>
+                  <p className="mt-0.5 text-[10.5px] text-muted-foreground md:text-[11px]">进度自动保存在这里</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </header>
