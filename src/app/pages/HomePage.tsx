@@ -78,6 +78,7 @@ function SentenceListeningDemo() {
       onRepeatLineChange={setRepeatLine}
       bilingualMode={bilingualMode}
       onBilingualModeChange={setBilingualMode}
+      compact
     />
   );
 }
