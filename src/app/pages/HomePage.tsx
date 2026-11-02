@@ -88,22 +88,22 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
   const scenes = (freeData ?? []).map(({ scene }) => scene);
   return (
     <div className="bg-background">
-      <header className="mx-auto max-w-[1180px] px-5 py-6 md:px-8 md:py-7">
-        <div className="grid gap-7 md:grid-cols-[.9fr_1.1fr] md:items-center md:gap-10">
-          <div>
-            <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Canada · 真实生活英语</p>
-            <h1 className="mt-5 font-normal leading-[0.98] tracking-[-0.03em] text-foreground">
-              <span className="display-serif block text-[42px] font-semibold md:text-[48px]">Real scenes,<br /><em className="font-medium">for real life.</em></span>
-              <span className="mt-5 block font-['Noto_Serif_SC'] text-[20px] font-bold leading-[1.4]">真实生活里的英语，先练熟再上场。</span>
+      <header className="mx-auto max-w-[1180px] px-5 py-8 md:px-8 md:py-10">
+        <div className="grid gap-10 md:grid-cols-[.98fr_1.02fr] md:items-center md:gap-8">
+          <div className="relative z-10 md:pr-2">
+            <p className="inline-flex items-center gap-2.5 rounded-full border border-primary/10 bg-white/55 px-3.5 py-2 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground shadow-[0_8px_22px_rgba(18,36,28,.04)] before:block before:h-px before:w-7 before:bg-muted-foreground after:block after:h-1.5 after:w-1.5 after:rounded-full after:bg-accent">Canada · 真实生活英语</p>
+            <h1 className="mt-7 font-normal leading-[0.96] tracking-[-0.035em] text-foreground">
+              <span className="display-serif block text-[46px] font-semibold md:text-[58px]">Real scenes<br /><em className="mt-2 inline-block bg-[linear-gradient(transparent_72%,rgba(190,244,91,.34)_72%)] pb-1 font-medium">for real life</em></span>
+              <span className="mt-7 block border-l-[3px] border-accent pl-4 font-['Noto_Serif_SC'] text-[21px] font-bold leading-[1.55] md:text-[22px]">真实生活里的英语，先练熟再上场。</span>
             </h1>
-            <p className="mt-4 max-w-[500px] text-[14px] leading-[1.8] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄——每个场景都有视频和跟读，练几遍，下次就不慌。</p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <p className="mt-5 max-w-[520px] text-[15px] leading-[1.9] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄——每个场景都有视频和跟读，练几遍，下次就不慌。</p>
+            <div className="mt-8 flex flex-wrap gap-3.5">
               <Link to="/explore" onClick={onExploreEnter} className="rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90">进入场景库</Link>
               <a href="#free" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-bold text-foreground transition-colors hover:border-primary/30 hover:bg-primary/5">免费体验课程 →</a>
             </div>
           </div>
 
-          <div className="relative isolate min-h-[355px] md:min-h-[430px]">
+          <div className="relative isolate min-h-[355px] md:min-h-[430px] md:-translate-x-7">
             <span className="pointer-events-none absolute -right-[2%] top-[-1%] z-0 h-[350px] w-[350px] rounded-full bg-[rgba(223,233,197,.34)] md:-right-[5%] md:top-[-5%] md:h-[460px] md:w-[460px]" />
             <span className="pointer-events-none absolute right-[3%] top-[1%] z-0 h-11 w-11 rounded-full border-2 border-primary/15 md:right-[1%] md:top-[4%]" />
             <span className="pointer-events-none absolute left-[13%] top-[9%] z-0 h-4 w-4 rotate-45 rounded-[3px] bg-accent md:left-[17%]" />
