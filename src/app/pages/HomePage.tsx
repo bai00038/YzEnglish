@@ -92,7 +92,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
         <div className="grid gap-10 md:grid-cols-[.98fr_1.02fr] md:items-center md:gap-8">
           <div className="relative z-10 md:pr-2">
             <p className="inline-flex items-center gap-2.5 rounded-full border border-primary/10 bg-white/55 px-3.5 py-2 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground shadow-[0_8px_22px_rgba(18,36,28,.04)] before:block before:h-px before:w-7 before:bg-muted-foreground after:block after:h-1.5 after:w-1.5 after:rounded-full after:bg-accent">Canada · 真实生活英语</p>
-            <h1 className="mt-7 font-normal leading-[0.96] tracking-[-0.035em] text-foreground">
+            <h1 className="mt-7 font-normal leading-[0.96] tracking-[-0.02em] text-foreground">
               <span className="display-serif block text-[46px] font-semibold md:text-[58px]">Real scenes<br /><em className="mt-2 inline-block bg-[linear-gradient(transparent_72%,rgba(190,244,91,.34)_72%)] pb-1 font-medium">for real life</em></span>
               <span className="mt-7 block border-l-[3px] border-accent pl-4 font-['Noto_Serif_SC'] text-[21px] font-bold leading-[1.55] md:text-[22px]">真实生活里的英语，先练熟再上场。</span>
             </h1>
@@ -116,7 +116,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
               alt="Aria 坐在电脑前练习真实场景英语"
               width={1536}
               height={1024}
-              className="pointer-events-none absolute bottom-[5%] right-[-1%] z-10 h-[76%] w-auto max-w-none object-contain object-bottom drop-shadow-[0_18px_22px_rgba(18,36,28,.12)] md:bottom-[4%] md:right-[-4%] md:h-[82%]"
+              className="pointer-events-none absolute bottom-[5%] right-[-1%] z-10 h-[80%] w-auto max-w-none object-contain object-bottom drop-shadow-[0_18px_22px_rgba(18,36,28,.12)] md:bottom-[4%] md:right-[-4%] md:h-[88%]"
             />
 
             <div className="absolute left-0 top-[20%] z-20 w-[184px] rounded-[17px] border border-white/80 bg-white/95 p-3.5 shadow-[0_18px_38px_rgba(18,36,28,.15)] backdrop-blur-sm md:left-[3%] md:top-[23%] md:w-[210px] md:p-4">
