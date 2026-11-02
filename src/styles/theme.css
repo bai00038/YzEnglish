@@ -296,7 +296,7 @@
 .mobile-nav-page-padding {
   padding-bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom) + 16px);
 }
-@media (min-width: 641px) {
+@media (min-width: 1024px) {
   .mobile-nav-page-padding {
     padding-bottom: 0;
   }

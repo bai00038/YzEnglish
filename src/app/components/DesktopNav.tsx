@@ -7,23 +7,23 @@ export function DesktopNav() {
   const { isUnlocked } = useMembershipAccess();
   return (
     <nav className="bg-background">
-      <div className="mx-auto flex max-w-[1180px] items-center gap-5 px-5 py-4 md:px-8 md:py-5">
-        <Link to="/" className="flex items-center gap-3.5">
-          <img src="/yz-english-logo.png" alt="Yz English" className="h-[52px] w-[52px] flex-none object-contain md:h-[56px] md:w-[56px]" />
+      <div className="mx-auto flex max-w-[1180px] items-center gap-4 px-4 py-3.5 sm:px-6 md:py-4 lg:gap-5 lg:px-8 lg:py-5">
+        <Link to="/" className="flex min-w-0 items-center gap-3 sm:gap-3.5">
+          <img src="/yz-english-logo.png" alt="Yz English" className="h-12 w-12 flex-none object-contain sm:h-[52px] sm:w-[52px] lg:h-[56px] lg:w-[56px]" />
           <span>
-            <b className="block font-sans text-[25px] font-semibold leading-none tracking-[-0.02em] text-foreground">Yz English</b>
-            <span className="mt-1 block text-[10px] font-medium uppercase tracking-[0.32em] text-muted-foreground">real scenes for real life</span>
+            <b className="block whitespace-nowrap font-sans text-[22px] font-semibold leading-none tracking-[-0.02em] text-foreground sm:text-[25px]">Yz English</b>
+            <span className="mt-1 block whitespace-nowrap text-[8.5px] font-medium uppercase tracking-[0.27em] text-muted-foreground sm:text-[10px] sm:tracking-[0.32em]">real scenes for real life</span>
           </span>
         </Link>
 
-        <div className="ml-auto hidden items-center gap-2 text-[16px] font-medium text-secondary-foreground min-[761px]:flex">
+        <div className="ml-auto hidden items-center gap-1 text-[15px] font-medium text-secondary-foreground lg:flex xl:gap-2 xl:text-[16px]">
           {([['/', '首页'], ['/explore', '场景库'], ['/membership', '我的会员'], ['/about', '关于']] as [string, string][]).map(([path, label]) => (
             <Link key={path} to={path}
-              className={`rounded-full px-5 py-3 transition-colors ${isNavActive(pathname, path) ? 'bg-primary font-semibold text-white' : 'hover:bg-secondary hover:text-foreground'}`}>
+              className={`rounded-full px-4 py-2.5 transition-colors xl:px-5 xl:py-3 ${isNavActive(pathname, path) ? 'bg-primary font-semibold text-white' : 'hover:bg-secondary hover:text-foreground'}`}>
               {label}
             </Link>
           ))}
-          {!isUnlocked && <a href="/#free" className="ml-1 rounded-full border border-accent bg-accent px-5 py-3 font-semibold text-primary transition-[filter] hover:brightness-95">免费体验</a>}
+          {!isUnlocked && <a href="/#free" className="ml-1 rounded-full border border-accent bg-accent px-4 py-2.5 font-semibold text-primary transition-[filter] hover:brightness-95 xl:px-5 xl:py-3">免费体验</a>}
         </div>
       </div>
     </nav>

@@ -12,7 +12,7 @@ export function MobileNav() {
   ];
   return (
     <nav
-      className="min-[641px]:hidden fixed bottom-0 left-0 right-0 z-50 flex w-full bg-card border-t border-border"
+      className="fixed bottom-0 left-0 right-0 z-50 flex w-full border-t border-border bg-card lg:hidden"
       style={{
         height: "var(--mobile-nav-height)",
         paddingBottom: "env(safe-area-inset-bottom)",

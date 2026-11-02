@@ -88,25 +88,25 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
   const scenes = (freeData ?? []).map(({ scene }) => scene);
   return (
     <div className="bg-background">
-      <header className="mx-auto max-w-[1180px] px-5 py-8 md:px-8 md:py-10">
-        <div className="grid gap-10 md:grid-cols-[.98fr_1.02fr] md:items-center md:gap-8">
-          <div className="relative z-10 md:pr-2">
+      <header className="mx-auto max-w-[1180px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+        <div className="grid gap-7 sm:gap-9 lg:grid-cols-[minmax(0,.9fr)_minmax(460px,1.1fr)] lg:items-center lg:gap-5 xl:grid-cols-[.94fr_1.06fr] xl:gap-8">
+          <div className="relative z-10 max-w-[620px]">
             <p className="inline-flex items-center gap-2.5 rounded-full border border-primary/10 bg-white/55 px-3.5 py-2 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground shadow-[0_8px_22px_rgba(18,36,28,.04)] before:block before:h-px before:w-7 before:bg-muted-foreground after:block after:h-1.5 after:w-1.5 after:rounded-full after:bg-accent">Canada · 真实生活英语</p>
             <h1 className="mt-7 font-normal leading-[0.96] tracking-[-0.02em] text-foreground">
-              <span className="display-serif block text-[46px] font-semibold md:text-[58px]">Real scenes<br /><em className="mt-2 inline-block bg-[linear-gradient(transparent_72%,rgba(190,244,91,.34)_72%)] pb-1 font-medium">for real life</em></span>
-              <span className="mt-7 block border-l-[3px] border-accent pl-4 font-['Noto_Serif_SC'] text-[21px] font-bold leading-[1.55] md:text-[22px]">真实生活里的英语，先练熟再上场。</span>
+              <span className="display-serif block text-[42px] font-semibold sm:text-[52px] lg:text-[56px] xl:text-[62px]">Real scenes<br /><em className="mt-2 inline-block bg-[linear-gradient(transparent_72%,rgba(190,244,91,.34)_72%)] pb-1 font-medium">for real life</em></span>
+              <span className="mt-6 block border-l-[3px] border-accent pl-4 font-['Noto_Serif_SC'] text-[19px] font-bold leading-[1.55] sm:mt-7 sm:text-[21px] lg:text-[20px] xl:text-[22px]">真实生活里的英语，先练熟再上场。</span>
             </h1>
-            <p className="mt-5 max-w-[520px] text-[15px] leading-[1.9] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄——每个场景都有视频和跟读，练几遍，<br />下次就不慌。</p>
-            <div className="mt-8 flex flex-wrap gap-3.5">
+            <p className="mt-5 max-w-[560px] text-[15px] leading-[1.85] text-secondary-foreground">看牙、抽血、家校沟通、日常寒暄——每个场景都有视频和跟读，练几遍，<br className="hidden xl:block" />下次就不慌。</p>
+            <div className="mt-7 flex flex-wrap gap-3 sm:mt-8 sm:gap-3.5">
               <Link to="/explore" onClick={onExploreEnter} className="rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90">进入场景库</Link>
               <a href="#free" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-bold text-foreground transition-colors hover:border-primary/30 hover:bg-primary/5">先免费学 3 集 →</a>
             </div>
           </div>
 
-          <div className="relative isolate min-h-[355px] md:min-h-[430px] md:-translate-x-12 md:scale-[1.06]">
-            <span className="pointer-events-none absolute -right-[2%] top-[-1%] z-0 h-[350px] w-[350px] rounded-full bg-[rgba(223,233,197,.34)] md:-right-[5%] md:top-[-5%] md:h-[460px] md:w-[460px]" />
-            <span className="pointer-events-none absolute right-[3%] top-[1%] z-0 h-11 w-11 rounded-full border-2 border-primary/15 md:right-[1%] md:top-[4%]" />
-            <span className="pointer-events-none absolute left-[13%] top-[9%] z-0 h-4 w-4 rotate-45 rounded-[3px] bg-accent md:left-[17%]" />
+          <div className="relative isolate min-h-[330px] sm:min-h-[400px] lg:min-h-[440px] xl:min-h-[460px]">
+            <span className="pointer-events-none absolute -right-[5%] top-0 z-0 h-[320px] w-[320px] rounded-full bg-[rgba(223,233,197,.34)] sm:-right-[2%] sm:h-[400px] sm:w-[400px] lg:-right-[4%] lg:top-[-2%] lg:h-[440px] lg:w-[440px] xl:h-[470px] xl:w-[470px]" />
+            <span className="pointer-events-none absolute right-[2%] top-[2%] z-0 h-10 w-10 rounded-full border-2 border-primary/15 sm:h-11 sm:w-11 lg:top-[4%]" />
+            <span className="pointer-events-none absolute left-[12%] top-[7%] z-0 h-4 w-4 rotate-45 rounded-[3px] bg-accent sm:left-[16%] lg:left-[12%]" />
             <div className="pointer-events-none absolute right-[2%] top-[29%] z-0 grid grid-cols-3 gap-2 opacity-55" aria-hidden="true">
               {Array.from({ length: 9 }).map((_, index) => <span key={index} className="h-1.5 w-1.5 rounded-full bg-primary/55" />)}
             </div>
@@ -116,10 +116,10 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
               alt="Aria 坐在电脑前练习真实场景英语"
               width={1536}
               height={1024}
-              className="pointer-events-none absolute bottom-[5%] right-[-1%] z-10 h-[80%] w-auto max-w-none object-contain object-bottom drop-shadow-[0_18px_22px_rgba(18,36,28,.12)] md:bottom-[4%] md:right-[-4%] md:h-[88%]"
+              className="pointer-events-none absolute bottom-[3%] right-[-3%] z-10 h-[78%] w-auto max-w-none object-contain object-bottom drop-shadow-[0_18px_22px_rgba(18,36,28,.12)] sm:right-[-1%] sm:h-[84%] lg:bottom-[3%] lg:right-[-5%] lg:h-[84%] xl:right-[-3%] xl:h-[88%]"
             />
 
-            <div className="absolute left-0 top-[20%] z-20 w-[184px] rounded-[17px] border border-white/80 bg-white/95 p-3.5 shadow-[0_18px_38px_rgba(18,36,28,.15)] backdrop-blur-sm md:left-[3%] md:top-[23%] md:w-[210px] md:p-4">
+            <div className="absolute left-0 top-[17%] z-20 w-[210px] rounded-[17px] border border-white/80 bg-white/95 p-3.5 shadow-[0_18px_38px_rgba(18,36,28,.15)] backdrop-blur-sm sm:left-[4%] sm:top-[19%] sm:w-[230px] sm:p-4 lg:-left-[3%] lg:top-[20%]">
               <div className="flex items-center gap-3">
                 <span className="grid h-10 w-10 flex-none place-items-center rounded-[12px] bg-accent/35 text-primary"><Headphones size={19} strokeWidth={2.3} /></span>
                 <div>
@@ -130,7 +130,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
               <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-secondary"><span className="block h-full w-[72%] rounded-full bg-accent" /></div>
             </div>
 
-            <div className="absolute bottom-[4%] right-0 z-20 w-[180px] rounded-[17px] border border-white/80 bg-white/95 p-3.5 shadow-[0_18px_38px_rgba(18,36,28,.15)] backdrop-blur-sm md:-right-[1%] md:bottom-[5%] md:w-[205px] md:p-4">
+            <div className="absolute bottom-[3%] right-0 z-20 w-[210px] rounded-[17px] border border-white/80 bg-white/95 p-3.5 shadow-[0_18px_38px_rgba(18,36,28,.15)] backdrop-blur-sm sm:right-[1%] sm:bottom-[4%] sm:w-[230px] sm:p-4 lg:-right-[2%] lg:bottom-[5%]">
               <div className="flex items-center gap-3">
                 <span className="grid h-10 w-10 flex-none place-items-center rounded-[12px] bg-primary text-white"><PenLine size={19} strokeWidth={2.4} /></span>
                 <div>
