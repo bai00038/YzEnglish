@@ -22,5 +22,11 @@
     "type": "year",
     "expiresAt": "2027-12-31T23:59:59-05:00",
     "disabled": false
+  },
+  {
+    "code": "653bc45c337c657d66d379b4a6df00764b9333947cfcab0196aef05c048c1d33",
+    "type": "year",
+    "expiresAt": "2027-12-31T23:59:59-05:00",
+    "disabled": false
   }
 ]
