@@ -1219,6 +1219,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   onTogglePlay={toggleCurrentStudyLine}
                   onPrevious={() => moveStudyLine(-1)}
                   onNext={() => moveStudyLine(1)}
+                  onReplay={() => {
+                    if (currentStudyLineIndex !== null) playStudyLine(currentStudyLineIndex);
+                  }}
                   playbackRate={playbackRate}
                   onPlaybackRateChange={setPlaybackRate}
                   repeatLine={repeatLine}

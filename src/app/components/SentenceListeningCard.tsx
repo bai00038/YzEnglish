@@ -15,6 +15,7 @@ export function SentenceListeningCard({
   onTogglePlay,
   onPrevious,
   onNext,
+  onReplay,
   playbackRate,
   onPlaybackRateChange,
   repeatLine,
@@ -33,6 +34,7 @@ export function SentenceListeningCard({
   onTogglePlay: () => void;
   onPrevious: () => void;
   onNext: () => void;
+  onReplay: () => void;
   playbackRate: number;
   onPlaybackRateChange: (rate: number) => void;
   repeatLine: boolean;
@@ -43,6 +45,7 @@ export function SentenceListeningCard({
 }) {
   const canGoPrevious = position > 0;
   const canGoNext = position >= 0 && position < total - 1;
+  const isLastLine = total > 0 && position === total - 1;
 
   return (
     <div className={`${compact ? "rounded-[20px] p-3" : "min-h-[520px] rounded-[24px] p-3 md:p-5"} border border-border bg-white shadow-[0_14px_38px_rgba(15,53,39,0.08)]`}>
@@ -71,7 +74,14 @@ export function SentenceListeningCard({
             <button type="button" onClick={onTogglePlay} disabled={!line} aria-label={isPlaying ? "暂停当前句" : "播放当前句"} className={`${compact ? "h-12 w-12" : "h-14 w-14 md:h-16 md:w-16"} inline-flex shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-[0_8px_18px_rgba(15,53,39,0.2)] transition-transform hover:scale-105 disabled:opacity-40`}>
               {isPlaying ? <Pause className="h-5 w-5 fill-current" /> : <Play className="ml-0.5 h-5 w-5 fill-current" />}
             </button>
-            <button type="button" onClick={onNext} disabled={!canGoNext} className={`${compact ? "px-3 py-2 text-[11px]" : "px-3 py-2.5 text-[12px] sm:px-4 md:px-5 md:py-3"} rounded-full border border-border bg-white font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35`}>下一句 →</button>
+            <button
+              type="button"
+              onClick={isLastLine ? onReplay : onNext}
+              disabled={isLastLine ? !line : !canGoNext}
+              className={`${compact ? "px-3 py-2 text-[11px]" : "px-3 py-2.5 text-[12px] sm:px-4 md:px-5 md:py-3"} rounded-full border border-border bg-white font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35`}
+            >
+              {isLastLine ? "再听一遍" : "下一句 →"}
+            </button>
           </div>
           <span className={`${compact ? "mt-1.5 text-[11px]" : "mt-2 text-[12px]"} font-black tabular-nums text-primary`}>{position + 1} / {total}</span>
         </div>
