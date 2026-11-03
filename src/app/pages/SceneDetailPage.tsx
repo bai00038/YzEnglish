@@ -1220,7 +1220,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   onPrevious={() => moveStudyLine(-1)}
                   onNext={() => moveStudyLine(1)}
                   onReplay={() => {
-                    if (currentStudyLineIndex !== null) playStudyLine(currentStudyLineIndex);
+                    const firstLineIndex = playableDialogueLineIndexes[0];
+                    if (firstLineIndex !== undefined) playStudyLine(firstLineIndex);
                   }}
                   playbackRate={playbackRate}
                   onPlaybackRateChange={setPlaybackRate}
