@@ -33,24 +33,16 @@ export function SceneCard({ scene, collectionLabels = [], compact = false, resum
           </span>}
           <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-2.5 top-2.5" />
           <span className="absolute bottom-2.5 left-2.5 rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-medium text-white">{getSceneCategoryLabel(scene.category)}</span>
+          {hasProgress && (
+            <span role="progressbar" aria-label={`${scene.titleZh}学习进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percent} className="absolute inset-x-0 bottom-0 h-1 bg-white/35">
+              <span className="block h-full bg-accent" style={{ width: `${progress.percent}%` }} />
+            </span>
+          )}
         </div>
         <div className="flex flex-1 flex-col p-3">
           <p className="display-serif line-clamp-2 text-[16px] font-semibold leading-[1.2] text-foreground group-hover:text-primary">{scene.titleEn}</p>
           <p className="mt-1 truncate font-['Noto_Serif_SC'] text-[12px] text-muted-foreground">{scene.titleZh}</p>
-          <div className="mt-auto pt-2.5">
-            {hasProgress && (
-              <div>
-                <div className="mb-1.5 flex items-center justify-between text-[10px] font-bold text-muted-foreground">
-                  <span>学习进度</span>
-                  <span className="tabular-nums text-primary">{progress.percent}%</span>
-                </div>
-                <span role="progressbar" aria-label={`${scene.titleZh}学习进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percent} className="block h-1.5 overflow-hidden rounded-full bg-primary/10">
-                  <span className="block h-full rounded-full bg-accent" style={{ width: `${progress.percent}%` }} />
-                </span>
-              </div>
-            )}
-            <div className={`flex items-center ${hasProgress ? "pt-2" : ""}`}><span className="ml-auto"><DurationLabel duration={scene.duration} /></span></div>
-          </div>
+          <div className="mt-auto flex items-center pt-2.5"><span className="ml-auto"><DurationLabel duration={scene.duration} /></span></div>
         </div>
       </Link>
     );
