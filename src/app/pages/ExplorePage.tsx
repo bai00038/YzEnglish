@@ -95,12 +95,12 @@ export function ExplorePage({
                 <div className="flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden">
                   {continueScenes.map(scene => (
                     <div key={scene.externalId ?? scene.id} className="flex w-[78vw] flex-none snap-start">
-                      <SceneCard compact resume showProgress={false} scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />
+                      <SceneCard compact resume showProgress scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />
                     </div>
                   ))}
                 </div>
                 <div className="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
-                  {continueScenes.map(scene => <SceneCard compact resume showProgress={false} key={scene.externalId ?? scene.id} scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />)}
+                  {continueScenes.map(scene => <SceneCard compact resume showProgress key={scene.externalId ?? scene.id} scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />)}
                 </div>
               </section>
             )}
