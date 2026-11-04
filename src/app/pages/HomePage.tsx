@@ -1,10 +1,46 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { ArrowRight, Headphones, PenLine } from "lucide-react";
+import { ArrowRight, Headphones, PenLine, Play } from "lucide-react";
 import { useFreeTrialScenes } from "@/data/collections-access";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 import { SentenceListeningCard } from "@/app/components/SentenceListeningCard";
-import { SceneCard } from "@/app/components/SceneCard";
+import { getSceneCardCategoryLabel } from "@/data/scene-categories";
+import type { Scene } from "@/data/types";
+
+const HOME_COVER_FALLBACKS: Record<string, string> = {
+  "SH-01-007": "https://go.learnyzenglish.com/content/SH-01-007/cover.png",
+  "ST-01-001": "https://go.learnyzenglish.com/content/ST-01-001/cover.jpg",
+};
+
+function HomeEditorialScene({ scene, featured = false }: { scene: Scene; featured?: boolean }) {
+  const cover = scene.photo ?? (scene.externalId ? HOME_COVER_FALLBACKS[scene.externalId] : undefined);
+  return (
+    <Link
+      to={`/scenes/${scene.slug}`}
+      className="group relative min-h-[300px] overflow-hidden rounded-[20px] bg-primary text-white shadow-[0_18px_42px_rgba(18,36,28,.08)] md:min-h-[430px]"
+    >
+      {cover ? (
+        <img src={cover} alt={scene.titleEn} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.035]" loading="lazy" />
+      ) : scene.video_url ? (
+        <video src={`${scene.video_url}#t=0.001`} aria-label={scene.titleEn} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.035]" muted playsInline preload="metadata" />
+      ) : (
+        <div className="absolute inset-0 bg-[linear-gradient(145deg,#315848,#0f3527)]" />
+      )}
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,19,13,.02)_24%,rgba(5,19,13,.18)_56%,rgba(5,19,13,.9)_100%)]" />
+      <span className="absolute left-4 top-4 rounded-full bg-accent px-3 py-1.5 text-[11px] font-black text-primary">免费体验</span>
+      <span className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/92 text-primary shadow-sm backdrop-blur-sm">
+        <Play size={15} fill="currentColor" />
+      </span>
+      <div className="absolute inset-x-5 bottom-5 z-10 md:inset-x-6 md:bottom-6">
+        <p className="text-[11px] font-bold tracking-[0.12em] text-white/76">{getSceneCardCategoryLabel(scene.collectionId, scene.category)}</p>
+        <h3 className={`mt-2 font-sans font-black leading-[1.18] tracking-[-0.02em] text-white ${featured ? "text-[27px] md:text-[31px]" : "text-[23px] md:text-[26px]"}`}>
+          {scene.titleZh || scene.titleEn}
+        </h3>
+        <p className={`mt-1.5 line-clamp-2 font-sans italic leading-snug text-white/78 ${featured ? "text-[14px] md:text-[15px]" : "text-[13px] md:text-[14px]"}`}>{scene.titleEn}</p>
+      </div>
+    </Link>
+  );
+}
 
 const demoLines = [
   { speaker: "You", speakerZh: "你", en: "Hi, I'd like to book a cleaning, please.", zh: "你好，我想约一个洗牙。" },
@@ -88,7 +124,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
               alt="Aria 坐在电脑前练习真实场景英语"
               width={1536}
               height={1024}
-              className="pointer-events-none absolute bottom-[1%] right-[-2%] z-10 h-[93%] w-auto max-w-none object-contain object-bottom drop-shadow-[0_18px_22px_rgba(18,36,28,.12)]"
+              className="pointer-events-none absolute bottom-[1%] right-[1%] z-10 h-[98%] w-auto max-w-none object-contain object-bottom drop-shadow-[0_18px_22px_rgba(18,36,28,.12)]"
             />
 
             <div className="absolute left-0 top-[21%] z-20 w-[40%] min-w-[170px] max-w-[230px] rounded-[clamp(15px,2.8cqw,18px)] border border-white/80 bg-white/95 p-[clamp(12px,2.4cqw,16px)] shadow-[0_18px_38px_rgba(18,36,28,.15)] backdrop-blur-sm">
@@ -124,7 +160,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
         </div>
 
         {freeLoading ? <LoadingState label="Loading free experience…" /> : freeError ? <ErrorState message={freeError} /> : scenes.length ? (
-          <div className="grid items-stretch gap-3.5 md:grid-cols-[1.25fr_.85fr_.85fr]">{scenes.map(scene => <SceneCard key={scene.id} scene={scene} compact showProgress={false} />)}</div>
+          <div className="grid items-stretch gap-3.5 md:grid-cols-[1.45fr_1fr_1fr]">{scenes.map((scene, index) => <HomeEditorialScene key={scene.id} scene={scene} featured={index === 0} />)}</div>
         ) : <EmptyState title="No scenes yet." />}
         <div className="mt-5 text-center"><Link to="/explore" onClick={onExploreEnter} className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white">进入场景库 <ArrowRight size={15} /></Link></div>
       </section>
