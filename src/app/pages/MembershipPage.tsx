@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { CalendarDays, CheckCircle2, Clock3, LockKeyhole, LogOut, Play, QrCode, ShieldCheck } from "lucide-react";
+import { CalendarDays, CheckCircle2, Clock3, LockKeyhole, Play, QrCode, ShieldCheck } from "lucide-react";
 import { Link } from "react-router";
 import { MembershipUnlockModal } from "@/app/components/MembershipUnlockModal";
 import { ErrorState, LoadingState } from "@/app/components/DataState";
 import { getSceneProgressId, useAllLearningProgress, type LearningProgress } from "@/data/learning-progress";
-import { logoutMembershipDevice, membershipErrorMessage, membershipTypeLabel, useMembershipAccess } from "@/data/membership";
+import { membershipTypeLabel, useMembershipAccess } from "@/data/membership";
 import { useScenes } from "@/data/scenes-access";
 import type { Scene } from "@/data/types";
 
@@ -86,8 +86,6 @@ export function MembershipPage() {
   const progressByScene = useAllLearningProgress();
   const [modalOpen, setModalOpen] = useState(false);
   const [qrMissing, setQrMissing] = useState(false);
-  const [loggingOut, setLoggingOut] = useState(false);
-  const [logoutError, setLogoutError] = useState("");
   const remainingDays = unlock?.expiresAt
     ? Math.max(0, Math.ceil((new Date(unlock.expiresAt).getTime() - Date.now()) / DAY_MS))
     : null;
@@ -99,18 +97,6 @@ export function MembershipPage() {
   const continueScenes = scenesWithProgress.filter(({ progress }) => progress.percent > 0 && progress.percent < 100).map(({ scene }) => scene);
   const completedScenes = scenesWithProgress.filter(({ progress }) => progress.percent >= 100).map(({ scene }) => scene);
   const hasLearningRecords = continueScenes.length > 0 || completedScenes.length > 0;
-
-  async function handleLogout() {
-    setLoggingOut(true);
-    setLogoutError("");
-    try {
-      await logoutMembershipDevice();
-    } catch (error) {
-      setLogoutError(membershipErrorMessage(error));
-    } finally {
-      setLoggingOut(false);
-    }
-  }
 
   return (
     <div className="bg-background py-10 md:py-14">
@@ -165,16 +151,11 @@ export function MembershipPage() {
                       </dd>
                     </div>
                   </dl>
-                  <div className="mt-6 flex flex-wrap gap-3">
+                  <div className="mt-6">
                     <button type="button" onClick={() => setModalOpen(true)} className="inline-flex min-h-11 items-center justify-center rounded-full border border-primary/20 bg-white px-6 text-sm font-bold text-primary transition-colors hover:bg-secondary">
                       重新输入兑换码
                     </button>
-                    <button type="button" onClick={handleLogout} disabled={loggingOut} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-primary/20 bg-white px-6 text-sm font-bold text-primary transition-colors hover:bg-secondary disabled:cursor-wait disabled:opacity-60">
-                      <LogOut size={16} /> {loggingOut ? "正在退出…" : "退出当前设备"}
-                    </button>
                   </div>
-                  {logoutError && <p className="mt-3 text-xs font-semibold text-[#A13D32]">{logoutError}</p>}
-                  <p className="mt-4 max-w-[620px] text-xs leading-6 text-muted-foreground">同一会员码最多同时在线 2 台设备；15 分钟未使用会自动释放名额。登录凭证会在正常使用时滚动保留 30 天，回来后无需重新输码。</p>
                 </div>
               )}
             </div>
