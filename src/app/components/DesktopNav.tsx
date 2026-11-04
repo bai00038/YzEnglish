@@ -12,7 +12,7 @@ export function DesktopNav() {
           <img src="/yz-english-logo.png" alt="Yz English" className="h-12 w-12 flex-none object-contain sm:h-[52px] sm:w-[52px] lg:h-[56px] lg:w-[56px]" />
           <span>
             <b aria-label="Yz English" className="block whitespace-nowrap font-sans text-[25px] font-semibold leading-[0.92] tracking-[-0.035em] text-foreground sm:text-[30px] lg:text-[32px]">
-              <span aria-hidden="true">Yz Engl<span className="relative inline-block">ı<span className="absolute left-1/2 top-[-0.13em] h-[0.22em] w-[0.22em] -translate-x-1/2 rounded-full bg-[#48A23F]" /></span>sh</span>
+              <span aria-hidden="true">Yz Engl<span className="relative inline-block">ı<span className="absolute left-1/2 top-[-0.06em] h-[0.22em] w-[0.22em] -translate-x-1/2 rounded-full bg-[#48A23F]" /></span>sh</span>
             </b>
             <span className="mt-1 block whitespace-nowrap text-[8.5px] font-medium uppercase tracking-[0.27em] text-muted-foreground sm:text-[10px] sm:tracking-[0.32em]">real scenes for real life</span>
           </span>
