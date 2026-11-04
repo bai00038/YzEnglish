@@ -37,7 +37,7 @@ export function useFreeTrialScenes() {
     return collections
       .flatMap(collection => collection.scenes)
       .filter(scene => scene.isFreeExperience)
-      .sort((a, b) => ["SH-01-007", "ST-01-001", "DL-01-007"].indexOf(a.externalId ?? "") - ["SH-01-007", "ST-01-001", "DL-01-007"].indexOf(b.externalId ?? ""))
+      .sort((a, b) => ["SH-01-007", "ST-01-001", "FD-01-001"].indexOf(a.externalId ?? "") - ["SH-01-007", "ST-01-001", "FD-01-001"].indexOf(b.externalId ?? ""))
       .map(scene => ({
         scene,
         collectionLabel: scene.collectionId ? namesById.get(scene.collectionId) ?? "" : "",

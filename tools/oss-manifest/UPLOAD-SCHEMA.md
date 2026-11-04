@@ -21,7 +21,7 @@
 - `collectionOrder`：在合集中的内容流程序号，从 1 开始，不按发布时间排序。
 - `tags`：用于全站七类筛选，可多选；合法值为 `medical`、`shopping`、`daily`、`school`、`parenting`、`dining`、`settling-in`。
 - `status`：`live` 或 `coming`。媒体未上传完成时使用 `coming`，页面展示但不可进入。
-- `isFreeExperience`：仅固定三个场景为 `true`：SH-01-007、ST-01-001、DL-01-007。
+- `isFreeExperience`：仅固定三个场景为 `true`：SH-01-007、ST-01-001、FD-01-001。
 
 ## 合集
 

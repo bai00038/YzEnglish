@@ -38,7 +38,7 @@
         "daily"
       ],
       "status": "live",
-      "isFreeExperience": false,
+      "isFreeExperience": true,
       "featured": true,
       "id": 10,
       "publishedAt": "2026-10-04T14:31:43Z",
@@ -403,7 +403,7 @@
         "daily"
       ],
       "status": "live",
-      "isFreeExperience": true,
+      "isFreeExperience": false,
       "featured": false,
       "id": 26,
       "publishedAt": "2026-11-04T02:16:20Z",

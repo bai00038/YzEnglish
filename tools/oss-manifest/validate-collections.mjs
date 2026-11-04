@@ -12,7 +12,7 @@ const [manifest, collections] = await Promise.all([
 
 const expectedCollectionIds = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9"];
 const allowedTags = new Set(["medical", "shopping", "daily", "school", "parenting", "dining", "settling-in"]);
-const expectedFreeSceneIds = new Set(["SH-01-007", "ST-01-001", "DL-01-007"]);
+const expectedFreeSceneIds = new Set(["SH-01-007", "ST-01-001", "FD-01-001"]);
 const errors = [];
 
 const collectionIds = collections.map((collection) => collection.id);
