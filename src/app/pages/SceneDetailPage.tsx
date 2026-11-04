@@ -127,6 +127,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const [repeatLine, setRepeatLine] = useState(false);
   const repeatLineRef = useRef(false);
   const studySectionRef = useRef<HTMLDivElement>(null);
+  // Continuous video playback may update subtitles, but the sentence
+  // listening card stays on sentence 1 until the learner intentionally
+  // starts or interacts with sentence-listening practice.
+  const [sentenceListeningActive, setSentenceListeningActive] = useState(false);
   // Selected playback speed — applies to the one shared <video> element no
   // matter which mode is driving it (continuous play, single-line play,
   // repeat, future dictation), so it lives here rather than per-mode.
@@ -201,6 +205,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     setVideoCurrentTime(0);
     setVideoPaused(true);
     setPinnedLineIndex(null);
+    setSentenceListeningActive(false);
     cancelRangePlayback();
     // A freshly-loaded <video> element defaults to 1× — reapply the
     // user's selected speed so switching scenes doesn't silently reset it.
@@ -687,7 +692,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     () => Array.from(dialogueLineRawRanges.keys()).sort((a, b) => a - b),
     [dialogueLineRawRanges]
   );
-  const currentStudyLineIndex = highlightedLineIndex !== null && dialogueLineRawRanges.has(highlightedLineIndex)
+  const currentStudyLineIndex = sentenceListeningActive && highlightedLineIndex !== null && dialogueLineRawRanges.has(highlightedLineIndex)
     ? highlightedLineIndex
     : (playableDialogueLineIndexes[0] ?? null);
   const currentStudyLinePosition = currentStudyLineIndex === null
@@ -709,12 +714,14 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   function playStudyLine(lineIndex: number) {
     const range = dialogueLineRawRanges.get(lineIndex);
     if (!range) return;
+    setSentenceListeningActive(true);
     saveLearningPosition("dialogue", range.start);
     playDialogueLine(lineIndex, range);
   }
 
   function startSentenceListening() {
     saveLearningPosition("dialogue");
+    setSentenceListeningActive(true);
     repeatLineRef.current = false;
     setRepeatLine(false);
     setStudyTab("listening");
