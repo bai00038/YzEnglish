@@ -950,7 +950,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   image) or, before scene.video_url is synced from the Google
                   Sheet, as a poster-style background — never shown as a bare
                   standalone image. ── */}
-              <div className="relative w-full overflow-hidden rounded-[20px] border border-primary/10 bg-black shadow-[0_16px_40px_rgba(15,53,39,0.12)]" style={{ aspectRatio: "16 / 9" }}>
+              <div className="relative w-full overflow-hidden rounded-[20px] bg-black shadow-[0_16px_40px_rgba(15,53,39,0.12)]" style={{ aspectRatio: "16 / 9" }}>
                 {!canAccessMemberContent ? (
                   <button
                     type="button"
@@ -993,7 +993,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       playsInline
                       preload="metadata"
                       poster={scene.photo || undefined}
-                      className="w-full h-full object-cover"
+                      className="h-full w-full object-contain"
                       draggable={false}
                       onContextMenu={(event) => event.preventDefault()}
                       onDragStart={(event) => event.preventDefault()}
