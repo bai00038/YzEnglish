@@ -1,10 +1,10 @@
 import { Link } from "react-router";
 import { LockKeyhole } from "lucide-react";
 import { CATEGORY_BG } from "@/data/scenes";
-import { getSceneCategoryLabel } from "@/data/scene-categories";
+import { getSceneCardCategoryLabel } from "@/data/scene-categories";
 import type { Scene } from "@/data/types";
 import { ImgBox } from "@/app/components/primitives";
-import { DurationLabel } from "@/app/components/badges";
+import { DurationLabel, SentenceCountLabel } from "@/app/components/badges";
 import { SceneBadges } from "@/app/components/SceneBadges";
 import { getSceneProgressId, useLearningProgress } from "@/data/learning-progress";
 import { useMembershipAccess } from "@/data/membership";
@@ -32,7 +32,7 @@ export function SceneCard({ scene, collectionLabels = [], compact = false, resum
             {isMemberOnly && <LockKeyhole size={10} />}{scene.isFreeExperience ? "免费体验" : "会员专属"}
           </span>}
           <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-2.5 top-2.5" />
-          <span className="absolute bottom-2.5 left-2.5 rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-medium text-white">{getSceneCategoryLabel(scene.category)}</span>
+          <span className="absolute bottom-2.5 left-2.5 rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-medium text-white">{getSceneCardCategoryLabel(scene.collectionId, scene.category)}</span>
           {hasProgress && (
             <span role="progressbar" aria-label={`${scene.titleZh}学习进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percent} className="absolute inset-x-0 bottom-0 h-1 bg-white/35">
               <span className="block h-full bg-accent" style={{ width: `${progress.percent}%` }} />
@@ -40,9 +40,14 @@ export function SceneCard({ scene, collectionLabels = [], compact = false, resum
           )}
         </div>
         <div className="flex flex-1 flex-col p-3">
-          <p className="display-serif line-clamp-2 text-[16px] font-semibold leading-[1.2] text-foreground group-hover:text-primary">{scene.titleEn}</p>
-          <p className="mt-1 truncate font-['Noto_Serif_SC'] text-[12px] text-muted-foreground">{scene.titleZh}</p>
-          <div className="mt-auto flex items-center pt-2.5"><span className="ml-auto"><DurationLabel duration={scene.duration} /></span></div>
+          <div className="h-[61px] md:h-[66px]">
+            <p className="line-clamp-1 font-sans text-[17px] font-bold leading-tight text-primary md:text-[18px]">{scene.titleZh}</p>
+            <p className="mt-0.5 line-clamp-2 font-sans text-[12px] italic leading-[1.25] text-muted-foreground md:text-[13px]">{scene.titleEn}</p>
+          </div>
+          <div className="mt-auto flex items-center justify-between pt-2.5">
+            <span>{scene.sentenceCount ? <SentenceCountLabel count={scene.sentenceCount} /> : null}</span>
+            <DurationLabel duration={scene.duration} />
+          </div>
         </div>
       </Link>
     );
@@ -64,7 +69,7 @@ export function SceneCard({ scene, collectionLabels = [], compact = false, resum
         </span>}
         <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-3.5 top-3.5" />
         <span className="absolute bottom-3.5 left-3.5 rounded-full bg-primary px-3 py-1.5 text-[12px] font-medium text-white">
-          {getSceneCategoryLabel(scene.category)}
+          {getSceneCardCategoryLabel(scene.collectionId, scene.category)}
         </span>
         {hasProgress && (
           <span role="progressbar" aria-label={`${scene.titleZh}学习进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percent} className="absolute inset-x-0 bottom-0 h-1 bg-white/35">
@@ -73,11 +78,14 @@ export function SceneCard({ scene, collectionLabels = [], compact = false, resum
         )}
       </div>
       <div className="flex flex-1 flex-col px-[22px] pb-[18px] pt-5">
-        <p className="display-serif text-[20.5px] font-semibold leading-[1.25] text-foreground transition-colors group-hover:text-primary">{scene.titleEn}</p>
-        <p className="mb-3.5 mt-1 font-['Noto_Serif_SC'] text-[15px] text-muted-foreground">{scene.titleZh}</p>
+        <div className="mb-3.5 h-[61px] md:h-[66px]">
+          <p className="line-clamp-1 font-sans text-[18px] font-bold leading-tight text-primary md:text-[19px]">{scene.titleZh}</p>
+          <p className="mt-0.5 line-clamp-2 font-sans text-[12px] italic leading-[1.25] text-muted-foreground md:text-[13px]">{scene.titleEn}</p>
+        </div>
         {collectionLabels.length > 0 && <p className="mb-3 text-[12px] leading-relaxed text-muted-foreground">收录于：{collectionLabels.join("、")}</p>}
-        <div className="mt-auto flex items-center border-t border-border pt-3.5">
-          <span className="ml-auto"><DurationLabel duration={scene.duration} /></span>
+        <div className="mt-auto flex items-center justify-between border-t border-border pt-3.5">
+          <span>{scene.sentenceCount ? <SentenceCountLabel count={scene.sentenceCount} /> : null}</span>
+          <DurationLabel duration={scene.duration} />
         </div>
       </div>
     </Link>

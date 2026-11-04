@@ -1,0 +1,12 @@
+{
+  "Version": "1",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["oss:GetObject", "oss:PutObject"],
+      "Resource": [
+        "acs:oss:*:*:yz-english-membership/_private/membership/codes/*"
+      ]
+    }
+  ]
+}

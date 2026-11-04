@@ -1,44 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { ArrowRight, Headphones, PenLine, Play } from "lucide-react";
+import { ArrowRight, Headphones, PenLine } from "lucide-react";
 import { useFreeTrialScenes } from "@/data/collections-access";
-import type { Scene } from "@/data/types";
-import { getSceneCategoryLabel } from "@/data/scene-categories";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
-import { SceneBadges } from "@/app/components/SceneBadges";
 import { SentenceListeningCard } from "@/app/components/SentenceListeningCard";
-
-function EditorialScene({ scene, large = false }: { scene: Scene; large?: boolean }) {
-  return (
-    <Link
-      to={`/scenes/${scene.slug}`}
-      className={`group relative min-h-[280px] overflow-hidden rounded-[18px] border border-primary/15 bg-card ${large ? "md:min-h-[420px]" : "md:min-h-[300px]"}`}
-    >
-      {scene.photo ? (
-        <img src={scene.photo} alt={scene.titleEn} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.035]" loading="lazy" />
-      ) : scene.video_url ? (
-        <video
-          src={`${scene.video_url}#t=0.001`}
-          aria-label={`${scene.titleEn} video cover`}
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.035]"
-          muted
-          playsInline
-          preload="metadata"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-[linear-gradient(145deg,#254B3C,#0F3527)]" />
-      )}
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_32%,rgba(6,20,14,.82))]" />
-      <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute left-3 top-3" />
-      <span className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-primary shadow-sm"><Play size={14} fill="currentColor" /></span>
-      <div className="absolute inset-x-4 bottom-4 z-10 text-white">
-        <p className="text-[10px] font-bold tracking-[0.14em] text-white/80">{getSceneCategoryLabel(scene.category)}</p>
-        <h3 className="mt-1.5 font-['Noto_Serif_SC'] text-[21px] font-bold leading-tight">{scene.titleZh || scene.titleEn}</h3>
-        <p className="mt-1 text-[12.5px] leading-relaxed text-white/85">{scene.titleEn}</p>
-      </div>
-    </Link>
-  );
-}
+import { SceneCard } from "@/app/components/SceneCard";
 
 const demoLines = [
   { speaker: "You", speakerZh: "你", en: "Hi, I'd like to book a cleaning, please.", zh: "你好，我想约一个洗牙。" },
@@ -60,6 +26,11 @@ function SentenceListeningDemo() {
     setActiveIndex(index => Math.min(demoLines.length - 1, Math.max(0, index + direction)));
   }
 
+  function replayFromBeginning() {
+    setActiveIndex(0);
+    setIsPlaying(true);
+  }
+
   return (
     <SentenceListeningCard
       line={line}
@@ -72,6 +43,7 @@ function SentenceListeningDemo() {
       onTogglePlay={() => setIsPlaying(value => !value)}
       onPrevious={() => moveLine(-1)}
       onNext={() => moveLine(1)}
+      onReplay={replayFromBeginning}
       playbackRate={playbackRate}
       onPlaybackRateChange={setPlaybackRate}
       repeatLine={repeatLine}
@@ -152,7 +124,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
         </div>
 
         {freeLoading ? <LoadingState label="Loading free experience…" /> : freeError ? <ErrorState message={freeError} /> : scenes.length ? (
-          <div className="grid gap-3.5 md:grid-cols-[1.25fr_.85fr_.85fr]">{scenes.map((scene, index) => <EditorialScene key={scene.id} scene={scene} large={index === 0} />)}</div>
+          <div className="grid items-stretch gap-3.5 md:grid-cols-[1.25fr_.85fr_.85fr]">{scenes.map(scene => <SceneCard key={scene.id} scene={scene} compact showProgress={false} />)}</div>
         ) : <EmptyState title="No scenes yet." />}
         <div className="mt-5 text-center"><Link to="/explore" onClick={onExploreEnter} className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white">进入场景库 <ArrowRight size={15} /></Link></div>
       </section>

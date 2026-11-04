@@ -10,7 +10,7 @@ import { MembershipUnlockModal } from "@/app/components/MembershipUnlockModal";
 import { SentenceListeningCard } from "@/app/components/SentenceListeningCard";
 import { buildSceneSpeakers, normalizeSpeaker, SPEAKER_STYLES } from "@/data/speakerRoles";
 import { getSceneProgressId, readLearningProgress, updateLearningPosition, writeLearningProgress, type LearningStep } from "@/data/learning-progress";
-import { useMembershipAccess } from "@/data/membership";
+import { membershipErrorMessage, requestProtectedAssetUrl, SECURE_MEMBERSHIP_ENABLED, useMembershipAccess } from "@/data/membership";
 import type { CultureTipItem, KeyExpressionItem } from "@/data/types";
 
 // Key Expressions card — expressionEn/expressionZh, the only two fields
@@ -105,6 +105,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const prevScene = data?.prevScene ?? undefined;
   const nextScene = data?.nextScene ?? undefined;
   const canAccessMemberContent = scene?.isFreeExperience === true || isUnlocked;
+  const [protectedVideoUrl, setProtectedVideoUrl] = useState<string | null>(null);
+  const [protectedPdfUrl, setProtectedPdfUrl] = useState<string | null>(null);
+  const [protectedAssetError, setProtectedAssetError] = useState("");
+  const requiresSignedAssets = Boolean(scene && !scene.isFreeExperience && SECURE_MEMBERSHIP_ENABLED);
 
   // Unique speakers for this scene, in first-occurrence order, each with a
   // stable color — shared by the legend and every dialogue row below.
@@ -144,6 +148,40 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // soon as normal continuous playback starts (see the <video> onPlay
   // handler), so time-based tracking takes back over.
   const [pinnedLineIndex, setPinnedLineIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setProtectedAssetError("");
+    if (!scene || !canAccessMemberContent) {
+      setProtectedVideoUrl(null);
+      setProtectedPdfUrl(null);
+      return () => { cancelled = true; };
+    }
+    if (!requiresSignedAssets) {
+      setProtectedVideoUrl(scene.video_url ?? null);
+      setProtectedPdfUrl(scene.pdfUrl ?? null);
+      return () => { cancelled = true; };
+    }
+    const sceneId = scene.externalId;
+    if (!sceneId) {
+      setProtectedAssetError("该课程缺少安全资源编号，请联系我处理");
+      return () => { cancelled = true; };
+    }
+    setProtectedVideoUrl(null);
+    setProtectedPdfUrl(null);
+    void Promise.all([
+      scene.video_url ? requestProtectedAssetUrl(sceneId, scene.video_url) : Promise.resolve(null),
+      scene.pdfUrl ? requestProtectedAssetUrl(sceneId, scene.pdfUrl) : Promise.resolve(null),
+    ]).then(([videoUrl, pdfUrl]) => {
+      if (cancelled) return;
+      setProtectedVideoUrl(videoUrl);
+      setProtectedPdfUrl(pdfUrl);
+    }).catch(error => {
+      if (cancelled) return;
+      setProtectedAssetError(membershipErrorMessage(error));
+    });
+    return () => { cancelled = true; };
+  }, [canAccessMemberContent, requiresSignedAssets, scene?.externalId, scene?.isFreeExperience, scene?.pdfUrl, scene?.video_url]);
 
   function saveLearningPosition(step: LearningStep, videoTime?: number) {
     if (!progressSceneId) return;
@@ -588,12 +626,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     // landed yet — before starting this one.
     cancelRangePlayback();
     const requestId = ++playRequestRef.current;
-    // timing.json bakes in a 0.25s pre-roll (start = actual - 0.25) which
-    // causes audible bleed from the previous line. Keep 0.15s of it for
-    // a natural lead-in, shave off the excess 0.10s. End gets +0.15s
-    // padding so the cutoff doesn't sound clipped.
-    const trueStart = range.start + 0.10;
-    const trueEnd = range.end + 0.15;
+    // Use the human-calibrated range exactly as authored. Do not add a
+    // lead-in, lead-out, tolerance, or any other playback padding here.
+    const trueStart = range.start;
+    const trueEnd = range.end;
     if (!video.paused) {
       suppressNextPauseCleanupRef.current = true;
       video.pause();
@@ -866,7 +902,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
         </span>
         <div className="mt-3 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-8">
           <div className="min-w-0 max-w-[760px]">
-            <h1 className="font-serif text-[32px] font-semibold leading-[1.08] tracking-[-0.025em] text-primary md:text-[40px] lg:text-[44px]">
+            <h1 className="font-serif text-[30px] font-semibold leading-[1.08] tracking-[-0.025em] text-primary md:text-[38px]">
               {scene.titleZh}
             </h1>
             <p className="mt-2 max-w-[690px] text-[14px] leading-relaxed text-[#3A4A42] md:text-[15px]">
@@ -939,7 +975,15 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       </span>
                     </div>
                   </button>
-                ) : scene.video_url ? (
+                ) : scene.video_url && protectedAssetError ? (
+                  <div className="flex h-full w-full items-center justify-center bg-primary px-6 text-center text-sm font-bold text-white">
+                    {protectedAssetError}
+                  </div>
+                ) : scene.video_url && !protectedVideoUrl ? (
+                  <div className="flex h-full w-full items-center justify-center bg-primary px-6 text-center text-sm font-bold text-white">
+                    正在准备安全播放地址…
+                  </div>
+                ) : protectedVideoUrl ? (
                   <div className="relative w-full h-full">
                     <video
                       ref={videoRef}
@@ -1059,7 +1103,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         }
                       }}
                     >
-                      <source src={scene.video_url} />
+                      <source src={protectedVideoUrl} />
                       Your browser does not support video playback.
                     </video>
                     {subtitleLang !== "off" && activeSubtitleLine && (
@@ -1326,9 +1370,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     >
                       <LockKeyhole size={16} /> 会员内容 · 开通会员后可学
                     </button>
-                  ) : scene.pdfUrl ? (
+                  ) : protectedPdfUrl ? (
                     <a
-                      href={scene.pdfUrl}
+                      href={protectedPdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => {
@@ -1344,6 +1388,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     >
                       下载 PDF 讲义 <Download size={15} />
                     </a>
+                  ) : scene.pdfUrl && !protectedAssetError ? (
+                    <span
+                      className="flex flex-shrink-0 items-center justify-center gap-2 rounded-full px-6 py-4 text-[14px] font-black opacity-75"
+                      style={{ backgroundColor: "#C8F169", color: "#12241C" }}
+                    >
+                      正在准备安全下载…
+                    </span>
                   ) : (
                     <span
                       className="flex flex-shrink-0 items-center justify-center gap-2 rounded-full px-6 py-4 text-[14px] font-black opacity-60"

@@ -46,7 +46,7 @@ export function ContactPage() {
             style={{ backgroundColor: "#C8F169", color: "#12241C" }}>
             Contact · 联系我们
           </span>
-          <h1 className="display-serif text-[36px] md:text-[50px] font-bold leading-[1.06] tracking-[-0.01em] text-foreground mb-2">
+          <h1 className="display-serif text-[30px] md:text-[38px] font-bold leading-[1.06] tracking-[-0.01em] text-foreground mb-2">
             Let's stay connected
           </h1>
           <p className="font-['Noto_Serif_SC'] text-lg md:text-xl font-bold mb-4" style={{ color: "#0F3527" }}>扫码关注，保持联系</p>

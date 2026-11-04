@@ -5,7 +5,6 @@ import { SceneCard } from "@/app/components/SceneCard";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { useCollections } from "@/data/collections-access";
 import { COLLECTION_TAGS } from "@/data/content-collections";
-import { getSceneProgressId, useAllLearningProgress } from "@/data/learning-progress";
 
 const CATALOGUE_TAGS = [{ id: "All", label: "全部" }, ...COLLECTION_TAGS];
 
@@ -19,7 +18,6 @@ export function ExplorePage({
   const [searchParams] = useSearchParams();
   const { data: collectionsData, loading, error } = useCollections();
   const collections = collectionsData ?? [];
-  const progressByScene = useAllLearningProgress();
   const requestedTag = searchParams.get("tag");
 
   useEffect(() => {
@@ -40,19 +38,6 @@ export function ExplorePage({
         .some(value => value.toLowerCase().includes(query));
       return matchesTag && matchesQuery;
     });
-  const continueScenes = collections
-    .flatMap(collection => collection.scenes)
-    .filter(scene => scene.status === "live")
-    .filter(scene => {
-      const percent = progressByScene[getSceneProgressId(scene)]?.percent ?? 0;
-      return percent > 0 && percent < 100;
-    })
-    .sort((a, b) => {
-      const aUpdated = progressByScene[getSceneProgressId(a)]?.updatedAt ?? "";
-      const bUpdated = progressByScene[getSceneProgressId(b)]?.updatedAt ?? "";
-      return bUpdated.localeCompare(aUpdated);
-    });
-
   return (
     <div className="pb-10">
       <div className="sticky top-0 z-40 bg-background">
@@ -83,27 +68,6 @@ export function ExplorePage({
           </section>
         ) : (
           <div className="space-y-4">
-            {continueScenes.length > 0 && (
-              <section aria-labelledby="continue-learning-heading">
-                <div className="mb-2 flex items-end justify-between gap-4 border-b border-border pb-2">
-                  <div className="min-w-0 md:flex md:items-baseline md:gap-3">
-                    <h2 id="continue-learning-heading" className="shrink-0 font-['Noto_Serif_SC'] text-[22px] font-bold leading-tight text-primary">继续学习</h2>
-                    <p className="mt-1 truncate text-[12px] text-muted-foreground md:mt-0">从上次停下的地方接着学</p>
-                    <span className="mt-1 block shrink-0 text-[12px] font-semibold text-secondary-foreground md:mt-0">共 {continueScenes.length} 集</span>
-                  </div>
-                </div>
-                <div className="flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden">
-                  {continueScenes.map(scene => (
-                    <div key={scene.externalId ?? scene.id} className="flex w-[78vw] flex-none snap-start">
-                      <SceneCard compact resume showProgress scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />
-                    </div>
-                  ))}
-                </div>
-                <div className="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
-                  {continueScenes.map(scene => <SceneCard compact resume showProgress key={scene.externalId ?? scene.id} scene={scene} collectionLabels={scene.collectionId ? [collectionNames.get(scene.collectionId) ?? ""] : []} />)}
-                </div>
-              </section>
-            )}
             {collections.map(collection => {
               const liveScenes = collection.scenes.filter(scene => scene.status === "live");
               if (liveScenes.length === 0) {

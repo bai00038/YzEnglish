@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Clock, Globe, BarChart2 } from "lucide-react";
+import { Clock, Globe, BarChart2, MessageSquareText } from "lucide-react";
 
 function getLevelStyle(level: string) {
   if (level === "A1–A2") return "bg-emerald-100 text-emerald-800";
@@ -20,6 +20,14 @@ export function DurationLabel({ duration }: { duration: string }) {
   return (
     <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
       <Clock size={10} />{duration}
+    </span>
+  );
+}
+
+export function SentenceCountLabel({ count }: { count: number }) {
+  return (
+    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+      <MessageSquareText size={10} />{count} 句
     </span>
   );
 }

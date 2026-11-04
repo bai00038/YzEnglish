@@ -17,6 +17,13 @@ const CATEGORY_LABELS: Record<string, string> = {
   "Social English": "日常生活",
   Travel: "日常生活",
   Healthcare: "医疗英语",
+  "Dental X-rays": "拍牙片",
+  "Professional Teeth Cleaning": "洗牙",
+  "Dental Filling": "补牙",
+  "Dental Implant Surgery": "种牙手术",
+  "Describing Pain at the Dentist": "描述牙疼",
+  "Dental Front Desk": "预约复诊",
+  "Orthodontic Consultation": "牙套咨询",
   "School & Family": "家校沟通",
   "Banking & Services": "安家办事",
   Housing: "安家办事",
@@ -28,4 +35,20 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 export function getSceneCategoryLabel(category: string): string {
   return CATEGORY_LABELS[category] ?? "其他场景";
+}
+
+const COLLECTION_CARD_LABELS: Record<string, string> = {
+  C1: "牙科英语",
+  C2: "医疗英语",
+  C3: "医疗英语",
+  C4: "家校英语",
+  C5: "日常英语",
+  C6: "亲子英语",
+  C7: "点餐英语",
+  C8: "购物英语",
+  C9: "安家英语",
+};
+
+export function getSceneCardCategoryLabel(collectionId: string | undefined, category: string): string {
+  return (collectionId && COLLECTION_CARD_LABELS[collectionId]) || getSceneCategoryLabel(category);
 }

@@ -7,7 +7,7 @@ export function MobileNav() {
   const items = [
     { label: "首页", path: "/", Icon: Home },
     { label: "场景库", path: "/explore", Icon: Grid },
-    { label: "我的会员", path: "/membership", Icon: UserRound },
+    { label: "我的学习", path: "/membership", Icon: UserRound },
     { label: "关于", path: "/about", Icon: Info },
   ];
   return (

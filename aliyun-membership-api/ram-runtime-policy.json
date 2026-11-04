@@ -1,0 +1,31 @@
+{
+  "Version": "1",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["oss:GetObject"],
+      "Resource": [
+        "acs:oss:*:*:yz-english-videos/content/*",
+        "acs:oss:*:*:yz-english-membership/_private/membership/codes/*",
+        "acs:oss:*:*:yz-english-membership/_private/membership/devices/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["oss:PutObject"],
+      "Resource": [
+        "acs:oss:*:*:yz-english-membership/_private/membership/devices/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["oss:ListObjects"],
+      "Resource": ["acs:oss:*:*:yz-english-membership"],
+      "Condition": {
+        "StringLike": {
+          "oss:Prefix": ["_private/membership/devices/*"]
+        }
+      }
+    }
+  ]
+}

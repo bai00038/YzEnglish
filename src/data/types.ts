@@ -134,6 +134,7 @@ export interface Scene {
   region: string;
   level: string;
   duration: string;
+  sentenceCount?: number;
   featured: boolean;
   isNew: boolean;
   isHot?: boolean;

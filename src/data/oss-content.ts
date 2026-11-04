@@ -55,8 +55,9 @@ export interface ManifestScene {
   region: string;
   level: string;
   duration: string;
+  sentenceCount?: number;
   featured: boolean;
-  // ISO 8601 timestamp with timezone. NEW displays for seven days after this.
+  // ISO 8601 timestamp with timezone. NEW displays until Toronto midnight.
   publishedAt?: string;
   // Editorial flag; set manually when a scene has strong viewing numbers.
   isHot?: boolean;
@@ -132,6 +133,7 @@ export function manifestEntryToScene(entry: ManifestScene): Scene {
     region: entry.region,
     level: entry.level,
     duration: entry.duration,
+    sentenceCount: entry.sentenceCount,
     featured: entry.featured,
     isNew: isSceneNew(entry.publishedAt),
     isHot: entry.isHot === true,

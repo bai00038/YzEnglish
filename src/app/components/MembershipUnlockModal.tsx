@@ -2,27 +2,38 @@ import { useId, useState, type FormEvent } from "react";
 import { ArrowRight, CheckCircle2, LockKeyhole, QrCode } from "lucide-react";
 import { Link } from "react-router";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/app/components/ui/dialog";
-import { membershipTypeLabel, redeemMembershipCode } from "@/data/membership";
+import { membershipErrorMessage, membershipTypeLabel, redeemMembershipCode } from "@/data/membership";
 import { TEST_MODE } from "@/config/site";
 
 export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void }) {
   const [code, setCode] = useState("");
   const [message, setMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [qrMissing, setQrMissing] = useState(false);
   const codeInputId = useId();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const unlock = await redeemMembershipCode(code);
-    if (!unlock) {
+    if (submitting) return;
+    setSubmitting(true);
+    setMessage("");
+    try {
+      const unlock = await redeemMembershipCode(code);
+      if (!unlock) {
+        setIsSuccess(false);
+        setMessage("兑换码无效或已过期，请联系我");
+        return;
+      }
+      setIsSuccess(true);
+      setMessage(`${membershipTypeLabel(unlock.type)}已解锁`);
+      window.setTimeout(() => onUnlocked?.(), 450);
+    } catch (error) {
       setIsSuccess(false);
-      setMessage("兑换码无效或已过期，请联系我");
-      return;
+      setMessage(membershipErrorMessage(error));
+    } finally {
+      setSubmitting(false);
     }
-    setIsSuccess(true);
-    setMessage(`${membershipTypeLabel(unlock.type)}已解锁`);
-    window.setTimeout(() => onUnlocked?.(), 450);
   }
 
   return (
@@ -42,8 +53,8 @@ export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void 
             autoComplete="off"
             className="h-12 w-full rounded-[14px] border border-border bg-background px-4 text-sm font-semibold uppercase tracking-[.06em] text-primary outline-none transition-colors placeholder:normal-case placeholder:tracking-normal placeholder:text-muted-foreground focus:border-primary/45"
           />
-          <button type="submit" className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-black text-white transition-transform hover:scale-[1.01]">
-            解锁 <ArrowRight size={16} />
+          <button type="submit" disabled={submitting} className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-black text-white transition-transform hover:scale-[1.01] disabled:cursor-wait disabled:opacity-65">
+            {submitting ? "正在验证…" : "解锁"} {!submitting && <ArrowRight size={16} />}
           </button>
           {message && (
             <p role="status" className={`mt-3 flex items-center gap-1.5 text-xs font-semibold ${isSuccess ? "text-primary" : "text-[#A13D32]"}`}>

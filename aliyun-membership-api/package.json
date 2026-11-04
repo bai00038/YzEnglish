@@ -1,0 +1,18 @@
+{
+  "name": "yz-english-aliyun-membership-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Aliyun Function Compute backend for Yz English memberships and private OSS assets.",
+  "main": "src/index.cjs",
+  "scripts": {
+    "test": "node --test",
+    "start": "node src/local-server.cjs",
+    "check": "node --check src/index.cjs && node --check src/app.cjs && node --check src/repository.cjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ali-oss": "6.23.0"
+  }
+}

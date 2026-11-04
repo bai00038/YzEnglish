@@ -34,7 +34,7 @@ export function CollectionPage() {
                 : `共 ${collection.scenes.length} 集 · 已上线 ${liveCount} 集`}
             </p>
           </div>
-          <h1 className="flex flex-wrap items-baseline gap-x-3 font-['Noto_Serif_SC'] text-[40px] font-bold leading-[1.15] text-primary md:text-[44px]">
+          <h1 className="flex flex-wrap items-baseline gap-x-3 font-['Noto_Serif_SC'] text-[30px] font-bold leading-[1.15] text-primary md:text-[38px]">
             {collection.name}<span className="display-serif text-[18px] font-medium italic text-muted-foreground md:text-[20px]">{collection.titleEn}</span>
           </h1>
           <p className="mt-1.5 max-w-[760px] text-[15px] leading-relaxed text-secondary-foreground md:text-base">{collection.tagline}</p>
@@ -77,8 +77,8 @@ export function CollectionPage() {
                   )}
                 </div>
                 <div>
-                  <h2 className="font-['Noto_Serif_SC'] text-[19px] font-bold leading-tight text-primary md:text-[21px]">{scene.titleZh}</h2>
-                  <p className="display-serif mt-0.5 text-[13px] italic text-muted-foreground md:text-[14px]">{scene.titleEn}</p>
+                  <h2 className="font-sans text-[17px] font-bold leading-tight text-primary md:text-[18px]">{scene.titleZh}</h2>
+                  <p className="mt-0.5 font-sans text-[12px] italic text-muted-foreground md:text-[13px]">{scene.titleEn}</p>
                   <p className="mt-1 line-clamp-1 text-[13px] leading-relaxed text-secondary-foreground">{scene.desc}</p>
                 </div>
                 <div className="flex items-center gap-2 text-sm font-semibold md:justify-end">
