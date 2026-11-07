@@ -1533,8 +1533,112 @@
       "titleZh": "偏头痛去看家庭医生",
       "video_url": "https://go.learnyzenglish.com/content/HC-03-002/HC-03-002-no-subtitles.mp4",
       "sentenceCount": 20
+    },
+    {
+      "category": "Diagnosis",
+      "dataUrl": "https://go.learnyzenglish.com/content/HC-03-006/scene.json",
+      "desc": "链球菌检测阴性、肺部听诊正常——医生判断很可能是病毒感染，不用抗生素，回家休息、多喝水、观察症状。这一集学：怎么追问诊断、确认多久没好转要回电、问清哪些症状不能等。",
+      "duration": "0:48",
+      "externalId": "HC-03-006",
+      "collectionId": "C2",
+      "collectionOrder": 5,
+      "tags": [
+        "medical"
+      ],
+      "status": "live",
+      "isFreeExperience": false,
+      "featured": false,
+      "id": 70,
+      "publishedAt": "2026-11-07T21:16:34Z",
+      "level": "Beginner+",
+      "pdfUrl": "https://go.learnyzenglish.com/content/HC-03-006/guide.pdf",
+      "photo": "https://go.learnyzenglish.com/content/HC-03-006/cover.png",
+      "region": "Canada",
+      "slug": "discussing-the-diagnosis-it-s-probably-viral",
+      "titleEn": "Discussing the Diagnosis: It's Probably Viral",
+      "titleZh": "听懂诊断：病毒感染怎么办",
+      "video_url": "https://go.learnyzenglish.com/content/HC-03-006/HC-03-006-no-subtitles.mp4",
+      "sentenceCount": 14
+    },
+    {
+      "category": "Diagnosis",
+      "dataUrl": "https://go.learnyzenglish.com/content/HC-03-005/scene.json",
+      "desc": "血糖有点偏高，但还没达到糖尿病范围——医生说：We'll monitor it（我们会继续观察）。这句话到底是让人安心，还是更要留心？这一集讲清 monitor 在诊室里的真实含义，以及怎么追问复查安排。",
+      "duration": "0:30",
+      "externalId": "HC-03-005",
+      "collectionId": "C2",
+      "collectionOrder": 6,
+      "tags": [
+        "medical"
+      ],
+      "status": "live",
+      "isFreeExperience": false,
+      "featured": false,
+      "id": 71,
+      "publishedAt": "2026-11-07T21:37:56Z",
+      "level": "Beginner+",
+      "pdfUrl": "https://go.learnyzenglish.com/content/HC-03-005/guide.pdf",
+      "photo": "https://go.learnyzenglish.com/content/HC-03-005/cover.png",
+      "region": "Canada",
+      "slug": "we-ll-monitor-it-slightly-high-blood-sugar",
+      "titleEn": "We'll Monitor It: Slightly High Blood Sugar",
+      "titleZh": "血糖偏高，医生说先观察",
+      "video_url": "https://go.learnyzenglish.com/content/HC-03-005/HC-03-005-no-subtitles.mp4",
+      "sentenceCount": 13
+    },
+    {
+      "category": "Family Doctor Visit",
+      "dataUrl": "https://go.learnyzenglish.com/content/HC-07-006/scene.json",
+      "desc": "向家庭医生描述腰痛时，可以依次说明疼痛位置、持续时间、可能诱因、疼痛感觉，以及什么情况下会加重。本场景练习一次自然的问诊对话。",
+      "duration": "0:29",
+      "externalId": "HC-07-006",
+      "collectionId": "C2",
+      "collectionOrder": 7,
+      "tags": [
+        "medical"
+      ],
+      "status": "live",
+      "isFreeExperience": false,
+      "featured": false,
+      "id": 72,
+      "publishedAt": "2026-11-07T21:46:28Z",
+      "level": "Intermediate",
+      "pdfUrl": "https://go.learnyzenglish.com/content/HC-07-006/guide.pdf",
+      "photo": "https://go.learnyzenglish.com/content/HC-07-006/cover.png",
+      "region": "Canada",
+      "slug": "lower-back-pain-at-the-family-doctor",
+      "titleEn": "Lower Back Pain at the Family Doctor",
+      "titleZh": "腰痛看家庭医生",
+      "video_url": "https://go.learnyzenglish.com/content/HC-07-006/HC-07-006-no-subtitles.mp4",
+      "sentenceCount": 15
+    },
+    {
+      "category": "Pharmacy Consultation",
+      "dataUrl": "https://go.learnyzenglish.com/content/HC-07-007/scene.json",
+      "desc": "胸口出现灼烧感时，可以说明具体位置、开始时间，以及是否伴随其他危险信号。本场景练习一次谨慎、自然的药房咨询对话。",
+      "duration": "0:31",
+      "externalId": "HC-07-007",
+      "collectionId": "C2",
+      "collectionOrder": 8,
+      "tags": [
+        "medical"
+      ],
+      "status": "live",
+      "isFreeExperience": false,
+      "featured": false,
+      "id": 73,
+      "publishedAt": "2026-11-07T22:02:50Z",
+      "level": "Intermediate",
+      "pdfUrl": "https://go.learnyzenglish.com/content/HC-07-007/guide.pdf",
+      "photo": "https://go.learnyzenglish.com/content/HC-07-007/cover.png",
+      "region": "Canada",
+      "slug": "heartburn-consultation-at-the-pharmacy",
+      "titleEn": "Heartburn Consultation at the Pharmacy",
+      "titleZh": "胃灼热药房咨询",
+      "video_url": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-no-subtitles.mp4",
+      "sentenceCount": 11
     }
   ],
   "schemaVersion": 2,
-  "updatedAt": "2026-11-07T20:57:24Z"
+  "updatedAt": "2026-11-07T22:02:50Z"
 }
