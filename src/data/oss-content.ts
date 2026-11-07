@@ -55,67 +55,12 @@ const PHOTO_URL_OVERRIDES: Record<string, string> = {
   "DL-01-007": "/scenes/DL-01-007-brunch-eggs.jpg",
 };
 
-const OPTIMIZED_CARD_COVER_IDS = new Set([
-  "DL-01-007",
-  "FD-01-001",
-  "FD-01-002",
-  "FD-01-003",
-  "FD-01-004",
-  "FD-01-005",
-  "FD-01-006",
-  "FD-01-007",
-  "FD-01-008",
-  "HC-01-002",
-  "HC-02-001",
-  "HC-06-001",
-  "HC-06-002",
-  "HC-06-003",
-  "HC-06-004",
-  "HC-06-005",
-  "HC-06-006",
-  "HC-06-009",
-  "HO-01-003",
-  "HO-01-004",
-  "NCP-001",
-  "PE-01-001",
-  "PE-01-002",
-  "PE-02-003",
-  "SF-02-003",
-  "SF-02-004",
-  "SF-03-001",
-  "SF-03-002",
-  "SF-03-003",
-  "SF-03-004",
-  "SH-01-004",
-  "SH-01-005",
-  "SH-01-007",
-  "SH-01-009",
-  "SH-01-010",
-  "SH-01-011",
-  "SH-01-012",
-  "SH-01-013",
-  "SH-01-014",
-  "ST-01-001",
-  "ST-01-002",
-  "ST-01-003",
-  "ST-01-004",
-  "ST-02-001",
-  "ST-02-002",
-  "ST-02-004",
-  "ST-03-001",
-  "ST-03-002",
-  "ST-03-003",
-  "ST-04-001",
-  "ST-04-004",
-  "ST-05-001",
-  "ST-05-002",
-  "ST-06-003",
-  "ST-06-004",
-]);
+// Every published scene ships a cover-card.webp next to its cover image
+// (the publish pipeline uploads it with the scene package), so card covers
+// always derive the WebP twin — no per-scene opt-in list to maintain.
 
 function cardCoverUrl(entry: ManifestScene): string | undefined {
   const original = PHOTO_URL_OVERRIDES[entry.externalId] ?? entry.photo;
-  if (!OPTIMIZED_CARD_COVER_IDS.has(entry.externalId)) return original;
   if (!original) {
     return `https://yz-english-videos.oss-ap-southeast-1.aliyuncs.com/content/${entry.externalId}/cover-card.webp`;
   }
