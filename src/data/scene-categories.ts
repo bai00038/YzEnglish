@@ -40,7 +40,6 @@ export function getSceneCategoryLabel(category: string): string {
 const COLLECTION_CARD_LABELS: Record<string, string> = {
   C1: "牙科英语",
   C2: "医疗英语",
-  C3: "医疗英语",
   C4: "家校英语",
   C5: "日常英语",
   C6: "亲子英语",
