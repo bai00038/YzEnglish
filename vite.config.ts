@@ -31,6 +31,22 @@ export default defineConfig({
     },
   },
 
+  server: {
+    proxy: {
+      // Local browsers are intentionally denied direct JSON requests by the
+      // content domain. Proxy public lesson JSON through Vite so development
+      // uses the same complete manifest as production.
+      '/dev-content': {
+        target: 'https://go.learnyzenglish.com',
+        changeOrigin: true,
+        headers: {
+          referer: 'https://learnyzenglish.com/',
+        },
+        rewrite: path => path.replace(/^\/dev-content/, '/content'),
+      },
+    },
+  },
+
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
 })

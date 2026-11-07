@@ -59,7 +59,7 @@ function CultureTipCard({ item, tipNumber }: { item: CultureTipItem; tipNumber: 
 
 function StepHeading({ number, title, hint }: { number: string; title: string; hint: string }) {
   return (
-    <div className="mb-5 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <div className="mb-5 flex flex-wrap items-baseline gap-x-4 gap-y-1 max-[480px]:mb-4 max-[480px]:gap-x-3">
       <span className="font-serif text-[29px] italic leading-none text-primary/55">{number}</span>
       <h2 className="text-[20px] font-black tracking-tight text-primary md:text-[22px]">{title}</h2>
       <p className="text-[13px] font-medium text-muted-foreground md:text-[14px]">{hint}</p>
@@ -73,6 +73,13 @@ function StepHeading({ number, title, hint }: { number: string; title: string; h
 // (see the playbackRate effect below). 1 is always the default.
 const PLAYBACK_RATES = [0.8, 1, 1.2] as const;
 const PLAYBACK_RATE_STORAGE_KEY = "yzenglish:playbackRate";
+
+function sanitizePdfFilenamePart(value: string) {
+  return value
+    .replace(/[\\/:*?"<>|]/g, "")
+    .replace(/\s+/g, "")
+    .trim();
+}
 
 const STUDY_TABS = [
   { key: "listening", num: "01", en: "Sentence Listening", zh: "单句精听" },
@@ -89,6 +96,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const { data, loading, error } = useSceneDetail(slug ?? "");
   const { isUnlocked } = useMembershipAccess();
   const [membershipModalOpen, setMembershipModalOpen] = useState(false);
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   const scene = data?.scene ?? null;
   const progressSceneId = scene ? getSceneProgressId(scene) : "";
   const shouldResumeProgress = searchParams.get("resume") === "1";
@@ -108,7 +116,17 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const [protectedVideoUrl, setProtectedVideoUrl] = useState<string | null>(null);
   const [protectedPdfUrl, setProtectedPdfUrl] = useState<string | null>(null);
   const [protectedAssetError, setProtectedAssetError] = useState("");
+  const [pdfDownloading, setPdfDownloading] = useState(false);
+  const [pdfDownloadError, setPdfDownloadError] = useState("");
   const requiresSignedAssets = Boolean(scene && !scene.isFreeExperience && SECURE_MEMBERSHIP_ENABLED);
+
+  const pdfDownloadFilename = useMemo(() => {
+    if (!scene) return "YZEnglish讲义.pdf";
+    const collectionName = sanitizePdfFilenamePart(collection?.name ?? "YZEnglish");
+    const episodeNumber = String(scene.collectionOrder ?? 0).padStart(2, "0");
+    const chineseTitle = sanitizePdfFilenamePart(scene.titleZh || "课程讲义");
+    return `${collectionName}${episodeNumber}-${chineseTitle}.pdf`;
+  }, [collection?.name, scene]);
 
   // Unique speakers for this scene, in first-occurrence order, each with a
   // stable color — shared by the legend and every dialogue row below.
@@ -194,6 +212,37 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       lastStep: step,
       videoTime: videoTime ?? videoRef.current?.currentTime ?? current.videoTime,
     });
+  }
+
+  async function downloadScenePdf() {
+    if (!protectedPdfUrl || pdfDownloading) return;
+    setPdfDownloading(true);
+    setPdfDownloadError("");
+    try {
+      const response = await fetch(protectedPdfUrl);
+      if (!response.ok) throw new Error(`PDF download failed: ${response.status}`);
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = pdfDownloadFilename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1_000);
+
+      if (progressSceneId) {
+        writeLearningProgress(progressSceneId, {
+          downloadedPdf: true,
+          lastStep: "pdf",
+          videoTime: videoRef.current?.currentTime ?? 0,
+        });
+      }
+    } catch {
+      setPdfDownloadError("下载准备失败，请稍后重试");
+    } finally {
+      setPdfDownloading(false);
+    }
   }
 
   // Switching scenes re-renders this same component with new data (the
@@ -631,8 +680,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     // landed yet — before starting this one.
     cancelRangePlayback();
     const requestId = ++playRequestRef.current;
-    // Use the human-calibrated range exactly as authored. Do not add a
-    // lead-in, lead-out, tolerance, or any other playback padding here.
+    // Use the human-calibrated range exactly as authored. Single-line
+    // playback must not add any lead-in or lead-out around the timing data.
     const trueStart = range.start;
     const trueEnd = range.end;
     if (!video.paused) {
@@ -877,16 +926,16 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   }
 
   return (
-    <div className="bg-background px-3 py-4 md:px-6 md:py-5">
-      <div className="mx-auto max-w-[1240px] overflow-hidden rounded-[28px] border border-primary/15 bg-card shadow-[0_12px_40px_rgba(15,53,39,0.04)]">
+    <div className="scene-page bg-background px-3 py-4 md:px-6 md:py-5">
+      <div className="scene-shell mx-auto max-w-[1240px] overflow-hidden rounded-[28px] border border-primary/15 bg-card shadow-[0_12px_40px_rgba(15,53,39,0.04)]">
 
       {/* Breadcrumb */}
-      <div className="px-5 pt-4 md:px-10 md:pt-5">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3 text-[12px] font-semibold text-muted-foreground md:text-[13px]">
+      <div className="scene-section-pad scene-breadcrumb px-5 pt-4 md:px-10 md:pt-5">
+        <div className="scene-breadcrumb-row flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3 text-[12px] font-semibold text-muted-foreground md:text-[13px]">
           <Link to="/explore" className="inline-flex items-center gap-1 text-primary transition-opacity hover:opacity-65">
             <ChevronLeft size={15} /> 返回场景库
           </Link>
-          <nav aria-label="场景路径" className="flex items-center gap-1">
+          <nav aria-label="场景路径" className="scene-breadcrumb-path flex items-center gap-1">
             <Link to="/explore" className="transition-colors hover:text-primary">场景库</Link>
             <span aria-hidden="true">/</span>
             {scene.collectionId ? (
@@ -903,31 +952,35 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       </div>
 
       {/* ─── Lesson identity block (sits between breadcrumb and chapter nav) ─── */}
-      <div className="px-5 pb-4 pt-3 md:px-10 md:pb-5 md:pt-4">
+      <div className="scene-section-pad scene-identity px-5 pb-4 pt-3 max-[480px]:pb-3 max-[480px]:pt-2 md:px-10 md:pb-5 md:pt-4">
         <span className="inline-flex rounded-full bg-primary px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-white">
           {getSceneCategoryLabel(scene.category)} · {scene.region || "Real life"}
         </span>
         <div className="mt-3 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-8">
           <div className="min-w-0 max-w-[760px]">
-            <h1 className="font-serif text-[30px] font-semibold leading-[1.08] tracking-[-0.025em] text-primary md:text-[38px]">
+            <h1 className="scene-title font-serif text-[30px] font-semibold leading-[1.08] tracking-[-0.025em] text-primary max-[480px]:text-[28px] md:text-[38px]">
               {scene.titleZh}
             </h1>
-            <p className="mt-2 max-w-[690px] text-[14px] leading-relaxed text-[#3A4A42] md:text-[15px]">
+            <p className="scene-desktop-description mt-2 max-w-[690px] text-[14px] leading-relaxed text-[#3A4A42] md:text-[15px]">
               {scene.desc || scene.titleEn}
             </p>
           </div>
-          <div className="flex flex-wrap gap-2 lg:flex-nowrap lg:justify-self-end">
+          <div className="scene-desktop-pills flex flex-wrap gap-2 lg:flex-nowrap lg:justify-self-end">
             <a href="#section-watch" onClick={event => { if (!canAccessMemberContent) { event.preventDefault(); setMembershipModalOpen(true); } else saveLearningPosition("watch"); }} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">视频 {scene.duration}</a>
             <a href="#section-dialogue" onClick={event => { if (!canAccessMemberContent) { event.preventDefault(); setMembershipModalOpen(true); } else saveLearningPosition("dialogue"); }} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">逐句 {content?.dialogue.length ?? 0} 句</a>
             <a href="#section-language" onClick={() => saveLearningPosition("language")} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">词汇 {keyExpressionItems.length} 个</a>
             <a href="#section-pdf" onClick={event => { if (!canAccessMemberContent) { event.preventDefault(); setMembershipModalOpen(true); } else saveLearningPosition("pdf"); }} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">讲义 PDF</a>
           </div>
         </div>
+        <div className="scene-mobile-meta hidden text-[12px] font-semibold leading-relaxed text-muted-foreground">
+          视频 {scene.duration} · 逐句 {content?.dialogue.length ?? 0} 句 · 词汇 {keyExpressionItems.length} 个 ·{" "}
+          <a href="#section-pdf" onClick={event => { if (!canAccessMemberContent) { event.preventDefault(); setMembershipModalOpen(true); } else saveLearningPosition("pdf"); }} className="font-black text-primary">讲义 PDF ↓</a>
+        </div>
       </div>
 
       {!content ? (
         <div className="pb-24">
-          <section className="px-5 pt-2 pb-20 md:px-10">
+          <section className="scene-section-pad px-5 pt-2 pb-20 md:px-10">
             <StepHeading number="01" title="看视频" hint="先完整看一遍，字幕随时开关" />
             <div className="rounded-2xl border border-dashed border-border bg-card px-6 py-10 text-center">
               <p className="text-sm font-semibold text-foreground">Full lesson content for this scene is coming soon.</p>
@@ -948,9 +1001,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             {/* ─────────────────────────────────────────────
                 Video + playback speed + study tabs
                 ───────────────────────────────────────────── */}
-            <section id="section-watch" className="scroll-mt-24 px-5 pb-10 md:px-10 md:pb-12">
+            <section id="section-watch" className="scene-section-pad scene-watch scroll-mt-24 px-5 pb-10 max-[480px]:pb-8 md:px-10 md:pb-12">
 
-              <StepHeading number="01" title="看视频" hint="先完整看一遍，字幕随时开关" />
+              <div className="scene-watch-heading"><StepHeading number="01" title="看视频" hint="先完整看一遍，字幕随时开关" /></div>
 
               {/* ── Scene video area — always the same 16:9 video-shaped frame.
                   scene.photo is only ever used as the <video> poster (cover
@@ -965,9 +1018,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     className="group relative h-full w-full overflow-hidden text-left"
                     aria-label="会员内容，点击输入兑换码解锁"
                   >
-                    {scene.photo ? (
+                    {(scene.videoPoster ?? scene.photo) ? (
                       <img
-                        src={scene.photo}
+                        src={scene.videoPoster ?? scene.photo}
                         alt={scene.title_zh}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.015]"
                         draggable={false}
@@ -999,7 +1052,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       disablePictureInPicture
                       playsInline
                       preload="metadata"
-                      poster={scene.photo || undefined}
+                      poster={scene.videoPoster ?? scene.photo ?? undefined}
                       className="h-full w-full object-contain"
                       draggable={false}
                       onContextMenu={(event) => event.preventDefault()}
@@ -1114,7 +1167,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       Your browser does not support video playback.
                     </video>
                     {subtitleLang !== "off" && activeSubtitleLine && (
-                      <div className="absolute inset-x-0 bottom-14 md:bottom-16 flex justify-center px-6 pointer-events-none">
+                      <div className="scene-video-subtitle absolute inset-x-0 bottom-14 md:bottom-16 flex justify-center px-6 pointer-events-none">
                         <div className="max-w-[90%] rounded-lg bg-black/70 px-4 py-2 text-center text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
                           <p className="text-base leading-snug md:text-lg">{activeSubtitleLine.en}</p>
                           {subtitleLang === "zh" && <p className="mt-1 text-sm leading-snug text-white/85 md:text-base">{activeSubtitleLine.zh}</p>}
@@ -1165,10 +1218,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       </div>
                     )}
                   </div>
-                ) : scene.photo ? (
+                ) : (scene.videoPoster ?? scene.photo) ? (
                   <div className="relative w-full h-full">
                     <img
-                      src={scene.photo}
+                      src={scene.videoPoster ?? scene.photo}
                       alt={`${scene.titleEn} scene cover`}
                       className="w-full h-full object-cover object-center"
                     />
@@ -1184,7 +1237,16 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 )}
               </div>
 
-              <div className="mt-4 flex justify-center">
+              <div className="scene-mobile-description mt-3 hidden">
+                <p className={`text-[13px] leading-relaxed text-[#3A4A42] ${descriptionExpanded ? "" : "line-clamp-2"}`}>
+                  {scene.desc || scene.titleEn}
+                </p>
+                <button type="button" onClick={() => setDescriptionExpanded(value => !value)} className="mt-1 text-[12px] font-black text-primary">
+                  {descriptionExpanded ? "收起" : "展开"}
+                </button>
+              </div>
+
+              <div className="mt-4 flex justify-center max-[480px]:mt-3">
                 <button
                   type="button"
                   onClick={() => canAccessMemberContent ? startSentenceListening() : setMembershipModalOpen(true)}
@@ -1199,13 +1261,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               </div>
 
               {/* ── Study mode tabs ── */}
-              <div
-                ref={studySectionRef}
-                id="section-dialogue"
-                className="scroll-mt-24 mt-7 mb-5 flex flex-wrap items-center justify-between gap-4"
-              >
-                <StepHeading number="02" title="逐句精听跟读" hint="点任意一句，单句播放给你跟读" />
-                <div className="flex items-center rounded-full border border-border bg-white p-1">
+              <section ref={studySectionRef} id="section-dialogue" className="scene-study-section scroll-mt-24 max-[480px]:scroll-mt-20">
+                <div className="scene-study-heading mt-7 mb-5 flex flex-wrap items-center justify-between gap-4 max-[480px]:mt-5 max-[480px]:mb-4 max-[480px]:gap-3">
+                  <StepHeading number="02" title="逐句精听跟读" hint="一句一句精听，听一句跟读一句，真正开口说出来" />
+                  <div className="flex items-center rounded-full border border-border bg-white p-1">
                 {STUDY_TABS.map(tab => {
                   const isActive = studyTab === tab.key;
                   return (
@@ -1223,8 +1282,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     </button>
                   );
                 })}
+                  </div>
                 </div>
-              </div>
 
               {!canAccessMemberContent ? (
                 <button
@@ -1257,6 +1316,16 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   onPlayLine={playDictationLine}
                   onStopPlayback={stopDictationPlayback}
                   onComplete={markDictationCompleted}
+                  playbackRate={playbackRate}
+                  onPlaybackRateChange={setPlaybackRate}
+                  repeatLine={repeatLine}
+                  onRepeatLineChange={value => {
+                    repeatLineRef.current = value;
+                    setRepeatLine(value);
+                  }}
+                  bilingualMode={bilingualMode}
+                  onBilingualModeChange={setBilingualMode}
+                  isPlaying={!videoPaused && pinnedLineIndex !== null}
                 />
               ) : (
                 <SentenceListeningCard
@@ -1285,13 +1354,14 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   onBilingualModeChange={setBilingualMode}
                 />
               )}
+              </section>
 
             </section>
 
             {/* ─────────────────────────────────────────────
                 STAGE 03 · Learn the Language
                 ───────────────────────────────────────────── */}
-            <section id="section-language" className="scroll-mt-24 px-5 pb-12 md:px-10 md:pb-16">
+            <section id="section-language" className="scene-section-pad scroll-mt-24 px-5 pb-12 max-[480px]:pb-9 md:px-10 md:pb-16">
               <StepHeading number="03" title="知识点" hint="这一课真正要带走的" />
               <div className="flex flex-col gap-4">
                 {/* Key Expressions — from public.key_expressions (or its legacy-tips fallback) */}
@@ -1358,12 +1428,12 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             {/* ─────────────────────────────────────────────
                 LIGHT SECTION: PDF · Related · Prev/Next
                 ───────────────────────────────────────────── */}
-            <section className="px-5 pb-10 md:px-10 md:pb-12">
+            <section className="scene-section-pad px-5 pb-10 max-[480px]:pb-8 md:px-10 md:pb-12">
               <div>
 
                 {/* PDF download — scene.pdfUrl comes straight from Supabase scenes.pdf_url;
                     never hardcoded and never guessed from the scene id/slug. */}
-                <div id="section-pdf" className="scroll-mt-24 mb-12 flex flex-col gap-6 rounded-[24px] bg-primary px-6 py-8 text-white md:flex-row md:items-center md:justify-between md:px-8">
+                <div id="section-pdf" className="scroll-mt-24 mb-12 flex flex-col gap-6 rounded-[24px] bg-primary px-6 py-8 text-white max-[480px]:mb-9 max-[480px]:gap-4 max-[480px]:py-6 md:flex-row md:items-center md:justify-between md:px-8">
                   <div className="max-w-[720px]">
                     <p className="text-[11px] font-black uppercase tracking-[0.18em] text-white/65">Step 04 · 本期讲义 PDF</p>
                     <p className="mt-4 font-serif text-[27px] font-semibold leading-tight md:text-[34px]">把这一课带走，贴在冰箱上练</p>
@@ -1378,23 +1448,15 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       <LockKeyhole size={16} /> 会员内容 · 开通会员后可学
                     </button>
                   ) : protectedPdfUrl ? (
-                    <a
-                      href={protectedPdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => {
-                        if (!progressSceneId) return;
-                        writeLearningProgress(progressSceneId, {
-                          downloadedPdf: true,
-                          lastStep: "pdf",
-                          videoTime: videoRef.current?.currentTime ?? 0,
-                        });
-                      }}
+                    <button
+                      type="button"
+                      onClick={() => void downloadScenePdf()}
+                      disabled={pdfDownloading}
                       className="flex flex-shrink-0 items-center justify-center gap-2 rounded-full px-6 py-4 text-[14px] font-black transition-transform hover:scale-[1.02]"
                       style={{ backgroundColor: "#C8F169", color: "#12241C" }}
                     >
-                      下载 PDF 讲义 <Download size={15} />
-                    </a>
+                      {pdfDownloading ? "正在下载…" : "下载 PDF 讲义"} <Download size={15} />
+                    </button>
                   ) : scene.pdfUrl && !protectedAssetError ? (
                     <span
                       className="flex flex-shrink-0 items-center justify-center gap-2 rounded-full px-6 py-4 text-[14px] font-black opacity-75"
@@ -1409,6 +1471,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     >
                       即将上线
                     </span>
+                  )}
+                  {pdfDownloadError && (
+                    <p className="text-[12px] font-semibold text-red-200">{pdfDownloadError}</p>
                   )}
                 </div>
 
@@ -1448,7 +1513,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         <div className="mt-5 flex items-end gap-4">
                           <span className="mb-0.5 flex-shrink-0 text-[27px] font-light leading-none text-primary transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
                           <div className="min-w-0">
-                            <p className="font-['Noto_Serif_SC'] text-[20px] font-bold leading-snug text-primary">
+                            <p className="font-zh-serif text-[20px] font-bold leading-snug text-primary">
                               {prevScene.titleZh}
                             </p>
                             <p className="mt-1 truncate text-[12px] font-semibold text-muted-foreground">
@@ -1463,7 +1528,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                           Current episode · 当前集
                         </span>
                         <div className="mt-5">
-                          <p className="font-['Noto_Serif_SC'] text-[20px] font-bold leading-snug text-primary">
+                          <p className="font-zh-serif text-[20px] font-bold leading-snug text-primary">
                             当前正在学习第一集
                           </p>
                           <p className="mt-1 text-[12px] font-semibold text-muted-foreground">{scene.titleZh}</p>
@@ -1481,7 +1546,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         </span>
                         <div className="mt-5 flex items-end justify-between gap-4">
                           <div className="min-w-0 flex-1 md:text-right">
-                            <p className="font-['Noto_Serif_SC'] text-[20px] font-bold leading-snug text-primary">
+                            <p className="font-zh-serif text-[20px] font-bold leading-snug text-primary">
                               {nextScene.titleZh}
                             </p>
                             <p className="mt-1 truncate text-[12px] font-semibold text-muted-foreground">
@@ -1497,7 +1562,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                           Collection complete · 合集进度
                         </span>
                         <div className="mt-5">
-                          <p className="font-['Noto_Serif_SC'] text-[20px] font-bold leading-snug text-primary">
+                          <p className="font-zh-serif text-[20px] font-bold leading-snug text-primary">
                             当前已是本合集最后一集
                           </p>
                           <p className="mt-1 text-[12px] font-semibold text-muted-foreground">{scene.titleZh}</p>

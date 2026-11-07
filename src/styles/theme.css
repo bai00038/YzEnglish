@@ -83,6 +83,8 @@
 }
 
 @theme inline {
+  --font-sans: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-serif: "Newsreader", "Songti SC", "STSong", "SimSun", serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -130,7 +132,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Noto Sans SC', system-ui, sans-serif;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
     letter-spacing: -0.01em;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -194,9 +196,23 @@
 }
 
 @layer components {
+  .membership-modal-close {
+    position: fixed !important;
+  }
+
+  @media (min-width: 640px) {
+    .membership-modal-close {
+      position: absolute !important;
+    }
+  }
+
   .display-serif {
-    font-family: 'Newsreader', 'Noto Serif SC', serif;
+    font-family: 'Newsreader', 'Songti SC', 'STSong', 'SimSun', serif;
     letter-spacing: -0.035em;
+  }
+
+  .font-zh-serif {
+    font-family: 'Songti SC', 'STSong', 'SimSun', serif;
   }
 
   .editorial-kicker {
@@ -300,6 +316,513 @@
   .mobile-nav-page-padding {
     padding-bottom: 0;
   }
+}
+
+/* On the smallest scene-page layout, speed and repeat share one compact row.
+   Above 480px the wrapper disappears from layout, preserving the existing
+   tablet and desktop control arrangement exactly. */
+.sentence-speed-repeat {
+  display: contents;
+}
+
+@media (max-width: 480px) {
+  .dictation-keyboard-open .mobile-site-nav {
+    display: none;
+  }
+
+  .sentence-speed-repeat {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+}
+
+/* Scene-page responsive reflow. Desktop (>1024px) intentionally has no
+   overrides here, so its existing visual design remains byte-for-byte in
+   control of the layout. */
+@media (max-width: 1024px) {
+  .scene-page {
+    padding: 16px 20px 24px;
+  }
+
+  .scene-shell {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .scene-section-pad {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .scene-breadcrumb {
+    padding-top: 0;
+  }
+
+  .scene-breadcrumb-row {
+    flex-wrap: nowrap;
+    gap: 10px;
+    overflow: hidden;
+  }
+
+  .scene-breadcrumb-row > a {
+    flex: none;
+  }
+
+  .scene-breadcrumb-path {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .scene-breadcrumb-path > :last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .scene-identity {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .scene-identity > span {
+    padding: 5px 12px;
+  }
+
+  .scene-identity > div {
+    margin-top: 10px;
+  }
+
+  .scene-desktop-description,
+  .scene-desktop-pills,
+  .scene-watch-heading {
+    display: none;
+  }
+
+  .scene-mobile-meta,
+  .scene-mobile-description {
+    display: block;
+  }
+
+  .scene-mobile-meta {
+    margin-top: 10px;
+  }
+
+  .scene-watch {
+    padding-bottom: 34px;
+  }
+
+  .scene-video-subtitle {
+    bottom: 12px !important;
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .scene-study-heading {
+    margin-top: 22px;
+    margin-bottom: 14px;
+  }
+
+  .scene-study-heading > :first-child {
+    margin-bottom: 0;
+  }
+
+  .sentence-listening-card,
+  .dictation-practice-card {
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .sentence-listening-line,
+  .dictation-input-card {
+    min-height: 0;
+    padding: 24px 20px;
+  }
+
+  .practice-action-bar {
+    min-width: 0;
+  }
+
+  .practice-nav-button,
+  .practice-check {
+    min-height: 40px;
+  }
+
+  .dictation-inline-check {
+    display: none;
+  }
+}
+
+/* Tablets keep the same stacked sentence-then-controls composition as the
+   desktop card. Only the spacing is tightened for the smaller viewport. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .sentence-listening-card,
+  .dictation-practice-card {
+    display: block;
+  }
+
+  .sentence-listening-card > .practice-action-placeholder,
+  .dictation-practice-card > .practice-action-placeholder {
+    display: block;
+  }
+
+  .practice-action-bar {
+    margin-top: 12px !important;
+    padding: 14px !important;
+  }
+
+  .practice-main-controls {
+    justify-content: center;
+  }
+
+  .practice-navigation {
+    gap: 8px !important;
+  }
+
+  .practice-nav-button {
+    padding: 8px 10px !important;
+    font-size: 11px !important;
+  }
+
+  .practice-play-button {
+    width: 52px !important;
+    height: 52px !important;
+  }
+
+  .practice-settings {
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px !important;
+    margin-top: 10px !important;
+    padding-top: 10px !important;
+  }
+
+  .practice-speed,
+  .practice-text-mode {
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  .practice-speed > div,
+  .practice-text-mode > div {
+    gap: 4px;
+  }
+
+  .practice-settings button span {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .practice-settings.has-check {
+    flex-wrap: wrap;
+  }
+
+  .practice-settings.has-check .practice-check {
+    width: 100%;
+  }
+
+  .practice-action-bar.is-compact .practice-settings {
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px !important;
+  }
+
+  .practice-action-bar.is-compact .practice-speed,
+  .practice-action-bar.is-compact .practice-text-mode {
+    justify-content: center;
+    gap: 4px !important;
+  }
+
+  .practice-action-bar.is-compact .practice-speed > span,
+  .practice-action-bar.is-compact .practice-text-mode > span {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .dictation-desktop-options,
+  .dictation-enter-hint {
+    display: none;
+  }
+
+  .dictation-mobile-options {
+    display: flex;
+  }
+}
+
+@media (max-width: 480px) {
+  .scene-page {
+    padding: 10px 11px calc(var(--mobile-nav-height) + env(safe-area-inset-bottom) + 18px);
+  }
+
+  .scene-breadcrumb-row {
+    padding-bottom: 9px;
+    font-size: 11px;
+  }
+
+  .scene-breadcrumb-path {
+    justify-content: flex-end;
+  }
+
+  .scene-identity {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .scene-title {
+    font-size: 28px !important;
+  }
+
+  .scene-watch {
+    padding-bottom: 24px;
+  }
+
+  .scene-mobile-description {
+    margin-top: 10px;
+  }
+
+  .scene-study-heading {
+    margin-top: 18px;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+
+  .scene-study-heading > :first-child {
+    width: 100%;
+  }
+
+  .sentence-listening-card,
+  .dictation-practice-card {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .sentence-listening-line,
+  .dictation-input-card {
+    min-height: 0 !important;
+    padding: 16px !important;
+  }
+
+  .sentence-listening-line {
+    grid-template-columns: 40px minmax(0, 1fr) !important;
+    column-gap: 10px !important;
+    row-gap: 0 !important;
+    align-items: center;
+    border: 1px solid rgba(15, 53, 39, 0.1);
+    background: #f8f4ec;
+    box-shadow: 0 10px 28px rgba(15, 53, 39, 0.08);
+  }
+
+  .sentence-speaker-avatar {
+    grid-column: 1;
+    grid-row: 1;
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 11px !important;
+  }
+
+  .sentence-copy {
+    display: contents;
+  }
+
+  .sentence-role {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .sentence-en {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-top: 12px !important;
+  }
+
+  .sentence-zh {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin-top: 8px !important;
+  }
+
+  .dictation-input-card {
+    grid-template-columns: 40px minmax(0, 1fr);
+    column-gap: 10px;
+    row-gap: 0;
+    align-items: center;
+  }
+
+  .dictation-avatar {
+    grid-column: 1;
+    grid-row: 1;
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 11px !important;
+  }
+
+  .dictation-copy {
+    display: contents;
+  }
+
+  .dictation-role-row {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .dictation-copy > :not(.dictation-role-row):not(label) {
+    grid-column: 1 / -1;
+  }
+
+  .dictation-input-wrap {
+    margin-top: 12px !important;
+  }
+
+  .dictation-mobile-options {
+    margin-top: 4px !important;
+  }
+
+  .dictation-hint-row {
+    min-height: 0 !important;
+    margin-top: 3px !important;
+    gap: 4px !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+
+  .practice-action-placeholder {
+    min-height: 140px;
+  }
+
+  .practice-action-placeholder:has(.practice-check) {
+    min-height: 188px;
+  }
+
+  .practice-action-bar {
+    margin-top: 10px !important;
+    padding: 8px 10px !important;
+  }
+
+  .practice-action-bar.is-section-visible {
+    position: fixed;
+    z-index: 80;
+    right: 10px;
+    bottom: var(--practice-bottom);
+    left: 10px;
+    margin: 0 !important;
+    border-radius: 18px;
+    box-shadow: 0 12px 34px rgba(15, 53, 39, 0.18);
+  }
+
+  .practice-mobile-count {
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .practice-desktop-count {
+    display: none;
+  }
+
+  .practice-navigation {
+    gap: 18px !important;
+  }
+
+  .practice-nav-button {
+    min-width: 94px;
+    min-height: 48px;
+    padding: 9px 13px !important;
+    font-size: 12px !important;
+  }
+
+  .practice-play-button {
+    width: 58px !important;
+    height: 58px !important;
+  }
+
+  .practice-settings {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 8px !important;
+    margin-top: 6px !important;
+    padding-top: 6px !important;
+  }
+
+  .practice-speed,
+  .practice-text-mode {
+    flex-wrap: nowrap;
+    gap: 4px !important;
+  }
+
+  .practice-speed > span,
+  .practice-text-mode > span {
+    display: none;
+  }
+
+  .practice-speed > div,
+  .practice-text-mode > div {
+    gap: 2px;
+  }
+
+  .practice-settings button span {
+    padding: 6px 8px !important;
+    font-size: 10px !important;
+  }
+
+  .practice-check {
+    min-width: 64px;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .practice-settings.has-check {
+    flex-wrap: wrap;
+  }
+
+  .practice-settings.has-check .practice-check {
+    width: 100%;
+  }
+
+  .practice-action-bar.is-inherited-settings .practice-settings {
+    margin-top: 5px !important;
+    padding-top: 5px !important;
+  }
+
+  .practice-action-bar.is-inherited-settings .practice-check {
+    min-height: 38px;
+    width: 100%;
+    padding: 7px 12px;
+  }
+
+  .practice-action-bar.is-section-visible.is-inherited-settings {
+    padding: 7px 9px !important;
+  }
+
+  .practice-action-bar.is-section-visible.is-inherited-settings .practice-mobile-count {
+    margin-bottom: 2px;
+  }
+
+  .practice-action-bar.is-section-visible.is-inherited-settings .practice-nav-button {
+    min-width: 82px;
+    min-height: 42px;
+    padding: 7px 10px !important;
+  }
+
+  .practice-action-bar.is-section-visible.is-inherited-settings .practice-play-button {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .practice-action-bar.is-section-visible.is-inherited-settings .practice-navigation {
+    gap: 14px !important;
+  }
+
 }
 
 /* The home-page scene ribbon begins moving only after it enters the viewport.

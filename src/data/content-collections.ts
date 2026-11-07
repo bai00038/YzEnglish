@@ -9,6 +9,8 @@ export const COLLECTION_TAGS: CollectionTag[] = [
   { id: "parenting", label: "亲子" },
   { id: "dining", label: "点餐" },
   { id: "settling-in", label: "安家" },
+  { id: "travel", label: "旅行" },
+  { id: "work", label: "职场" },
 ];
 
 export const DEFAULT_COLLECTIONS = rawCollections as SceneCollection[];

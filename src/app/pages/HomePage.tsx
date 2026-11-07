@@ -6,6 +6,7 @@ import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState
 import { SentenceListeningCard } from "@/app/components/SentenceListeningCard";
 import { getSceneCardCategoryLabel } from "@/data/scene-categories";
 import type { Scene } from "@/data/types";
+import { responsiveImageProps } from "@/data/responsive-image";
 
 const HOME_COVER_FALLBACKS: Record<string, string> = {
   "SH-01-007": "https://go.learnyzenglish.com/content/SH-01-007/cover.png",
@@ -17,10 +18,10 @@ function HomeEditorialScene({ scene, featured = false }: { scene: Scene; feature
   return (
     <Link
       to={`/scenes/${scene.slug}`}
-      className="group relative min-h-[300px] overflow-hidden rounded-[20px] bg-primary text-white shadow-[0_18px_42px_rgba(18,36,28,.08)] md:min-h-[430px]"
+      className="group relative min-h-[300px] overflow-hidden rounded-[20px] bg-[#E9E4DA] text-white shadow-[0_18px_42px_rgba(18,36,28,.08)] md:min-h-[330px] min-[1025px]:min-h-[430px]"
     >
       {cover ? (
-        <img src={cover} alt={scene.titleEn} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.035]" loading="lazy" />
+        <img {...responsiveImageProps(cover, "(max-width: 1024px) 33vw, 40vw")} alt={scene.titleEn} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.035]" loading="lazy" decoding="async" />
       ) : scene.video_url ? (
         <video src={`${scene.video_url}#t=0.001`} aria-label={scene.titleEn} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.035]" muted playsInline preload="metadata" />
       ) : (
@@ -102,16 +103,16 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
             <p className="inline-flex items-center gap-2.5 rounded-full border border-primary/10 bg-white/55 px-3.5 py-2 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground shadow-[0_8px_22px_rgba(18,36,28,.04)] before:block before:h-px before:w-7 before:bg-muted-foreground after:block after:h-1.5 after:w-1.5 after:rounded-full after:bg-accent">Canada · 真实生活英语</p>
             <h1 className="mt-7 font-normal leading-[0.96] tracking-[-0.02em] text-foreground">
               <span className="display-serif block text-[42px] font-semibold sm:text-[48px] md:text-[44px] lg:text-[56px] xl:text-[62px]">Real scenes<br /><em className="mt-2 inline-block bg-[linear-gradient(transparent_72%,rgba(190,244,91,.34)_72%)] pb-1 font-medium">for real life</em></span>
-              <span className="mt-6 block border-l-[3px] border-accent pl-4 font-['Noto_Serif_SC'] text-[19px] font-bold leading-[1.55] sm:text-[20px] md:mt-6 md:text-[17px] lg:mt-7 lg:text-[20px] xl:text-[22px]">真实生活里的英语，先练熟再上场。</span>
+              <span className="mt-6 block border-l-[3px] border-accent pl-4 font-zh-serif text-[19px] font-bold leading-[1.55] sm:text-[20px] md:mt-6 md:text-[17px] lg:mt-7 lg:text-[20px] xl:text-[22px]">真实生活里的英语，先练熟再上场。</span>
             </h1>
             <p className="mt-5 max-w-[560px] text-[15px] leading-[1.85] text-secondary-foreground md:text-[14px] lg:text-[15px]">看牙、抽血、家校沟通、日常寒暄——每个场景都有视频和跟读，练几遍，<br className="hidden xl:block" />下次就不慌。</p>
-            <div className="mt-7 flex flex-wrap gap-3 sm:mt-8 md:mt-6 lg:mt-8 lg:gap-3.5">
-              <Link to="/explore" onClick={onExploreEnter} className="rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90 md:px-4 md:py-2.5 md:text-[13px] lg:px-5 lg:py-3 lg:text-sm">进入场景库</Link>
-              <a href="#free" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-bold text-foreground transition-colors hover:border-primary/30 hover:bg-primary/5 md:px-4 md:py-2.5 md:text-[13px] lg:px-5 lg:py-3 lg:text-sm">先免费学 3 集 →</a>
+            <div className="mt-7 flex flex-wrap gap-3.5 sm:mt-8 md:mt-6 lg:mt-8 lg:gap-4">
+              <Link to="/explore" onClick={onExploreEnter} className="inline-flex min-h-[54px] items-center justify-center rounded-full border border-primary bg-primary px-7 py-4 text-[15px] font-black tracking-[0.01em] text-white shadow-[0_10px_24px_rgba(18,53,39,.12)] transition-all hover:-translate-y-0.5 hover:opacity-90 lg:min-h-[58px] lg:px-8 lg:text-[16px]">进入场景库</Link>
+              <a href="#free" className="inline-flex min-h-[54px] items-center justify-center rounded-full border border-primary/15 bg-card px-7 py-4 text-[15px] font-black tracking-[0.01em] text-foreground shadow-[0_10px_24px_rgba(18,53,39,.06)] transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:bg-primary/5 lg:min-h-[58px] lg:px-8 lg:text-[16px]">先免费学 3 集 →</a>
             </div>
           </div>
 
-          <div className="relative isolate aspect-[31/23] w-full max-w-[620px] justify-self-center [container-type:inline-size]">
+          <div className="relative isolate hidden aspect-[31/23] w-full max-w-[620px] justify-self-center [container-type:inline-size] md:block md:translate-y-5 lg:translate-y-7">
             <span className="pointer-events-none absolute right-[1%] top-[1%] z-0 aspect-square w-[76%] rounded-full bg-[rgba(216,229,183,.46)]" />
             <span className="pointer-events-none absolute right-[6%] top-[6%] z-0 aspect-square h-[9%] rounded-full border-2 border-primary/15" />
             <span className="pointer-events-none absolute left-[19%] top-[10%] z-0 aspect-square h-[4%] rotate-45 rounded-[3px] bg-accent" />
@@ -120,10 +121,13 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
             </div>
 
             <img
-              src="/hero-aria-macbook-cutout-v4.png"
+              src="/hero-aria-macbook-cutout-v4.webp"
               alt="Aria 坐在电脑前练习真实场景英语"
               width={1536}
               height={1024}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
               className="pointer-events-none absolute bottom-[1%] right-[1%] z-10 h-[98%] w-auto max-w-none object-contain object-bottom drop-shadow-[0_18px_22px_rgba(18,36,28,.12)]"
             />
 
@@ -155,7 +159,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Free Experience</p>
-            <h2 className="mt-2 font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">免费体验区</h2>
+            <h2 className="mt-2 font-zh-serif text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">免费体验区</h2>
           </div>
         </div>
 
@@ -169,7 +173,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">How it feels to learn</p>
-            <h2 className="mt-2 font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.25] md:text-[34px]">点开一节课，<span className="display-serif font-medium italic">不像上课，像排练生活。</span></h2>
+            <h2 className="mt-2 font-zh-serif text-[28px] font-bold leading-[1.25] md:text-[34px]">点开一节课，<span className="display-serif font-medium italic">不像上课，像排练生活。</span></h2>
           </div>
           <p className="max-w-[360px] text-[13px] leading-relaxed text-muted-foreground">先看真实场景，再逐句点读、跟读和整理表达。不是做题，是为下一次交流做准备。</p>
         </div>
@@ -178,7 +182,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
           <div className="grid gap-6 lg:grid-cols-[1fr_1.12fr] lg:items-start lg:gap-12">
             <div className="pt-1.5">
               <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/65">Featured Scene · 看病就医</p>
-              <h3 className="mt-3.5 font-['Noto_Serif_SC'] text-[28px] font-bold leading-[1.45]">在牙科前台：<br />“我想约一个洗牙，<br />顺便看看这颗牙。”</h3>
+              <h3 className="mt-3.5 font-zh-serif text-[28px] font-bold leading-[1.45]">在牙科前台：<br />“我想约一个洗牙，<br />顺便看看这颗牙。”</h3>
               <p className="mt-4 max-w-[34em] text-[14.5px] leading-[1.9] text-white/75">先看一遍视频，再逐句点读，最后跟读录一遍。每句都放回真实流程里学——不是课本腔，是前台真的会这样说。</p>
               <div className="mt-6 flex flex-wrap gap-2.5">{["视频", "点读", "跟读"].map((label) => <span key={label} className="rounded-full border border-white/30 px-3.5 py-2 text-xs font-bold">{label}</span>)}</div>
             </div>

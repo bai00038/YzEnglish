@@ -12,7 +12,7 @@
     },
     {
       "Effect": "Allow",
-      "Action": ["oss:PutObject"],
+      "Action": ["oss:PutObject", "oss:DeleteObject"],
       "Resource": [
         "acs:oss:*:*:yz-english-membership/_private/membership/devices/*"
       ]

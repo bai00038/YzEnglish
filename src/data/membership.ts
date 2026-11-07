@@ -1,14 +1,6 @@
 import { useEffect, useSyncExternalStore } from "react";
-import membershipCodes from "./codes.json";
 
 export type MembershipType = "founder" | "year" | "month";
-
-interface MembershipCode {
-  code: string;
-  type: MembershipType;
-  expiresAt: string | null;
-  disabled: boolean;
-}
 
 export interface MembershipUnlock {
   type: MembershipType;
@@ -25,7 +17,6 @@ interface MembershipApiResponse {
 const MEMBERSHIP_STORAGE_KEY = "yz_membership_unlock";
 const MEMBERSHIP_CHANGE_EVENT = "yz-membership-change";
 const MEMBERSHIP_API_URL = String(import.meta.env.VITE_MEMBERSHIP_API_URL ?? "").replace(/\/+$/, "");
-const codes = membershipCodes as MembershipCode[];
 
 export const SECURE_MEMBERSHIP_ENABLED = MEMBERSHIP_API_URL.length > 0;
 
@@ -157,39 +148,8 @@ export function useMembershipAccess() {
   return { isUnlocked: Boolean(unlock) && !isExpired, isExpired, unlock };
 }
 
-async function hashMembershipCode(input: string): Promise<string> {
-  const normalized = input.trim().toUpperCase();
-  const bytes = new TextEncoder().encode(normalized);
-  const digest = await window.crypto.subtle.digest("SHA-256", bytes);
-  return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
-}
-
-async function redeemLegacyMembershipCode(input: string): Promise<MembershipUnlock | null> {
-  const normalized = input.trim().toUpperCase();
-  if (!normalized) return null;
-  let codeHash: string;
-  try {
-    codeHash = await hashMembershipCode(normalized);
-  } catch {
-    return null;
-  }
-  const match = codes.find(item => item.code.toLowerCase() === codeHash);
-  if (!match || match.disabled) return null;
-  if (match.type !== "founder") {
-    const expiresAt = match.expiresAt ? new Date(match.expiresAt).getTime() : Number.NaN;
-    if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) return null;
-  }
-  const unlock: MembershipUnlock = {
-    type: match.type,
-    expiresAt: match.type === "founder" ? null : match.expiresAt,
-    unlockedAt: new Date().toISOString(),
-  };
-  writeStoredUnlock(unlock);
-  return unlock;
-}
-
 export async function redeemMembershipCode(input: string): Promise<MembershipUnlock | null> {
-  if (!SECURE_MEMBERSHIP_ENABLED) return redeemLegacyMembershipCode(input);
+  if (!SECURE_MEMBERSHIP_ENABLED) throw new MembershipApiError("server_error");
   let response: Response;
   try {
     response = await fetch(`${MEMBERSHIP_API_URL}/v1/membership/redeem`, {

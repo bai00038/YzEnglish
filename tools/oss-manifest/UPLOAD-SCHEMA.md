@@ -17,15 +17,15 @@
 }
 ```
 
-- `collectionId`：唯一归属，只能是 C1–C9 之一；不要使用数组。
+- `collectionId`：唯一归属，只能是 C1–C12 之一；不要使用数组。
 - `collectionOrder`：在合集中的内容流程序号，从 1 开始，不按发布时间排序。
-- `tags`：用于全站七类筛选，可多选；合法值为 `medical`、`shopping`、`daily`、`school`、`parenting`、`dining`、`settling-in`。
+- `tags`：用于全站分类筛选，可多选；合法值为 `medical`、`shopping`、`daily`、`school`、`parenting`、`dining`、`settling-in`、`travel`、`work`。
 - `status`：`live` 或 `coming`。媒体未上传完成时使用 `coming`，页面展示但不可进入。
 - `isFreeExperience`：仅固定三个场景为 `true`：SH-01-007、ST-01-001、FD-01-001。
 
 ## 合集
 
-合集定义在 `collections.json`，编号和货架顺序固定：C1 牙科、C2 看病就医、C3 各种疼痛、C4 家校沟通、C5 日常寒暄、C6 跟孩子互动、C7 餐厅点餐、C8 购物、C9 安家办事。
+合集定义在 `collections.json`，编号和货架顺序固定：C1 牙科、C2 看病就医、C3 各种疼痛、C4 家校沟通、C5 日常寒暄、C6 跟孩子互动、C7 餐厅点餐、C8 购物、C9 安家办事、C10 旅行、C11 职场、C12 日常生活。C11 当前使用 `hidden: true` 暂不展示。
 
 ## 上传要求
 

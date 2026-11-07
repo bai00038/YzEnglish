@@ -49,7 +49,7 @@ export function ContactPage() {
           <h1 className="display-serif text-[30px] md:text-[38px] font-bold leading-[1.06] tracking-[-0.01em] text-foreground mb-2">
             Let's stay connected
           </h1>
-          <p className="font-['Noto_Serif_SC'] text-lg md:text-xl font-bold mb-4" style={{ color: "#0F3527" }}>扫码关注，保持联系</p>
+          <p className="font-zh-serif text-lg md:text-xl font-bold mb-4" style={{ color: "#0F3527" }}>扫码关注，保持联系</p>
           <p
             className="display-serif text-sm md:text-base italic text-muted-foreground leading-relaxed max-w-xl mb-3"
             style={oneLineWidth ? { maxWidth: oneLineWidth } : undefined}
@@ -73,7 +73,7 @@ export function ContactPage() {
           <h2 className="display-serif text-[28px] md:text-[36px] font-bold leading-tight tracking-[-0.01em] text-foreground mb-1">
             Scan a code to connect
           </h2>
-          <p className="font-['Noto_Serif_SC'] text-base font-bold mb-10" style={{ color: "#0F3527" }}>扫描下方二维码</p>
+          <p className="font-zh-serif text-base font-bold mb-10" style={{ color: "#0F3527" }}>扫描下方二维码</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {CHANNELS.map(({ key, Icon, color, en, zh, handle, qrCode }) => (
@@ -92,7 +92,7 @@ export function ContactPage() {
                   />
                 </div>
                 <p className="display-serif text-[17px] font-bold text-foreground leading-snug">{en}</p>
-                <p className="font-['Noto_Serif_SC'] text-sm font-bold mt-0.5 mb-2" style={{ color: "#0F3527" }}>{zh}</p>
+                <p className="font-zh-serif text-sm font-bold mt-0.5 mb-2" style={{ color: "#0F3527" }}>{zh}</p>
                 <p className="text-xs text-muted-foreground">{handle}</p>
               </div>
             ))}
@@ -107,7 +107,7 @@ export function ContactPage() {
           <h2 className="display-serif text-[30px] md:text-[42px] font-bold leading-tight tracking-[-0.01em] text-foreground mb-2">
             We'd love to hear from you.
           </h2>
-          <p className="font-['Noto_Serif_SC'] text-base font-bold" style={{ color: "#0F3527" }}>
+          <p className="font-zh-serif text-base font-bold" style={{ color: "#0F3527" }}>
             期待与你交流。
           </p>
         </div>

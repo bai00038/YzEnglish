@@ -10,9 +10,9 @@ const [manifest, collections] = await Promise.all([
   readFile(collectionsUrl, "utf8").then(JSON.parse),
 ]);
 
-const expectedCollectionIds = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9"];
-const allowedTags = new Set(["medical", "shopping", "daily", "school", "parenting", "dining", "settling-in"]);
-const expectedFreeSceneIds = new Set(["SH-01-007", "ST-01-001", "FD-01-001"]);
+const expectedCollectionIds = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12"];
+const allowedTags = new Set(["medical", "shopping", "daily", "school", "parenting", "dining", "settling-in", "travel", "work"]);
+const expectedFreeSceneIds = new Set(["SH-01-005", "ST-01-001", "FD-01-001"]);
 const errors = [];
 
 const collectionIds = collections.map((collection) => collection.id);

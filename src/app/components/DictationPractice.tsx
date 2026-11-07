@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CornerDownLeft, Play } from "lucide-react";
+import { CornerDownLeft } from "lucide-react";
 import { diffDictationWords, isDictationExactMatch, type DictationToken } from "@/data/dictation";
 import { speakerAvatarLabel, type SpeakerStyle } from "@/data/speakerRoles";
+import { PracticeActionBar } from "@/app/components/PracticeActionBar";
 
 // One valid, playable dialogue line, pre-filtered by the parent
 // (SceneDetailPage) to lines that both have an exact start/end range AND
@@ -68,12 +69,20 @@ interface DictationPracticeProps {
   onStopPlayback: () => void;
   /** Records one submitted, fully checked dictation pass. Accuracy does not affect completion. */
   onComplete: () => void;
+  playbackRate: number;
+  onPlaybackRateChange: (rate: number) => void;
+  repeatLine: boolean;
+  onRepeatLineChange: (value: boolean) => void;
+  bilingualMode: boolean;
+  onBilingualModeChange: (value: boolean) => void;
+  isPlaying: boolean;
 }
 
-export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback, onComplete }: DictationPracticeProps) {
+export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback, onComplete, playbackRate, onPlaybackRateChange, repeatLine, onRepeatLineChange, bilingualMode, onBilingualModeChange, isPlaying }: DictationPracticeProps) {
   const [position, setPosition] = useState(0);
   const [records, setRecords] = useState<DictationRecords>({});
   const [draft, setDraft] = useState("");
+  const [inputFocused, setInputFocused] = useState(false);
   const [showZh, setShowZh] = useState(() => {
     if (typeof window === "undefined") return false;
     try {
@@ -83,6 +92,7 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback, 
     }
   });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const mobileOptionsRef = useRef<HTMLDivElement>(null);
   // Guards the persist effect below from firing on the very same render
   // that just restored (or reset) state from storage — without it, a
   // scene with no saved practice yet would immediately write back an
@@ -172,6 +182,7 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback, 
     const nextLine = lines[boundedPosition];
     if (nextLine) {
       onPlayLine(nextLine.index);
+      window.requestAnimationFrame(() => textareaRef.current?.focus({ preventScroll: true }));
     } else {
       onStopPlayback();
       if (checkedCount === lines.length) onComplete();
@@ -201,6 +212,30 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback, 
     setDraft("");
     window.requestAnimationFrame(() => textareaRef.current?.focus());
   }
+
+  function keepInputVisible() {
+    const input = textareaRef.current;
+    const viewport = window.visualViewport;
+    if (!input || !viewport || document.activeElement !== input) return;
+    const rect = input.getBoundingClientRect();
+    const safeTop = viewport.offsetTop + 12;
+    const safeBottom = viewport.offsetTop + viewport.height - 24;
+    if (rect.bottom > safeBottom) {
+      window.scrollBy({ top: rect.bottom - safeBottom + 12, behavior: "auto" });
+    } else if (rect.top < safeTop) {
+      window.scrollBy({ top: rect.top - safeTop - 12, behavior: "auto" });
+    }
+  }
+
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+    const update = () => window.requestAnimationFrame(keepInputVisible);
+    viewport.addEventListener("resize", update);
+    return () => {
+      viewport.removeEventListener("resize", update);
+    };
+  });
 
   if (lines.length === 0) {
     return (
@@ -245,21 +280,21 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback, 
   if (!currentLine) return null;
 
   return (
-    <div className="min-h-[520px] rounded-[24px] border border-border bg-white p-3 shadow-[0_14px_38px_rgba(15,53,39,0.08)] md:p-5">
+    <div className="dictation-practice-card min-h-[520px] rounded-[24px] border border-border bg-white p-3 shadow-[0_14px_38px_rgba(15,53,39,0.08)] md:p-5">
       {/* Match the listening card's speaker-led upper panel without revealing the answer. */}
-      <div className="grid min-h-[250px] w-full grid-cols-[56px_minmax(0,1fr)] items-center gap-5 rounded-[20px] bg-[#F5F1E8] px-5 py-8 text-left md:grid-cols-[68px_minmax(0,1fr)] md:gap-8 md:px-10 md:py-10">
+      <div className="dictation-input-card grid min-h-[250px] w-full grid-cols-[56px_minmax(0,1fr)] items-center gap-5 rounded-[20px] bg-[#F5F1E8] px-5 py-8 text-left md:grid-cols-[68px_minmax(0,1fr)] md:gap-8 md:px-10 md:py-10">
         <span
-          className="flex h-14 w-14 items-center justify-center rounded-full text-[14px] font-black text-white md:h-[68px] md:w-[68px] md:text-[16px]"
+          className="dictation-avatar flex h-14 w-14 items-center justify-center rounded-full text-[14px] font-black text-white md:h-[68px] md:w-[68px] md:text-[16px]"
           style={{ backgroundColor: currentLine.speakerStyle.color }}
         >
           {speakerAvatarLabel(currentLine.speakerLabel)}
         </span>
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="dictation-copy min-w-0">
+          <div className="dictation-role-row flex flex-wrap items-center justify-between gap-3">
             <span className="block text-[15px] font-black text-primary md:text-[17px]">
               {currentLine.speakerLabel}
             </span>
-            <div className="flex flex-wrap items-center justify-end gap-2">
+            <div className="dictation-desktop-options flex flex-wrap items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={handleRestart}
@@ -280,12 +315,17 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback, 
             </div>
           </div>
           <label htmlFor="dictation-input" className="sr-only">输入你听到的英文句子</label>
-          <div className="relative mt-3">
+          <div className="dictation-input-wrap relative mt-3">
             <textarea
               id="dictation-input"
               ref={textareaRef}
               value={draft}
               onChange={e => setDraft(e.target.value)}
+              onFocus={() => {
+                setInputFocused(true);
+                window.setTimeout(keepInputVisible, 280);
+              }}
+              onBlur={() => setInputFocused(false)}
               onKeyDown={e => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
@@ -302,6 +342,24 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback, 
                 <span className="font-serif text-[20px] leading-relaxed md:text-[22px]">输入你听到的英文句子…</span>
               </span>
             )}
+          </div>
+          <div ref={mobileOptionsRef} className="dictation-mobile-options mt-2 hidden items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={handleRestart}
+              disabled={checkedCount === 0 && draft.trim().length === 0 && position === 0}
+              className="text-[12px] font-bold text-primary underline-offset-4 hover:underline disabled:opacity-35"
+            >
+              全文重新听写
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowZh(value => !value)}
+              aria-pressed={showZh}
+              className={`rounded-full border px-3 py-1.5 text-[11px] font-black transition-colors ${showZh ? "border-accent bg-accent text-primary" : "border-border bg-white text-primary"}`}
+            >
+              中文提示 · {showZh ? "开" : "关"}
+            </button>
           </div>
           {checked && diff ? (
             <div className="mt-4 rounded-[16px] border border-primary/10 bg-white/70 p-4">
@@ -335,25 +393,17 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback, 
               </div>
             </div>
           ) : (
-            <div className="mt-3 flex min-h-9 flex-wrap items-center justify-between gap-3 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
+            <div className="dictation-hint-row mt-3 flex min-h-9 flex-wrap items-center justify-between gap-3 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
               <span className="min-w-0">
                 {showZh
                   ? <>中文提示：{currentLine.zh || "暂无中文提示"}</>
                   : <span className="text-muted-foreground/70">需要时可打开中文提示</span>}
               </span>
               <span className="flex shrink-0 items-center gap-3">
-                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-muted-foreground/75 md:text-[12px]">
+                <span className="dictation-enter-hint inline-flex items-center gap-1 text-[11px] font-bold text-muted-foreground/75 md:text-[12px]">
                   <CornerDownLeft size={14} strokeWidth={2} />
                   回车检查答案
                 </span>
-                <button
-                  type="button"
-                  onClick={handleCheck}
-                  disabled={draft.trim().length === 0}
-                  className="shrink-0 rounded-full bg-primary px-4 py-2 text-[12px] font-black text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-primary/10 disabled:text-muted-foreground/60"
-                >
-                  检查答案
-                </button>
               </span>
             </div>
           )}
@@ -365,38 +415,28 @@ export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback, 
         </div>
       </div>
 
-      <div className="mt-4 rounded-[18px] border border-primary/10 bg-card px-3.5 py-4 md:px-4">
-        <div className="flex flex-col items-center">
-          <div className="flex items-center justify-center gap-4 md:gap-6">
-            <button
-              type="button"
-              onClick={() => goTo(position - 1)}
-              disabled={position === 0}
-              className="w-[104px] rounded-full border border-border bg-white px-3 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35 md:w-[116px] md:py-3"
-            >
-              ← 上一句
-            </button>
-            <button
-              type="button"
-              onClick={() => onPlayLine(currentLine.index)}
-              aria-label="播放当前听写句"
-              className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-[0_8px_18px_rgba(15,53,39,0.2)] transition-transform hover:scale-105 md:h-16 md:w-16"
-            >
-              <Play className="ml-0.5 h-5 w-5 fill-current" />
-            </button>
-            <button
-              type="button"
-              onClick={() => goTo(position + 1)}
-              className="w-[104px] rounded-full border border-border bg-white px-3 py-2.5 text-[12px] font-black text-primary transition-colors hover:bg-secondary md:w-[116px] md:py-3"
-            >
-              下一句 →
-            </button>
-          </div>
-          <span className="mt-2 text-[12px] font-black tabular-nums text-primary">
-            {position + 1} / {lines.length}
-          </span>
-        </div>
-      </div>
+      <PracticeActionBar
+        position={position}
+        total={lines.length}
+        onPrevious={() => goTo(position - 1)}
+        previousDisabled={position === 0}
+        isPlaying={isPlaying}
+        onTogglePlay={() => isPlaying ? onStopPlayback() : onPlayLine(currentLine.index)}
+        playLabel={isPlaying ? "暂停当前听写句" : "播放当前听写句"}
+        onNext={() => goTo(position + 1)}
+        playbackRate={playbackRate}
+        onPlaybackRateChange={onPlaybackRateChange}
+        repeatLine={repeatLine}
+        onRepeatLineChange={onRepeatLineChange}
+        bilingualMode={bilingualMode}
+        onBilingualModeChange={onBilingualModeChange}
+        onCheck={handleCheck}
+        checkDisabled={checked || draft.trim().length === 0}
+        floatOnlyWithKeyboard
+        inheritListeningSettings
+        inputFocused={inputFocused}
+        inlineOnly
+      />
 
     </div>
   );

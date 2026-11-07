@@ -141,6 +141,7 @@ export interface Scene {
   publishedAt?: string;
   desc: string;
   photo?: string;
+  videoPoster?: string;
   pdfUrl?: string;
   video_url?: string | null;
   subtitleCues?: SubtitleCue[] | null;
@@ -160,6 +161,7 @@ export interface SceneCollection {
   tagline: string;
   shelfOrder: number;
   status: "live" | "coming";
+  hidden?: boolean;
   coverImage?: string;
 }
 

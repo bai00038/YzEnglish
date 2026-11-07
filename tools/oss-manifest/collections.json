@@ -7,5 +7,8 @@
   { "id": "C6", "name": "跟孩子互动", "titleEn": "Parenting", "tagId": "parenting", "tagline": "妈妈在加拿大每天对孩子说的那些话", "shelfOrder": 6, "status": "coming" },
   { "id": "C7", "name": "餐厅点餐", "titleEn": "Dining Out", "tagId": "dining", "tagline": "在餐厅、咖啡店会被问到的那些选择题", "shelfOrder": 7, "status": "live" },
   { "id": "C8", "name": "购物", "titleEn": "Shopping", "tagId": "shopping", "tagline": "结账、退换以及买错买贵时的沟通", "shelfOrder": 8, "status": "live" },
-  { "id": "C9", "name": "安家办事", "titleEn": "Settling In", "tagId": "settling-in", "tagline": "银行、宽带、买车、签证和落地安家的大小事", "shelfOrder": 9, "status": "live" }
+  { "id": "C9", "name": "安家办事", "titleEn": "Settling In", "tagId": "settling-in", "tagline": "银行、宽带、买车、签证和落地安家的大小事", "shelfOrder": 9, "status": "live" },
+  { "id": "C10", "name": "旅行", "titleEn": "Travel", "tagId": "travel", "tagline": "机场、酒店、交通和旅途中常见的沟通", "shelfOrder": 10, "status": "coming" },
+  { "id": "C11", "name": "职场", "titleEn": "Workplace", "tagId": "work", "tagline": "面试、会议、同事沟通和职场协作", "shelfOrder": 11, "status": "coming", "hidden": true },
+  { "id": "C12", "name": "日常生活", "titleEn": "Everyday Life", "tagId": "daily", "tagline": "居家、社区、办事和每天都会遇到的生活场景", "shelfOrder": 12, "status": "coming" }
 ]

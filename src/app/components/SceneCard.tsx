@@ -8,6 +8,7 @@ import { DurationLabel, SentenceCountLabel } from "@/app/components/badges";
 import { SceneBadges } from "@/app/components/SceneBadges";
 import { getSceneProgressId, useLearningProgress } from "@/data/learning-progress";
 import { useMembershipAccess } from "@/data/membership";
+import { responsiveImageProps } from "@/data/responsive-image";
 
 export function SceneCard({ scene, collectionLabels = [], compact = false, resume = false, showProgress = true }: { scene: Scene; collectionLabels?: string[]; compact?: boolean; resume?: boolean; showProgress?: boolean }) {
   const catColor = CATEGORY_BG[scene.category] ?? "bg-secondary";
@@ -19,11 +20,9 @@ export function SceneCard({ scene, collectionLabels = [], compact = false, resum
   if (compact) {
     return (
       <Link to={sceneHref} className="group flex h-full w-full flex-col overflow-hidden rounded-[16px] border border-border bg-card text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(18,36,28,0.09)]">
-        <div className="relative aspect-video shrink-0 overflow-hidden">
+        <div className="relative aspect-video shrink-0 overflow-hidden bg-[#E9E4DA]">
           {scene.photo ? (
-            <img src={scene.photo} alt={scene.titleEn} className={`h-full w-full object-cover transition-all duration-500 group-hover:scale-105 ${isMemberOnly ? "saturate-[.72]" : ""}`} loading="lazy" />
-          ) : scene.video_url ? (
-            <video src={`${scene.video_url}#t=0.001`} aria-label={scene.titleEn} className={`h-full w-full object-cover transition-all duration-500 group-hover:scale-105 ${isMemberOnly ? "saturate-[.72]" : ""}`} muted playsInline preload="metadata" />
+            <img {...responsiveImageProps(scene.photo, "(max-width: 767px) 78vw, (max-width: 1023px) 50vw, 25vw")} alt={scene.titleEn} className={`h-full w-full object-cover transition-all duration-500 group-hover:scale-105 ${isMemberOnly ? "saturate-[.72]" : ""}`} loading="lazy" decoding="async" />
           ) : (
             <ImgBox label={scene.category} className={`h-full w-full ${catColor}`} />
           )}
@@ -40,11 +39,11 @@ export function SceneCard({ scene, collectionLabels = [], compact = false, resum
           )}
         </div>
         <div className="flex flex-1 flex-col p-3">
-          <div className="h-[61px] md:h-[66px]">
+          <div className="h-[60px]">
             <p className="line-clamp-1 font-sans text-[17px] font-bold leading-tight text-primary md:text-[18px]">{scene.titleZh}</p>
             <p className="mt-0.5 line-clamp-2 font-sans text-[12px] italic leading-[1.25] text-muted-foreground md:text-[13px]">{scene.titleEn}</p>
           </div>
-          <div className="mt-auto flex items-center justify-between pt-2.5">
+          <div className="mt-auto flex items-center justify-between pt-1.5">
             <span>{scene.sentenceCount ? <SentenceCountLabel count={scene.sentenceCount} /> : null}</span>
             <DurationLabel duration={scene.duration} />
           </div>
@@ -55,11 +54,9 @@ export function SceneCard({ scene, collectionLabels = [], compact = false, resum
 
   return (
     <Link to={sceneHref} className="group flex h-full w-full flex-col overflow-hidden rounded-[22px] border border-border bg-card text-left transition-all duration-200 hover:-translate-y-[5px] hover:shadow-[0_22px_44px_rgba(18,36,28,0.13)]">
-      <div className="relative aspect-[16/10] shrink-0 overflow-hidden">
+      <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-[#E9E4DA]">
         {scene.photo ? (
-          <img src={scene.photo} alt={scene.titleEn} className={`h-full w-full object-cover transition-all duration-500 group-hover:scale-105 ${isMemberOnly ? "saturate-[.72]" : ""}`} loading="lazy" />
-        ) : scene.video_url ? (
-          <video src={`${scene.video_url}#t=0.001`} aria-label={scene.titleEn} className={`h-full w-full object-cover transition-all duration-500 group-hover:scale-105 ${isMemberOnly ? "saturate-[.72]" : ""}`} muted playsInline preload="metadata" />
+          <img {...responsiveImageProps(scene.photo, "(max-width: 767px) 88vw, (max-width: 1023px) 50vw, 33vw")} alt={scene.titleEn} className={`h-full w-full object-cover transition-all duration-500 group-hover:scale-105 ${isMemberOnly ? "saturate-[.72]" : ""}`} loading="lazy" decoding="async" />
         ) : (
           <ImgBox label={scene.category} className={`w-full h-full ${catColor}`} />
         )}
@@ -78,12 +75,12 @@ export function SceneCard({ scene, collectionLabels = [], compact = false, resum
         )}
       </div>
       <div className="flex flex-1 flex-col px-[22px] pb-[18px] pt-5">
-        <div className="mb-3.5 h-[61px] md:h-[66px]">
+        <div className="mb-2 h-[60px]">
           <p className="line-clamp-1 font-sans text-[18px] font-bold leading-tight text-primary md:text-[19px]">{scene.titleZh}</p>
           <p className="mt-0.5 line-clamp-2 font-sans text-[12px] italic leading-[1.25] text-muted-foreground md:text-[13px]">{scene.titleEn}</p>
         </div>
         {collectionLabels.length > 0 && <p className="mb-3 text-[12px] leading-relaxed text-muted-foreground">收录于：{collectionLabels.join("、")}</p>}
-        <div className="mt-auto flex items-center justify-between border-t border-border pt-3.5">
+        <div className="mt-auto flex items-center justify-between border-t border-border pt-2.5">
           <span>{scene.sentenceCount ? <SentenceCountLabel count={scene.sentenceCount} /> : null}</span>
           <DurationLabel duration={scene.duration} />
         </div>

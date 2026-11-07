@@ -7,10 +7,10 @@ const METHOD_STEPS = [
 ];
 
 const AUDIENCES = [
-  "海外新移民与留学生",
-  "需要处理家校沟通的家长",
-  "在英语环境中工作的职场人",
-  "出国旅行、生活的人",
+  "在海外生活的人——新落地，或定居多年、遇到事儿还是没底",
+  "要跟学校打交道的家长——家长会、请假、和老师当面聊",
+  "准备出国的人——去定居、留学或旅行，出发前先排练一遍",
+  "在国内学英语的人——不只为考试，也想学真实生活英语",
 ];
 
 function ExploreButton() {
@@ -32,7 +32,7 @@ export function AboutPage() {
         <h1 className="display-serif mt-2.5 text-[30px] font-bold leading-[1.06] tracking-[-0.01em] text-primary md:text-[38px]">
           Real scenes for real life.
         </h1>
-        <p className="mt-2 font-['Noto_Serif_SC'] text-[18px] font-bold text-foreground md:text-[21px]">
+        <p className="mt-2 font-zh-serif text-[18px] font-bold text-foreground md:text-[21px]">
           为真实生活，练真场景英语。
         </p>
         <p className="display-serif mt-4 max-w-[640px] text-[16px] italic leading-relaxed text-secondary-foreground">
@@ -44,7 +44,7 @@ export function AboutPage() {
         <div className="mt-5"><ExploreButton /></div>
 
         <section className="mt-12 md:mt-16">
-          <h2 className="flex items-baseline gap-3 font-['Noto_Serif_SC'] text-[24px] font-bold text-foreground">
+          <h2 className="flex items-baseline gap-3 font-zh-serif text-[24px] font-bold text-foreground">
             为什么做
             <span className="display-serif text-[15px] font-medium italic text-muted-foreground">Why</span>
           </h2>
@@ -54,13 +54,13 @@ export function AboutPage() {
           <p className="mt-2 max-w-[680px] text-base leading-relaxed text-secondary-foreground">
             很多学习者不是英语差，而是从没用英语经历过那个场景。不知道接下来会发生什么，才是紧张的根源。
           </p>
-          <p className="mt-6 border-l-4 border-accent py-0.5 pl-5 font-['Noto_Serif_SC'] text-[21px] font-bold text-primary">
+          <p className="mt-6 border-l-4 border-accent py-0.5 pl-5 font-zh-serif text-[21px] font-bold text-primary">
             先看一遍场景，再走进真实生活。
           </p>
         </section>
 
         <section className="mb-[72px] mt-12 md:mt-16">
-          <h2 className="flex items-baseline gap-3 font-['Noto_Serif_SC'] text-[24px] font-bold text-foreground">
+          <h2 className="flex items-baseline gap-3 font-zh-serif text-[24px] font-bold text-foreground">
             学习方法
             <span className="display-serif text-[15px] font-medium italic text-muted-foreground">How it works</span>
           </h2>
@@ -70,7 +70,7 @@ export function AboutPage() {
                 <span className="display-serif grid h-[46px] w-[46px] place-items-center rounded-full bg-primary text-base font-bold text-white">
                   {step.num}
                 </span>
-                <h3 className="mt-[18px] font-['Noto_Serif_SC'] text-[19px] font-bold text-foreground">
+                <h3 className="mt-[18px] font-zh-serif text-[19px] font-bold text-foreground">
                   {step.title}
                   <span className="display-serif mt-1 block text-[13.5px] font-medium italic text-muted-foreground">{step.en}</span>
                 </h3>
@@ -84,8 +84,8 @@ export function AboutPage() {
       <section className="bg-primary py-[46px] md:py-[60px]">
         <div className="mx-auto max-w-[1180px] px-5 md:px-8">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/55">Who it's for · 适合谁</p>
-          <h2 className="mt-4 font-['Noto_Serif_SC'] text-[24px] font-bold text-white md:text-[32px]">
-            为正在海外生活的人而做
+          <h2 className="mt-4 font-zh-serif text-[24px] font-bold text-white md:text-[32px]">
+            为想把英语用进真实生活的人而做
           </h2>
           <div className="mt-7 grid gap-4 sm:grid-cols-2">
             {AUDIENCES.map((audience) => (
@@ -102,7 +102,7 @@ export function AboutPage() {
         <h2 className="display-serif text-[34px] font-bold leading-[1.1] tracking-[-0.01em] text-primary md:text-[54px]">
           Prepare before it happens.
         </h2>
-        <p className="mt-3 font-['Noto_Serif_SC'] text-[19px] text-secondary-foreground">
+        <p className="mt-3 font-zh-serif text-[19px] text-secondary-foreground">
           在场景发生之前，先练一遍。
         </p>
         <div className="mt-7"><ExploreButton /></div>

@@ -47,6 +47,9 @@ const COLLECTION_CARD_LABELS: Record<string, string> = {
   C7: "点餐英语",
   C8: "购物英语",
   C9: "安家英语",
+  C10: "旅行英语",
+  C11: "职场英语",
+  C12: "日常英语",
 };
 
 export function getSceneCardCategoryLabel(collectionId: string | undefined, category: string): string {

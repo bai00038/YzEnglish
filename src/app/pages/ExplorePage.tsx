@@ -1,12 +1,64 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { Link, useSearchParams } from "react-router";
 import { SceneCard } from "@/app/components/SceneCard";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { useCollections } from "@/data/collections-access";
 import { COLLECTION_TAGS } from "@/data/content-collections";
+import type { CollectionWithScenes } from "@/data/collections-access";
 
 const CATALOGUE_TAGS = [{ id: "All", label: "全部" }, ...COLLECTION_TAGS];
+
+function CollectionSection({ collection, eager = false }: { collection: CollectionWithScenes; eager?: boolean }) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isNearViewport, setIsNearViewport] = useState(eager);
+  const liveScenes = collection.scenes.filter(scene => scene.status === "live");
+
+  useEffect(() => {
+    if (isNearViewport || !sectionRef.current || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setIsNearViewport(true);
+      observer.disconnect();
+    }, { rootMargin: "1000px 0px" });
+    observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, [isNearViewport]);
+
+  if (liveScenes.length === 0) {
+    return (
+      <div className="flex h-10 items-center justify-between rounded-[14px] border border-border bg-secondary/55 px-4 text-muted-foreground">
+        <span className="font-zh-serif text-[17px] font-bold">{collection.name}</span>
+        <span className="text-[12px] font-semibold">建设中</span>
+      </div>
+    );
+  }
+
+  return (
+    <section ref={sectionRef} aria-labelledby={`collection-${collection.id}`}>
+      <div className="mb-2 flex items-end justify-between gap-4 border-b border-border pb-2">
+        <div className="min-w-0 md:flex md:items-baseline md:gap-3">
+          <h2 id={`collection-${collection.id}`} className="shrink-0 font-zh-serif text-[22px] font-bold leading-tight text-primary">{collection.name}</h2>
+          <p className="mt-1 truncate text-[12px] text-muted-foreground md:mt-0">{collection.tagline}</p>
+          <span className="mt-1 block shrink-0 text-[12px] font-semibold text-secondary-foreground md:mt-0">共 {liveScenes.length} 集</span>
+        </div>
+        <Link to={`/collections/${collection.id}`} className="shrink-0 text-[13px] font-bold text-primary hover:underline">查看全部 →</Link>
+      </div>
+      {isNearViewport ? <>
+        <div className="flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden">
+          {liveScenes.map(scene => (
+            <div key={scene.externalId ?? scene.id} className="flex w-[78vw] flex-none snap-start">
+              <SceneCard compact showProgress={false} scene={scene} collectionLabels={[collection.name]} />
+            </div>
+          ))}
+        </div>
+        <div className="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
+          {liveScenes.slice(0, 8).map(scene => <SceneCard compact showProgress={false} key={scene.externalId ?? scene.id} scene={scene} collectionLabels={[collection.name]} />)}
+        </div>
+      </> : <div aria-hidden="true" className="h-[310px] animate-pulse rounded-[16px] bg-secondary/45 md:h-[520px]" />}
+    </section>
+  );
+}
 
 export function ExplorePage({
   activeCategory, setActiveCategory,
@@ -57,7 +109,7 @@ export function ExplorePage({
         {loading ? <LoadingState label="Loading scene library…" /> : error ? <ErrorState message={error} /> : hasActiveFilter ? (
           <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h1 className="font-['Noto_Serif_SC'] text-[22px] font-bold text-primary">搜索结果</h1>
+              <h1 className="font-zh-serif text-[22px] font-bold text-primary">搜索结果</h1>
               <p className="text-[13px] font-semibold text-muted-foreground">共 {filteredScenes.length} 个场景</p>
             </div>
             {filteredScenes.length ? (
@@ -68,45 +120,7 @@ export function ExplorePage({
           </section>
         ) : (
           <div className="space-y-4">
-            {collections.map(collection => {
-              const liveScenes = collection.scenes.filter(scene => scene.status === "live");
-              if (liveScenes.length === 0) {
-                return (
-                  <div key={collection.id} className="flex h-10 items-center justify-between rounded-[14px] border border-border bg-secondary/55 px-4 text-muted-foreground">
-                    <span className="font-['Noto_Serif_SC'] text-[17px] font-bold">{collection.name}</span>
-                    <span className="text-[12px] font-semibold">建设中</span>
-                  </div>
-                );
-              }
-              return (
-                <section key={collection.id} aria-labelledby={`collection-${collection.id}`}>
-                  <div className="mb-2 flex items-end justify-between gap-4 border-b border-border pb-2">
-                    <div className="min-w-0 md:flex md:items-baseline md:gap-3">
-                      <h2 id={`collection-${collection.id}`} className="shrink-0 font-['Noto_Serif_SC'] text-[22px] font-bold leading-tight text-primary">{collection.name}</h2>
-                      <p className="mt-1 truncate text-[12px] text-muted-foreground md:mt-0">{collection.tagline}</p>
-                      <span className="mt-1 block shrink-0 text-[12px] font-semibold text-secondary-foreground md:mt-0">共 {liveScenes.length} 集</span>
-                    </div>
-                    <Link to={`/collections/${collection.id}`} className="shrink-0 text-[13px] font-bold text-primary hover:underline">查看全部 →</Link>
-                  </div>
-                  <div className="flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden">
-                    {liveScenes.slice(0, 10).map(scene => (
-                      <div key={scene.externalId ?? scene.id} className="flex w-[78vw] flex-none snap-start">
-                        <SceneCard compact showProgress={false} scene={scene} collectionLabels={[collection.name]} />
-                      </div>
-                    ))}
-                    <Link
-                      to={`/collections/${collection.id}`}
-                      className="flex w-[78vw] flex-none snap-start items-center justify-center rounded-[16px] border border-border bg-transparent text-[14px] font-bold text-primary transition-colors hover:border-primary/30"
-                    >
-                      查看全部 →
-                    </Link>
-                  </div>
-                  <div className="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
-                    {liveScenes.slice(0, 8).map(scene => <SceneCard compact showProgress={false} key={scene.externalId ?? scene.id} scene={scene} collectionLabels={[collection.name]} />)}
-                  </div>
-                </section>
-              );
-            })}
+            {collections.map((collection, index) => <CollectionSection key={collection.id} collection={collection} eager={index < 2} />)}
           </div>
         )}
       </main>

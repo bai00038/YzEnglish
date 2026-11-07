@@ -7,6 +7,7 @@ import { getSceneProgressId, useAllLearningProgress, type LearningProgress } fro
 import { membershipTypeLabel, useMembershipAccess } from "@/data/membership";
 import { useScenes } from "@/data/scenes-access";
 import type { Scene } from "@/data/types";
+import { responsiveImageProps } from "@/data/responsive-image";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -41,9 +42,9 @@ function LearningSceneList({
             to={destination}
             className={`group grid grid-cols-[112px_minmax(0,1fr)] items-center gap-3 p-3 transition-colors hover:bg-secondary/35 sm:grid-cols-[160px_minmax(0,1fr)] sm:gap-4 sm:p-4 ${index > 0 ? "border-t border-border" : ""}`}
           >
-            <div className="relative aspect-video overflow-hidden rounded-[12px] bg-primary">
+            <div className="relative aspect-video overflow-hidden rounded-[12px] bg-[#E9E4DA]">
               {scene.photo ? (
-                <img src={scene.photo} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]" loading="lazy" />
+                <img {...responsiveImageProps(scene.photo, "160px")} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]" loading="lazy" decoding="async" />
               ) : (
                 <span className="grid h-full w-full place-items-center text-white/85"><Play size={22} fill="currentColor" /></span>
               )}
@@ -102,7 +103,7 @@ export function MembershipPage() {
     <div className="bg-background py-10 md:py-14">
       <div className="mx-auto max-w-[920px] px-5 md:px-8">
         <p className="editorial-kicker">My Learning · 我的学习</p>
-        <h1 className="mt-3 font-['Noto_Serif_SC'] text-[30px] font-bold leading-tight text-primary md:text-[38px]">我的学习</h1>
+        <h1 className="mt-3 font-zh-serif text-[30px] font-bold leading-tight text-primary md:text-[38px]">我的学习</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">查看会员状态，继续上次的学习。</p>
 
         <section className="mt-7 overflow-hidden rounded-[24px] border border-border bg-card shadow-[0_18px_45px_rgba(18,36,28,.06)]">
@@ -114,7 +115,7 @@ export function MembershipPage() {
                 </span>
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground">当前状态</p>
-                  <p className={`mt-0.5 font-['Noto_Serif_SC'] text-xl font-bold ${isExpired ? "text-[#A13D32]" : "text-primary"}`}>
+                  <p className={`mt-0.5 font-zh-serif text-xl font-bold ${isExpired ? "text-[#A13D32]" : "text-primary"}`}>
                     {isUnlocked ? "已解锁" : isExpired ? "已到期" : "未解锁"}
                   </p>
                 </div>
@@ -127,7 +128,7 @@ export function MembershipPage() {
             <div>
               {!unlock ? (
                 <div>
-                <p className="font-['Noto_Serif_SC'] text-lg font-bold text-primary">当前状态：未解锁</p>
+                <p className="font-zh-serif text-lg font-bold text-primary">当前状态：未解锁</p>
                 <button type="button" onClick={() => setModalOpen(true)} className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 text-sm font-bold text-white transition-opacity hover:opacity-90">
                   输入兑换码解锁
                 </button>
@@ -138,15 +139,15 @@ export function MembershipPage() {
                   <dl className="grid gap-4 sm:grid-cols-3">
                     <div className="rounded-[18px] border border-border bg-background/55 p-5">
                       <dt className="text-xs font-semibold text-muted-foreground">会员类型</dt>
-                      <dd className="mt-2 font-['Noto_Serif_SC'] text-lg font-bold text-primary">{membershipTypeLabel(unlock.type)}</dd>
+                      <dd className="mt-2 font-zh-serif text-lg font-bold text-primary">{membershipTypeLabel(unlock.type)}</dd>
                     </div>
                     <div className="rounded-[18px] border border-border bg-background/55 p-5">
                       <dt className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground"><CalendarDays size={14} /> 到期日</dt>
-                      <dd className="mt-2 font-['Noto_Serif_SC'] text-lg font-bold text-primary">{unlock.type === "founder" ? "终身有效" : formatExpiryDate(unlock.expiresAt!)}</dd>
+                      <dd className="mt-2 font-zh-serif text-lg font-bold text-primary">{unlock.type === "founder" ? "终身有效" : formatExpiryDate(unlock.expiresAt!)}</dd>
                     </div>
                     <div className="rounded-[18px] border border-border bg-background/55 p-5">
                       <dt className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground"><Clock3 size={14} /> 剩余时间</dt>
-                      <dd className={`mt-2 font-['Noto_Serif_SC'] text-lg font-bold ${isExpired || isExpiringSoon ? "text-[#A13D32]" : "text-primary"}`}>
+                      <dd className={`mt-2 font-zh-serif text-lg font-bold ${isExpired || isExpiringSoon ? "text-[#A13D32]" : "text-primary"}`}>
                         {unlock.type === "founder" ? "终身有效" : isExpired ? "已到期" : `剩余 ${remainingDays} 天`}
                       </dd>
                     </div>
@@ -166,7 +167,7 @@ export function MembershipPage() {
                 {qrMissing && <div className="text-center text-primary"><QrCode className="mx-auto h-8 w-8" /><span className="mt-1 block text-[9px] font-bold">二维码待替换</span></div>}
               </div>
               <div>
-                <h2 className="font-['Noto_Serif_SC'] text-base font-bold text-primary">需要帮助？</h2>
+                <h2 className="font-zh-serif text-base font-bold text-primary">需要帮助？</h2>
                 <p className="mt-1 text-[11px] leading-5 text-muted-foreground">扫码联系 Aria<br className="hidden md:block" /> 备注：YZ English 会员</p>
               </div>
             </aside>
@@ -180,7 +181,7 @@ export function MembershipPage() {
                 <section aria-labelledby="my-continue-learning">
                   <div className="flex items-end justify-between gap-4 border-b border-border pb-3">
                     <div>
-                      <h2 id="my-continue-learning" className="font-['Noto_Serif_SC'] text-[25px] font-bold text-primary">继续学习</h2>
+                      <h2 id="my-continue-learning" className="font-zh-serif text-[25px] font-bold text-primary">继续学习</h2>
                       <p className="mt-1 text-xs text-muted-foreground">按最近学习时间排列</p>
                     </div>
                     <span className="text-xs font-semibold text-secondary-foreground">共 {continueScenes.length} 集</span>
@@ -192,7 +193,7 @@ export function MembershipPage() {
               {completedScenes.length > 0 && (
                 <section aria-labelledby="learning-history">
                   <div className="flex items-end justify-between gap-4 border-b border-border pb-3">
-                    <h2 id="learning-history" className="font-['Noto_Serif_SC'] text-[25px] font-bold text-primary">学习历史</h2>
+                    <h2 id="learning-history" className="font-zh-serif text-[25px] font-bold text-primary">学习历史</h2>
                     <span className="text-xs font-semibold text-secondary-foreground">共 {completedScenes.length} 集</span>
                   </div>
                   <LearningSceneList scenes={completedScenes} progressByScene={progressByScene} completed />
@@ -201,7 +202,7 @@ export function MembershipPage() {
             </div>
           ) : (
             <div className="rounded-[24px] border border-dashed border-primary/20 bg-card px-6 py-12 text-center">
-              <Link to="/#free" className="font-['Noto_Serif_SC'] text-lg font-bold text-primary transition-opacity hover:opacity-70">还没开始学习，去免费体验 3 集 →</Link>
+              <Link to="/#free" className="font-zh-serif text-lg font-bold text-primary transition-opacity hover:opacity-70">还没开始学习，去免费体验 3 集 →</Link>
             </div>
           )}
           <p className="mt-6 text-center text-xs text-muted-foreground">学习记录保存在当前浏览器</p>
