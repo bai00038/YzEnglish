@@ -1637,8 +1637,34 @@
       "titleZh": "胃灼热药房咨询",
       "video_url": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-no-subtitles.mp4",
       "sentenceCount": 11
+    },
+    {
+      "category": "Pharmacy Booking",
+      "dataUrl": "https://go.learnyzenglish.com/content/HC-04-001/scene.json",
+      "desc": "给家人预约流感疫苗，一个电话就能办好。本场景练习：说明是给谁打、回答药房的例行筛查问题、在两个时间里选一个，以及确认要带什么、提前多久到。",
+      "duration": "0:53",
+      "externalId": "HC-04-001",
+      "collectionId": "C2",
+      "collectionOrder": 9,
+      "tags": [
+        "medical"
+      ],
+      "status": "live",
+      "isFreeExperience": false,
+      "featured": false,
+      "id": 74,
+      "publishedAt": "2026-11-07T23:35:33Z",
+      "level": "Beginner+",
+      "pdfUrl": "https://go.learnyzenglish.com/content/HC-04-001/guide.pdf",
+      "photo": "https://go.learnyzenglish.com/content/HC-04-001/cover.png",
+      "region": "Canada",
+      "slug": "booking-flu-shots-by-phone",
+      "titleEn": "Booking Flu Shots by Phone",
+      "titleZh": "电话预约流感疫苗",
+      "video_url": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-no-subtitles.mp4",
+      "sentenceCount": 20
     }
   ],
   "schemaVersion": 2,
-  "updatedAt": "2026-11-07T22:02:50Z"
+  "updatedAt": "2026-11-07T23:35:33Z"
 }
