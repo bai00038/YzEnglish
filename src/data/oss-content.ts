@@ -103,6 +103,7 @@ export interface ManifestScene {
   collectionId?: string;
   collectionOrder?: number;
   tags?: string[];
+  searchKeywords?: string[];
   status?: "live" | "coming";
   isFreeExperience?: boolean;
 }
@@ -178,6 +179,7 @@ export function manifestEntryToScene(entry: ManifestScene): Scene {
     collectionId: entry.collectionId ?? fallback?.collectionId,
     collectionOrder: entry.collectionOrder ?? fallback?.collectionOrder,
     tags: entry.tags ?? fallback?.tags ?? [],
+    searchKeywords: entry.searchKeywords ?? [],
     status: entry.status ?? fallback?.status ?? "live",
     isFreeExperience: entry.isFreeExperience ?? fallback?.isFreeExperience ?? false,
   };

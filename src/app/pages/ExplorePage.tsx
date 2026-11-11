@@ -86,7 +86,7 @@ export function ExplorePage({
     .filter(scene => scene.status === "live")
     .filter(scene => {
       const matchesTag = activeCategory === "All" || (scene.tags ?? []).includes(activeCategory);
-      const matchesQuery = !query || [scene.titleEn, scene.titleZh, scene.desc]
+      const matchesQuery = !query || [scene.titleEn, scene.titleZh, scene.desc, (scene.searchKeywords ?? []).join(" ")]
         .some(value => value.toLowerCase().includes(query));
       return matchesTag && matchesQuery;
     });

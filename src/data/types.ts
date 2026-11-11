@@ -149,6 +149,10 @@ export interface Scene {
   collectionId?: string;
   collectionOrder?: number;
   tags?: string[];
+  // Hidden search-only terms from the manifest (synonyms, people/objects
+  // in the scene, English equivalents). Matched by Explore search,
+  // never rendered anywhere.
+  searchKeywords?: string[];
   status?: "live" | "coming";
   isFreeExperience?: boolean;
 }
