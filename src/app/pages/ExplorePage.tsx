@@ -9,11 +9,11 @@ import type { CollectionWithScenes } from "@/data/collections-access";
 
 const CATALOGUE_TAGS = [{ id: "All", label: "全部" }, ...COLLECTION_TAGS];
 
-type IconComponent = ComponentType<{ size?: number | string; className?: string; strokeWidth?: number | string }>;
+type IconComponent = ComponentType<{ size?: number | string; className?: string; strokeWidth?: number | string; fill?: string; fillOpacity?: number | string }>;
 
-function ToothIcon({ size = 24, className, strokeWidth = 1.5 }: { size?: number | string; className?: string; strokeWidth?: number | string }) {
+function ToothIcon({ size = 24, className, strokeWidth = 1.75, fill = "none", fillOpacity }: { size?: number | string; className?: string; strokeWidth?: number | string; fill?: string; fillOpacity?: number | string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+    <svg width={size} height={size} viewBox="2.7 2.9 17.6 17.6" fill={fill} fillOpacity={fillOpacity} stroke="currentColor" strokeWidth={typeof strokeWidth === "number" ? strokeWidth * 0.73 : strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
       <path d="M12 5.8C10.9 4.9 9.4 4.4 8 4.7 5.9 5.1 4.8 6.7 5.1 8.7c.2 1.4.9 2.5 1.2 4 .3 1.6.5 3.2.9 4.8.2.8 1.3.9 1.7.1.4-.7.6-2.1 1-3.1.3-.8 1-1.4 2.1-1.4s1.8.6 2.1 1.4c.4 1 .6 2.4 1 3.1.4.8 1.5.7 1.7-.1.4-1.6.6-3.2.9-4.8.3-1.5 1-2.6 1.2-4 .3-2-.8-3.6-2.9-4-1.4-.3-2.9.2-4 1.1Z" />
     </svg>
   );
@@ -33,9 +33,9 @@ const COLLECTION_ICONS: Record<string, IconComponent> = {
   C11: Briefcase,
 };
 
-function CollectionIcon({ id, size = 18, className, strokeWidth = 1.5 }: { id: string; size?: number; className?: string; strokeWidth?: number }) {
+function CollectionIcon({ id, size = 18, className, strokeWidth = 1.75 }: { id: string; size?: number; className?: string; strokeWidth?: number }) {
   const Icon = COLLECTION_ICONS[id] ?? MessagesSquare;
-  return <Icon size={size} className={className} strokeWidth={strokeWidth} />;
+  return <Icon size={size} className={className} strokeWidth={strokeWidth} fill="#1A4A35" fillOpacity={0.14} />;
 }
 
 function CollectionSection({ collection, eager = false }: { collection: CollectionWithScenes; eager?: boolean }) {
