@@ -2,9 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, Headphones, PenLine, Play } from "lucide-react";
 import { useFreeTrialScenes } from "@/data/collections-access";
-import { useHotScenes, useLatestScenes } from "@/data/scenes-access";
-import { SceneBadges } from "@/app/components/SceneBadges";
-import { DurationLabel, SentenceCountLabel } from "@/app/components/badges";
+import { useLatestScenes } from "@/data/scenes-access";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 import { SentenceListeningCard } from "@/app/components/SentenceListeningCard";
 import { getSceneCardCategoryLabel } from "@/data/scene-categories";
@@ -37,7 +35,7 @@ function HomeEditorialScene({ scene, featured = false, badge = "免费体验", s
       </span>
       <div className="absolute inset-x-5 bottom-5 z-10 md:inset-x-6 md:bottom-6">
         <p className="text-[11px] font-bold tracking-[0.12em] text-white/76">{getSceneCardCategoryLabel(scene.collectionId, scene.category)}</p>
-        <h3 className={`mt-2 font-sans font-black leading-[1.18] tracking-[-0.02em] text-white ${featured ? "text-[27px] md:text-[31px]" : "text-[23px] md:text-[26px]"}`}>
+        <h3 className={`mt-2 font-sans font-black leading-[1.18] tracking-[-0.02em] text-white ${short ? "truncate text-[20px] md:text-[21px]" : featured ? "text-[27px] md:text-[31px]" : "text-[23px] md:text-[26px]"}`}>
           {scene.titleZh || scene.titleEn}
         </h3>
         <p className={`mt-1.5 line-clamp-2 font-sans italic leading-snug text-white/78 ${featured ? "text-[14px] md:text-[15px]" : "text-[13px] md:text-[14px]"}`}>{scene.titleEn}</p>
@@ -99,12 +97,8 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
   const { data: freeData, loading: freeLoading, error: freeError } = useFreeTrialScenes();
   const scenes = (freeData ?? []).map(({ scene }) => scene);
   const { data: latestData, loading: latestLoading } = useLatestScenes(4);
-  const { data: hotData, loading: hotLoading } = useHotScenes();
   const latestScenes = latestData ?? [];
-  const hotScenes = [...(hotData ?? [])]
-    .sort((a, b) => (Date.parse(b.publishedAt ?? "") || 0) - (Date.parse(a.publishedAt ?? "") || 0))
-    .slice(0, 4);
-  const showFreshSection = latestLoading || hotLoading || latestScenes.length > 0 || hotScenes.length > 0;
+  const showFreshSection = latestLoading || latestScenes.length > 0;
   return (
     <div className="bg-background">
       <header className="mx-auto max-w-[1180px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
@@ -181,7 +175,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
 
       {showFreshSection ? (
         <section className="mx-auto max-w-[1180px] px-5 pb-2 pt-12 md:px-8" id="fresh">
-          {latestLoading || hotLoading ? <LoadingState label="Loading latest scenes…" /> : (
+          {latestLoading ? <LoadingState label="Loading latest scenes…" /> : (
             <>
               {latestScenes.length ? (
                 <div>
@@ -192,39 +186,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
                     </div>
                     <Link to="/explore" onClick={onExploreEnter} className="inline-flex items-center gap-2 text-sm font-bold text-primary">逛全部场景 <ArrowRight size={15} /></Link>
                   </div>
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{latestScenes.map((scene) => <HomeEditorialScene key={scene.externalId ?? scene.id} scene={scene} short badge={scene.isFreeExperience ? "免费体验" : "最新"} />)}</div>
-                </div>
-              ) : null}
-              {hotScenes.length ? (
-                <div className="pt-12">
-                  <div className="rounded-[24px] bg-[#EFE9DC] p-5 md:p-8">
-                    <div className="mb-2 flex flex-wrap items-end justify-between gap-4">
-                      <div>
-                        <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Most Loved</p>
-                        <h2 className="mt-2 font-zh-serif text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">热门精选</h2>
-                      </div>
-                      <p className="max-w-[300px] text-[13px] leading-relaxed text-muted-foreground">大家反复练的，就是这几集。</p>
-                    </div>
-                    <ol>
-                      {hotScenes.map((scene, index) => (
-                        <li key={scene.externalId ?? scene.id}>
-                          <Link to={`/scenes/${scene.slug}`} className="group flex items-center gap-4 border-b border-primary/10 py-4 last:border-b-0 md:gap-6">
-                            <span className="display-serif w-10 shrink-0 text-[34px] font-semibold italic leading-none text-primary/30 md:w-12 md:text-[42px]">{String(index + 1).padStart(2, "0")}</span>
-                            {scene.photo ? <img {...responsiveImageProps(scene.photo, "112px")} alt={scene.titleEn} className="hidden h-[64px] w-[112px] shrink-0 rounded-[12px] object-cover sm:block" loading="lazy" decoding="async" /> : null}
-                            <span className="min-w-0 flex-1">
-                              <span className="block truncate font-sans text-[17px] font-bold text-primary">{scene.titleZh || scene.titleEn}</span>
-                              <span className="mt-0.5 block truncate font-sans text-[13px] italic text-muted-foreground">{scene.titleEn}</span>
-                            </span>
-                            <span className="hidden shrink-0 items-center gap-3 md:flex">
-                              {scene.sentenceCount ? <SentenceCountLabel count={scene.sentenceCount} /> : null}
-                              <DurationLabel duration={scene.duration} />
-                            </span>
-                            <SceneBadges isNew={false} isHot className="shrink-0" />
-                          </Link>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{latestScenes.map((scene) => <HomeEditorialScene key={scene.externalId ?? scene.id} scene={scene} short badge={scene.isFreeExperience ? "免费体验" : "NEW"} />)}</div>
                 </div>
               ) : null}
             </>
