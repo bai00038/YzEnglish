@@ -10,17 +10,88 @@
 // rather than unified to a straight ".
 const CURLY_SINGLE_QUOTES = /[‘’]/g;
 const CURLY_DOUBLE_QUOTES = /[“”]/g;
-// . , ! ? : ; " ( ) — deliberately NOT the apostrophe, so contractions
-// survive normalization intact. Nothing here ever rewrites a word's
-// spelling, adds/removes articles, or substitutes synonyms.
+// Ignore sentence punctuation, preserving apostrophes and separators inside
+// numbers so values like 1.5 and 15 stay distinct.
 const IGNORED_PUNCTUATION = /[.,!?:;"()]/g;
+const NUMBER_WORDS = new Map([
+  "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+  "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen",
+].map((word, value) => [word, value]));
+const TENS = new Map([
+  "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety",
+].map((word, index) => [word, (index + 2) * 10]));
+const SCALES = new Map([["thousand", 1_000], ["million", 1_000_000], ["billion", 1_000_000_000]]);
+
+const unit = [...NUMBER_WORDS.keys()].slice(1, 10).join("|");
+const underHundred = `(?:${[...NUMBER_WORDS.keys()].slice(1).join("|")}|(?:${[...TENS.keys()].join("|")})(?:[ -](?:${unit}))?)`;
+const group = `(?:(?:${unit}) hundred(?:(?: and)? ${underHundred})?|${underHundred})`;
+// Match the longest valid cardinal phrase, keeping separate digits in
+// sequences such as "one two three" separate.
+const integerWords = new RegExp(
+  `^(?:${group} billion(?: (?:and )?${group} million)?(?: (?:and )?${group} thousand)?(?: (?:and )?${group})?` +
+  `|${group} million(?: (?:and )?${group} thousand)?(?: (?:and )?${group})?` +
+  `|${group} thousand(?: (?:and )?${group})?|${group}|zero)(?= |$)`,
+);
+const clockNotation = /\b\d{1,2}:\d{2}\b|\b(?:half past|quarter (?:past|to))\b/;
+const hour = `(?:\\d{1,2}|${underHundred})`;
+const minute = `(?:\\d{2}|(?:oh|zero) (?:${unit}|[1-9])|${[...NUMBER_WORDS.keys()].slice(10).join("|")}|(?:${[...TENS.keys()].slice(0, 4).join("|")})(?:[ -](?:${unit}))?)`;
+const spokenClock = new RegExp(`^(${hour}) (${minute})(?= |$)`);
+const relativeClock = new RegExp(`^(half past|quarter past|quarter to) (${hour})(?= |$)`);
+const onTheHour = new RegExp(`^(${hour}) o'clock(?= |$)`);
+
+function numberValue(phrase: string): number {
+  if (/^\d+$/.test(phrase)) return Number(phrase);
+  let total = 0;
+  let subtotal = 0;
+  for (const part of phrase.split(/[ -]/)) {
+    const scale = SCALES.get(part);
+    if (scale) {
+      total += subtotal * scale;
+      subtotal = 0;
+    } else if (part === "hundred") {
+      subtotal *= 100;
+    } else {
+      subtotal += NUMBER_WORDS.get(part) ?? TENS.get(part) ?? 0;
+    }
+  }
+  return total + subtotal;
+}
+
+function matchClock(text: string, allowSpokenClock: boolean) {
+  const digits = text.match(/^(\d{1,2}):(\d{2})(?= |$)/);
+  if (digits && Number(digits[1]) < 24 && Number(digits[2]) < 60) {
+    return { phrase: digits[0], hour: Number(digits[1]), minute: Number(digits[2]) };
+  }
+  const exactHour = text.match(onTheHour);
+  if (exactHour && numberValue(exactHour[1]) < 24) {
+    return { phrase: exactHour[0], hour: numberValue(exactHour[1]), minute: 0 };
+  }
+  const relative = text.match(relativeClock);
+  if (relative) {
+    const hours = numberValue(relative[2]);
+    if (hours >= 1 && hours <= 12) {
+      if (relative[1] === "quarter to") return { phrase: relative[0], hour: hours === 1 ? 12 : hours - 1, minute: 45 };
+      return { phrase: relative[0], hour: hours, minute: relative[1] === "half past" ? 30 : 15 };
+    }
+  }
+  if (!allowSpokenClock) return undefined;
+  const spoken = text.match(spokenClock);
+  if (!spoken) return undefined;
+  const hours = numberValue(spoken[1]);
+  const minutes = numberValue(spoken[2].replace(/^(?:oh|zero) /, ""));
+  if (hours >= 24 || minutes >= 60) return undefined;
+  return { phrase: spoken[0], hour: hours, minute: minutes };
+}
 
 export function normalizeDictationText(text: string): string {
   return text
     .toLowerCase()
     .replace(CURLY_SINGLE_QUOTES, "'")
     .replace(CURLY_DOUBLE_QUOTES, "")
-    .replace(IGNORED_PUNCTUATION, "")
+    .replace(/—/g, " ")
+    .replace(IGNORED_PUNCTUATION, (mark, index, source: string) =>
+      /[.,:]/.test(mark) && /\d/.test(source[index - 1] ?? "") && /\d/.test(source[index + 1] ?? "") ? mark : "",
+    )
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -57,19 +128,20 @@ function expandContractionToken(token: string): string[] {
   return [token];
 }
 
-function dictationComparisonVariants(text: string): string[] {
-  const normalized = normalizeDictationText(text);
-  if (!normalized) return [""];
-
-  return normalized.split(" ").reduce<string[]>((variants, token) => {
-    const expansions = expandContractionToken(token);
+function dictationComparisonVariants(tokens: DictationTokenSource[]): string[] {
+  return tokens.reduce<string[]>((variants, token) => {
+    const expansions = expandContractionToken(token.norm);
     return variants.flatMap(prefix => expansions.map(expansion => prefix ? `${prefix} ${expansion}` : expansion));
   }, [""]);
 }
 
 export function isDictationExactMatch(correctText: string, userText: string): boolean {
-  const correctVariants = new Set(dictationComparisonVariants(correctText));
-  return dictationComparisonVariants(userText).some(variant => correctVariants.has(variant));
+  return tokensMatch(...tokenizeAnswers(correctText, userText));
+}
+
+function tokensMatch(correct: DictationTokenSource[], user: DictationTokenSource[]): boolean {
+  const correctVariants = new Set(dictationComparisonVariants(correct));
+  return dictationComparisonVariants(user).some(variant => correctVariants.has(variant));
 }
 
 interface DictationTokenSource {
@@ -79,17 +151,45 @@ interface DictationTokenSource {
   norm: string;
 }
 
-// Tokenizes on the RAW text's own whitespace (not the normalized string),
-// so a token's displayed form is exactly what was authored/typed. Tokens
-// that normalize to "" (pure punctuation with nothing else in it) are
-// dropped rather than compared, since they carry no dictation-relevant
-// content either way.
-function tokenize(text: string): DictationTokenSource[] {
-  return text
-    .split(/\s+/)
-    .filter(raw => raw.length > 0)
+// Keep the original spelling for display. A number phrase forms one token
+// so the word diff can align "twenty one" with "21" even in a partial match.
+function tokenize(text: string, allowSpokenClock: boolean): DictationTokenSource[] {
+  // An em dash separates words even when written without spaces.
+  const words = (text.match(/[^\s—]+—*|—+/g) ?? [])
     .map(raw => ({ raw, norm: normalizeDictationText(raw) }))
     .filter(t => t.norm.length > 0);
+
+  const tokens: DictationTokenSource[] = [];
+  for (let i = 0; i < words.length;) {
+    const word = words[i];
+    const remaining = words.slice(i).map(token => token.norm).join(" ");
+    const clock = matchClock(remaining, allowSpokenClock);
+    if (clock) {
+      const end = i + clock.phrase.split(" ").length;
+      const norm = clock.minute === 0 ? String(clock.hour) : `${clock.hour}:${String(clock.minute).padStart(2, "0")}`;
+      tokens.push({ raw: words.slice(i, end).map(token => token.raw).join(" "), norm });
+      i = end;
+      continue;
+    }
+    const number = remaining.match(integerWords)?.[0];
+    if (number) {
+      const end = i + number.split(" ").length;
+      tokens.push({ raw: words.slice(i, end).map(token => token.raw).join(" "), norm: String(numberValue(number)) });
+      i = end;
+    } else {
+      const norm = /^\d{1,3}(?:,\d{3})+$/.test(word.norm) ? word.norm.replace(/,/g, "") : word.norm;
+      tokens.push({ raw: word.raw, norm });
+      i++;
+    }
+  }
+  return tokens;
+}
+
+function tokenizeAnswers(correctText: string, userText: string): [DictationTokenSource[], DictationTokenSource[]] {
+  // A clock cue disambiguates adjacent numbers like "ten thirty".
+  const allowSpokenClock = clockNotation.test(normalizeDictationText(correctText))
+    || clockNotation.test(normalizeDictationText(userText));
+  return [tokenize(correctText, allowSpokenClock), tokenize(userText, allowSpokenClock)];
 }
 
 export type DictationTokenStatus = "correct" | "incorrect" | "missing";
@@ -118,14 +218,13 @@ export interface DictationDiff {
 // Standard O(n·m) LCS dynamic-programming table — sentence-length inputs
 // only, so this is always tiny in practice.
 export function diffDictationWords(correctText: string, userText: string): DictationDiff {
-  const correct = tokenize(correctText);
-  const user = tokenize(userText);
+  const [correct, user] = tokenizeAnswers(correctText, userText);
 
   // When the full sentences are equivalent after contraction expansion,
   // preserve each side's original spelling while marking every token right.
   // This keeps "what're" visible as typed without falsely contrasting it
   // against the authored "what are".
-  if (isDictationExactMatch(correctText, userText)) {
+  if (tokensMatch(correct, user)) {
     return {
       userTokens: user.map(token => ({ text: token.raw, status: "correct" })),
       correctTokens: correct.map(token => ({ text: token.raw, status: "correct" })),

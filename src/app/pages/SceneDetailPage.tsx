@@ -57,11 +57,11 @@ function CultureTipCard({ item, tipNumber }: { item: CultureTipItem; tipNumber: 
   );
 }
 
-function StepHeading({ number, title, hint }: { number: string; title: string; hint: string }) {
+function StepHeading({ number, title, hint, titleId }: { number: string; title: string; hint: string; titleId?: string }) {
   return (
     <div className="mb-5 flex flex-wrap items-baseline gap-x-4 gap-y-1 max-[480px]:mb-4 max-[480px]:gap-x-3">
       <span className="font-serif text-[29px] italic leading-none text-primary/55">{number}</span>
-      <h2 className="text-[20px] font-black tracking-tight text-primary md:text-[22px]">{title}</h2>
+      <h2 id={titleId} tabIndex={titleId ? -1 : undefined} className="text-[20px] font-black tracking-tight text-primary md:text-[22px]">{title}</h2>
       <p className="text-[13px] font-medium text-muted-foreground md:text-[14px]">{hint}</p>
     </div>
   );
@@ -214,6 +214,16 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     });
   }
 
+  function jumpToSection(step: LearningStep) {
+    const section = document.getElementById(`section-${step}`);
+    if (!section) return;
+    saveLearningPosition(step);
+    const titleId = section.getAttribute("aria-labelledby");
+    const focusTarget = titleId ? document.getElementById(titleId) ?? section : section;
+    focusTarget.focus({ preventScroll: true });
+    section.scrollIntoView({ behavior: "instant", block: "start" });
+  }
+
   async function downloadScenePdf() {
     if (!protectedPdfUrl || pdfDownloading) return;
     setPdfDownloading(true);
@@ -255,6 +265,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     setVideoPaused(true);
     setPinnedLineIndex(null);
     setSentenceListeningActive(false);
+    setStudyTab("listening");
     cancelRangePlayback();
     // A freshly-loaded <video> element defaults to 1× — reapply the
     // user's selected speed so switching scenes doesn't silently reset it.
@@ -925,6 +936,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     );
   }
 
+  const sectionShortcuts: Array<{ step: LearningStep; label: string }> = [
+    { step: "watch", label: `视频 ${scene.duration}` },
+    { step: "dialogue", label: `逐句 ${content?.dialogue.length ?? 0} 句` },
+    { step: "language", label: `词汇 ${keyExpressionItems.length} 个` },
+    { step: "pdf", label: "讲义 PDF" },
+  ];
+
   return (
     <div className="scene-page bg-background px-3 py-4 md:px-6 md:py-5">
       <div className="scene-shell mx-auto max-w-[1240px] overflow-hidden rounded-[28px] border border-primary/15 bg-card shadow-[0_12px_40px_rgba(15,53,39,0.04)]">
@@ -966,15 +984,22 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             </p>
           </div>
           <div className="scene-desktop-pills flex flex-wrap gap-2 lg:flex-nowrap lg:justify-self-end">
-            <a href="#section-watch" onClick={event => { if (!canAccessMemberContent) { event.preventDefault(); setMembershipModalOpen(true); } else saveLearningPosition("watch"); }} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">视频 {scene.duration}</a>
-            <a href="#section-dialogue" onClick={event => { if (!canAccessMemberContent) { event.preventDefault(); setMembershipModalOpen(true); } else saveLearningPosition("dialogue"); }} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">逐句 {content?.dialogue.length ?? 0} 句</a>
-            <a href="#section-language" onClick={() => saveLearningPosition("language")} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">词汇 {keyExpressionItems.length} 个</a>
-            <a href="#section-pdf" onClick={event => { if (!canAccessMemberContent) { event.preventDefault(); setMembershipModalOpen(true); } else saveLearningPosition("pdf"); }} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors hover:border-primary/35 hover:bg-primary/5">讲义 PDF</a>
+            {sectionShortcuts.map(({ step, label }) => (
+              <button key={step} type="button" disabled={!content} aria-controls={content ? `section-${step}` : undefined} onClick={() => jumpToSection(step)} className="whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-1.5 text-center text-[12px] font-bold text-primary transition-colors enabled:cursor-pointer enabled:hover:border-primary/35 enabled:hover:bg-primary/5 disabled:opacity-60">
+                {label}
+              </button>
+            ))}
           </div>
         </div>
         <div className="scene-mobile-meta hidden text-[12px] font-semibold leading-relaxed text-muted-foreground">
-          视频 {scene.duration} · 逐句 {content?.dialogue.length ?? 0} 句 · 词汇 {keyExpressionItems.length} 个 ·{" "}
-          <a href="#section-pdf" onClick={event => { if (!canAccessMemberContent) { event.preventDefault(); setMembershipModalOpen(true); } else saveLearningPosition("pdf"); }} className="font-black text-primary">讲义 PDF ↓</a>
+          {sectionShortcuts.map(({ step, label }, index) => (
+            <span key={step}>
+              {index > 0 && " · "}
+              <button type="button" disabled={!content} aria-controls={content ? `section-${step}` : undefined} onClick={() => jumpToSection(step)} className="font-black text-primary enabled:cursor-pointer enabled:hover:underline disabled:opacity-60">
+                {label}
+              </button>
+            </span>
+          ))}
         </div>
       </div>
 
@@ -1001,7 +1026,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             {/* ─────────────────────────────────────────────
                 Video + playback speed + study tabs
                 ───────────────────────────────────────────── */}
-            <section id="section-watch" className="scene-section-pad scene-watch scroll-mt-24 px-5 pb-10 max-[480px]:pb-8 md:px-10 md:pb-12">
+            <section id="section-watch" tabIndex={-1} className="scene-section-pad scene-watch scroll-mt-24 px-5 pb-10 max-[480px]:pb-8 md:px-10 md:pb-12">
 
               <div className="scene-watch-heading"><StepHeading number="01" title="看视频" hint="先完整看一遍，字幕随时开关" /></div>
 
@@ -1261,7 +1286,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               </div>
 
               {/* ── Study mode tabs ── */}
-              <section ref={studySectionRef} id="section-dialogue" className="scene-study-section scroll-mt-24 max-[480px]:scroll-mt-20">
+              <section ref={studySectionRef} id="section-dialogue" tabIndex={-1} className="scene-study-section scroll-mt-24 max-[480px]:scroll-mt-20">
                 <div className="scene-study-heading mt-7 mb-5 flex flex-wrap items-center justify-between gap-4 max-[480px]:mt-5 max-[480px]:mb-4 max-[480px]:gap-3">
                   <StepHeading number="02" title="逐句精听跟读" hint="一句一句精听，听一句跟读一句，真正开口说出来" />
                   <div className="flex items-center rounded-full border border-border bg-white p-1">
@@ -1361,8 +1386,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             {/* ─────────────────────────────────────────────
                 STAGE 03 · Learn the Language
                 ───────────────────────────────────────────── */}
-            <section id="section-language" className="scene-section-pad scroll-mt-24 px-5 pb-12 max-[480px]:pb-9 md:px-10 md:pb-16">
-              <StepHeading number="03" title="知识点" hint="这一课真正要带走的" />
+            <section id="section-language" aria-labelledby="scene-language-title" className="scene-section-pad scroll-mt-24 px-5 pb-12 max-[480px]:pb-9 md:px-10 md:pb-16">
+              <StepHeading number="03" title="知识点" hint="这一课真正要带走的" titleId="scene-language-title" />
               <div className="flex flex-col gap-4">
                 {/* Key Expressions — from public.key_expressions (or its legacy-tips fallback) */}
                 {keyExpressionItems.length > 0 && (
@@ -1433,9 +1458,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                 {/* PDF download — scene.pdfUrl comes straight from Supabase scenes.pdf_url;
                     never hardcoded and never guessed from the scene id/slug. */}
-                <div id="section-pdf" className="scroll-mt-24 mb-12 flex flex-col gap-6 rounded-[24px] bg-primary px-6 py-8 text-white max-[480px]:mb-9 max-[480px]:gap-4 max-[480px]:py-6 md:flex-row md:items-center md:justify-between md:px-8">
+                <section id="section-pdf" aria-labelledby="scene-pdf-title" className="scroll-mt-24 mb-12 flex flex-col gap-6 rounded-[24px] bg-primary px-6 py-8 text-white max-[480px]:mb-9 max-[480px]:gap-4 max-[480px]:py-6 md:flex-row md:items-center md:justify-between md:px-8">
                   <div className="max-w-[720px]">
-                    <p className="text-[11px] font-black uppercase tracking-[0.18em] text-white/65">Step 04 · 本期讲义 PDF</p>
+                    <h2 id="scene-pdf-title" tabIndex={-1} className="text-[11px] font-black uppercase tracking-[0.18em] text-white/65">Step 04 · 本期讲义 PDF</h2>
                     <p className="mt-4 font-serif text-[27px] font-semibold leading-tight md:text-[34px]">把这一课带走，贴在冰箱上练</p>
                     <p className="mt-3 text-[14px] leading-relaxed text-white/70">完整双语对话 + 核心表达 + 本地文化提示，下载后随时复习。</p>
                   </div>
@@ -1475,7 +1500,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   {pdfDownloadError && (
                     <p className="text-[12px] font-semibold text-red-200">{pdfDownloadError}</p>
                   )}
-                </div>
+                </section>
 
                 {/* Related Scenes */}
                 {related.length > 0 && (
