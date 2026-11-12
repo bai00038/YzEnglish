@@ -97,6 +97,20 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const { isUnlocked } = useMembershipAccess();
   const [membershipModalOpen, setMembershipModalOpen] = useState(false);
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  const [episodeBarHidden, setEpisodeBarHidden] = useState(false);
+  useEffect(() => {
+    const onFocusIn = (event: FocusEvent) => {
+      const target = event.target as HTMLElement | null;
+      setEpisodeBarHidden(Boolean(target?.closest("input, textarea, [contenteditable='true']")));
+    };
+    const onFocusOut = () => setEpisodeBarHidden(false);
+    document.addEventListener("focusin", onFocusIn);
+    document.addEventListener("focusout", onFocusOut);
+    return () => {
+      document.removeEventListener("focusin", onFocusIn);
+      document.removeEventListener("focusout", onFocusOut);
+    };
+  }, []);
   const scene = data?.scene ?? null;
   const progressSceneId = scene ? getSceneProgressId(scene) : "";
   const shouldResumeProgress = searchParams.get("resume") === "1";
@@ -1526,7 +1540,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                 {/* Previous / next live episode in this collection */}
                 {scene.collectionId && (
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="hidden gap-4 md:grid md:grid-cols-2">
                     {prevScene ? (
                       <Link
                         to={`/scenes/${prevScene.slug}`}
@@ -1606,8 +1620,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       </div>
       {scene && scene.collectionId && (prevScene || nextScene) ? (
         <>
-          <div aria-hidden="true" className="h-[76px]" />
-          <nav aria-label="上一集 / 下一集" className="fixed inset-x-0 bottom-0 z-40 border-t border-primary/15 bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_36px_rgba(15,53,39,0.10)] backdrop-blur-md">
+          <div aria-hidden="true" className="h-[70px] lg:h-[76px]" />
+          <nav aria-label="上一集 / 下一集" className={`fixed inset-x-0 bottom-[var(--mobile-nav-height)] z-40 border-t border-primary/15 bg-white/95 shadow-[0_-10px_36px_rgba(15,53,39,0.10)] backdrop-blur-md lg:bottom-0 ${episodeBarHidden ? "hidden" : ""}`}>
             <div className="mx-auto flex h-[64px] max-w-[1240px] items-center gap-2 px-3 sm:gap-3 sm:px-5">
               {prevScene ? (
                 <Link to={`/scenes/${prevScene.slug}`} className="inline-flex h-11 shrink-0 items-center gap-0.5 rounded-full border border-primary/25 px-3.5 text-[13px] font-bold text-primary transition-colors hover:bg-secondary">
