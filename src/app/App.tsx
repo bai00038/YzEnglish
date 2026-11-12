@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Routes, Route, Navigate, useLocation, useNavigationType } from "react-router";
 import { DesktopNav } from "@/app/components/DesktopNav";
+import { NavVisibilityProvider } from "@/app/components/nav-visibility";
 import { MobileNav } from "@/app/components/MobileNav";
 import { Footer } from "@/app/components/Footer";
 import { HomePage } from "@/app/pages/HomePage";
@@ -70,6 +71,7 @@ export default function App() {
 
   return (
     <div className="mobile-nav-page-padding min-h-screen bg-background text-foreground">
+      <NavVisibilityProvider>
       <ScrollToTop />
       <DesktopNav />
       <main>
@@ -98,6 +100,7 @@ export default function App() {
         <Footer />
       </main>
       <MobileNav />
+      </NavVisibilityProvider>
     </div>
   );
 }
