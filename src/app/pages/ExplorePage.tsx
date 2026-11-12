@@ -144,9 +144,9 @@ export function ExplorePage({
             <button type="submit" className="flex-shrink-0 rounded-full bg-accent px-4 py-1.5 text-[13px] font-bold text-accent-foreground transition-[filter] hover:brightness-95 md:px-5">搜索</button>
           </form>
           {!hasActiveFilter && collections.length > 0 && (
-            <nav aria-label="合集快捷导航" className="mt-2 flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:gap-2 lg:overflow-x-visible">
+            <nav aria-label="合集快捷导航" className="mt-2 flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:justify-between lg:gap-2 lg:overflow-x-visible">
               {collections.filter(collection => collection.scenes.some(scene => scene.status === "live")).map(collection => (
-                <button key={collection.id} type="button" onClick={() => document.getElementById(`shelf-${collection.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" })} className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary lg:shrink lg:flex-1 lg:justify-center lg:px-2">
+                <button key={collection.id} type="button" onClick={() => document.getElementById(`shelf-${collection.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" })} className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary lg:gap-1.5 lg:px-3 lg:text-[12px] xl:gap-2 xl:px-4 xl:text-[13px]">
                   <CollectionIcon id={collection.id} size={15} className="text-primary" />
                   {collection.name}
                 </button>
