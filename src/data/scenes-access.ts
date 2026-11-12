@@ -63,6 +63,11 @@ async function fetchFeaturedScenes(): Promise<Scene[]> {
   return scenes.filter((scene) => scene.featured);
 }
 
+async function fetchHotScenes(): Promise<Scene[]> {
+  const scenes = await fetchVisibleScenes();
+  return scenes.filter((scene) => scene.isHot);
+}
+
 async function fetchCuratedFeaturedScenes(): Promise<Scene[]> {
   const scenes = await fetchVisibleScenes();
   return CURATED_FEATURED_SLUGS
@@ -148,6 +153,10 @@ export function useScenes() {
 
 export function useFeaturedScenes() {
   return useAsyncData(fetchFeaturedScenes, []);
+}
+
+export function useHotScenes() {
+  return useAsyncData(fetchHotScenes, []);
 }
 
 export function useCuratedFeaturedScenes() {

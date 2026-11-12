@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, Headphones, PenLine, Play } from "lucide-react";
 import { useFreeTrialScenes } from "@/data/collections-access";
+import { useHotScenes, useLatestScenes } from "@/data/scenes-access";
+import { SceneCard } from "@/app/components/SceneCard";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 import { SentenceListeningCard } from "@/app/components/SentenceListeningCard";
 import { getSceneCardCategoryLabel } from "@/data/scene-categories";
@@ -95,6 +97,13 @@ function SentenceListeningDemo() {
 export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
   const { data: freeData, loading: freeLoading, error: freeError } = useFreeTrialScenes();
   const scenes = (freeData ?? []).map(({ scene }) => scene);
+  const { data: latestData, loading: latestLoading } = useLatestScenes(4);
+  const { data: hotData, loading: hotLoading } = useHotScenes();
+  const latestScenes = latestData ?? [];
+  const hotScenes = [...(hotData ?? [])]
+    .sort((a, b) => (Date.parse(b.publishedAt ?? "") || 0) - (Date.parse(a.publishedAt ?? "") || 0))
+    .slice(0, 4);
+  const showFreshSection = latestLoading || hotLoading || latestScenes.length > 0 || hotScenes.length > 0;
   return (
     <div className="bg-background">
       <header className="mx-auto max-w-[1180px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
@@ -168,6 +177,38 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
         ) : <EmptyState title="No scenes yet." />}
         <div className="mt-5 text-center"><Link to="/explore" onClick={onExploreEnter} className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary px-5 py-3 text-sm font-bold text-white">进入场景库 <ArrowRight size={15} /></Link></div>
       </section>
+
+      {showFreshSection ? (
+        <section className="mx-auto max-w-[1180px] px-5 pb-2 pt-12 md:px-8" id="fresh">
+          {latestLoading || hotLoading ? <LoadingState label="Loading latest scenes…" /> : (
+            <>
+              {latestScenes.length ? (
+                <div>
+                  <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+                    <div>
+                      <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Just Added</p>
+                      <h2 className="mt-2 font-zh-serif text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">最新上架</h2>
+                    </div>
+                    <Link to="/explore" onClick={onExploreEnter} className="inline-flex items-center gap-2 text-sm font-bold text-primary">逛全部场景 <ArrowRight size={15} /></Link>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">{latestScenes.map((scene) => <SceneCard compact showProgress={false} key={scene.externalId ?? scene.id} scene={scene} />)}</div>
+                </div>
+              ) : null}
+              {hotScenes.length ? (
+                <div className="pt-12">
+                  <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+                    <div>
+                      <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Most Loved</p>
+                      <h2 className="mt-2 font-zh-serif text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">热门精选</h2>
+                    </div>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">{hotScenes.map((scene) => <SceneCard compact showProgress={false} key={scene.externalId ?? scene.id} scene={scene} />)}</div>
+                </div>
+              ) : null}
+            </>
+          )}
+        </section>
+      ) : null}
 
       <section className="mx-auto max-w-[1180px] px-5 pb-2 pt-12 md:px-8" id="learn">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
