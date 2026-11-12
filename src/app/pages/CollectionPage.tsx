@@ -26,7 +26,7 @@ export function CollectionPage() {
   return (
     <div>
       <header className="border-b border-border bg-secondary">
-        <div className="mx-auto max-w-[1180px] px-5 py-5 md:px-8">
+        <div className="mx-auto max-w-[1180px] px-5 py-4 md:px-8 md:py-5">
           <div className="mb-2 flex items-center justify-between gap-4 text-sm">
             <Link to="/explore" className="inline-flex items-center gap-2 font-semibold text-muted-foreground hover:text-primary"><ArrowLeft size={16} /> 返回场景库</Link>
             <p className="font-semibold text-foreground">
@@ -35,10 +35,10 @@ export function CollectionPage() {
                 : `共 ${collection.scenes.length} 集 · 已上线 ${liveCount} 集`}
             </p>
           </div>
-          <h1 className="flex flex-wrap items-baseline gap-x-3 font-zh-serif text-[30px] font-bold leading-[1.15] text-primary md:text-[38px]">
+          <h1 className="flex flex-wrap items-baseline gap-x-3 font-zh-serif text-[26px] font-bold leading-[1.15] text-primary md:text-[38px]">
             {collection.name}<span className="display-serif text-[18px] font-medium italic text-muted-foreground md:text-[20px]">{collection.titleEn}</span>
           </h1>
-          <p className="mt-1.5 max-w-[760px] text-[15px] leading-relaxed text-secondary-foreground md:text-base">{collection.tagline}</p>
+          <p className="mt-1 max-w-[760px] text-[13.5px] leading-relaxed text-secondary-foreground md:mt-1.5 md:text-base">{collection.tagline}</p>
           {learningProgress.hasAnyProgress && (
             <div className="mt-3">
               <div className="mb-1 flex items-center justify-between text-[12px] font-bold text-secondary-foreground">
@@ -62,13 +62,12 @@ export function CollectionPage() {
             const sceneIsLocked = isLive && !scene.isFreeExperience && !isUnlocked;
             const number = String(scene.collectionOrder ?? index + 1).padStart(2, "0");
             const row = (
-              <div className={`grid grid-cols-[136px_minmax(0,1fr)] [grid-template-areas:'thumb_text''thumb_pdf'] items-center gap-x-[15px] gap-y-1.5 px-4 py-[13px] md:grid-cols-[40px_160px_minmax(0,1fr)_auto] md:[grid-template-areas:'num_thumb_text_pdf'] md:gap-x-[18px] md:px-5 md:py-[13px] ${isLive ? "transition-colors hover:bg-secondary/60" : "bg-secondary/55 text-muted-foreground grayscale"}`}>
-                <span className="hidden justify-self-center display-serif text-[24px] font-bold italic text-primary/70 [grid-area:num] md:block">{number}</span>
+              <div className={`grid grid-cols-[26px_136px_minmax(0,1fr)] [grid-template-areas:'num_thumb_text''num_thumb_pdf'] items-center gap-x-[12px] gap-y-1.5 px-4 py-[13px] md:grid-cols-[40px_160px_minmax(0,1fr)_auto] md:[grid-template-areas:'num_thumb_text_pdf'] md:gap-x-[18px] md:px-5 md:py-[13px] ${isLive ? "transition-colors hover:bg-secondary/60" : "bg-secondary/55 text-muted-foreground grayscale"}`}>
+                <span className="justify-self-center display-serif text-[19px] font-bold italic text-primary/70 [grid-area:num] md:text-[24px]">{number}</span>
                 <div className="relative aspect-video w-[136px] self-center overflow-hidden rounded-[9px] bg-[#E9E4DA] [grid-area:thumb] md:w-[160px] md:rounded-[10px]">
                   {scene.photo ? <img {...responsiveImageProps(scene.photo, "(max-width: 767px) 136px, 160px")} alt="" className={`h-full w-full object-cover ${sceneIsLocked ? "saturate-[.72]" : ""}`} loading="lazy" decoding="async" /> : <div className="h-full w-full bg-[radial-gradient(circle_at_70%_30%,rgba(200,241,105,.3),transparent_26%),linear-gradient(145deg,#315848,#0f3527)]" />}
-                  <span className="absolute left-1.5 top-1.5 rounded-full bg-[#0F3527]/90 px-[7px] py-[2px] display-serif text-[11px] font-bold italic leading-none text-[#EAF4D3] md:hidden">{number}</span>
                   {(scene.isFreeExperience || sceneIsLocked) && (
-                    <span className={`absolute right-2 top-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[9px] font-bold md:left-2 md:right-auto ${scene.isFreeExperience ? "bg-accent text-primary" : "bg-primary/90 text-white"}`}>
+                    <span className={`absolute left-2 top-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[9px] font-bold ${scene.isFreeExperience ? "bg-accent text-primary" : "bg-primary/90 text-white"}`}>
                       {sceneIsLocked && <LockKeyhole size={10} />}{scene.isFreeExperience ? "免费体验" : "会员专属"}
                     </span>
                   )}
