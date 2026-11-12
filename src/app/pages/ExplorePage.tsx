@@ -103,6 +103,26 @@ export function ExplorePage({
   const { data: collectionsData, loading, error } = useCollections();
   const collections = collectionsData ?? [];
   const requestedTag = searchParams.get("tag");
+  const [navHidden, setNavHidden] = useState(false);
+  const pinUntilRef = useRef(0);
+  const searchFocusRef = useRef(false);
+
+  useEffect(() => {
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const dy = y - lastY;
+      lastY = y;
+      if (searchFocusRef.current || Date.now() < pinUntilRef.current || y < 96) {
+        setNavHidden(false);
+        return;
+      }
+      if (dy > 6) setNavHidden(true);
+      else if (dy < -6) setNavHidden(false);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (requestedTag && CATALOGUE_TAGS.some(tag => tag.id === requestedTag)) {
@@ -133,11 +153,11 @@ export function ExplorePage({
           </linearGradient>
         </defs>
       </svg>
-      <div className="sticky top-0 z-40 bg-background">
+      <div className={`sticky top-0 z-40 bg-background transition-transform duration-300 ease-out ${navHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="mx-auto max-w-[1180px] px-4 py-2 md:px-8">
           <form className="flex w-full items-center gap-3 rounded-full border border-border bg-card py-1 pl-4 pr-1 transition-colors focus-within:border-primary/50 md:pl-5" onSubmit={event => event.preventDefault()}>
             <Search size={18} className="flex-shrink-0 text-muted-foreground" />
-            <input value={searchQuery} onChange={event => setSearchQuery(event.target.value)}
+            <input value={searchQuery} onChange={event => setSearchQuery(event.target.value)} onFocus={() => { searchFocusRef.current = true; setNavHidden(false); }} onBlur={() => { searchFocusRef.current = false; }}
               placeholder="搜索场景或合集：牙医、退货、点餐…"
               className="min-w-0 flex-1 bg-transparent text-[14px] text-foreground outline-none placeholder:text-muted-foreground md:text-[15px]" />
             {searchQuery && <button type="button" onClick={() => setSearchQuery("")} aria-label="清除搜索" className="text-muted-foreground hover:text-foreground"><X size={14} /></button>}
@@ -146,7 +166,7 @@ export function ExplorePage({
           {!hasActiveFilter && collections.length > 0 && (
             <nav aria-label="合集快捷导航" className="mt-2 flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:justify-between lg:gap-2 lg:overflow-x-visible">
               {collections.filter(collection => collection.scenes.some(scene => scene.status === "live")).map(collection => (
-                <button key={collection.id} type="button" onClick={() => document.getElementById(`shelf-${collection.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" })} className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary lg:gap-1.5 lg:px-3 lg:text-[12px] xl:gap-2 xl:px-4 xl:text-[13px]">
+                <button key={collection.id} type="button" onClick={() => { pinUntilRef.current = Date.now() + 1200; setNavHidden(false); document.getElementById(`shelf-${collection.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }} className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary lg:gap-1.5 lg:px-3 lg:text-[12px] xl:gap-2 xl:px-4 xl:text-[13px]">
                   <CollectionIcon id={collection.id} size={15} className="text-primary" />
                   {collection.name}
                 </button>
