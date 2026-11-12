@@ -62,12 +62,13 @@ export function CollectionPage() {
             const sceneIsLocked = isLive && !scene.isFreeExperience && !isUnlocked;
             const number = String(scene.collectionOrder ?? index + 1).padStart(2, "0");
             const row = (
-              <div className={`grid gap-4 p-4 md:min-h-[120px] md:grid-cols-[48px_184px_minmax(0,1fr)_auto] md:items-center md:p-2.5 ${isLive ? "transition-colors hover:bg-secondary/60" : "bg-secondary/55 text-muted-foreground grayscale"}`}>
-                <span className="display-serif text-[27px] font-bold italic text-primary/70">{number}</span>
-                <div className="relative aspect-video w-full overflow-hidden rounded-[12px] bg-[#E9E4DA] md:w-[184px]">
-                  {scene.photo ? <img {...responsiveImageProps(scene.photo, "184px")} alt="" className={`h-full w-full object-cover ${sceneIsLocked ? "saturate-[.72]" : ""}`} loading="lazy" decoding="async" /> : <div className="h-full w-full bg-[radial-gradient(circle_at_70%_30%,rgba(200,241,105,.3),transparent_26%),linear-gradient(145deg,#315848,#0f3527)]" />}
+              <div className={`grid grid-cols-[112px_minmax(0,1fr)] items-center gap-x-[13px] gap-y-1 px-[14px] py-[11px] md:grid-cols-[40px_160px_minmax(0,1fr)_auto] md:gap-x-[18px] md:px-5 md:py-[13px] ${isLive ? "transition-colors hover:bg-secondary/60" : "bg-secondary/55 text-muted-foreground grayscale"}`}>
+                <span className="hidden justify-self-center display-serif text-[24px] font-bold italic text-primary/70 md:block">{number}</span>
+                <div className="relative aspect-video w-[112px] overflow-hidden rounded-[8px] bg-[#E9E4DA] md:w-[160px] md:rounded-[10px]">
+                  {scene.photo ? <img {...responsiveImageProps(scene.photo, "(max-width: 767px) 112px, 160px")} alt="" className={`h-full w-full object-cover ${sceneIsLocked ? "saturate-[.72]" : ""}`} loading="lazy" decoding="async" /> : <div className="h-full w-full bg-[radial-gradient(circle_at_70%_30%,rgba(200,241,105,.3),transparent_26%),linear-gradient(145deg,#315848,#0f3527)]" />}
+                  <span className="absolute left-1.5 top-1.5 rounded-full bg-[#0F3527]/90 px-[7px] py-[2px] display-serif text-[11px] font-bold italic leading-none text-[#EAF4D3] md:hidden">{number}</span>
                   {(scene.isFreeExperience || sceneIsLocked) && (
-                    <span className={`absolute left-2 top-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[9px] font-bold ${scene.isFreeExperience ? "bg-accent text-primary" : "bg-primary/90 text-white"}`}>
+                    <span className={`absolute right-2 top-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[9px] font-bold md:left-2 md:right-auto ${scene.isFreeExperience ? "bg-accent text-primary" : "bg-primary/90 text-white"}`}>
                       {sceneIsLocked && <LockKeyhole size={10} />}{scene.isFreeExperience ? "免费体验" : "会员专属"}
                     </span>
                   )}
@@ -77,13 +78,12 @@ export function CollectionPage() {
                     </span>
                   )}
                 </div>
-                <div>
-                  <h2 className="font-sans text-[17px] font-bold leading-tight text-primary md:text-[18px]">{scene.titleZh}</h2>
-                  <p className="mt-0.5 font-sans text-[12px] italic text-muted-foreground md:text-[13px]">{scene.titleEn}</p>
-                  <p className="mt-1 line-clamp-1 text-[13px] leading-relaxed text-secondary-foreground">{scene.desc}</p>
+                <div className="min-w-0">
+                  <h2 className="font-sans text-[15px] font-bold leading-tight text-primary md:text-[17px]">{scene.titleZh}<span className="mt-0.5 block truncate font-sans text-[11px] font-normal italic text-muted-foreground md:ml-[9px] md:mt-0 md:inline md:text-[12.5px]">{scene.titleEn}</span></h2>
+                  <p className="mt-1 hidden line-clamp-1 text-[13px] leading-relaxed text-secondary-foreground md:block">{scene.desc}</p>
                 </div>
-                <div className="flex items-center gap-2 text-sm font-semibold md:justify-end">
-                  {isLive ? <><FileText size={17} /><span>讲义 PDF</span><ArrowRight size={16} /></> : <><LockKeyhole size={16} /><span>制作中</span></>}
+                <div className="col-start-2 flex items-center gap-1.5 text-[12px] font-semibold md:col-start-auto md:gap-2 md:text-sm md:justify-end">
+                  {isLive ? <><FileText size={16} /><span>讲义 PDF</span><ArrowRight size={16} className="hidden md:block" /></> : <><LockKeyhole size={15} /><span>制作中</span></>}
                 </div>
               </div>
             );
