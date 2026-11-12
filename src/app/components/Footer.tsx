@@ -12,7 +12,7 @@ export function Footer() {
     <footer className="bg-primary px-3 text-white/75 md:px-8">
       <div className="mx-auto max-w-[1180px]">
         <div className="grid grid-cols-2 gap-9 py-10 md:grid-cols-[1.4fr_1fr_1fr] md:gap-10 md:py-14">
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <Link to="/" className="display-serif text-[27px] font-semibold leading-none text-white transition-colors hover:text-accent">
               YZ English
             </Link>
