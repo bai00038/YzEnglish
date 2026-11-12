@@ -26,7 +26,7 @@ export function CollectionPage() {
   return (
     <div>
       <header className="border-b border-border bg-secondary">
-        <div className="mx-auto max-w-[1180px] px-5 py-4 md:px-8 md:py-5">
+        <div className="mx-auto max-w-[1180px] px-3 py-4 md:px-8 md:py-5">
           <div className="mb-2 flex items-center justify-between gap-4 text-sm">
             <Link to="/explore" className="inline-flex items-center gap-2 font-semibold text-muted-foreground hover:text-primary"><ArrowLeft size={16} /> 返回场景库</Link>
             <p className="font-semibold text-foreground">
@@ -53,7 +53,7 @@ export function CollectionPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-[1180px] px-5 py-6 md:px-8 md:py-7">
+      <main className="mx-auto max-w-[1180px] px-3 py-6 md:px-8 md:py-7">
         <div className="overflow-hidden rounded-[24px] border border-border bg-card">
           {collection.scenes.length ? collection.scenes.map((scene, index) => {
             const isLive = scene.status === "live";

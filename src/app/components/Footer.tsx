@@ -9,9 +9,9 @@ const SOCIAL_ICONS = [
 
 export function Footer() {
   return (
-    <footer className="bg-primary px-5 text-white/75 md:px-8">
+    <footer className="bg-primary px-3 text-white/75 md:px-8">
       <div className="mx-auto max-w-[1180px]">
-        <div className="grid gap-9 py-12 md:grid-cols-[1.4fr_1fr_1fr] md:gap-10 md:py-14">
+        <div className="grid grid-cols-2 gap-9 py-10 md:grid-cols-[1.4fr_1fr_1fr] md:gap-10 md:py-14">
           <div>
             <Link to="/" className="display-serif text-[27px] font-semibold leading-none text-white transition-colors hover:text-accent">
               YZ English

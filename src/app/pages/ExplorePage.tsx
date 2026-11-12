@@ -137,7 +137,7 @@ export function ExplorePage({
         </defs>
       </svg>
       <div className={`sticky top-[76px] z-40 bg-background transition-transform duration-300 ease-out md:top-[84px] lg:top-[96px] ${navHidden ? "-translate-y-[calc(100%+76px)] md:-translate-y-[calc(100%+84px)] lg:-translate-y-[calc(100%+96px)]" : "translate-y-0"}`}>
-        <div className="mx-auto max-w-[1180px] px-4 py-2 md:px-8">
+        <div className="mx-auto max-w-[1180px] px-3 py-2 md:px-8">
           <form className="flex w-full items-center gap-3 rounded-full border border-border bg-card py-1 pl-4 pr-1 transition-colors focus-within:border-primary/50 md:pl-5" onSubmit={event => event.preventDefault()}>
             <Search size={18} className="flex-shrink-0 text-muted-foreground" />
             <input value={searchQuery} onChange={event => setSearchQuery(event.target.value)} onFocus={() => { releaseHoldRef.current = holdNav(); }} onBlur={() => { releaseHoldRef.current?.(); releaseHoldRef.current = null; }}
@@ -159,7 +159,7 @@ export function ExplorePage({
         </div>
       </div>
 
-      <main className="mx-auto max-w-[1180px] px-4 py-2 md:px-8 md:py-2">
+      <main className="mx-auto max-w-[1180px] px-3 py-2 md:px-8 md:py-2">
         {loading ? <LoadingState label="Loading scene library…" /> : error ? <ErrorState message={error} /> : hasActiveFilter ? (
           <section>
             <div className="mb-4 flex items-center justify-between gap-4">
