@@ -35,7 +35,7 @@ const COLLECTION_ICONS: Record<string, IconComponent> = {
 
 function CollectionIcon({ id, size = 18, className, strokeWidth = 1.75 }: { id: string; size?: number; className?: string; strokeWidth?: number }) {
   const Icon = COLLECTION_ICONS[id] ?? MessagesSquare;
-  return <Icon size={size} className={className} strokeWidth={strokeWidth} fill="#1A4A35" fillOpacity={0.14} />;
+  return <Icon size={size} className={className} strokeWidth={strokeWidth} fill="url(#yz-icon-fill)" />;
 }
 
 function CollectionSection({ collection, eager = false }: { collection: CollectionWithScenes; eager?: boolean }) {
@@ -124,6 +124,15 @@ export function ExplorePage({
     });
   return (
     <div className="pb-10">
+      <svg aria-hidden="true" className="absolute h-0 w-0">
+        <defs>
+          <linearGradient id="yz-icon-fill" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#1A4A35" stopOpacity="0.34" />
+            <stop offset="52%" stopColor="#1A4A35" stopOpacity="0.12" />
+            <stop offset="100%" stopColor="#1A4A35" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+      </svg>
       <div className="sticky top-0 z-40 bg-background">
         <div className="mx-auto max-w-[1180px] px-4 py-2 md:px-8">
           <form className="flex w-full items-center gap-3 rounded-full border border-border bg-card py-1 pl-4 pr-1 transition-colors focus-within:border-primary/50 md:pl-5" onSubmit={event => event.preventDefault()}>
@@ -135,9 +144,9 @@ export function ExplorePage({
             <button type="submit" className="flex-shrink-0 rounded-full bg-accent px-4 py-1.5 text-[13px] font-bold text-accent-foreground transition-[filter] hover:brightness-95 md:px-5">搜索</button>
           </form>
           {!hasActiveFilter && collections.length > 0 && (
-            <nav aria-label="合集快捷导航" className="mt-2 flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:flex-wrap md:overflow-x-visible">
+            <nav aria-label="合集快捷导航" className="mt-2 flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:gap-2 lg:overflow-x-visible">
               {collections.filter(collection => collection.scenes.some(scene => scene.status === "live")).map(collection => (
-                <button key={collection.id} type="button" onClick={() => document.getElementById(`shelf-${collection.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" })} className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary">
+                <button key={collection.id} type="button" onClick={() => document.getElementById(`shelf-${collection.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" })} className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary lg:gap-1.5 lg:px-3 lg:text-[12px]">
                   <CollectionIcon id={collection.id} size={15} className="text-primary" />
                   {collection.name}
                 </button>
