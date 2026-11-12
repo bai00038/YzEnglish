@@ -38,7 +38,7 @@ function HomeEditorialScene({ scene, featured = false, badge = "免费体验", s
         <h3 className={`mt-2 font-sans font-black leading-[1.18] tracking-[-0.02em] text-white ${short ? "truncate text-[20px] md:text-[21px]" : featured ? "text-[27px] md:text-[31px]" : "text-[23px] md:text-[26px]"}`}>
           {scene.titleZh || scene.titleEn}
         </h3>
-        <p className={`mt-1.5 line-clamp-2 font-sans italic leading-snug text-white/78 ${featured ? "text-[14px] md:text-[15px]" : "text-[13px] md:text-[14px]"}`}>{scene.titleEn}</p>
+        <p className={`mt-1.5 line-clamp-2 font-sans italic leading-snug text-white/78 ${short ? "min-h-[2.6em]" : ""} ${featured ? "text-[14px] md:text-[15px]" : "text-[13px] md:text-[14px]"}`}>{scene.titleEn}</p>
       </div>
     </Link>
   );
