@@ -1632,11 +1632,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   <ChevronLeft size={16} />上一集
                 </span>
               )}
-              <p className="min-w-0 flex-1 truncate text-center text-[12px] font-semibold text-muted-foreground">
+              <p className="hidden min-w-0 flex-1 truncate text-center text-[12px] font-semibold text-muted-foreground sm:block">
                 {collection?.name ? `${collection.name} · ` : ""}第 {scene.collectionOrder ?? "—"} 集
               </p>
               {nextScene ? (
-                <Link to={`/scenes/${nextScene.slug}`} className="inline-flex h-11 min-w-0 shrink items-center gap-1 rounded-full bg-primary px-4 text-[13px] font-bold text-white transition-opacity hover:opacity-90">
+                <Link to={`/scenes/${nextScene.slug}`} className="inline-flex h-11 min-w-0 flex-1 shrink items-center justify-center gap-1 rounded-full bg-primary px-4 text-[13px] font-bold text-white transition-opacity hover:opacity-90 sm:flex-initial">
                   <span className="truncate">下一集：{nextScene.titleZh}</span>
                   <ChevronRight size={16} className="shrink-0" />
                 </Link>
