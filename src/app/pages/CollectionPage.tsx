@@ -80,7 +80,7 @@ export function CollectionPage() {
                 </div>
                 <div className="min-w-0">
                   <h2 className="font-sans text-[15px] font-bold leading-tight text-primary md:text-[17px]">{scene.titleZh}<span className="mt-0.5 block truncate font-sans text-[11px] font-normal italic text-muted-foreground md:ml-[9px] md:mt-0 md:inline md:text-[12.5px]">{scene.titleEn}</span></h2>
-                  <p className="mt-1 hidden line-clamp-1 text-[13px] leading-relaxed text-secondary-foreground md:block">{scene.desc}</p>
+                  <p className="mt-1 hidden line-clamp-2 text-[13px] leading-relaxed text-secondary-foreground md:block">{scene.desc}</p>
                 </div>
                 <div className="col-start-2 flex items-center gap-1.5 text-[12px] font-semibold md:col-start-auto md:gap-2 md:text-sm md:justify-end">
                   {isLive ? <><FileText size={16} /><span>讲义 PDF</span><ArrowRight size={16} className="hidden md:block" /></> : <><LockKeyhole size={15} /><span>制作中</span></>}
