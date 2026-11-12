@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Search, X } from "lucide-react";
+import { useEffect, useRef, useState, type ComponentType } from "react";
+import { Search, X, Stethoscope, Backpack, Baby, MessagesSquare, Sun, UtensilsCrossed, ShoppingBag, KeyRound, Plane, Briefcase } from "lucide-react";
 import { Link, useSearchParams } from "react-router";
 import { SceneCard } from "@/app/components/SceneCard";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
@@ -8,6 +8,35 @@ import { COLLECTION_TAGS } from "@/data/content-collections";
 import type { CollectionWithScenes } from "@/data/collections-access";
 
 const CATALOGUE_TAGS = [{ id: "All", label: "全部" }, ...COLLECTION_TAGS];
+
+type IconComponent = ComponentType<{ size?: number | string; className?: string }>;
+
+function ToothIcon({ size = 24, className }: { size?: number | string; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <path d="M12 5.8C10.9 4.9 9.4 4.4 8 4.7 5.9 5.1 4.8 6.7 5.1 8.7c.2 1.4.9 2.5 1.2 4 .3 1.6.5 3.2.9 4.8.2.8 1.3.9 1.7.1.4-.7.6-2.1 1-3.1.3-.8 1-1.4 2.1-1.4s1.8.6 2.1 1.4c.4 1 .6 2.4 1 3.1.4.8 1.5.7 1.7-.1.4-1.6.6-3.2.9-4.8.3-1.5 1-2.6 1.2-4 .3-2-.8-3.6-2.9-4-1.4-.3-2.9.2-4 1.1Z" />
+    </svg>
+  );
+}
+
+const COLLECTION_ICONS: Record<string, IconComponent> = {
+  C1: ToothIcon,
+  C2: Stethoscope,
+  C4: Backpack,
+  C6: Baby,
+  C5: MessagesSquare,
+  C12: Sun,
+  C7: UtensilsCrossed,
+  C8: ShoppingBag,
+  C9: KeyRound,
+  C10: Plane,
+  C11: Briefcase,
+};
+
+function CollectionIcon({ id, size = 18, className }: { id: string; size?: number; className?: string }) {
+  const Icon = COLLECTION_ICONS[id] ?? MessagesSquare;
+  return <Icon size={size} className={className} />;
+}
 
 function CollectionSection({ collection, eager = false }: { collection: CollectionWithScenes; eager?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -35,27 +64,32 @@ function CollectionSection({ collection, eager = false }: { collection: Collecti
   }
 
   return (
-    <section ref={sectionRef} aria-labelledby={`collection-${collection.id}`}>
-      <div className="mb-2 flex items-end justify-between gap-4 border-b border-border pb-2">
-        <div className="min-w-0 md:flex md:items-baseline md:gap-3">
-          <h2 id={`collection-${collection.id}`} className="shrink-0 font-zh-serif text-[22px] font-bold leading-tight text-primary">{collection.name}</h2>
+    <section ref={sectionRef} id={`shelf-${collection.id}`} className="scroll-mt-[132px]" aria-labelledby={`collection-${collection.id}`}>
+      <div className="mb-3 flex items-center justify-between gap-4 border-b border-border pb-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+            <CollectionIcon id={collection.id} size={20} />
+          </span>
+          <div className="min-w-0 md:flex md:items-baseline md:gap-3">
+          <h2 id={`collection-${collection.id}`} className="shrink-0 font-zh-serif text-[24px] font-bold leading-tight text-primary">{collection.name}</h2>
           <p className="mt-1 truncate text-[12px] text-muted-foreground md:mt-0">{collection.tagline}</p>
           <span className="mt-1 block shrink-0 text-[12px] font-semibold text-secondary-foreground md:mt-0">共 {liveScenes.length} 集</span>
+          </div>
         </div>
         <Link to={`/collections/${collection.id}`} className="shrink-0 text-[13px] font-bold text-primary hover:underline">查看全部 →</Link>
       </div>
       {isNearViewport ? <>
         <div className="flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden">
-          {liveScenes.map(scene => (
+          {liveScenes.slice(0, 4).map(scene => (
             <div key={scene.externalId ?? scene.id} className="flex w-[78vw] flex-none snap-start">
               <SceneCard compact showProgress={false} scene={scene} collectionLabels={[collection.name]} />
             </div>
           ))}
         </div>
         <div className="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
-          {liveScenes.slice(0, 8).map(scene => <SceneCard compact showProgress={false} key={scene.externalId ?? scene.id} scene={scene} collectionLabels={[collection.name]} />)}
+          {liveScenes.slice(0, 4).map(scene => <SceneCard compact showProgress={false} key={scene.externalId ?? scene.id} scene={scene} collectionLabels={[collection.name]} />)}
         </div>
-      </> : <div aria-hidden="true" className="h-[310px] animate-pulse rounded-[16px] bg-secondary/45 md:h-[520px]" />}
+      </> : <div aria-hidden="true" className="h-[310px] animate-pulse rounded-[16px] bg-secondary/45 md:h-[280px]" />}
     </section>
   );
 }
@@ -102,6 +136,16 @@ export function ExplorePage({
             {searchQuery && <button type="button" onClick={() => setSearchQuery("")} aria-label="清除搜索" className="text-muted-foreground hover:text-foreground"><X size={14} /></button>}
             <button type="submit" className="flex-shrink-0 rounded-full bg-accent px-4 py-1.5 text-[13px] font-bold text-accent-foreground transition-[filter] hover:brightness-95 md:px-5">搜索</button>
           </form>
+          {!hasActiveFilter && collections.length > 0 && (
+            <nav aria-label="合集快捷导航" className="mt-2 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {collections.filter(collection => collection.scenes.some(scene => scene.status === "live")).map(collection => (
+                <button key={collection.id} type="button" onClick={() => document.getElementById(`shelf-${collection.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" })} className="flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-[13px] font-semibold text-foreground transition-colors hover:border-primary/50 hover:text-primary">
+                  <CollectionIcon id={collection.id} size={15} className="text-primary" />
+                  {collection.name}
+                </button>
+              ))}
+            </nav>
+          )}
         </div>
       </div>
 
@@ -119,7 +163,7 @@ export function ExplorePage({
             ) : <div className="rounded-2xl border border-dashed border-border py-10 text-center text-sm text-muted-foreground">没有找到匹配的场景，换个关键词或标签试试。</div>}
           </section>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-8">
             {collections.map((collection, index) => <CollectionSection key={collection.id} collection={collection} eager={index < 2} />)}
           </div>
         )}
