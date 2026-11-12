@@ -3,7 +3,8 @@ import { Link } from "react-router";
 import { ArrowRight, Headphones, PenLine, Play } from "lucide-react";
 import { useFreeTrialScenes } from "@/data/collections-access";
 import { useHotScenes, useLatestScenes } from "@/data/scenes-access";
-import { SceneCard } from "@/app/components/SceneCard";
+import { SceneBadges } from "@/app/components/SceneBadges";
+import { DurationLabel, SentenceCountLabel } from "@/app/components/badges";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
 import { SentenceListeningCard } from "@/app/components/SentenceListeningCard";
 import { getSceneCardCategoryLabel } from "@/data/scene-categories";
@@ -15,12 +16,12 @@ const HOME_COVER_FALLBACKS: Record<string, string> = {
   "ST-01-001": "https://go.learnyzenglish.com/content/ST-01-001/cover.jpg",
 };
 
-function HomeEditorialScene({ scene, featured = false }: { scene: Scene; featured?: boolean }) {
+function HomeEditorialScene({ scene, featured = false, badge = "免费体验", short = false }: { scene: Scene; featured?: boolean; badge?: string; short?: boolean }) {
   const cover = scene.photo ?? (scene.externalId ? HOME_COVER_FALLBACKS[scene.externalId] : undefined);
   return (
     <Link
       to={`/scenes/${scene.slug}`}
-      className="group relative min-h-[300px] overflow-hidden rounded-[20px] bg-[#E9E4DA] text-white shadow-[0_18px_42px_rgba(18,36,28,.08)] md:min-h-[330px] min-[1025px]:min-h-[430px]"
+      className={`group relative overflow-hidden rounded-[20px] bg-[#E9E4DA] text-white shadow-[0_18px_42px_rgba(18,36,28,.08)] ${short ? "min-h-[230px] md:min-h-[250px]" : "min-h-[300px] md:min-h-[330px] min-[1025px]:min-h-[430px]"}`}
     >
       {cover ? (
         <img {...responsiveImageProps(cover, "(max-width: 1024px) 33vw, 40vw")} alt={scene.titleEn} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.035]" loading="lazy" decoding="async" />
@@ -30,7 +31,7 @@ function HomeEditorialScene({ scene, featured = false }: { scene: Scene; feature
         <div className="absolute inset-0 bg-[linear-gradient(145deg,#315848,#0f3527)]" />
       )}
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,19,13,.02)_24%,rgba(5,19,13,.18)_56%,rgba(5,19,13,.9)_100%)]" />
-      <span className="absolute left-4 top-4 rounded-full bg-accent px-3 py-1.5 text-[11px] font-black text-primary">免费体验</span>
+      {badge ? <span className="absolute left-4 top-4 rounded-full bg-accent px-3 py-1.5 text-[11px] font-black text-primary">{badge}</span> : null}
       <span className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/92 text-primary shadow-sm backdrop-blur-sm">
         <Play size={15} fill="currentColor" />
       </span>
@@ -191,18 +192,39 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
                     </div>
                     <Link to="/explore" onClick={onExploreEnter} className="inline-flex items-center gap-2 text-sm font-bold text-primary">逛全部场景 <ArrowRight size={15} /></Link>
                   </div>
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">{latestScenes.map((scene) => <SceneCard compact showProgress={false} key={scene.externalId ?? scene.id} scene={scene} />)}</div>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{latestScenes.map((scene) => <HomeEditorialScene key={scene.externalId ?? scene.id} scene={scene} short badge={scene.isFreeExperience ? "免费体验" : "最新"} />)}</div>
                 </div>
               ) : null}
               {hotScenes.length ? (
                 <div className="pt-12">
-                  <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
-                    <div>
-                      <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Most Loved</p>
-                      <h2 className="mt-2 font-zh-serif text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">热门精选</h2>
+                  <div className="rounded-[24px] bg-[#EFE9DC] p-5 md:p-8">
+                    <div className="mb-2 flex flex-wrap items-end justify-between gap-4">
+                      <div>
+                        <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Most Loved</p>
+                        <h2 className="mt-2 font-zh-serif text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">热门精选</h2>
+                      </div>
+                      <p className="max-w-[300px] text-[13px] leading-relaxed text-muted-foreground">大家反复练的，就是这几集。</p>
                     </div>
+                    <ol>
+                      {hotScenes.map((scene, index) => (
+                        <li key={scene.externalId ?? scene.id}>
+                          <Link to={`/scenes/${scene.slug}`} className="group flex items-center gap-4 border-b border-primary/10 py-4 last:border-b-0 md:gap-6">
+                            <span className="display-serif w-10 shrink-0 text-[34px] font-semibold italic leading-none text-primary/30 md:w-12 md:text-[42px]">{String(index + 1).padStart(2, "0")}</span>
+                            {scene.photo ? <img {...responsiveImageProps(scene.photo, "112px")} alt={scene.titleEn} className="hidden h-[64px] w-[112px] shrink-0 rounded-[12px] object-cover sm:block" loading="lazy" decoding="async" /> : null}
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate font-sans text-[17px] font-bold text-primary">{scene.titleZh || scene.titleEn}</span>
+                              <span className="mt-0.5 block truncate font-sans text-[13px] italic text-muted-foreground">{scene.titleEn}</span>
+                            </span>
+                            <span className="hidden shrink-0 items-center gap-3 md:flex">
+                              {scene.sentenceCount ? <SentenceCountLabel count={scene.sentenceCount} /> : null}
+                              <DurationLabel duration={scene.duration} />
+                            </span>
+                            <SceneBadges isNew={false} isHot className="shrink-0" />
+                          </Link>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">{hotScenes.map((scene) => <SceneCard compact showProgress={false} key={scene.externalId ?? scene.id} scene={scene} />)}</div>
                 </div>
               ) : null}
             </>
