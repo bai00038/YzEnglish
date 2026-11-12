@@ -66,16 +66,16 @@ function CollectionSection({ collection, eager = false }: { collection: Collecti
 
   return (
     <section ref={sectionRef} id={`shelf-${collection.id}`} className="scroll-mt-[196px] lg:scroll-mt-[224px]" aria-labelledby={`collection-${collection.id}`}>
-      <div className="mb-3 flex items-center justify-between gap-4 border-b border-border pb-3">
-        <div className="flex min-w-0 items-center gap-3">
+      <div className="mb-3">
+        <div className="flex items-center gap-3">
           <CollectionIcon id={collection.id} size={27} className="shrink-0 text-primary" />
-          <div className="min-w-0 md:flex md:items-baseline md:gap-3">
           <h2 id={`collection-${collection.id}`} className="shrink-0 font-zh-serif text-[24px] font-bold leading-tight text-primary">{collection.name}</h2>
-          <p className="mt-1 truncate text-[12px] text-muted-foreground md:mt-0">{collection.tagline}</p>
-          <span className="mt-1 block shrink-0 text-[12px] font-semibold text-secondary-foreground md:mt-0">共 {liveScenes.length} 集</span>
+          <div className="ml-auto flex shrink-0 items-center gap-3">
+            <span className="text-[12px] font-semibold text-secondary-foreground">共 {liveScenes.length} 集</span>
+            <Link to={`/collections/${collection.id}`} className="text-[13px] font-bold text-primary hover:underline">查看全部 →</Link>
           </div>
         </div>
-        <Link to={`/collections/${collection.id}`} className="shrink-0 text-[13px] font-bold text-primary hover:underline">查看全部 →</Link>
+        <p className="mt-1 truncate pl-[39px] text-[12.5px] text-muted-foreground">{collection.tagline}</p>
       </div>
       {isNearViewport ? <>
         <div className="flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden">
