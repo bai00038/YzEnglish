@@ -1604,6 +1604,37 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
         </>
       )}
       </div>
+      {scene && scene.collectionId && (prevScene || nextScene) ? (
+        <>
+          <div aria-hidden="true" className="h-[76px]" />
+          <nav aria-label="上一集 / 下一集" className="fixed inset-x-0 bottom-0 z-40 border-t border-primary/15 bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_36px_rgba(15,53,39,0.10)] backdrop-blur-md">
+            <div className="mx-auto flex h-[64px] max-w-[1240px] items-center gap-2 px-3 sm:gap-3 sm:px-5">
+              {prevScene ? (
+                <Link to={`/scenes/${prevScene.slug}`} className="inline-flex h-11 shrink-0 items-center gap-0.5 rounded-full border border-primary/25 px-3.5 text-[13px] font-bold text-primary transition-colors hover:bg-secondary">
+                  <ChevronLeft size={16} />上一集
+                </Link>
+              ) : (
+                <span className="inline-flex h-11 shrink-0 items-center gap-0.5 rounded-full border border-primary/10 px-3.5 text-[13px] font-bold text-muted-foreground/45">
+                  <ChevronLeft size={16} />上一集
+                </span>
+              )}
+              <p className="min-w-0 flex-1 truncate text-center text-[12px] font-semibold text-muted-foreground">
+                {collection?.name ? `${collection.name} · ` : ""}第 {scene.collectionOrder ?? "—"} 集
+              </p>
+              {nextScene ? (
+                <Link to={`/scenes/${nextScene.slug}`} className="inline-flex h-11 min-w-0 shrink items-center gap-1 rounded-full bg-primary px-4 text-[13px] font-bold text-white transition-opacity hover:opacity-90">
+                  <span className="truncate">下一集：{nextScene.titleZh}</span>
+                  <ChevronRight size={16} className="shrink-0" />
+                </Link>
+              ) : (
+                <Link to="/explore" className="inline-flex h-11 shrink-0 items-center gap-1 rounded-full bg-primary px-4 text-[13px] font-bold text-white transition-opacity hover:opacity-90">
+                  回到场景库<ChevronRight size={16} className="shrink-0" />
+                </Link>
+              )}
+            </div>
+          </nav>
+        </>
+      ) : null}
       <MembershipUnlockModal open={membershipModalOpen} onOpenChange={setMembershipModalOpen} />
     </div>
   );
