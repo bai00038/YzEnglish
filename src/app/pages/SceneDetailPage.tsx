@@ -544,19 +544,18 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // post-roll, because a sentence's acoustic tail (final consonant
   // release, breath, room tone) extends past its authored end_time,
   // and the frame watcher stops at the end it is given: give it the
-  // authored end and the tail is cut off mid-sound. Post-roll is
-  // deliberately generous: the watcher follows the media clock, but
-  // phone audio output (speakers, and Bluetooth earbuds especially)
-  // trails that clock by ~0.1-0.35s, and pause() discards whatever is
-  // still in the output pipeline — on phones the audible end lands
-  // that far BEFORE the media-time end (verified 2026-11-13: desktop
-  // clean at POST_ROLL 0.3, phone still clipped). The neighbour
-  // clamp below keeps the extra room from ever reaching the next
-  // line's own start, so the cost on desktop is only a longer pause.
+  // authored end and the tail is cut off mid-sound. Final values are
+  // tuned by ear on a real phone (2026-11-13): playback inherently
+  // runs a little long, so the tail needs only 0.15, while phone
+  // seeks eat into the head, which gets 0.2. (Larger post-rolls were
+  // tried — 0.35/0.6 bled into the next line once the watcher stop
+  // became accurate; see watchForLineEnd's interval poll.) The
+  // neighbour clamp below keeps the extra room from ever reaching
+  // the next line's own start.
   const dialogueLinePlaybackRanges = useMemo(() => {
     const map = new Map<number, { start: number; end: number }>();
-    const PRE_ROLL = 0.15;
-    const POST_ROLL = 0.6;
+    const PRE_ROLL = 0.2;
+    const POST_ROLL = 0.15;
     const ordered = Array.from(dialogueLineRawRanges.entries()).sort((a, b) => a[0] - b[0]);
     ordered.forEach(([lineIndex, range], i) => {
       const prevEnd = i > 0 ? ordered[i - 1][1].end : null;
@@ -622,6 +621,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // ending," and end_time must play in full.
   const frameRequestRef = useRef<number | null>(null);
   const videoFrameRequestRef = useRef<number | null>(null);
+  const endWatchIntervalRef = useRef<number | null>(null);
   // Moving directly from one sentence to another briefly pauses the
   // shared video while it seeks. That internal pause must not be treated
   // as the learner stopping playback, or onPause would tear down the new
@@ -647,6 +647,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     typeof window !== "undefined" && (window as unknown as Record<string, unknown>).__DEBUG_DIALOGUE_TIMING === true;
 
   function cancelRangePlayback() {
+    if (endWatchIntervalRef.current !== null) {
+      window.clearInterval(endWatchIntervalRef.current);
+      endWatchIntervalRef.current = null;
+    }
     if (frameRequestRef.current !== null) {
       cancelAnimationFrame(frameRequestRef.current);
       frameRequestRef.current = null;
@@ -684,7 +688,21 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     const video = videoRef.current;
     if (!video) return;
 
+    // Several stop triggers race below; the first to reach endTime
+    // wins and the rest must no-op.
+    let stopped = false;
+    const stopInterval = () => {
+      if (endWatchIntervalRef.current !== null) {
+        window.clearInterval(endWatchIntervalRef.current);
+        endWatchIntervalRef.current = null;
+      }
+    };
+    stopInterval();
+
     const stopAt = (t: number) => {
+      if (stopped) return;
+      stopped = true;
+      stopInterval();
       if (isDialogueTimingDebugEnabled()) {
         console.table({ expectedEnd: endTime, actualPauseTime: t, overrun: t - endTime });
       }
@@ -711,9 +729,29 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       setVideoCurrentTime(t);
     };
 
+    // Three triggers race to stopAt; whichever reaches endTime first
+    // wins. rVFC is frame-accurate on desktop, but on phones its
+    // cadence follows frame presentation — irregular when the video
+    // is small or partly off-screen — and the rAF fallback is
+    // throttled the same way, so on mobile the stop could land a few
+    // hundred ms late and bleed into the next line (verified
+    // 2026-11-13). A plain 25ms interval keeps polling currentTime
+    // regardless of presentation, which bounds the overshoot to
+    // ~one interval everywhere.
+    const poll = () => {
+      if (stopped || playRequestRef.current !== requestId || activeEndRef.current === null) return;
+      const t = video.currentTime;
+      if (t >= endTime) {
+        stopAt(t);
+        return;
+      }
+      setVideoCurrentTime(t);
+    };
+    endWatchIntervalRef.current = window.setInterval(poll, 25);
+
     if (typeof video.requestVideoFrameCallback === "function") {
       const tick = (_now: number, metadata: { mediaTime: number }) => {
-        if (playRequestRef.current !== requestId || activeEndRef.current === null) return;
+        if (stopped || playRequestRef.current !== requestId || activeEndRef.current === null) return;
         if (metadata.mediaTime >= endTime) {
           stopAt(metadata.mediaTime);
           return;
@@ -724,7 +762,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       videoFrameRequestRef.current = video.requestVideoFrameCallback(tick);
     } else {
       const tick = () => {
-        if (playRequestRef.current !== requestId || activeEndRef.current === null) return;
+        if (stopped || playRequestRef.current !== requestId || activeEndRef.current === null) return;
         const t = video.currentTime;
         if (t >= endTime) {
           stopAt(t);
