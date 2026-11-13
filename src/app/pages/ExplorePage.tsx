@@ -39,6 +39,51 @@ function CollectionIcon({ id, size = 18, className, strokeWidth = 1.75 }: { id: 
   return <Icon size={size} className={className} strokeWidth={strokeWidth} fill="url(#yz-icon-fill)" />;
 }
 
+function CollectionShortcuts({ collections, onSelect }: { collections: CollectionWithScenes[]; onSelect: (id: string) => void }) {
+  const navRef = useRef<HTMLElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const [edges, setEdges] = useState({ left: false, right: false });
+
+  useEffect(() => {
+    const nav = navRef.current;
+    const row = rowRef.current;
+    if (!nav || !row) return;
+
+    const updateEdges = () => {
+      const left = nav.scrollLeft > 1;
+      const right = nav.scrollWidth - nav.clientWidth - nav.scrollLeft > 1;
+      setEdges(previous => previous.left === left && previous.right === right ? previous : { left, right });
+    };
+
+    updateEdges();
+    nav.addEventListener("scroll", updateEdges, { passive: true });
+    const observer = new ResizeObserver(updateEdges);
+    observer.observe(nav);
+    observer.observe(row);
+    return () => {
+      nav.removeEventListener("scroll", updateEdges);
+      observer.disconnect();
+    };
+  }, []);
+
+  return (
+    <div className="relative mt-2">
+      <nav ref={navRef} aria-label="合集快捷导航" className="overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div ref={rowRef} className="flex w-max min-w-full gap-3 lg:justify-between lg:gap-2">
+          {collections.filter(collection => collection.scenes.some(scene => scene.status === "live")).map(collection => (
+            <button key={collection.id} type="button" onClick={() => onSelect(collection.id)} className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary lg:gap-1.5 lg:px-3 lg:text-[12px] xl:gap-2 xl:px-4 xl:text-[13px]">
+              <CollectionIcon id={collection.id} size={15} className="text-primary" />
+              {collection.name}
+            </button>
+          ))}
+        </div>
+      </nav>
+      {edges.left && <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-[linear-gradient(to_right,var(--background),transparent)]" />}
+      {edges.right && <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-[linear-gradient(to_left,var(--background),transparent)]" />}
+    </div>
+  );
+}
+
 function CollectionSection({ collection, eager = false }: { collection: CollectionWithScenes; eager?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [isNearViewport, setIsNearViewport] = useState(eager);
@@ -147,14 +192,11 @@ export function ExplorePage({
             <button type="submit" className="flex-shrink-0 rounded-full bg-accent px-4 py-1.5 text-[13px] font-bold text-accent-foreground transition-[filter] hover:brightness-95 md:px-5">搜索</button>
           </form>
           {!hasActiveFilter && collections.length > 0 && (
-            <nav aria-label="合集快捷导航" className="mt-2 flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:justify-between lg:gap-2 lg:overflow-x-visible">
-              {collections.filter(collection => collection.scenes.some(scene => scene.status === "live")).map(collection => (
-                <button key={collection.id} type="button" onClick={() => { const release = holdNav(); window.setTimeout(release, 1200); document.getElementById(`shelf-${collection.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }} className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary lg:gap-1.5 lg:px-3 lg:text-[12px] xl:gap-2 xl:px-4 xl:text-[13px]">
-                  <CollectionIcon id={collection.id} size={15} className="text-primary" />
-                  {collection.name}
-                </button>
-              ))}
-            </nav>
+            <CollectionShortcuts collections={collections} onSelect={id => {
+              const release = holdNav();
+              window.setTimeout(release, 1200);
+              document.getElementById(`shelf-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }} />
           )}
         </div>
       </div>
