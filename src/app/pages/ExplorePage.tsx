@@ -110,7 +110,7 @@ function CollectionSection({ collection, eager = false }: { collection: Collecti
   }
 
   return (
-    <section ref={sectionRef} id={`shelf-${collection.id}`} className="scroll-mt-[188px] lg:scroll-mt-[216px]" aria-labelledby={`collection-${collection.id}`}>
+    <section ref={sectionRef} id={`shelf-${collection.id}`} className="scroll-mt-[192px] lg:scroll-mt-[212px]" aria-labelledby={`collection-${collection.id}`}>
       <div className="mb-3">
         <div className="flex items-center gap-3">
           <CollectionIcon id={collection.id} size={27} className="shrink-0 text-primary" />
@@ -181,8 +181,8 @@ export function ExplorePage({
           </linearGradient>
         </defs>
       </svg>
-      <div className={`sticky top-[69px] z-40 bg-background transition-transform duration-300 ease-out md:top-[77px] lg:top-[89px] ${navHidden ? "-translate-y-[calc(100%+69px)] md:-translate-y-[calc(100%+77px)] lg:-translate-y-[calc(100%+89px)]" : "translate-y-0"}`}>
-        <div className="mx-auto max-w-[1180px] px-3 py-2 md:px-8">
+      <div className={`sticky top-[65px] z-40 bg-background transition-transform duration-300 ease-out md:top-[73px] lg:top-[77px] ${navHidden ? "-translate-y-[calc(100%+65px)] md:-translate-y-[calc(100%+73px)] lg:-translate-y-[calc(100%+77px)]" : "translate-y-0"}`}>
+        <div className="mx-auto max-w-[1180px] px-3 py-3 md:px-8">
           <form className="flex w-full items-center gap-3 rounded-full border border-border bg-card py-1 pl-4 pr-1 transition-colors focus-within:border-primary/50 md:pl-5" onSubmit={event => event.preventDefault()}>
             <Search size={18} className="flex-shrink-0 text-muted-foreground" />
             <input value={searchQuery} onChange={event => setSearchQuery(event.target.value)} onFocus={() => { releaseHoldRef.current = holdNav(); }} onBlur={() => { releaseHoldRef.current?.(); releaseHoldRef.current = null; }}

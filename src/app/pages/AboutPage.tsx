@@ -69,8 +69,8 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="mt-14 bg-[#E9E0C9] py-[54px] md:mt-16 md:py-[58px]">
-        <div className="mx-auto max-w-[1180px] px-3 md:px-8">
+      <section className="mx-auto mt-14 max-w-[1180px] px-3 md:mt-16 md:px-8">
+        <div className="border-t border-[#DCD4BE] pt-12 md:pt-14">
           <div className="max-w-[720px]">
             <h2 className="flex items-baseline gap-3 font-zh-serif text-[24px] font-bold text-foreground md:text-[26px]">
               为什么做
@@ -89,7 +89,8 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1180px] px-3 pb-[72px] pt-14 md:px-8 md:pt-16">
+      <section className="mx-auto max-w-[1180px] px-3 pb-[72px] md:px-8">
+        <div className="mt-14 border-t border-[#DCD4BE] pt-12 md:mt-16 md:pt-14">
         <h2 className="flex items-baseline gap-3 font-zh-serif text-[24px] font-bold text-foreground">
           学习方法
           <span className="display-serif text-[15px] font-medium italic text-muted-foreground">How it works</span>
@@ -107,6 +108,7 @@ export function AboutPage() {
               <p className="mt-2 text-[14.5px] leading-relaxed text-secondary-foreground">{step.desc}</p>
             </article>
           ))}
+        </div>
         </div>
       </section>
 
