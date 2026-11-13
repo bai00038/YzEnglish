@@ -57,15 +57,17 @@ function LearningSceneList({
                 </div>
                 {completed && <span className="shrink-0 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold text-white sm:text-xs">已学完</span>}
               </div>
-              <div className="mt-2.5">
-                <div className="mb-1 flex items-center justify-between text-[11px] font-semibold text-muted-foreground">
-                  <span>{completed ? "学习完成" : "学习进度"}</span>
-                  <span>{completed ? "100%" : `${progress?.percent ?? 0}%`}</span>
+              {!completed && (
+                <div className="mt-2.5">
+                  <div className="mb-1 flex items-center justify-between text-[11px] font-semibold text-muted-foreground">
+                    <span>学习进度</span>
+                    <span>{`${progress?.percent ?? 0}%`}</span>
+                  </div>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
+                    <span className="block h-full rounded-full bg-accent" style={{ width: `${progress?.percent ?? 0}%` }} />
+                  </div>
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
-                  <span className="block h-full rounded-full bg-accent" style={{ width: `${completed ? 100 : progress?.percent ?? 0}%` }} />
-                </div>
-              </div>
+              )}
             </div>
           </Link>
         );
