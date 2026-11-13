@@ -460,10 +460,14 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // plain, non-interactive text.
   // Exact, human-calibrated start/end for each line — straight from
   // dialogue_lines (or, for legacy scenes, matched verbatim against
-  // subtitle_cues) with NO padding whatsoever. This is the only range
-  // ever used to control actual playback (see playDialogueLine) — a
-  // line's audio must stop exactly at its own end_time, never bleeding
-  // even a fraction of a second into the next line.
+  // subtitle_cues) with NO padding whatsoever. These are the AUTHORED
+  // ranges: they decide which lines are playable at all, and they are
+  // the input to the padded copies below. Playback itself uses
+  // dialogueLinePlaybackRanges — authored ends track subtitle/word
+  // boundaries, which sit slightly BEFORE the acoustic end of the
+  // final syllable (trailing consonants, breath), so stopping exactly
+  // at end_time audibly clipped line endings across the library
+  // (verified 2026-11-13 on the three free-experience episodes).
   const dialogueLineRawRanges = useMemo(() => {
     const map = new Map<number, { start: number; end: number }>();
     const lines = content?.dialogue;
@@ -530,6 +534,36 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       });
     });
 
+    return map;
+  }, [dialogueLineRawRanges]);
+
+  // Padded copy of dialogueLineRawRanges used to CONTROL single-line
+  // playback (Sentence Listening + Dictation, via playDialogueLine).
+  // Same clamping discipline as the highlight ranges above — never
+  // cross a neighbour's own authored boundary — but with a longer
+  // post-roll, because a sentence's acoustic tail (final consonant
+  // release, breath, room tone) extends past its authored end_time,
+  // and the frame watcher stops at the end it is given: give it the
+  // authored end and the tail is cut off mid-sound. Pre-roll is small
+  // (it only covers seek imprecision); post-roll carries the tail.
+  const dialogueLinePlaybackRanges = useMemo(() => {
+    const map = new Map<number, { start: number; end: number }>();
+    const PRE_ROLL = 0.05;
+    const POST_ROLL = 0.3;
+    const ordered = Array.from(dialogueLineRawRanges.entries()).sort((a, b) => a[0] - b[0]);
+    ordered.forEach(([lineIndex, range], i) => {
+      const prevEnd = i > 0 ? ordered[i - 1][1].end : null;
+      const nextStart = i < ordered.length - 1 ? ordered[i + 1][1].start : null;
+      let start = Math.max(0, range.start - PRE_ROLL);
+      if (prevEnd !== null) {
+        start = Math.max(start, Math.min(range.start, prevEnd + 0.01));
+      }
+      let end = range.end + POST_ROLL;
+      if (nextStart !== null) {
+        end = Math.max(range.end, Math.min(end, nextStart - 0.02));
+      }
+      map.set(lineIndex, { start, end });
+    });
     return map;
   }, [dialogueLineRawRanges]);
 
@@ -705,8 +739,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     // landed yet — before starting this one.
     cancelRangePlayback();
     const requestId = ++playRequestRef.current;
-    // Use the human-calibrated range exactly as authored. Single-line
-    // playback must not add any lead-in or lead-out around the timing data.
+    // `range` is the caller's playback range (dialogueLinePlaybackRanges):
+    // the authored timing plus a small clamped pre/post-roll, so the
+    // line's acoustic tail is not clipped at its authored end_time.
     const trueStart = range.start;
     const trueEnd = range.end;
     if (!video.paused) {
@@ -786,7 +821,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     && pinnedLineIndex === currentStudyLineIndex;
 
   function playStudyLine(lineIndex: number) {
-    const range = dialogueLineRawRanges.get(lineIndex);
+    const range = dialogueLinePlaybackRanges.get(lineIndex);
     if (!range) return;
     setSentenceListeningActive(true);
     saveLearningPosition("dialogue", range.start);
@@ -897,10 +932,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   }
 
   // Reuses the exact same single-line player used by "单句精听" (see
-  // playDialogueLine above) with the line's own exact start/end — no
-  // second playback path, no padding/offset/tolerance of any kind.
+  // playDialogueLine above) with the line's playback range — no second
+  // playback path.
   function playDictationLine(lineIndex: number) {
-    const range = dialogueLineRawRanges.get(lineIndex);
+    const range = dialogueLinePlaybackRanges.get(lineIndex);
     if (!range) return;
     saveLearningPosition("dialogue", range.start);
     playDialogueLine(lineIndex, range);
