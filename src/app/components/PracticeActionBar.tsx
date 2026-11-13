@@ -58,16 +58,54 @@ export function PracticeActionBar({
   const [keyboardOffset, setKeyboardOffset] = useState(0);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
+  const placeholderRef = useRef<HTMLDivElement>(null);
   const fullViewportHeightRef = useRef(0);
   const measuredKeyboardRef = useRef(false);
 
   useEffect(() => {
     const practiceCard = barRef.current?.closest(".sentence-listening-card, .dictation-practice-card");
     if (!practiceCard || typeof IntersectionObserver === "undefined") return;
-    const observer = new IntersectionObserver(([entry]) => setSectionVisible(entry.isIntersecting), { threshold: 0.05 });
+    // Deadband between the float-on and float-off ratios: with a
+    // single threshold, the tiny layout shift of docking/undocking
+    // could push the card back across the same line and flap the bar
+    // (and the page with it) at the boundary — the visible up-down
+    // jitter when scrolling from the study card into the next module
+    // (reported 2026-11-13).
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setSectionVisible(prev => {
+          if (entry.intersectionRatio >= 0.08) return true;
+          if (entry.intersectionRatio <= 0.02) return false;
+          return prev;
+        });
+      },
+      { threshold: [0, 0.02, 0.08] }
+    );
     observer.observe(practiceCard);
     return () => observer.disconnect();
   }, []);
+
+  // While the bar is docked (position: fixed), the placeholder must
+  // reserve the bar's EXACT height. The stylesheet's fixed min-height
+  // (140px) is shorter than the real bar, so undocking used to grow
+  // the card by the difference, shifting the page and re-crossing
+  // the observer threshold — the other half of the boundary jitter.
+  useEffect(() => {
+    const bar = barRef.current;
+    const holder = placeholderRef.current;
+    if (!bar || !holder) return;
+    if (!sectionVisible) {
+      holder.style.minHeight = "";
+      return;
+    }
+    const sync = () => {
+      holder.style.minHeight = `${bar.offsetHeight}px`;
+    };
+    sync();
+    const resizeObserver = new ResizeObserver(sync);
+    resizeObserver.observe(bar);
+    return () => resizeObserver.disconnect();
+  }, [sectionVisible]);
 
   useEffect(() => {
     const viewport = window.visualViewport;
@@ -123,7 +161,7 @@ export function PracticeActionBar({
   } as CSSProperties;
 
   return (
-    <div className="practice-action-placeholder">
+    <div className="practice-action-placeholder" ref={placeholderRef}>
       <div
         ref={barRef}
         className={`practice-action-bar border border-primary/10 bg-card ${inheritListeningSettings ? "is-inherited-settings" : ""} ${compact ? "is-compact mt-3 rounded-[16px] p-3" : "mt-4 rounded-[18px] p-3.5 md:p-4"} ${!inlineOnly && !compact && (floatOnlyWithKeyboard ? keyboardVisible : sectionVisible) ? "is-section-visible" : ""}`}
