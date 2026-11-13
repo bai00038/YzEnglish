@@ -97,6 +97,19 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const { isUnlocked } = useMembershipAccess();
   const [membershipModalOpen, setMembershipModalOpen] = useState(false);
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  const [descOverflows, setDescOverflows] = useState(false);
+  const mobileDescRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    // Offer the 展开 toggle only when the two-line clamp actually
+    // hides text; a description that fits shows no toggle at all.
+    if (descriptionExpanded) return;
+    const el = mobileDescRef.current;
+    if (!el) return;
+    const measure = () => setDescOverflows(el.scrollHeight > el.clientHeight + 1);
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [descriptionExpanded, data]);
   const [episodeBarHidden, setEpisodeBarHidden] = useState(false);
   useEffect(() => {
     const onFocusIn = (event: FocusEvent) => {
@@ -1099,11 +1112,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             ))}
           </div>
         </div>
-        <div className="scene-mobile-meta hidden text-[12px] font-semibold leading-relaxed text-muted-foreground">
+        <div className="scene-mobile-meta hidden text-[13px] leading-relaxed text-muted-foreground">
           {sectionShortcuts.map(({ step, label }, index) => (
             <span key={step}>
               {index > 0 && " · "}
-              <button type="button" disabled={!content} aria-controls={content ? `section-${step}` : undefined} onClick={() => jumpToSection(step)} className="font-semibold text-primary enabled:cursor-pointer enabled:hover:underline disabled:opacity-60">
+              <button type="button" disabled={!content} aria-controls={content ? `section-${step}` : undefined} onClick={() => jumpToSection(step)} className="text-[13px] font-medium text-primary enabled:cursor-pointer enabled:hover:underline disabled:opacity-60">
                 {label}
               </button>
             </span>
@@ -1371,12 +1384,14 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               </div>
 
               <div className="scene-mobile-description mt-3 hidden">
-                <p className={`text-[13px] leading-relaxed text-[#3A4A42] ${descriptionExpanded ? "" : "line-clamp-2"}`}>
+                <p ref={mobileDescRef} className={`text-[13px] leading-relaxed text-[#3A4A42] ${descriptionExpanded ? "" : "line-clamp-2"}`}>
                   {scene.desc || scene.titleEn}
                 </p>
-                <button type="button" onClick={() => setDescriptionExpanded(value => !value)} className="mt-1 text-[12px] font-black text-primary">
-                  {descriptionExpanded ? "收起" : "展开"}
-                </button>
+                {(descriptionExpanded || descOverflows) && (
+                  <button type="button" onClick={() => setDescriptionExpanded(value => !value)} className="mt-1 text-[12px] font-medium text-primary">
+                    {descriptionExpanded ? "收起" : "展开"}
+                  </button>
+                )}
               </div>
 
               <div className="mt-4 flex justify-center max-[480px]:mt-3">
