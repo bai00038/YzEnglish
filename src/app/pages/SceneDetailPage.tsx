@@ -1082,10 +1082,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
       {/* ─── Lesson identity block (sits between breadcrumb and chapter nav) ─── */}
       <div className="scene-section-pad scene-identity px-5 pb-4 pt-3 max-[480px]:pb-3 max-[480px]:pt-2 md:px-10 md:pb-5 md:pt-4">
-        <span className="inline-flex rounded-full bg-primary px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-white">
-          {getSceneCategoryLabel(scene.category)} · {scene.region || "Real life"}
-        </span>
-        <div className="mt-3 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-8">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-8">
           <div className="min-w-0 max-w-[760px]">
             <h1 className="scene-title font-serif text-[30px] font-semibold leading-[1.08] tracking-[-0.025em] text-primary max-[480px]:text-[22px] md:text-[38px]">
               {scene.titleZh}
