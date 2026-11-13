@@ -8,7 +8,7 @@ export function DesktopNav() {
   const { isUnlocked } = useMembershipAccess();
   const { hidden } = useNavVisibility();
   return (
-    <nav className={`sticky top-0 z-50 bg-background transition-transform duration-300 ease-out ${hidden ? "-translate-y-full" : "translate-y-0"}`}>
+    <nav className={`sticky top-0 z-50 border-b border-primary/10 bg-background transition-transform duration-300 ease-out ${hidden ? "-translate-y-full" : "translate-y-0"}`}>
       <div className="mx-auto flex max-w-[1180px] items-center gap-4 px-3 py-3.5 sm:px-6 md:py-4 lg:gap-5 lg:px-8 lg:py-5">
         <Link to="/" className="flex min-w-0 items-center gap-3 sm:gap-3.5">
           <img src="/yz-english-logo.png" alt="Yz English" className="h-12 w-12 flex-none object-contain sm:h-[52px] sm:w-[52px] lg:h-[56px] lg:w-[56px]" />
