@@ -544,12 +544,19 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // post-roll, because a sentence's acoustic tail (final consonant
   // release, breath, room tone) extends past its authored end_time,
   // and the frame watcher stops at the end it is given: give it the
-  // authored end and the tail is cut off mid-sound. Pre-roll is small
-  // (it only covers seek imprecision); post-roll carries the tail.
+  // authored end and the tail is cut off mid-sound. Post-roll is
+  // deliberately generous: the watcher follows the media clock, but
+  // phone audio output (speakers, and Bluetooth earbuds especially)
+  // trails that clock by ~0.1-0.35s, and pause() discards whatever is
+  // still in the output pipeline — on phones the audible end lands
+  // that far BEFORE the media-time end (verified 2026-11-13: desktop
+  // clean at POST_ROLL 0.3, phone still clipped). The neighbour
+  // clamp below keeps the extra room from ever reaching the next
+  // line's own start, so the cost on desktop is only a longer pause.
   const dialogueLinePlaybackRanges = useMemo(() => {
     const map = new Map<number, { start: number; end: number }>();
-    const PRE_ROLL = 0.05;
-    const POST_ROLL = 0.3;
+    const PRE_ROLL = 0.15;
+    const POST_ROLL = 0.6;
     const ordered = Array.from(dialogueLineRawRanges.entries()).sort((a, b) => a[0] - b[0]);
     ordered.forEach(([lineIndex, range], i) => {
       const prevEnd = i > 0 ? ordered[i - 1][1].end : null;
