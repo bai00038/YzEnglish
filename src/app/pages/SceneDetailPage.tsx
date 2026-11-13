@@ -546,16 +546,16 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // and the frame watcher stops at the end it is given: give it the
   // authored end and the tail is cut off mid-sound. Final values are
   // tuned by ear on a real phone (2026-11-13): playback inherently
-  // runs a little long, so the tail needs only 0.15, while phone
-  // seeks eat into the head, which gets 0.2. (Larger post-rolls were
+  // runs a little long, so the tail needs only 0.05, while phone
+  // seeks eat into the head, which gets 0.25. (Larger post-rolls were
   // tried — 0.35/0.6 bled into the next line once the watcher stop
   // became accurate; see watchForLineEnd's interval poll.) The
   // neighbour clamp below keeps the extra room from ever reaching
   // the next line's own start.
   const dialogueLinePlaybackRanges = useMemo(() => {
     const map = new Map<number, { start: number; end: number }>();
-    const PRE_ROLL = 0.2;
-    const POST_ROLL = 0.15;
+    const PRE_ROLL = 0.25;
+    const POST_ROLL = 0.05;
     const ordered = Array.from(dialogueLineRawRanges.entries()).sort((a, b) => a[0] - b[0]);
     ordered.forEach(([lineIndex, range], i) => {
       const prevEnd = i > 0 ? ordered[i - 1][1].end : null;
