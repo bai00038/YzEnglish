@@ -14,7 +14,27 @@
       <meta name="theme-color" content="#0F3527" />
       <meta name="description" content="A mobile-first platform that helps adult learners practice real-life English scenarios to boost confidence and communication skills for everyday situations." />
       <meta name="robots" content="noindex, nofollow" />
-      <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
+      <style>html, body { height: 100%; margin: 0; } #root { height: 100%; } html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }</style>
+      <script>
+        // WeChat's in-app browser scales page text by the app's own
+        // font-size setting, which made the whole site render big and
+        // heavy (reported 2026-11-13). Opt out: pin the webview font
+        // size to the page's own whenever the WeChat bridge is present.
+        (function () {
+          function pinFontSize() {
+            if (typeof WeixinJSBridge === "undefined") return;
+            WeixinJSBridge.call("setFontSizeCallback", { fontSize: 0 });
+            WeixinJSBridge.on("menu:setfont", function () {
+              WeixinJSBridge.call("setFontSizeCallback", { fontSize: 0 });
+            });
+          }
+          if (typeof WeixinJSBridge === "object" && WeixinJSBridge !== null) {
+            pinFontSize();
+          } else {
+            document.addEventListener("WeixinJSBridgeReady", pinFontSize, false);
+          }
+        })();
+      </script>
       
     </head>
 

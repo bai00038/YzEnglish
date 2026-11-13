@@ -1087,7 +1087,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
         </span>
         <div className="mt-3 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-8">
           <div className="min-w-0 max-w-[760px]">
-            <h1 className="scene-title font-serif text-[30px] font-semibold leading-[1.08] tracking-[-0.025em] text-primary max-[480px]:text-[28px] md:text-[38px]">
+            <h1 className="scene-title font-serif text-[30px] font-semibold leading-[1.08] tracking-[-0.025em] text-primary max-[480px]:text-[24px] md:text-[38px]">
               {scene.titleZh}
             </h1>
             <p className="scene-desktop-description mt-2 max-w-[690px] text-[14px] leading-relaxed text-[#3A4A42] md:text-[15px]">
@@ -1106,7 +1106,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
           {sectionShortcuts.map(({ step, label }, index) => (
             <span key={step}>
               {index > 0 && " · "}
-              <button type="button" disabled={!content} aria-controls={content ? `section-${step}` : undefined} onClick={() => jumpToSection(step)} className="font-black text-primary enabled:cursor-pointer enabled:hover:underline disabled:opacity-60">
+              <button type="button" disabled={!content} aria-controls={content ? `section-${step}` : undefined} onClick={() => jumpToSection(step)} className="font-semibold text-primary enabled:cursor-pointer enabled:hover:underline disabled:opacity-60">
                 {label}
               </button>
             </span>
