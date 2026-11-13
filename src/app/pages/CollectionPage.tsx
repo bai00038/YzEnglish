@@ -4,6 +4,7 @@ import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { useCollections } from "@/data/collections-access";
 import { getCollectionLearningProgress, getSceneProgressId, useAllLearningProgress } from "@/data/learning-progress";
 import { useMembershipAccess } from "@/data/membership";
+import { isSceneVisible } from "@/data/preview";
 import { responsiveImageProps } from "@/data/responsive-image";
 
 export function CollectionPage() {
@@ -56,7 +57,7 @@ export function CollectionPage() {
       <main className="mx-auto max-w-[1180px] px-3 py-6 md:px-8 md:py-7">
         <div className="overflow-hidden rounded-[24px] border border-border bg-card">
           {collection.scenes.length ? collection.scenes.map((scene, index) => {
-            const isLive = scene.status === "live";
+            const isLive = isSceneVisible(scene);
             const sceneProgress = progressByScene[getSceneProgressId(scene)];
             const sceneHasProgress = Boolean(sceneProgress && sceneProgress.percent > 0);
             const sceneIsLocked = isLive && !scene.isFreeExperience && !isUnlocked;
@@ -78,7 +79,7 @@ export function CollectionPage() {
                   )}
                 </div>
                 <div className="min-w-0 [grid-area:text]">
-                  <h2 className="font-sans text-[16px] font-bold leading-tight text-primary md:text-[17px]">{scene.titleZh}<span className="mt-0.5 block truncate font-sans text-[11px] font-normal italic text-muted-foreground md:ml-[9px] md:mt-0 md:inline md:text-[12.5px]">{scene.titleEn}</span></h2>
+                  <h2 className="font-sans text-[16px] font-bold leading-tight text-primary md:text-[17px]">{scene.titleZh}<span className="mt-0.5 block truncate font-sans text-[11px] font-normal italic text-muted-foreground md:ml-[9px] md:mt-0 md:inline md:text-[12.5px]">{scene.titleEn}</span>{scene.status === "coming" && isLive && <span className="ml-2 inline-block rounded-full bg-primary px-2 py-0.5 align-middle text-[10px] font-bold not-italic text-white">测试中</span>}</h2>
                   <p className="mt-1 hidden line-clamp-2 text-[13px] leading-relaxed text-secondary-foreground md:block md:max-w-[660px]">{scene.desc}</p>
                 </div>
                 <div className="flex items-center gap-1.5 text-[12px] font-semibold [grid-area:pdf] md:gap-2 md:text-sm md:justify-end">

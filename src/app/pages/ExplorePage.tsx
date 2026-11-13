@@ -7,6 +7,7 @@ import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { useCollections } from "@/data/collections-access";
 import { COLLECTION_TAGS } from "@/data/content-collections";
 import type { CollectionWithScenes } from "@/data/collections-access";
+import { isSceneVisible } from "@/data/preview";
 
 const CATALOGUE_TAGS = [{ id: "All", label: "全部" }, ...COLLECTION_TAGS];
 
@@ -87,7 +88,7 @@ function CollectionShortcuts({ collections, onSelect }: { collections: Collectio
 function CollectionSection({ collection, eager = false }: { collection: CollectionWithScenes; eager?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [isNearViewport, setIsNearViewport] = useState(eager);
-  const liveScenes = collection.scenes.filter(scene => scene.status === "live");
+  const liveScenes = collection.scenes.filter(scene => isSceneVisible(scene));
 
   useEffect(() => {
     if (isNearViewport || !sectionRef.current || typeof IntersectionObserver === "undefined") return;
@@ -163,7 +164,7 @@ export function ExplorePage({
   const collectionNames = new Map(collections.map(collection => [collection.id, collection.name]));
   const filteredScenes = collections
     .flatMap(collection => collection.scenes)
-    .filter(scene => scene.status === "live")
+    .filter(scene => isSceneVisible(scene))
     .filter(scene => {
       const matchesTag = activeCategory === "All" || (scene.tags ?? []).includes(activeCategory);
       const matchesQuery = !query || [scene.titleEn, scene.titleZh, scene.desc, (scene.searchKeywords ?? []).join(" ")]

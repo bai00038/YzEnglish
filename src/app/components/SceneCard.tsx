@@ -30,7 +30,7 @@ export function SceneCard({ scene, collectionLabels = [], compact = false, resum
           {(scene.isFreeExperience || isMemberOnly) && <span className={`absolute left-2.5 top-2.5 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold ${scene.isFreeExperience ? "bg-accent text-primary" : "bg-primary/90 text-white"}`}>
             {isMemberOnly && <LockKeyhole size={10} />}{scene.isFreeExperience ? "免费体验" : "会员专属"}
           </span>}
-          <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-2.5 top-2.5" />
+          <SceneBadges isNew={scene.isNew} isHot={scene.isHot} isComing={scene.status === "coming"} className="absolute right-2.5 top-2.5" />
           <span className="absolute bottom-2.5 left-2.5 rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-medium text-white">{getSceneCardCategoryLabel(scene.collectionId, scene.category)}</span>
           {hasProgress && (
             <span role="progressbar" aria-label={`${scene.titleZh}学习进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percent} className="absolute inset-x-0 bottom-0 h-1 bg-white/35">
@@ -64,7 +64,7 @@ export function SceneCard({ scene, collectionLabels = [], compact = false, resum
         {(scene.isFreeExperience || isMemberOnly) && <span className={`absolute left-3.5 top-3.5 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold ${scene.isFreeExperience ? "bg-accent text-primary" : "bg-primary/90 text-white"}`}>
           {isMemberOnly && <LockKeyhole size={12} />}{scene.isFreeExperience ? "免费体验" : "会员专属"}
         </span>}
-        <SceneBadges isNew={scene.isNew} isHot={scene.isHot} className="absolute right-3.5 top-3.5" />
+        <SceneBadges isNew={scene.isNew} isHot={scene.isHot} isComing={scene.status === "coming"} className="absolute right-3.5 top-3.5" />
         <span className="absolute bottom-3.5 left-3.5 rounded-full bg-primary px-3 py-1.5 text-[12px] font-medium text-white">
           {getSceneCardCategoryLabel(scene.collectionId, scene.category)}
         </span>

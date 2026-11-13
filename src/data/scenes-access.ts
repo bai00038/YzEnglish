@@ -6,6 +6,7 @@ import {
   manifestEntryToScene,
 } from "./oss-content";
 import type { CultureTipItem, KeyExpressionItem, Scene } from "./types";
+import { isSceneVisible } from "./preview";
 
 // ---------------------------------------------------------------------------
 // OSS manifest-backed data layer.
@@ -30,7 +31,7 @@ async function fetchVisibleScenes(): Promise<Scene[]> {
   const entries = await fetchManifestScenes();
   return entries
     .map(manifestEntryToScene)
-    .filter(scene => scene.status === "live" && Boolean(scene.collectionId));
+    .filter(scene => isSceneVisible(scene) && Boolean(scene.collectionId));
 }
 
 function deriveLanguageModules(scene: Scene): Scene {
