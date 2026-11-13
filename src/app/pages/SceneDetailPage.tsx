@@ -60,8 +60,8 @@ function CultureTipCard({ item, tipNumber }: { item: CultureTipItem; tipNumber: 
 function StepHeading({ number, title, hint, titleId }: { number: string; title: string; hint: string; titleId?: string }) {
   return (
     <div className="mb-5 flex flex-wrap items-baseline gap-x-4 gap-y-1 max-[480px]:mb-4 max-[480px]:gap-x-3">
-      <span className="font-serif text-[29px] italic leading-none text-primary/55">{number}</span>
-      <h2 id={titleId} tabIndex={titleId ? -1 : undefined} className="text-[20px] font-black tracking-tight text-primary md:text-[22px]">{title}</h2>
+      <span className="font-serif text-[29px] italic leading-none text-primary/55 max-[1024px]:hidden">{number}</span>
+      <h2 id={titleId} tabIndex={titleId ? -1 : undefined} className="text-[20px] font-black tracking-tight text-primary max-[1024px]:font-bold md:text-[22px]">{title}</h2>
       <p className="text-[13px] font-medium text-muted-foreground md:text-[14px]">{hint}</p>
     </div>
   );
