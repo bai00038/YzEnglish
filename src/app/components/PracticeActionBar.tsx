@@ -173,13 +173,17 @@ export function PracticeActionBar({
             第 {position + 1} 句 / 共 {total} 句
           </span>
           <div className={`practice-navigation flex w-full items-center justify-center ${compact ? "gap-3" : "gap-3 sm:gap-4 md:gap-6"}`}>
-            <button type="button" onClick={onPrevious} disabled={previousDisabled} className={`practice-nav-button rounded-full border border-border bg-white font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35 ${compact ? "px-3 py-2 text-[11px]" : "px-3 py-2.5 text-[12px] sm:px-4 md:px-5 md:py-3"}`}>← 上一句</button>
+            <button type="button" onClick={onPrevious} disabled={previousDisabled} className={`practice-nav-button w-20 shrink-0 whitespace-nowrap rounded-full border border-border bg-white font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35 md:w-24 ${compact ? "px-3 py-2 text-[11px]" : "px-3 py-2.5 text-[12px] sm:px-4 md:px-5 md:py-3"}`}>← 上一句</button>
             <button type="button" onClick={onTogglePlay} aria-label={playLabel} className={`practice-play-button inline-flex shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-[0_8px_18px_rgba(15,53,39,0.2)] transition-transform hover:scale-105 ${compact ? "h-12 w-12" : "h-14 w-14 md:h-16 md:w-16"}`}>
               {isPlaying ? <Pause className="h-5 w-5 fill-current" /> : <Play className="ml-0.5 h-5 w-5 fill-current" />}
             </button>
-            <button type="button" onClick={onNext} disabled={nextDisabled} className={`practice-nav-button rounded-full border border-border bg-white font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35 ${compact ? "px-3 py-2 text-[11px]" : "px-3 py-2.5 text-[12px] sm:px-4 md:px-5 md:py-3"}`}>{nextLabel}</button>
+            <button type="button" onClick={onNext} disabled={nextDisabled} className={`practice-nav-button w-20 shrink-0 whitespace-nowrap rounded-full border border-border bg-white font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35 md:w-24 ${compact ? "px-3 py-2 text-[11px]" : "px-3 py-2.5 text-[12px] sm:px-4 md:px-5 md:py-3"}`}>{nextLabel}</button>
           </div>
-          <span className={`practice-desktop-count font-black tabular-nums text-primary ${compact ? "mt-1.5 text-[11px]" : "mt-2 text-[12px]"}`}>{position + 1} / {total}</span>
+          <span className={`practice-desktop-count grid w-full grid-cols-[1fr_auto_1fr] gap-1 font-black tabular-nums text-primary ${compact ? "mt-1.5 text-[11px]" : "mt-2 text-[12px]"}`}>
+            <span className="text-right">{position + 1}</span>
+            <span>/</span>
+            <span>{total}</span>
+          </span>
         </div>
 
         <div className={`practice-settings ${onCheck ? "has-check" : ""} flex flex-wrap items-center justify-center border-t border-border/70 ${compact ? "mt-3 gap-3 pt-3" : "mt-4 gap-4 pt-4 md:gap-7"}`}>
