@@ -792,6 +792,23 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     if (!video.paused) {
       suppressNextPauseCleanupRef.current = true;
       video.pause();
+    } else {
+      // iOS Safari (and strict Android WebViews) reject play() calls
+      // made outside a user-gesture handler until the element has
+      // played once. This function seeks first and plays from the
+      // async 'seeked' callback, so on a fresh page that deferred
+      // play() was refused and the study card's play button looked
+      // dead until the video's own play button had been tapped once
+      // (verified on a phone, 2026-11-13). Unlock the element
+      // synchronously inside this gesture: play() + pause() in the
+      // same turn presents no audio, but marks the element as
+      // gesture-played so the deferred play() below is allowed. The
+      // suppress flag covers the pause event this queues, exactly
+      // like the branch above.
+      suppressNextPauseCleanupRef.current = true;
+      const unlockAttempt = video.play();
+      if (unlockAttempt) unlockAttempt.catch(() => {});
+      video.pause();
     }
     activeEndRef.current = trueEnd;
     activeLineIndexRef.current = lineIndex;
