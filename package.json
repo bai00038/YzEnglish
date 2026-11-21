@@ -10,7 +10,10 @@
     "kit:build": "node tools/kit/build-index.mjs",
     "kit:tts": "node tools/kit/generate-tts.mjs",
     "kit:test": "node --test tools/kit/index.test.mjs tools/kit/remote.test.mjs tools/kit/word-matches.test.mjs tools/kit/dictation-blank.test.mjs tools/kit/dictation-viewport.test.mjs tools/kit/tts-volume.test.mjs",
-    "kit:check-word-tts": "node tools/kit/check-word-tts.mjs"
+    "kit:check-word-tts": "node tools/kit/check-word-tts.mjs",
+    "learning:test": "node --test tools/kit/member-learning.test.mjs && npm test --prefix aliyun-membership-api",
+    "build:staging": "vite build --mode staging",
+    "deploy:staging": "node tools/staging/deploy.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

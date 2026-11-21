@@ -51,15 +51,17 @@ test("kit and scene-page TTS targets share stable hashes and reuse existing audi
   assert.equal(targets.length, 173);
   assert.equal(sceneTargets.length, 716);
   const wordTargets = read("./tts-words-targets.json");
-  assert.equal(wordTargets.length, 130);
-  assert.deepEqual(wordTargets.map(target => target.normalizedKey).sort(), words.map(entry => entry.key).sort());
+  // A compound/alternative catalogue label may also need individual-word TTS.
+  const wordTargetKeys = new Set(wordTargets.map(target => target.normalizedKey));
+  assert.equal(wordTargetKeys.size, wordTargets.length);
+  assert.ok(words.every(entry => wordTargetKeys.has(entry.key)));
   const keys = new Set();
   for (const target of [...targets, ...sceneTargets, ...wordTargets]) {
     const key = target.normalizedKey ?? normalizeText(target.text ?? target.spokenText);
     assert.equal(crypto.createHash("sha256").update(key).digest("hex") + ".mp3", target.file);
     keys.add(key);
   }
-  assert.equal(keys.size, 1014);
+  assert.ok(keys.size >= 1014);
   const key = source.expressions[0].key;
   const enriched = buildCatalogue(source, chunks, { [key]: { audioUrl: "https://example.com/reused.mp3" } });
   assert.equal(enriched.expressions[0].audioUrl, "https://example.com/reused.mp3");

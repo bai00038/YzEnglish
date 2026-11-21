@@ -10,7 +10,7 @@ test('each tier matches the authored bite down chunk and cavity word',()=>{
     const occurrence=entry.occurrences.find(e=>e.sceneId==='HC-06-001');
     const text=occurrence.anchor_line;
     const blank=chooseDictationBlank(text,'HC-06-001',occurrence.anchor_start,entries.filter(e=>e.kind===source));
-    assert.equal(blank.answer,term); assert.equal(blank.source,source);
+    assert.equal(blank.answer,term); assert.equal(blank.source,source); assert.equal(blank.entryId,entry.id);
     assert.equal(text.slice(blank.start,blank.end),term);
   }
 });
@@ -33,7 +33,7 @@ test('every real courier dialogue line has exactly one nonempty fallback and no 
   for(const line of fixture.courier) {
     const text=line.en;
     const blank=chooseDictationBlank(text,'DL-01-010',undefined,entries);
-    assert.ok(blank.answer.trim(),text); assert.equal(blank.source,undefined);
+    assert.ok(blank.answer.trim(),text); assert.equal(blank.source,undefined); assert.equal(blank.entryId,undefined);
     assert.equal(text.slice(blank.start,blank.end),blank.answer);
   }
   assert.equal(chooseDictationBlank('Please leave the package downstairs.','T',1,[]).answer,'downstairs');

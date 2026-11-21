@@ -1,3 +1,5 @@
+import { MistakeNotebook } from "@/app/components/MistakeNotebook";
+import { useMemberLearning } from "@/data/member-learning";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { CalendarDays, Check, CheckCircle2, Clock3, Copy, Eye, EyeOff, LockKeyhole, Play, QrCode, ShieldCheck } from "lucide-react";
 import { Link } from "react-router";
@@ -140,6 +142,7 @@ export function MembershipPage() {
   const { isUnlocked, isExpired, unlock } = useMembershipAccess();
   const { data: sceneData, loading: scenesLoading, error: scenesError } = useScenes();
   const progressByScene = useAllLearningProgress();
+  const { phase } = useMemberLearning();
   const [modalOpen, setModalOpen] = useState(false);
   const [qrMissing, setQrMissing] = useState(false);
   const remainingDays = unlock?.expiresAt
@@ -258,7 +261,8 @@ export function MembershipPage() {
               <Link to="/#free" className="font-zh-serif text-lg font-bold text-primary transition-opacity hover:opacity-70">还没开始学习，去免费体验 3 集 →</Link>
             </div>
           )}
-          <p className="mt-6 text-center text-xs text-muted-foreground">学习记录保存在当前浏览器</p>
+          {isUnlocked && <MistakeNotebook />}
+          <p className="mt-6 text-center text-xs text-muted-foreground" role="status">{isUnlocked ? phase === 'synced' ? '学习记录已同步到会员' : phase === 'offline' ? '暂未同步，网络恢复后会重试' : '正在同步学习记录…' : '学习记录保存在当前浏览器'}</p>
           <nav aria-label="关于与联系" className="mt-3 flex items-center justify-center gap-6 text-xs text-muted-foreground lg:hidden">
             <Link to="/about" className="inline-flex min-h-11 items-center hover:text-primary">关于</Link>
             <Link to="/contact" className="inline-flex min-h-11 items-center hover:text-primary">联系我们</Link>

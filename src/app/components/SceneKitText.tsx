@@ -1,3 +1,4 @@
+import { KitLearningActions } from "./KitLearningActions";
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { LoaderCircle, Volume2 } from 'lucide-react';
@@ -24,6 +25,7 @@ function EntryDetails({ entry, occurrence, audioUrl }: { entry: KitEntry; occurr
   const exampleActive = Boolean(other && audio.id === `source:${other.sceneId}:${other.anchor_start}` && !audio.error);
   const ownError = audio.id === `tts:${entry.key}` || (other && audio.id === `source:${other.sceneId}:${other.anchor_start}`);
   return <>
+    <KitLearningActions entryId={entry.id} sceneId={occurrence.sceneId} />
     <p className="scene-kit-category">锦囊库 · 词汇</p>
     <div className="scene-kit-title-row">
       <Dialog.Title className="scene-kit-title">

@@ -1,3 +1,4 @@
+import { memberProgress, memberProgressStorageKey, recordMemberProgress } from "./member-learning";
 import { useEffect, useState } from "react";
 import type { Scene } from "./types";
 
@@ -101,10 +102,22 @@ function normalizeProgress(value: unknown): LearningProgress {
 export function readLearningProgress(sceneId: string): LearningProgress {
   if (!sceneId || typeof window === "undefined") return DEFAULT_PROGRESS;
   try {
-    const saved = window.localStorage.getItem(`${LEARNING_PROGRESS_PREFIX}${sceneId}`);
-    return saved ? normalizeProgress(JSON.parse(saved)) : DEFAULT_PROGRESS;
+    const saved = window.localStorage.getItem(memberProgressStorageKey(sceneId));
+    let local = saved ? normalizeProgress(JSON.parse(saved)) : DEFAULT_PROGRESS;
+    if (!saved && memberProgress()?.[sceneId]) {
+      const legacy = window.localStorage.getItem(`${LEARNING_PROGRESS_PREFIX}${sceneId}`);
+      const original = legacy ? normalizeProgress(JSON.parse(legacy)) : null;
+      if (original?.updatedAt === memberProgress()?.[sceneId]?.updatedAt) local = original;
+    }
+    const cloud = memberProgress();
+    if (cloud) {
+      const record = cloud[sceneId];
+      return record ? { ...local, percent: record.percent, updatedAt: record.updatedAt } : { ...DEFAULT_PROGRESS };
+    }
+    return local;
   } catch {
-    return DEFAULT_PROGRESS;
+    const cloud = memberProgress()?.[sceneId];
+    return cloud ? { ...DEFAULT_PROGRESS, percent: cloud.percent, updatedAt: cloud.updatedAt } : DEFAULT_PROGRESS;
   }
 }
 
@@ -138,11 +151,12 @@ export function writeLearningProgress(
     updatedAt: new Date().toISOString(),
   });
   try {
-    window.localStorage.setItem(`${LEARNING_PROGRESS_PREFIX}${sceneId}`, JSON.stringify(next));
+    window.localStorage.setItem(memberProgressStorageKey(sceneId), JSON.stringify(next));
     window.dispatchEvent(new CustomEvent(LEARNING_PROGRESS_EVENT, { detail: { sceneId, progress: next } }));
   } catch {
     // Storage may be disabled. The lesson remains usable without persistence.
   }
+  recordMemberProgress(sceneId, { percent: next.percent, updatedAt: next.updatedAt });
   return next;
 }
 
@@ -156,6 +170,8 @@ export function updateLearningPosition(
 export function readAllLearningProgress(): Record<string, LearningProgress> {
   if (typeof window === "undefined") return {};
   const result: Record<string, LearningProgress> = {};
+  const cloud = memberProgress();
+  if (cloud) return Object.fromEntries(Object.keys(cloud).map(id => [id, readLearningProgress(id)]));
   try {
     for (let index = 0; index < window.localStorage.length; index += 1) {
       const key = window.localStorage.key(index);

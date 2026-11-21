@@ -1,8 +1,7 @@
+const { validateChange, publicLearning } = require("./learning.cjs");
 const { cookie, json, parseCookies, readJsonBody } = require("./http.cjs");
 const { keyedHash, normalizeCode, randomId, signSession, verifySession } = require("./security.cjs");
 
-const SESSION_COOKIE = "yz_member_session";
-const DEVICE_COOKIE = "yz_member_device";
 const SESSION_SECONDS = 30 * 24 * 60 * 60;
 const ACTIVE_SESSION_SECONDS = 15 * 60;
 const DEVICE_SECONDS = 365 * 24 * 60 * 60;
@@ -40,6 +39,8 @@ function membershipSummary(record) {
 
 function createApp({ repository, objectSigner, config, now = () => Date.now(), rateLimiter = new RuntimeRateLimiter() }) {
   const allowedOrigins = new Set(config.allowedOrigins ?? []);
+  const SESSION_COOKIE = `${config.cookiePrefix || 'yz_member'}_session`;
+  const DEVICE_COOKIE = `${config.cookiePrefix || 'yz_member'}_device`;
 
   function corsHeaders(origin) {
     if (!origin || !allowedOrigins.has(origin)) return {};
@@ -169,6 +170,30 @@ function createApp({ repository, objectSigner, config, now = () => Date.now(), r
       }
       const response = json(200, { ok: true }, cors);
       response.headers["Set-Cookie"] = [cookie(SESSION_COOKIE, "", { domain: config.cookieDomain, maxAge: 0 })];
+      return response;
+    }
+
+    if (path === "/v1/learning" && ["GET", "POST"].includes(method)) {
+      const auth = await authenticate(request);
+      if (auth.error) return json(auth.error === "session_limit_reached" ? 409 : 401, { error: auth.error }, cors);
+      const { codeHash, deviceHash } = auth.payload;
+      let state;
+      if (method === "POST") {
+        let change;
+        try { change = validateChange(readJsonBody(request, 1024 * 1024)); }
+        catch { return json(400, { error: "invalid_learning_data" }, cors); }
+        try { state = await repository.updateLearning(codeHash, change, deviceHash); }
+        catch (error) {
+          if (error.message === 'learning_conflict') return json(409, { error: 'learning_conflict' }, cors);
+          if (error.message === 'learning_capacity') return json(400, { error: 'learning_capacity' }, cors);
+          throw error;
+        }
+      } else state = await repository.getLearning(codeHash);
+      const response = json(200, {
+        learningId: keyedHash(config.sessionSecret, `learning:${codeHash}`),
+        data: publicLearning(state), migrated: Boolean(state?.migratedDevices?.includes(deviceHash)),
+      }, cors);
+      response.headers["Set-Cookie"] = [renewedSessionCookie(auth)];
       return response;
     }
 

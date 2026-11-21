@@ -1,3 +1,5 @@
+import { KitLearningActions } from "@/app/components/KitLearningActions";
+import { useMemberLearning, setEntryLearned } from "@/data/member-learning";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
 import { ArrowLeft, ArrowRight, ArrowRightLeft, BookOpen, ChevronLeft, ChevronRight, LoaderCircle, LockKeyhole, Pause, Search, Volume2, X } from "lucide-react";
@@ -49,7 +51,7 @@ function ExampleBlock({ occurrence }: { occurrence: KitOccurrence }) {
   </div>;
 }
 
-function EntryCard({ entry, side = false, onNavigate }: { entry: KitEntry; side?: boolean; onNavigate?: () => void }) {
+export function EntryCard({ entry, side = false, onNavigate, personalActions = true }: { entry: KitEntry; side?: boolean; onNavigate?: () => void; personalActions?: boolean }) {
   const [sourceIndex, setSourceIndex] = useState(0);
   const touchStart = useRef<number | null>(null);
   const occurrences = entry.occurrences;
@@ -73,6 +75,7 @@ function EntryCard({ entry, side = false, onNavigate }: { entry: KitEntry; side?
       <p className="kit-meaning">{entry.meaningZh}</p></div>
       <PhraseAudioButton text={entry.text} audioUrl={entry.audioUrl} />
     </div>
+    {!side && personalActions && <KitLearningActions entryId={entry.id} sceneId={occurrences[sourceIndex]?.sceneId} showLearned />}
     {entry.kind === "expression" && entry.explanation && <p className="kit-explanation"><span>讲解</span>{entry.explanation}</p>}
     <div className="kit-example-slider" onTouchStart={event => { touchStart.current = event.touches[0].clientX; }}
       onTouchEnd={event => {
@@ -97,6 +100,8 @@ function EntryCard({ entry, side = false, onNavigate }: { entry: KitEntry; side?
 
 export function KitPage() {
   const { isUnlocked } = useMembershipAccess();
+  const { learned } = useMemberLearning();
+  const [showLearned, setShowLearned] = useState(false);
   const [catalogue, setCatalogue] = useState<KitCatalogue | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -162,10 +167,12 @@ export function KitPage() {
     return () => { row.removeEventListener("scroll", updateEdges); observer.disconnect(); };
   }, [catalogue, kind, isHome, isUnlocked, listMode]);
 
-  const entries = useMemo(() => {
+  const scopedEntries = useMemo(() => {
     const source = kind === "word" ? catalogue?.words : kind === "chunk" ? catalogue?.chunks : catalogue?.expressions;
     return (source ?? []).filter(entry => !collectionId || entry.occurrences.some(item => item.collectionId === collectionId));
   }, [catalogue, kind, collectionId]);
+  const entries = scopedEntries.filter(entry => !learned.includes(entry.id));
+  const learnedEntries = scopedEntries.filter(entry => learned.includes(entry.id));
   const selectedIndex = Math.max(0, entries.findIndex(entry => entry.id === params.get("entry")));
   const current = entries[selectedIndex];
   const collection = catalogue?.collections.find(item => item.id === collectionId);
@@ -288,7 +295,9 @@ export function KitPage() {
         {chipEdges.right && <div aria-hidden="true" className="kit-filter-fade is-right" />}
         </div>
       </div>}
-      {entries.length === 0 ? <div className="kit-pending"><BookOpen size={32} />
+      <div className="kit-learned-control"><button type="button" className="kit-mode" aria-expanded={showLearned} onClick={() => setShowLearned(value => !value)}>已学会 {learnedEntries.length} 条</button></div>
+      {showLearned && <div className="member-learned-list">{learnedEntries.length ? learnedEntries.map(entry => <div key={entry.id}><span>{entry.text}</span><button type="button" onClick={() => setEntryLearned(entry.id, false)}>恢复学习</button></div>) : <p>还没有已学会的条目。</p>}</div>}
+      {entries.length === 0 && scopedEntries.length > 0 ? <div className="kit-pending"><h2>这一组已学完</h2><p>可以从「已学会」中恢复条目。</p></div> : entries.length === 0 ? <div className="kit-pending"><BookOpen size={32} />
         <h2>{kindLabel}提炼中</h2>
         <p>{kind === "word" ? "各集讲义中的核心词会逐合集整理到这里。" : `这个合集的${kindLabel}还在提炼中`}</p>
       </div>

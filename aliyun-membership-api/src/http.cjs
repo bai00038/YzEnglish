@@ -38,11 +38,11 @@ function json(statusCode, body, headers = {}) {
   };
 }
 
-function readJsonBody(request) {
+function readJsonBody(request, maxBytes = 8192) {
   if (request.body == null || request.body === "") return {};
   if (typeof request.body === "object" && !Buffer.isBuffer(request.body)) return request.body;
   const raw = Buffer.isBuffer(request.body) ? request.body.toString("utf8") : String(request.body);
-  if (Buffer.byteLength(raw, "utf8") > 8192) throw new Error("body_too_large");
+  if (Buffer.byteLength(raw, "utf8") > maxBytes) throw new Error("body_too_large");
   return JSON.parse(raw);
 }
 

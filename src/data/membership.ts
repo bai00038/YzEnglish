@@ -1,3 +1,4 @@
+import { activateMemberLearning, deactivateMemberLearning } from "./member-learning";
 import { useEffect, useSyncExternalStore } from "react";
 
 export type MembershipType = "founder" | "year" | "month";
@@ -64,7 +65,7 @@ function writeStoredUnlock(unlock: MembershipUnlock | null) {
 
 function getMembershipSnapshot(): string {
   if (typeof window === "undefined") return "";
-  return window.localStorage.getItem(MEMBERSHIP_STORAGE_KEY) ?? "";
+  try { return window.localStorage.getItem(MEMBERSHIP_STORAGE_KEY) ?? ""; } catch { return ""; }
 }
 
 function subscribeToMembership(onStoreChange: () => void) {
@@ -118,13 +119,15 @@ export async function refreshMembershipAccess(force = false): Promise<void> {
       });
       const result = (await response.json().catch(() => ({}))) as MembershipApiResponse;
       if (!response.ok) {
-        if (response.status === 401 || response.status === 409) writeStoredUnlock(null);
+        if (response.status === 401 || response.status === 409) { writeStoredUnlock(null); deactivateMemberLearning(); }
         return;
       }
       if (result.authenticated && result.membership) {
         writeStoredUnlock({ ...result.membership, unlockedAt: new Date().toISOString() });
+        await activateMemberLearning();
       } else {
         writeStoredUnlock(null);
+        deactivateMemberLearning();
       }
       lastRefreshAt = Date.now();
     } catch {
@@ -168,7 +171,9 @@ export async function redeemMembershipCode(input: string): Promise<MembershipUnl
   }
   if (!result.membership) throw new MembershipApiError("invalid_response");
   const unlock: MembershipUnlock = { ...result.membership, unlockedAt: new Date().toISOString() };
+  deactivateMemberLearning();
   writeStoredUnlock(unlock);
+  await activateMemberLearning(true);
   lastRefreshAt = Date.now();
   return unlock;
 }
@@ -191,6 +196,7 @@ export async function logoutMembershipDevice(): Promise<void> {
   }
   if (!response.ok) throw new MembershipApiError("server_error");
   writeStoredUnlock(null);
+  deactivateMemberLearning();
   lastRefreshAt = 0;
 }
 

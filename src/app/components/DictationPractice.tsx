@@ -1,3 +1,4 @@
+import { addMistake } from "@/data/member-learning";
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Check, RotateCcw } from 'lucide-react';
 import { loadKitCatalogue, type KitEntry } from '@/data/kit';
@@ -84,7 +85,10 @@ export function DictationPractice(props: Props) {
     startedBlanks.current.set(blankKey, blank);
     const correct = !reveal && isBlankAnswerCorrect(blank.answer, draft);
     setRecords(previous => ({ ...previous, [line.index]: { input: draft, checked: true, correct } }));
-    if (!correct && !reveal) onPlayLine(line.index, true);
+    if (!correct && !reveal) {
+      if (blank.entryId) addMistake(blank.entryId, 'dictation', externalSceneId);
+      onPlayLine(line.index, true);
+    }
   }
   function goTo(next: number) {
     const keepKeyboard = document.activeElement === inputRef.current;

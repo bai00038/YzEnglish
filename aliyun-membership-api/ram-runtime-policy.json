@@ -3,27 +3,40 @@
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": ["oss:GetObject"],
+      "Action": [
+        "oss:GetObject"
+      ],
       "Resource": [
         "acs:oss:*:*:yz-english-videos/content/*",
         "acs:oss:*:*:yz-english-membership/_private/membership/codes/*",
-        "acs:oss:*:*:yz-english-membership/_private/membership/devices/*"
+        "acs:oss:*:*:yz-english-membership/_private/membership/devices/*",
+        "acs:oss:*:*:yz-english-membership/_private/membership/learning/*"
       ]
     },
     {
       "Effect": "Allow",
-      "Action": ["oss:PutObject", "oss:DeleteObject"],
+      "Action": [
+        "oss:PutObject",
+        "oss:DeleteObject"
+      ],
       "Resource": [
-        "acs:oss:*:*:yz-english-membership/_private/membership/devices/*"
+        "acs:oss:*:*:yz-english-membership/_private/membership/devices/*",
+        "acs:oss:*:*:yz-english-membership/_private/membership/learning/*"
       ]
     },
     {
       "Effect": "Allow",
-      "Action": ["oss:ListObjects"],
-      "Resource": ["acs:oss:*:*:yz-english-membership"],
+      "Action": [
+        "oss:ListObjects"
+      ],
+      "Resource": [
+        "acs:oss:*:*:yz-english-membership"
+      ],
       "Condition": {
         "StringLike": {
-          "oss:Prefix": ["_private/membership/devices/*"]
+          "oss:Prefix": [
+            "_private/membership/devices/*"
+          ]
         }
       }
     }

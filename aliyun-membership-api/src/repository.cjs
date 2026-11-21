@@ -1,9 +1,19 @@
+const { applyChange } = require("./learning.cjs");
 const OSS = require("ali-oss");
 
 class MemoryMembershipRepository {
   constructor(codes = {}) {
     this.codes = new Map(Object.entries(codes));
     this.devices = new Map();
+    this.learning = new Map();
+  }
+
+  async getLearning(codeHash) { return structuredClone(this.learning.get(codeHash) ?? null); }
+
+  async updateLearning(codeHash, change, deviceHash) {
+    const next = applyChange(this.learning.get(codeHash) ?? null, change, deviceHash);
+    this.learning.set(codeHash, structuredClone(next));
+    return next;
   }
 
   async getCode(codeHash) {
@@ -39,6 +49,46 @@ class OssMembershipRepository {
   constructor(client, prefix = "_private/membership") {
     this.client = client;
     this.prefix = prefix.replace(/^\/+|\/+$/g, "");
+  }
+
+  learningKey(codeHash) { return `${this.prefix}/learning/${codeHash}.jsonl`; }
+
+  async readLearningLog(codeHash) {
+    try {
+      const result = await this.client.get(this.learningKey(codeHash));
+      let state = null;
+      for (const line of result.content.toString('utf8').split('\n').filter(Boolean)) {
+        const { change, deviceHash } = JSON.parse(line);
+        state = applyChange(state, change, deviceHash);
+      }
+      return { state, position: result.content.length };
+    } catch (error) {
+      if (error?.status === 404 || error?.code === 'NoSuchKey') return { state: null, position: 0 };
+      throw error;
+    }
+  }
+
+  async getLearning(codeHash) { return (await this.readLearningLog(codeHash)).state; }
+
+  async updateLearning(codeHash, change, deviceHash) {
+    const key = this.learningKey(codeHash);
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+      const { state, position } = await this.readLearningLog(codeHash);
+      const next = applyChange(state, change, deviceHash);
+      if (change.type === 'merge' && state?.migratedDevices.includes(deviceHash)) return state;
+      // AppendObject checks the byte position atomically. Competing devices
+      // re-read and re-apply rather than overwriting one another's changes.
+      const event = Buffer.from(JSON.stringify({ change, deviceHash: change.type === 'merge' ? deviceHash : undefined }) + '\n');
+      try {
+        await this.client.append(key, event, { position: String(position), headers: {
+          'Content-Type': 'application/x-ndjson', 'Cache-Control': 'no-store',
+        } });
+        return next;
+      } catch (error) {
+        if (error?.status !== 409 || !['PositionNotEqualToLength', 'ObjectAlreadyExists'].includes(error?.code)) throw error;
+      }
+    }
+    throw new Error('learning_conflict');
   }
 
   codeKey(codeHash) {

@@ -16,12 +16,14 @@ function loadConfig(env = process.env) {
   const config = {
     allowedOrigins: splitCsv(required(env, "ALLOWED_ORIGINS")),
     cookieDomain: env.COOKIE_DOMAIN || undefined,
+    cookiePrefix: env.MEMBERSHIP_COOKIE_PREFIX || "yz_member",
     sessionSecret: required(env, "SESSION_SECRET"),
     codePepper: required(env, "CODE_PEPPER"),
     repositoryMode,
     membershipDataPrefix: env.MEMBERSHIP_DATA_PREFIX || "_private/membership",
     signedUrlTtlSeconds: Number(env.OSS_SIGNED_URL_TTL_SECONDS || 600),
   };
+  if (!/^[A-Za-z0-9_]{1,50}$/.test(config.cookiePrefix)) throw new Error("Invalid MEMBERSHIP_COOKIE_PREFIX");
   if (config.sessionSecret.length < 32) throw new Error("SESSION_SECRET must be at least 32 characters");
   if (config.codePepper.length < 32) throw new Error("CODE_PEPPER must be at least 32 characters");
   if (config.allowedOrigins.length === 0) throw new Error("ALLOWED_ORIGINS cannot be empty");

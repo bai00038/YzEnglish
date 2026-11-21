@@ -392,3 +392,17 @@
 .kit-source-dots button { flex: none; display: grid; place-items: center; width: 28px; height: 36px; border-radius: 6px; }
 .kit-source-dots button span { width: 7px; height: 7px; border-radius: 99px; background: #b7c4b9; }
 .kit-source-dots button[aria-current="true"] span { width: 24px; background: var(--kit-green); }
+
+.kit-learning-actions { display:flex; flex-wrap:wrap; gap:12px; margin:10px 0; font-family:var(--font-sans); }
+.kit-learning-actions button,.member-learned-list button { min-height:36px; color:var(--primary); font-size:14px; padding:4px 10px; border-radius:12px; background:var(--secondary); }
+.kit-learning-actions button:disabled { opacity:.5; }
+.kit-learning-actions button[aria-pressed="true"] { font-weight:700; }
+.kit-learned-control { display:flex; justify-content:flex-end; margin:8px 0; }
+.member-learned-list { background:var(--card); border-radius:18px; padding:16px; margin:16px 0; box-shadow:0 1px 2px #12332508,0 10px 30px #12332514; }
+.member-learned-list > div { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:8px 0; }
+.member-notebook-card { max-width:640px; margin:16px auto; }
+.member-notebook-card .kit-entry-card { width:100%; }
+.member-notebook-empty { margin-top:16px; padding:28px 20px; border-radius:22px; background:var(--card); box-shadow:0 1px 2px #12332508,0 10px 30px #12332514; }
+
+.member-notebook { --kit-green:#1a4a35; --kit-deep:#123325; --kit-cream:#f2ede4; --kit-line:#ddd5c0; --kit-muted:#6e6a5e; }
+.member-notebook .kit-card-navigation { width:100%; max-width:640px; }

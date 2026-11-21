@@ -14,7 +14,7 @@ const config = {
 const code = "YZ-TEST-2026-STRONG";
 const codeHash = keyedHash(config.codePepper, code);
 
-function setup({ maxDevices = 2 } = {}) {
+function setup({ maxDevices = 2, cookiePrefix } = {}) {
   let currentTime = Date.parse("2026-11-03T18:00:00.000Z");
   const repository = new MemoryMembershipRepository({
     [codeHash]: { type: "year", expiresAt: "2027-12-31T23:59:59.000Z", disabled: false, maxDevices },
@@ -23,7 +23,7 @@ function setup({ maxDevices = 2 } = {}) {
   const app = createApp({
     repository,
     objectSigner,
-    config,
+    config: { ...config, cookiePrefix },
     now: () => currentTime,
     rateLimiter: new RuntimeRateLimiter({ limit: 8 }),
   });
@@ -141,4 +141,76 @@ test("logout immediately releases the current session", async () => {
     ip: "127.0.0.2",
   }));
   assert.equal(second.statusCode, 200);
+});
+
+async function browser(app, ip) {
+  const response = await app(request('/v1/membership/redeem', { method: 'POST', body: { code }, ip }));
+  assert.equal(response.statusCode, 200);
+  const cookie = responseCookies(response);
+  return async body => {
+    const response = await app(request('/v1/learning', { method: body ? 'POST' : 'GET', body, cookie, ip }));
+    return { status: response.statusCode, ...JSON.parse(response.body) };
+  };
+}
+const firstDate = '2026-11-01T00:00:00.000Z';
+const secondDate = '2026-11-02T00:00:00.000Z';
+const mistake = (entryId, source = 'manual', addedAt = firstDate) => ({ entryId, source, sceneId: 'HC-06-001', addedAt });
+test('two browsers share progress, learned marks and three mistakes; removal survives refresh and repeated migration', async () => {
+  const { app } = setup();
+  const a = await browser(app, '127.0.0.1'); const b = await browser(app, '127.0.0.2');
+  await a({ type: 'merge', value: { progress: { 'HC-06-001': { percent: 42, updatedAt: secondDate } }, learned: ['word-toothache'], mistakes: [mistake('word-cavity')] } });
+  await a({ type: 'addMistake', value: mistake('word-molar') });
+  await a({ type: 'addMistake', value: mistake('chunk-bite-down', 'dictation') });
+  await b({ type: 'merge', value: { progress: { 'HC-06-001': { percent: 10, updatedAt: firstDate } }, learned: ['word-cavity'], mistakes: [] } });
+  const before = await b();
+  assert.equal(before.data.progress['HC-06-001'].percent, 42);
+  assert.deepEqual(new Set(before.data.learned), new Set(['word-toothache', 'word-cavity']));
+  assert.equal(before.data.mistakes.length, 3);
+  await b({ type: 'removeMistake', entryId: 'word-cavity' });
+  await a({ type: 'merge', value: { progress: {}, learned: [], mistakes: [mistake('word-cavity')] } });
+  const after = await a();
+  assert.equal(after.data.mistakes.length, 2);
+  assert.ok(!after.data.mistakes.some(item => item.entryId === 'word-cavity'));
+  await b({ type: 'unlearn', entryId: 'word-cavity' });
+  assert.deepEqual((await a()).data.learned, ['word-toothache']);
+});
+test('duplicate mistakes update date/source without duplication; independent operations retain each other', async () => {
+  const { app } = setup(); const a = await browser(app, '127.0.0.1');
+  await Promise.all([a({ type: 'addMistake', value: mistake('word-cavity') }), a({ type: 'learn', entryId: 'word-molar' })]);
+  await a({ type: 'addMistake', value: mistake('word-cavity', 'dictation', secondDate) });
+  const { data } = await a();
+  assert.deepEqual(data.learned, ['word-molar']); assert.deepEqual(data.mistakes, [mistake('word-cavity', 'dictation', secondDate)]);
+});
+test('learning API requires valid membership and allowed origin; rejects arbitrary fields and malformed records', async () => {
+  const { app } = setup();
+  assert.equal((await app(request('/v1/learning'))).statusCode, 401);
+  const denied = request('/v1/learning'); denied.headers.origin = 'https://evil.example';
+  assert.equal((await app(denied)).statusCode, 403);
+  const a = await browser(app, '127.0.0.1');
+  for (const body of [{ type: 'addMistake', value: mistake('unknown') }, { type: 'progress', sceneId: '__proto__', value: { percent: 8, updatedAt: firstDate } }, { type: 'progress', sceneId: 'HC-06-001', value: { percent: 101, updatedAt: firstDate } }, { type: 'reminder' }]) assert.equal((await a(body)).status, 400);
+  const response = await a({ type: 'progress', sceneId: 'HC-06-001', value: { percent: 8, updatedAt: firstDate, email: 'discard@example.com', input: 'discard' } });
+  assert.deepEqual(response.data.progress['HC-06-001'], { percent: 8, updatedAt: firstDate });
+  assert.ok(!JSON.stringify(response).includes(codeHash));
+  assert.ok(!JSON.stringify(response).includes(code));
+});
+test('a different membership has a different learning identity and no access to the first member data', async () => {
+  const { app, repository } = setup(); const a = await browser(app, '127.0.0.1');
+  await a({ type: 'learn', entryId: 'word-cavity' });
+  const other = 'YZ-ANOTHER-TEST-CODE';
+  await repository.putCode(keyedHash(config.codePepper, other), { type: 'founder', expiresAt: null });
+  const redeemed = await app(request('/v1/membership/redeem', { method: 'POST', body: { code: other }, ip: '127.0.0.3' }));
+  const response = await app(request('/v1/learning', { cookie: responseCookies(redeemed) }));
+  const result = JSON.parse(response.body);
+  assert.deepEqual(result.data, { progress: {}, learned: [], mistakes: [] });
+  assert.notEqual(result.learningId, (await a()).learningId);
+});
+
+test('staging cookie namespace does not replace production credentials', async () => {
+  const { app } = setup({ cookiePrefix: 'yz_member_staging' });
+  const response = await app(request('/v1/membership/redeem', { method: 'POST', body: { code } }));
+  assert.ok(response.headers['Set-Cookie'].every(value => value.startsWith('yz_member_staging_')));
+  const cookie = responseCookies(response);
+  const learning = await app(request('/v1/learning', { cookie }));
+  assert.equal(learning.statusCode, 200);
+  assert.ok(learning.headers['Set-Cookie'][0].startsWith('yz_member_staging_session='));
 });
