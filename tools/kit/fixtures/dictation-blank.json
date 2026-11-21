@@ -1,0 +1,217 @@
+{
+  "entries": [
+    {
+      "id": "chunk-bite-down",
+      "key": "bite down",
+      "kind": "chunk",
+      "chunkType": "短语动词",
+      "text": "bite down",
+      "meaningZh": "咬住，咬合",
+      "audioUrl": "https://go.learnyzenglish.com/content/tts/64a4ec4540fb35ae647f70eab23ffca52df255d9b7566a96cb7bb1b0d2837e2c.mp3",
+      "occurrences": [
+        {
+          "sceneId": "HC-06-001",
+          "titleZh": "跟牙医描述牙疼",
+          "collectionId": "C1",
+          "collectionOrder": 1,
+          "slug": "describing-different-types-of-pain",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "It hurts when I bite down, especially when I eat something hard.",
+          "anchor_start": 15.3,
+          "displayExample": "It hurts when I bite down, especially when I eat something hard."
+        },
+        {
+          "sceneId": "HC-06-002",
+          "titleZh": "拍牙片",
+          "collectionId": "C1",
+          "collectionOrder": 2,
+          "slug": "taking-dental-x-rays",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Please bite down gently.",
+          "anchor_start": 6.16,
+          "displayExample": "Please bite down gently."
+        },
+        {
+          "sceneId": "HC-06-002",
+          "titleZh": "拍牙片",
+          "collectionId": "C1",
+          "collectionOrder": 2,
+          "slug": "taking-dental-x-rays",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Please place your chin here and bite down on the plastic piece.",
+          "anchor_start": 23.42,
+          "displayExample": "Please place your chin here and bite down on the plastic piece."
+        },
+        {
+          "sceneId": "HC-06-004",
+          "titleZh": "补牙",
+          "collectionId": "C1",
+          "collectionOrder": 4,
+          "slug": "dental-filling",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Bite down and grind left and right.",
+          "anchor_start": 36.84,
+          "displayExample": "Bite down and grind left and right."
+        }
+      ]
+    },
+    {
+      "id": "chunk-a-deep-cavity",
+      "key": "a deep cavity",
+      "kind": "chunk",
+      "chunkType": "形容词+名词",
+      "text": "a deep cavity",
+      "meaningZh": "深龋洞",
+      "audioUrl": "https://go.learnyzenglish.com/content/tts/3b9d4ee559cc9df86c57b7da06ea0b153f6c4359b95b8edba596a36c74033a24.mp3",
+      "occurrences": [
+        {
+          "sceneId": "HC-06-001",
+          "titleZh": "跟牙医描述牙疼",
+          "collectionId": "C1",
+          "collectionOrder": 1,
+          "slug": "describing-different-types-of-pain",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "The X-ray shows a fairly deep cavity in that tooth.",
+          "anchor_start": 48.22,
+          "displayExample": "The X-ray shows a fairly deep cavity in that tooth."
+        }
+      ]
+    },
+    {
+      "id": "word-cavity",
+      "key": "cavity",
+      "kind": "word",
+      "text": "cavity",
+      "meaningZh": "蛀洞",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-001",
+          "titleZh": "跟牙医描述牙疼",
+          "collectionId": "C1",
+          "collectionOrder": 1,
+          "slug": "",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "The X-ray shows a fairly deep cavity in that tooth.",
+          "anchor_start": 48.22,
+          "displayExample": "The X-ray shows a fairly deep cavity in that tooth.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈkævəti/",
+      "pos": "名词",
+      "note": "蛀牙蛀出的洞，深了可能要根管治疗"
+    }
+  ],
+  "courier": [
+    {
+      "order": 1,
+      "speaker": "Dan",
+      "en": "Hi, this is Dan with a delivery for Aria.",
+      "zh": "你好，我是快递员 Dan，有一个 Aria 的包裹。"
+    },
+    {
+      "order": 2,
+      "speaker": "Dan",
+      "en": "I'm at your building, but no one's answering.",
+      "zh": "我在你楼下，但没人应门。"
+    },
+    {
+      "order": 3,
+      "speaker": "Aria",
+      "en": "Hi, Dan. I'm at work.",
+      "zh": "你好，Dan。我在上班。"
+    },
+    {
+      "order": 4,
+      "speaker": "Aria",
+      "en": "I can't share the building code, but I can let you in.",
+      "zh": "门禁密码不能外给，但我可以让你进去。"
+    },
+    {
+      "order": 5,
+      "speaker": "Dan",
+      "en": "Okay, how?",
+      "zh": "好，怎么进去？"
+    },
+    {
+      "order": 6,
+      "speaker": "Aria",
+      "en": "See the touchscreen beside the door?",
+      "zh": "看到门旁边的触摸屏了吗？"
+    },
+    {
+      "order": 7,
+      "speaker": "Aria",
+      "en": "Tap “search” and type Aria.",
+      "zh": "点 “search”，然后输入 Aria。"
+    },
+    {
+      "order": 8,
+      "speaker": "Dan",
+      "en": "Found you. Now what?",
+      "zh": "找到你了。接下来呢？"
+    },
+    {
+      "order": 9,
+      "speaker": "Aria",
+      "en": "Tap “call.”",
+      "zh": "点 “call”。"
+    },
+    {
+      "order": 10,
+      "speaker": "Aria",
+      "en": "It'll ring my phone, and I can open the door remotely.",
+      "zh": "它会打到我手机上，我可以远程开门。"
+    },
+    {
+      "order": 11,
+      "speaker": "Dan",
+      "en": "It's ringing.",
+      "zh": "正在响。"
+    },
+    {
+      "order": 12,
+      "speaker": "Aria",
+      "en": "Got it. I'm opening the door now—you should hear a click.",
+      "zh": "收到了。我现在开门——你应该会听到咔哒一声。"
+    },
+    {
+      "order": 13,
+      "speaker": "Dan",
+      "en": "I heard it. I'm in.",
+      "zh": "听到了。我进来了。"
+    },
+    {
+      "order": 14,
+      "speaker": "Aria",
+      "en": "The parcel room is on your right, past the mailboxes. Please put it there, not in the lobby. Packages go missing there.",
+      "zh": "包裹间在你右手边，过了邮箱就是。请放在那里，不要放大厅，大厅里的包裹容易丢。"
+    },
+    {
+      "order": 15,
+      "speaker": "Dan",
+      "en": "Done. I sent a photo to your app.",
+      "zh": "放好了。我把照片发到你的 App 上了。"
+    },
+    {
+      "order": 16,
+      "speaker": "Aria",
+      "en": "I see it. Perfect, thank you.",
+      "zh": "看到了。太好了，谢谢。"
+    }
+  ]
+}

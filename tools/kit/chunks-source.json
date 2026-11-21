@@ -1,0 +1,1901 @@
+{
+ "chunks": [
+  {
+   "id": "chunk-health-card",
+   "key": "health card",
+   "kind": "chunk",
+   "chunkType": "名词+名词",
+   "text": "health card",
+   "meaningZh": "（加拿大）健康卡、医疗卡",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-02-001",
+     "titleZh": "到诊所签到并候诊",
+     "collectionId": "C2",
+     "collectionOrder": 3,
+     "slug": "checking-in-at-a-clinic",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-02-001/HC-02-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-02-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "May I have your health card, please?",
+     "anchor_start": 5.6,
+     "displayExample": "May I have your health card, please?"
+    },
+    {
+     "sceneId": "HC-03-002",
+     "titleZh": "偏头痛去看家庭医生",
+     "collectionId": "C2",
+     "collectionOrder": 4,
+     "slug": "seeing-a-doctor-for-a-migraine",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-03-002/HC-03-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-03-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "It'll be covered under your health card.",
+     "anchor_start": 50.77,
+     "displayExample": "It'll be covered under your health card."
+    },
+    {
+     "sceneId": "HC-04-001",
+     "titleZh": "电话预约流感疫苗",
+     "collectionId": "C2",
+     "collectionOrder": 9,
+     "slug": "booking-flu-shots-by-phone",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-04-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Please bring both health cards.",
+     "anchor_start": 36.11,
+     "displayExample": "Please bring both health cards."
+    },
+    {
+     "sceneId": "HC-04-001",
+     "titleZh": "电话预约流感疫苗",
+     "collectionId": "C2",
+     "collectionOrder": 9,
+     "slug": "booking-flu-shots-by-phone",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-04-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Got it. Saturday, ten thirty, health cards — see you then.",
+     "anchor_start": 49.21,
+     "displayExample": "Got it. Saturday, ten thirty, health cards — see you then."
+    },
+    {
+     "sceneId": "HC-04-003",
+     "titleZh": "带孩子去药房打流感疫苗",
+     "collectionId": "C2",
+     "collectionOrder": 10,
+     "slug": "getting-our-flu-shots-at-the-pharmacy",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-04-003/HC-04-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-04-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Can I see both health cards?",
+     "anchor_start": 4.93,
+     "displayExample": "Can I see both health cards?"
+    },
+    {
+     "sceneId": "HC-01-004",
+     "titleZh": "摔到头，先打811",
+     "collectionId": "C2",
+     "collectionOrder": 11,
+     "slug": "hit-my-head-calling-811-first",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-01-004/HC-01-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-01-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Just your health card.",
+     "anchor_start": 24.26,
+     "displayExample": "Just your health card."
+    }
+   ]
+  },
+  {
+   "id": "chunk-pick-up",
+   "key": "pick up",
+   "kind": "chunk",
+   "chunkType": "短语动词",
+   "text": "pick up",
+   "meaningZh": "取（药/件）；接（人）",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "FD-01-001",
+     "titleZh": "电话订披萨并到店自取",
+     "collectionId": "C7",
+     "collectionOrder": 1,
+     "slug": "ordering-a-pizza-by-phone-for-pickup",
+     "videoUrl": "https://go.learnyzenglish.com/content/FD-01-001/FD-01-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/FD-01-001/scene.json",
+     "isFreeExperience": true,
+     "anchor_line": "You can pay when you pick it up.",
+     "anchor_start": 42.6,
+     "displayExample": "You can pay when you pick it up."
+    },
+    {
+     "sceneId": "SF-02-003",
+     "titleZh": "提前接孩子",
+     "collectionId": "C4",
+     "collectionOrder": 5,
+     "slug": "picking-up-a-child-early",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-02-003/SF-02-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-02-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "I'm here to pick up my son early today.",
+     "anchor_start": 2.47,
+     "displayExample": "I'm here to pick up my son early today."
+    },
+    {
+     "sceneId": "SF-02-003",
+     "titleZh": "提前接孩子",
+     "collectionId": "C4",
+     "collectionOrder": 5,
+     "slug": "picking-up-a-child-early",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-02-003/SF-02-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-02-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Ethan's mom is here to pick him up early.",
+     "anchor_start": 16.53,
+     "displayExample": "Ethan's mom is here to pick him up early."
+    },
+    {
+     "sceneId": "FD-01-005",
+     "titleZh": "在 Tim Hortons 驾车取餐",
+     "collectionId": "C7",
+     "collectionOrder": 6,
+     "slug": "tim-hortons-drive-thru-pickup",
+     "videoUrl": "https://go.learnyzenglish.com/content/FD-01-005/FD-01-005-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/FD-01-005/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Hi, I’m picking up a mobile order.",
+     "anchor_start": 3.67,
+     "displayExample": "Hi, I’m picking up a mobile order."
+    },
+    {
+     "sceneId": "HC-04-002",
+     "titleZh": "去药房取处方药",
+     "collectionId": "C2",
+     "collectionOrder": 12,
+     "slug": "picking-up-a-prescription-at-the-pharmacy",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-04-002/HC-04-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-04-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Hi, I'm here to pick up a prescription for Aria.",
+     "anchor_start": 1.63,
+     "displayExample": "Hi, I'm here to pick up a prescription for Aria."
+    }
+   ]
+  },
+  {
+   "id": "chunk-right-away",
+   "key": "right away",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "right away",
+   "meaningZh": "立刻，马上",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "ST-02-002",
+     "titleZh": "公园里家长聊天",
+     "collectionId": "C5",
+     "collectionOrder": 6,
+     "slug": "chatting-with-another-parent-at-the-playground",
+     "videoUrl": "https://go.learnyzenglish.com/content/ST-02-002/ST-02-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/ST-02-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "They started playing almost right away.",
+     "anchor_start": 3.22,
+     "displayExample": "They started playing almost right away."
+    },
+    {
+     "sceneId": "SF-04-003",
+     "titleZh": "孩子过敏计划",
+     "collectionId": "C4",
+     "collectionOrder": 11,
+     "slug": "checking-in-about-a-child-s-allergy-plan",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-04-003/SF-04-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-04-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Give epinephrine right away, call 911, then call me.",
+     "anchor_start": 26.26,
+     "displayExample": "Give epinephrine right away, call 911, then call me."
+    },
+    {
+     "sceneId": "HC-05-003",
+     "titleZh": "急诊候诊与分诊",
+     "collectionId": "C2",
+     "collectionOrder": 13,
+     "slug": "waiting-and-triage-in-the-emergency-room",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-05-003/HC-05-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-05-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "But if you feel worse, come tell us right away.",
+     "anchor_start": 20.91,
+     "displayExample": "But if you feel worse, come tell us right away."
+    },
+    {
+     "sceneId": "SF-04-002",
+     "titleZh": "与校方沟通欺凌或社交冲突问题",
+     "collectionId": "C4",
+     "collectionOrder": 13,
+     "slug": "addressing-bullying-or-social-conflicts-with-school-staff",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-04-002/SF-04-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-04-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "We can identify a staff member your child can go to right away and review supervision or contact arrangements as needed.",
+     "anchor_start": 23.4,
+     "displayExample": "We can identify a staff member your child can go to right away and review supervision or contact arrangements as needed."
+    }
+   ]
+  },
+  {
+   "id": "chunk-bite-down",
+   "key": "bite down",
+   "kind": "chunk",
+   "chunkType": "短语动词",
+   "text": "bite down",
+   "meaningZh": "咬住，咬合",
+   "audioUrl": "https://go.learnyzenglish.com/content/tts/64a4ec4540fb35ae647f70eab23ffca52df255d9b7566a96cb7bb1b0d2837e2c.mp3",
+   "occurrences": [
+    {
+     "sceneId": "HC-06-001",
+     "titleZh": "跟牙医描述牙疼",
+     "collectionId": "C1",
+     "collectionOrder": 1,
+     "slug": "describing-different-types-of-pain",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "It hurts when I bite down, especially when I eat something hard.",
+     "anchor_start": 15.3,
+     "displayExample": "It hurts when I bite down, especially when I eat something hard."
+    },
+    {
+     "sceneId": "HC-06-002",
+     "titleZh": "拍牙片",
+     "collectionId": "C1",
+     "collectionOrder": 2,
+     "slug": "taking-dental-x-rays",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Please bite down gently.",
+     "anchor_start": 6.16,
+     "displayExample": "Please bite down gently."
+    },
+    {
+     "sceneId": "HC-06-002",
+     "titleZh": "拍牙片",
+     "collectionId": "C1",
+     "collectionOrder": 2,
+     "slug": "taking-dental-x-rays",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Please place your chin here and bite down on the plastic piece.",
+     "anchor_start": 23.42,
+     "displayExample": "Please place your chin here and bite down on the plastic piece."
+    },
+    {
+     "sceneId": "HC-06-004",
+     "titleZh": "补牙",
+     "collectionId": "C1",
+     "collectionOrder": 4,
+     "slug": "dental-filling",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Bite down and grind left and right.",
+     "anchor_start": 36.84,
+     "displayExample": "Bite down and grind left and right."
+    }
+   ]
+  },
+  {
+   "id": "chunk-business-days",
+   "key": "business days",
+   "kind": "chunk",
+   "chunkType": "名词+名词",
+   "text": "business days",
+   "meaningZh": "工作日（算办理时限的说法）",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-03-004",
+     "titleZh": "在检验中心抽血",
+     "collectionId": "C2",
+     "collectionOrder": 1,
+     "slug": "getting-blood-work-done-at-a-diagnostic-lab",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-03-004/HC-03-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-03-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Get them in 2 to 3 business days.",
+     "anchor_start": 39.39,
+     "displayExample": "Get them in 2 to 3 business days."
+    },
+    {
+     "sceneId": "SF-01-001",
+     "titleZh": "给孩子办入学注册",
+     "collectionId": "C4",
+     "collectionOrder": 7,
+     "slug": "registering-your-child-for-school",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-01-001/SF-01-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-01-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Usually three to five business days.",
+     "anchor_start": 42.68,
+     "displayExample": "Usually three to five business days."
+    },
+    {
+     "sceneId": "SH-01-006",
+     "titleZh": "护肤品引起不适后办理退货",
+     "collectionId": "C8",
+     "collectionOrder": 19,
+     "slug": "returning-skincare-after-a-reaction",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-006/SH-01-006-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-006/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "It may take a few business days to appear.",
+     "anchor_start": 37.37,
+     "displayExample": "It may take a few business days to appear."
+    }
+   ]
+  },
+  {
+   "id": "chunk-check-in",
+   "key": "check in",
+   "kind": "chunk",
+   "chunkType": "短语动词",
+   "text": "check in",
+   "meaningZh": "办理登记；定期联系跟进",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-02-001",
+     "titleZh": "到诊所签到并候诊",
+     "collectionId": "C2",
+     "collectionOrder": 3,
+     "slug": "checking-in-at-a-clinic",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-02-001/HC-02-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-02-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "You're all checked in.",
+     "anchor_start": 17.3,
+     "displayExample": "You're all checked in."
+    },
+    {
+     "sceneId": "SF-03-003",
+     "titleZh": "家长会：需要帮助",
+     "collectionId": "C4",
+     "collectionOrder": 3,
+     "slug": "parent-teacher-meeting-a-little-more-support",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-03-003/SF-03-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-03-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Let's check in in about a month.",
+     "anchor_start": 48.7,
+     "displayExample": "Let's check in in about a month."
+    },
+    {
+     "sceneId": "SF-03-005",
+     "titleZh": "老师说Leo下午过得不太顺利",
+     "collectionId": "C4",
+     "collectionOrder": 12,
+     "slug": "teacher-says-leo-had-a-rough-afternoon",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-03-005/SF-03-005-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-03-005/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Just check in with him tonight.",
+     "anchor_start": 16.81,
+     "displayExample": "Just check in with him tonight."
+    }
+   ]
+  },
+  {
+   "id": "chunk-date-of-birth",
+   "key": "date of birth",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "date of birth",
+   "meaningZh": "出生日期",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-03-004",
+     "titleZh": "在检验中心抽血",
+     "collectionId": "C2",
+     "collectionOrder": 1,
+     "slug": "getting-blood-work-done-at-a-diagnostic-lab",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-03-004/HC-03-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-03-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Thank you. Could you please confirm your date of birth?",
+     "anchor_start": 9.83,
+     "displayExample": "Thank you. Could you please confirm your date of birth?"
+    },
+    {
+     "sceneId": "HC-03-004",
+     "titleZh": "在检验中心抽血",
+     "collectionId": "C2",
+     "collectionOrder": 1,
+     "slug": "getting-blood-work-done-at-a-diagnostic-lab",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-03-004/HC-03-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-03-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "My date of birth is January 15, 1994.",
+     "anchor_start": 12.95,
+     "displayExample": "My date of birth is January 15, 1994."
+    },
+    {
+     "sceneId": "HC-01-002",
+     "titleZh": "孩子发烧时电话约诊",
+     "collectionId": "C2",
+     "collectionOrder": 2,
+     "slug": "calling-about-a-childs-fever",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-01-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "May I confirm his date of birth and your call back number?",
+     "anchor_start": 24.29,
+     "displayExample": "May I confirm his date of birth and your call back number?"
+    },
+    {
+     "sceneId": "HC-04-002",
+     "titleZh": "去药房取处方药",
+     "collectionId": "C2",
+     "collectionOrder": 12,
+     "slug": "picking-up-a-prescription-at-the-pharmacy",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-04-002/HC-04-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-04-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Sure. Could you please confirm your date of birth and address?",
+     "anchor_start": 3.55,
+     "displayExample": "Sure. Could you please confirm your date of birth and address?"
+    }
+   ]
+  },
+  {
+   "id": "chunk-fragrancefree",
+   "key": "fragrancefree",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "fragrance-free",
+   "meaningZh": "无香型的（护肤品）",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SH-03-003",
+     "titleZh": "挑选简单的基础护肤品",
+     "collectionId": "C8",
+     "collectionOrder": 14,
+     "slug": "building-a-simple-skincare-routine",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-03-003/SH-03-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-03-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "This moisturizer is fragrance-free, and this sunscreen works under makeup. You can try both here.",
+     "anchor_start": 38.09,
+     "displayExample": "This moisturizer is fragrance-free, and this sunscreen works under makeup. You can try both here."
+    },
+    {
+     "sceneId": "SH-03-004",
+     "titleZh": "为敏感肌挑选面霜",
+     "collectionId": "C8",
+     "collectionOrder": 15,
+     "slug": "choosing-a-moisturizer-for-sensitive-skin",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-03-004/SH-03-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-03-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "This gel cream is fragrance-free. This one is richer and lightly fragranced.",
+     "anchor_start": 17.01,
+     "displayExample": "This gel cream is fragrance-free. This one is richer and lightly fragranced."
+    },
+    {
+     "sceneId": "SH-03-007",
+     "titleZh": "寻找价格更实惠的替代选择",
+     "collectionId": "C8",
+     "collectionOrder": 18,
+     "slug": "finding-a-more-affordable-alternative",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-03-007/SH-03-007-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-03-007/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "This serum is lightweight and fragrance-free.",
+     "anchor_start": 0,
+     "displayExample": "This serum is lightweight and fragrance-free."
+    },
+    {
+     "sceneId": "SH-03-007",
+     "titleZh": "寻找价格更实惠的替代选择",
+     "collectionId": "C8",
+     "collectionOrder": 18,
+     "slug": "finding-a-more-affordable-alternative",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-03-007/SH-03-007-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-03-007/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "This one is thirty-four dollars, and it’s also fragrance-free.",
+     "anchor_start": 14.29,
+     "displayExample": "This one is thirty-four dollars, and it’s also fragrance-free."
+    }
+   ]
+  },
+  {
+   "id": "chunk-settle-in",
+   "key": "settle in",
+   "kind": "chunk",
+   "chunkType": "短语动词",
+   "text": "settle in",
+   "meaningZh": "安顿下来，适应新环境",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SF-03-004",
+     "titleZh": "学校开放日：第一次见新老师",
+     "collectionId": "C4",
+     "collectionOrder": 4,
+     "slug": "first-open-house-meeting-the-new-teacher",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-03-004/SF-03-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-03-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "How is he settling into the new grade?",
+     "anchor_start": 18.29,
+     "displayExample": "How is he settling into the new grade?"
+    },
+    {
+     "sceneId": "ST-02-001",
+     "titleZh": "校门口和家长寒暄",
+     "collectionId": "C5",
+     "collectionOrder": 5,
+     "slug": "small-talk-with-another-parent-at-school-drop-off",
+     "videoUrl": "https://go.learnyzenglish.com/content/ST-02-001/ST-02-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/ST-02-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "She was a little nervous at first, but she's settling in now.",
+     "anchor_start": 9.8,
+     "displayExample": "She was a little nervous at first, but she's settling in now."
+    },
+    {
+     "sceneId": "ST-03-002",
+     "titleZh": "茶水间认识新同事",
+     "collectionId": "C5",
+     "collectionOrder": 8,
+     "slug": "meeting-a-new-colleague-in-the-break-room",
+     "videoUrl": "https://go.learnyzenglish.com/content/ST-03-002/ST-03-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/ST-03-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "How are you settling in?",
+     "anchor_start": 8.52,
+     "displayExample": "How are you settling in?"
+    }
+   ]
+  },
+  {
+   "id": "chunk-sold-out",
+   "key": "sold out",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "sold out",
+   "meaningZh": "卖光了，售罄",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "DL-01-006",
+     "titleZh": "约朋友周末看电影",
+     "collectionId": "C12",
+     "collectionOrder": 3,
+     "slug": "inviting-a-friend-to-the-movies",
+     "videoUrl": "https://go.learnyzenglish.com/content/DL-01-006/DL-01-006-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/DL-01-006/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Oh no, the 2:30 is almost sold out.",
+     "anchor_start": 9.61,
+     "displayExample": "Oh no, the 2:30 is almost sold out."
+    },
+    {
+     "sceneId": "SH-01-012",
+     "titleZh": "特价商品卖完，要张Rain Check",
+     "collectionId": "C8",
+     "collectionOrder": 6,
+     "slug": "getting-a-rain-check-for-a-sold-out-sale-item",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-012/SH-01-012-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-012/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "It is, but unfortunately, we’re sold out.",
+     "anchor_start": 7.71,
+     "displayExample": "It is, but unfortunately, we’re sold out."
+    },
+    {
+     "sceneId": "SH-01-014",
+     "titleZh": "在影院买电影票",
+     "collectionId": "C8",
+     "collectionOrder": 8,
+     "slug": "buying-movie-tickets-at-the-cinema",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-014/SH-01-014-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-014/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "The 7:30 showing is almost sold out.",
+     "anchor_start": 9.63,
+     "displayExample": "The 7:30 showing is almost sold out."
+    }
+   ]
+  },
+  {
+   "id": "chunk-try-on",
+   "key": "try on",
+   "kind": "chunk",
+   "chunkType": "短语动词",
+   "text": "try on",
+   "meaningZh": "试穿，试戴",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HO-03-005",
+     "titleZh": "上门安装家庭宽带",
+     "collectionId": "C9",
+     "collectionOrder": 3,
+     "slug": "home-internet-installation-technician-visit",
+     "videoUrl": "https://go.learnyzenglish.com/content/HO-03-005/HO-03-005-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HO-03-005/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Try it on your phone?",
+     "anchor_start": 41.45,
+     "displayExample": "Try it on your phone?"
+    },
+    {
+     "sceneId": "SH-03-002",
+     "titleZh": "挑口红",
+     "collectionId": "C8",
+     "collectionOrder": 13,
+     "slug": "lipstick-shopping",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-03-002/SH-03-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-03-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Oh, I love that. Can I try it on?",
+     "anchor_start": 22.43,
+     "displayExample": "Oh, I love that. Can I try it on?"
+    },
+    {
+     "sceneId": "SH-03-007",
+     "titleZh": "寻找价格更实惠的替代选择",
+     "collectionId": "C8",
+     "collectionOrder": 18,
+     "slug": "finding-a-more-affordable-alternative",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-03-007/SH-03-007-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-03-007/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Yes, please. I’ll try one on each hand.",
+     "anchor_start": 25.53,
+     "displayExample": "Yes, please. I’ll try one on each hand."
+    }
+   ]
+  },
+  {
+   "id": "chunk-a-dull-ache",
+   "key": "a dull ache",
+   "kind": "chunk",
+   "chunkType": "形容词+名词",
+   "text": "a dull ache",
+   "meaningZh": "隐隐的钝痛",
+   "audioUrl": "https://go.learnyzenglish.com/content/tts/a100e000964358bc26c8cf75e35a0ea374066afdada152bbc14c0eb9755d85fc.mp3",
+   "occurrences": [
+    {
+     "sceneId": "HC-06-001",
+     "titleZh": "跟牙医描述牙疼",
+     "collectionId": "C1",
+     "collectionOrder": 1,
+     "slug": "describing-different-types-of-pain",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "It's a dull ache most of the time, throbbing.",
+     "anchor_start": 11.66,
+     "displayExample": "It's a dull ache most of the time, throbbing."
+    },
+    {
+     "sceneId": "HC-07-006",
+     "titleZh": "腰痛看家庭医生",
+     "collectionId": "C2",
+     "collectionOrder": 7,
+     "slug": "lower-back-pain-at-the-family-doctor",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-07-006/HC-07-006-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-07-006/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Just this dull ache that won't go away.",
+     "anchor_start": 3.81,
+     "displayExample": "Just this dull ache that won't go away."
+    },
+    {
+     "sceneId": "HC-07-006",
+     "titleZh": "腰痛看家庭医生",
+     "collectionId": "C2",
+     "collectionOrder": 7,
+     "slug": "lower-back-pain-at-the-family-doctor",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-07-006/HC-07-006-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-07-006/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Is the pain sharp or more of a dull ache?",
+     "anchor_start": 16.39,
+     "displayExample": "Is the pain sharp or more of a dull ache?"
+    }
+   ]
+  },
+  {
+   "id": "chunk-a-name-for-the-order",
+   "key": "a name for the order",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "a name for the order",
+   "meaningZh": "点单留的名字",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "FD-01-001",
+     "titleZh": "电话订披萨并到店自取",
+     "collectionId": "C7",
+     "collectionOrder": 1,
+     "slug": "ordering-a-pizza-by-phone-for-pickup",
+     "videoUrl": "https://go.learnyzenglish.com/content/FD-01-001/FD-01-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/FD-01-001/scene.json",
+     "isFreeExperience": true,
+     "anchor_line": "Can I get a name for the order?",
+     "anchor_start": 38.16,
+     "displayExample": "Can I get a name for the order?"
+    },
+    {
+     "sceneId": "FD-01-010",
+     "titleZh": "星巴克办公：先点单再坐",
+     "collectionId": "C7",
+     "collectionOrder": 11,
+     "slug": "ordering-before-sitting-down-to-work",
+     "videoUrl": "https://go.learnyzenglish.com/content/FD-01-010/FD-01-010-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/FD-01-010/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Can I get a name for the order?",
+     "anchor_start": 28.87,
+     "displayExample": "Can I get a name for the order?"
+    }
+   ]
+  },
+  {
+   "id": "chunk-by-the-way",
+   "key": "by the way",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "by the way",
+   "meaningZh": "顺便说一句",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "ST-01-004",
+     "titleZh": "遛狗时认识邻居",
+     "collectionId": "C5",
+     "collectionOrder": 4,
+     "slug": "meeting-a-neighbour-while-walking-the-dog",
+     "videoUrl": "https://go.learnyzenglish.com/content/ST-01-004/ST-01-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/ST-01-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Yes, I'm Aria, by the way.",
+     "anchor_start": 13.66,
+     "displayExample": "Yes, I'm Aria, by the way."
+    },
+    {
+     "sceneId": "FD-01-011",
+     "titleZh": "餐厅电话订位",
+     "collectionId": "C7",
+     "collectionOrder": 10,
+     "slug": "phone-table-reservation",
+     "videoUrl": "https://go.learnyzenglish.com/content/FD-01-011/FD-01-011-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/FD-01-011/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "By the way, how's the parking there?",
+     "anchor_start": 20.35,
+     "displayExample": "By the way, how's the parking there?"
+    }
+   ]
+  },
+  {
+   "id": "chunk-chest-pain",
+   "key": "chest pain",
+   "kind": "chunk",
+   "chunkType": "名词+名词",
+   "text": "chest pain",
+   "meaningZh": "胸痛",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-03-006",
+     "titleZh": "听懂诊断：病毒感染怎么办",
+     "collectionId": "C2",
+     "collectionOrder": 5,
+     "slug": "discussing-the-diagnosis-it-s-probably-viral",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-03-006/HC-03-006-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-03-006/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Yes. Get medical help sooner if you have trouble breathing, chest pain, or signs of dehydration.",
+     "anchor_start": 39.99,
+     "displayExample": "Yes. Get medical help sooner if you have trouble breathing, chest pain, or signs of dehydration."
+    },
+    {
+     "sceneId": "HC-05-003",
+     "titleZh": "急诊候诊与分诊",
+     "collectionId": "C2",
+     "collectionOrder": 13,
+     "slug": "waiting-and-triage-in-the-emergency-room",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-05-003/HC-05-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-05-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Chest pain goes before a sprained ankle, every time.",
+     "anchor_start": 13.51,
+     "displayExample": "Chest pain goes before a sprained ankle, every time."
+    }
+   ]
+  },
+  {
+   "id": "chunk-fall-behind",
+   "key": "fall behind",
+   "kind": "chunk",
+   "chunkType": "短语动词",
+   "text": "fall behind",
+   "meaningZh": "落后，跟不上进度",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SF-03-002",
+     "titleZh": "家长会：整体不错",
+     "collectionId": "C4",
+     "collectionOrder": 2,
+     "slug": "parent-teacher-meeting-doing-ok",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-03-002/SF-03-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-03-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Do you think he's falling behind?",
+     "anchor_start": 27.98,
+     "displayExample": "Do you think he's falling behind?"
+    },
+    {
+     "sceneId": "SF-03-003",
+     "titleZh": "家长会：需要帮助",
+     "collectionId": "C4",
+     "collectionOrder": 3,
+     "slug": "parent-teacher-meeting-a-little-more-support",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-03-003/SF-03-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-03-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Sorry, when you say “a little more support,” do you mean she's falling behind?",
+     "anchor_start": 15.4,
+     "displayExample": "Sorry, when you say “a little more support,” do you mean she's falling behind?"
+    },
+    {
+     "sceneId": "SF-03-003",
+     "titleZh": "家长会：需要帮助",
+     "collectionId": "C4",
+     "collectionOrder": 3,
+     "slug": "parent-teacher-meeting-a-little-more-support",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-03-003/SF-03-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-03-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "No, I wouldn't say she's falling behind.",
+     "anchor_start": 20.24,
+     "displayExample": "No, I wouldn't say she's falling behind."
+    }
+   ]
+  },
+  {
+   "id": "chunk-flu-shot",
+   "key": "flu shot",
+   "kind": "chunk",
+   "chunkType": "名词+名词",
+   "text": "flu shot",
+   "meaningZh": "流感疫苗针",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-04-001",
+     "titleZh": "电话预约流感疫苗",
+     "collectionId": "C2",
+     "collectionOrder": 9,
+     "slug": "booking-flu-shots-by-phone",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-04-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Hi, I'd like to book a flu shot, please.",
+     "anchor_start": 0,
+     "displayExample": "Hi, I'd like to book a flu shot, please."
+    },
+    {
+     "sceneId": "HC-04-001",
+     "titleZh": "电话预约流感疫苗",
+     "collectionId": "C2",
+     "collectionOrder": 9,
+     "slug": "booking-flu-shots-by-phone",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-04-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Have you both had the flu shot before?",
+     "anchor_start": 12.51,
+     "displayExample": "Have you both had the flu shot before?"
+    },
+    {
+     "sceneId": "HC-04-001",
+     "titleZh": "电话预约流感疫苗",
+     "collectionId": "C2",
+     "collectionOrder": 9,
+     "slug": "booking-flu-shots-by-phone",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-04-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Done. Saturday, ten thirty, two flu shots.",
+     "anchor_start": 32.89,
+     "displayExample": "Done. Saturday, ten thirty, two flu shots."
+    },
+    {
+     "sceneId": "HC-04-003",
+     "titleZh": "带孩子去药房打流感疫苗",
+     "collectionId": "C2",
+     "collectionOrder": 10,
+     "slug": "getting-our-flu-shots-at-the-pharmacy",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-04-003/HC-04-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-04-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Hi, we have an appointment at ten thirty for flu shots.",
+     "anchor_start": 0,
+     "displayExample": "Hi, we have an appointment at ten thirty for flu shots."
+    }
+   ]
+  },
+  {
+   "id": "chunk-fully-booked",
+   "key": "fully booked",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "fully booked",
+   "meaningZh": "订满了，约满了",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HO-01-004",
+     "titleZh": "搬家第一天买床垫",
+     "collectionId": "C9",
+     "collectionOrder": 2,
+     "slug": "first-day-mattress-shopping",
+     "videoUrl": "https://go.learnyzenglish.com/content/HO-01-004/HO-01-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HO-01-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Our truck is fully booked today.",
+     "anchor_start": 19.31,
+     "displayExample": "Our truck is fully booked today."
+    },
+    {
+     "sceneId": "FD-01-011",
+     "titleZh": "餐厅电话订位",
+     "collectionId": "C7",
+     "collectionOrder": 10,
+     "slug": "phone-table-reservation",
+     "videoUrl": "https://go.learnyzenglish.com/content/FD-01-011/FD-01-011-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/FD-01-011/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "I'm sorry, we're fully booked at 6.",
+     "anchor_start": 9.97,
+     "displayExample": "I'm sorry, we're fully booked at 6."
+    }
+   ]
+  },
+  {
+   "id": "chunk-get-used-to",
+   "key": "get used to",
+   "kind": "chunk",
+   "chunkType": "介词搭配",
+   "text": "get used to",
+   "meaningZh": "习惯于，适应",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SF-03-004",
+     "titleZh": "学校开放日：第一次见新老师",
+     "collectionId": "C4",
+     "collectionOrder": 4,
+     "slug": "first-open-house-meeting-the-new-teacher",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-03-004/SF-03-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-03-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "It's still early, but he seems comfortable and is getting used to our routines.",
+     "anchor_start": 21.31,
+     "displayExample": "It's still early, but he seems comfortable and is getting used to our routines."
+    },
+    {
+     "sceneId": "ST-02-001",
+     "titleZh": "校门口和家长寒暄",
+     "collectionId": "C5",
+     "collectionOrder": 5,
+     "slug": "small-talk-with-another-parent-at-school-drop-off",
+     "videoUrl": "https://go.learnyzenglish.com/content/ST-02-001/ST-02-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/ST-02-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Mine is still getting used to the new routine.",
+     "anchor_start": 15.7,
+     "displayExample": "Mine is still getting used to the new routine."
+    }
+   ]
+  },
+  {
+   "id": "chunk-have-a-fever",
+   "key": "have a fever",
+   "kind": "chunk",
+   "chunkType": "动词+名词",
+   "text": "have a fever",
+   "meaningZh": "发烧",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-01-002",
+     "titleZh": "孩子发烧时电话约诊",
+     "collectionId": "C2",
+     "collectionOrder": 2,
+     "slug": "calling-about-a-childs-fever",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-01-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Hi, um, my son has a fever of 39 degrees.",
+     "anchor_start": 0,
+     "displayExample": "Hi, um, my son has a fever of 39 degrees."
+    },
+    {
+     "sceneId": "HC-04-001",
+     "titleZh": "电话预约流感疫苗",
+     "collectionId": "C2",
+     "collectionOrder": 9,
+     "slug": "booking-flu-shots-by-phone",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-04-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "And if either of you has a fever that day, call us and we'll rebook.",
+     "anchor_start": 44.67,
+     "displayExample": "And if either of you has a fever that day, call us and we'll rebook."
+    }
+   ]
+  },
+  {
+   "id": "chunk-loyalty-card",
+   "key": "loyalty card",
+   "kind": "chunk",
+   "chunkType": "名词+名词",
+   "text": "loyalty card",
+   "meaningZh": "积分卡",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SH-01-005",
+     "titleZh": "超市结账与付款",
+     "collectionId": "C8",
+     "collectionOrder": 1,
+     "slug": "grocery-checkout-and-paying",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-005/SH-01-005-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-005/scene.json",
+     "isFreeExperience": true,
+     "anchor_line": "Do you have a loyalty card?",
+     "anchor_start": 6.42,
+     "displayExample": "Do you have a loyalty card?"
+    },
+    {
+     "sceneId": "SH-01-009",
+     "titleZh": "超市结账时钱包落在车里",
+     "collectionId": "C8",
+     "collectionOrder": 3,
+     "slug": "wallet-left-in-the-car-at-grocery-checkout",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-009/SH-01-009-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-009/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Do you have a loyalty card?",
+     "anchor_start": 9.15,
+     "displayExample": "Do you have a loyalty card?"
+    }
+   ]
+  },
+  {
+   "id": "chunk-numb-the-area",
+   "key": "numb the area",
+   "kind": "chunk",
+   "chunkType": "动词+名词",
+   "text": "numb the area",
+   "meaningZh": "把这一块部位麻醉",
+   "audioUrl": "https://go.learnyzenglish.com/content/tts/7383067929aef57a4e9803f26a5d151044c9372b1fa77e30f7d90ea983ffb028.mp3",
+   "occurrences": [
+    {
+     "sceneId": "HC-06-004",
+     "titleZh": "补牙",
+     "collectionId": "C1",
+     "collectionOrder": 4,
+     "slug": "dental-filling",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "I'm going to numb the area first.",
+     "anchor_start": 9.41,
+     "displayExample": "I'm going to numb the area first."
+    },
+    {
+     "sceneId": "HC-06-005",
+     "titleZh": "种牙手术",
+     "collectionId": "C1",
+     "collectionOrder": 5,
+     "slug": "dental-implant-surgery",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-005/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "I'm going to numb the area now. You'll feel a small pinch.",
+     "anchor_start": 9.96,
+     "displayExample": "I'm going to numb the area now. You'll feel a small pinch."
+    }
+   ]
+  },
+  {
+   "id": "chunk-on-sale",
+   "key": "on sale",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "on sale",
+   "meaningZh": "打折中，促销中",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SH-01-010",
+     "titleZh": "买完降价了，申请退差价",
+     "collectionId": "C8",
+     "collectionOrder": 4,
+     "slug": "getting-a-price-adjustment-at-costco",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-010/SH-01-010-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-010/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Hi, I bought a lunch bag here last week, and I noticed it’s on sale now.",
+     "anchor_start": 0,
+     "displayExample": "Hi, I bought a lunch bag here last week, and I noticed it’s on sale now."
+    },
+    {
+     "sceneId": "SH-01-012",
+     "titleZh": "特价商品卖完，要张Rain Check",
+     "collectionId": "C8",
+     "collectionOrder": 6,
+     "slug": "getting-a-rain-check-for-a-sold-out-sale-item",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-012/SH-01-012-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-012/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Excuse me, is this air fryer still on sale for $79.99?",
+     "anchor_start": 3.87,
+     "displayExample": "Excuse me, is this air fryer still on sale for $79.99?"
+    }
+   ]
+  },
+  {
+   "id": "chunk-original-payment-method",
+   "key": "original payment method",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "original payment method",
+   "meaningZh": "原付款方式（退款原路返回）",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SH-02-002",
+     "titleZh": "退衣服",
+     "collectionId": "C8",
+     "collectionOrder": 12,
+     "slug": "returning-clothes",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-02-002/SH-02-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-02-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "I can refund this one back to your original payment method.",
+     "anchor_start": 11.19,
+     "displayExample": "I can refund this one back to your original payment method."
+    },
+    {
+     "sceneId": "SH-01-006",
+     "titleZh": "护肤品引起不适后办理退货",
+     "collectionId": "C8",
+     "collectionOrder": 19,
+     "slug": "returning-skincare-after-a-reaction",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-006/SH-01-006-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-006/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Yes. The refund will go back to the original payment method.",
+     "anchor_start": 33.95,
+     "displayExample": "Yes. The refund will go back to the original payment method."
+    }
+   ]
+  },
+  {
+   "id": "chunk-photo-id",
+   "key": "photo id",
+   "kind": "chunk",
+   "chunkType": "名词+名词",
+   "text": "photo ID",
+   "meaningZh": "带照片的身份证件",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HO-02-001",
+     "titleZh": "电话预约银行开户",
+     "collectionId": "C9",
+     "collectionOrder": 6,
+     "slug": "booking-an-appointment-to-open-a-bank-account",
+     "videoUrl": "https://go.learnyzenglish.com/content/HO-02-001/HO-02-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HO-02-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Please bring your photo ID. We will go over options.",
+     "anchor_start": 46.38,
+     "displayExample": "Please bring your photo ID. We will go over options."
+    },
+    {
+     "sceneId": "SF-05-001",
+     "titleZh": "报名课后项目和课外活动",
+     "collectionId": "C4",
+     "collectionOrder": 8,
+     "slug": "enrolling-in-after-school-programs-and-extracurriculars",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-05-001/SF-05-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-05-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "An authorized adult must use the East entrance and show photo ID.",
+     "anchor_start": 30.91,
+     "displayExample": "An authorized adult must use the East entrance and show photo ID."
+    }
+   ]
+  },
+  {
+   "id": "chunk-pressure-and-vibration",
+   "key": "pressure and vibration",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "pressure and vibration",
+   "meaningZh": "（治疗中感到的）压力和震动",
+   "audioUrl": "https://go.learnyzenglish.com/content/tts/acefae12721f24f24171a98c6daee1692de6bb348bda84f5820068e570db0c35.mp3",
+   "occurrences": [
+    {
+     "sceneId": "HC-06-004",
+     "titleZh": "补牙",
+     "collectionId": "C1",
+     "collectionOrder": 4,
+     "slug": "dental-filling",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "You'll feel some pressure and vibration, but it shouldn't hurt.",
+     "anchor_start": 30.8,
+     "displayExample": "You'll feel some pressure and vibration, but it shouldn't hurt."
+    },
+    {
+     "sceneId": "HC-06-005",
+     "titleZh": "种牙手术",
+     "collectionId": "C1",
+     "collectionOrder": 5,
+     "slug": "dental-implant-surgery",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-005/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "You may feel some pressure and vibration, but you shouldn't feel any sharp pain.",
+     "anchor_start": 4.4,
+     "displayExample": "You may feel some pressure and vibration, but you shouldn't feel any sharp pain."
+    }
+   ]
+  },
+  {
+   "id": "chunk-raise-your-hand",
+   "key": "raise your hand",
+   "kind": "chunk",
+   "chunkType": "动词+名词",
+   "text": "raise your hand",
+   "meaningZh": "举手",
+   "audioUrl": "https://go.learnyzenglish.com/content/tts/7788843c635ef185ad725c45f84111da9b09ed183b07e52221c23029012b8305.mp3",
+   "occurrences": [
+    {
+     "sceneId": "HC-06-003",
+     "titleZh": "洗牙",
+     "collectionId": "C1",
+     "collectionOrder": 3,
+     "slug": "getting-your-teeth-cleaned",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-003/HC-06-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "If you need a break at any time, just raise your hand.",
+     "anchor_start": 2.64,
+     "displayExample": "If you need a break at any time, just raise your hand."
+    },
+    {
+     "sceneId": "HC-06-005",
+     "titleZh": "种牙手术",
+     "collectionId": "C1",
+     "collectionOrder": 5,
+     "slug": "dental-implant-surgery",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-005/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Raise your hand if you feel any sharp pain.",
+     "anchor_start": 15.84,
+     "displayExample": "Raise your hand if you feel any sharp pain."
+    }
+   ]
+  },
+  {
+   "id": "chunk-reading-comprehension",
+   "key": "reading comprehension",
+   "kind": "chunk",
+   "chunkType": "名词+名词",
+   "text": "reading comprehension",
+   "meaningZh": "阅读理解（成绩单上的能力项）",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SF-03-001",
+     "titleZh": "家长会：表现很好",
+     "collectionId": "C4",
+     "collectionOrder": 1,
+     "slug": "parent-teacher-meeting",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-03-001/SF-03-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-03-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "That will really help strengthen his reading comprehension.",
+     "anchor_start": 31.46,
+     "displayExample": "That will really help strengthen his reading comprehension."
+    },
+    {
+     "sceneId": "SF-03-002",
+     "titleZh": "家长会：整体不错",
+     "collectionId": "C4",
+     "collectionOrder": 2,
+     "slug": "parent-teacher-meeting-doing-ok",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-03-002/SF-03-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-03-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Reading comprehension is main.",
+     "anchor_start": 13.68,
+     "displayExample": "Reading comprehension is main."
+    }
+   ]
+  },
+  {
+   "id": "chunk-sale-price",
+   "key": "sale price",
+   "kind": "chunk",
+   "chunkType": "名词+名词",
+   "text": "sale price",
+   "meaningZh": "折扣价，促销价",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SH-01-005",
+     "titleZh": "超市结账与付款",
+     "collectionId": "C8",
+     "collectionOrder": 1,
+     "slug": "grocery-checkout-and-paying",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-005/SH-01-005-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-005/scene.json",
+     "isFreeExperience": true,
+     "anchor_line": "Do I need one to get the sale prices?",
+     "anchor_start": 8.66,
+     "displayExample": "Do I need one to get the sale prices?"
+    },
+    {
+     "sceneId": "SH-01-012",
+     "titleZh": "特价商品卖完，要张Rain Check",
+     "collectionId": "C8",
+     "collectionOrder": 6,
+     "slug": "getting-a-rain-check-for-a-sold-out-sale-item",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-012/SH-01-012-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-012/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "It means you can buy it for the same sale price when it’s back in stock.",
+     "anchor_start": 20.28,
+     "displayExample": "It means you can buy it for the same sale price when it’s back in stock."
+    }
+   ]
+  },
+  {
+   "id": "chunk-sensitive-to",
+   "key": "sensitive to",
+   "kind": "chunk",
+   "chunkType": "介词搭配",
+   "text": "sensitive to",
+   "meaningZh": "对……敏感",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-06-001",
+     "titleZh": "跟牙医描述牙疼",
+     "collectionId": "C1",
+     "collectionOrder": 1,
+     "slug": "describing-different-types-of-pain",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Is it sensitive to hot or cold?",
+     "anchor_start": 18.22,
+     "displayExample": "Is it sensitive to hot or cold?"
+    },
+    {
+     "sceneId": "HC-03-002",
+     "titleZh": "偏头痛去看家庭医生",
+     "collectionId": "C2",
+     "collectionOrder": 4,
+     "slug": "seeing-a-doctor-for-a-migraine",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-03-002/HC-03-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-03-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Any nausea, or sensitivity to light?",
+     "anchor_start": 11.49,
+     "displayExample": "Any nausea, or sensitivity to light?"
+    }
+   ]
+  },
+  {
+   "id": "chunk-sharp-pain",
+   "key": "sharp pain",
+   "kind": "chunk",
+   "chunkType": "形容词+名词",
+   "text": "sharp pain",
+   "meaningZh": "尖锐的刺痛",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-06-001",
+     "titleZh": "跟牙医描述牙疼",
+     "collectionId": "C1",
+     "collectionOrder": 1,
+     "slug": "describing-different-types-of-pain",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Yes. Cold drinks trigger a sharp pain.",
+     "anchor_start": 20.18,
+     "displayExample": "Yes. Cold drinks trigger a sharp pain."
+    },
+    {
+     "sceneId": "HC-06-005",
+     "titleZh": "种牙手术",
+     "collectionId": "C1",
+     "collectionOrder": 5,
+     "slug": "dental-implant-surgery",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-005/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "You may feel some pressure and vibration, but you shouldn't feel any sharp pain.",
+     "anchor_start": 4.4,
+     "displayExample": "You may feel some pressure and vibration, but you shouldn't feel any sharp pain."
+    },
+    {
+     "sceneId": "HC-06-005",
+     "titleZh": "种牙手术",
+     "collectionId": "C1",
+     "collectionOrder": 5,
+     "slug": "dental-implant-surgery",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-005/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Raise your hand if you feel any sharp pain.",
+     "anchor_start": 15.84,
+     "displayExample": "Raise your hand if you feel any sharp pain."
+    }
+   ]
+  },
+  {
+   "id": "chunk-sign-up",
+   "key": "sign up",
+   "kind": "chunk",
+   "chunkType": "短语动词",
+   "text": "sign up",
+   "meaningZh": "报名，注册",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SH-01-005",
+     "titleZh": "超市结账与付款",
+     "collectionId": "C8",
+     "collectionOrder": 1,
+     "slug": "grocery-checkout-and-paying",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-005/SH-01-005-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-005/scene.json",
+     "isFreeExperience": true,
+     "anchor_line": "You can sign up online if you’d like.",
+     "anchor_start": 13.2,
+     "displayExample": "You can sign up online if you’d like."
+    },
+    {
+     "sceneId": "SH-01-011",
+     "titleZh": "结账时办理会员卡",
+     "collectionId": "C8",
+     "collectionOrder": 5,
+     "slug": "signing-up-for-a-membership-at-checkout",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-011/SH-01-011-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-011/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "I’d like to sign up.",
+     "anchor_start": 20.55,
+     "displayExample": "I’d like to sign up."
+    },
+    {
+     "sceneId": "SH-01-011",
+     "titleZh": "结账时办理会员卡",
+     "collectionId": "C8",
+     "collectionOrder": 5,
+     "slug": "signing-up-for-a-membership-at-checkout",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-011/SH-01-011-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-011/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Perfect. You’re all signed up.",
+     "anchor_start": 31.73,
+     "displayExample": "Perfect. You’re all signed up."
+    }
+   ]
+  },
+  {
+   "id": "chunk-trouble-breathing",
+   "key": "trouble breathing",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "trouble breathing",
+   "meaningZh": "呼吸困难",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-03-006",
+     "titleZh": "听懂诊断：病毒感染怎么办",
+     "collectionId": "C2",
+     "collectionOrder": 5,
+     "slug": "discussing-the-diagnosis-it-s-probably-viral",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-03-006/HC-03-006-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-03-006/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Yes. Get medical help sooner if you have trouble breathing, chest pain, or signs of dehydration.",
+     "anchor_start": 39.99,
+     "displayExample": "Yes. Get medical help sooner if you have trouble breathing, chest pain, or signs of dehydration."
+    },
+    {
+     "sceneId": "SF-04-003",
+     "titleZh": "孩子过敏计划",
+     "collectionId": "C4",
+     "collectionOrder": 11,
+     "slug": "checking-in-about-a-child-s-allergy-plan",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-04-003/SF-04-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-04-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "He may also cough or have trouble breathing.",
+     "anchor_start": 12.68,
+     "displayExample": "He may also cough or have trouble breathing."
+    }
+   ]
+  },
+  {
+   "id": "chunk-a-deep-cavity",
+   "key": "a deep cavity",
+   "kind": "chunk",
+   "chunkType": "形容词+名词",
+   "text": "a deep cavity",
+   "meaningZh": "深龋洞",
+   "audioUrl": "https://go.learnyzenglish.com/content/tts/3b9d4ee559cc9df86c57b7da06ea0b153f6c4359b95b8edba596a36c74033a24.mp3",
+   "occurrences": [
+    {
+     "sceneId": "HC-06-001",
+     "titleZh": "跟牙医描述牙疼",
+     "collectionId": "C1",
+     "collectionOrder": 1,
+     "slug": "describing-different-types-of-pain",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "The X-ray shows a fairly deep cavity in that tooth.",
+     "anchor_start": 48.22,
+     "displayExample": "The X-ray shows a fairly deep cavity in that tooth."
+    }
+   ]
+  },
+  {
+   "id": "chunk-a-root-canal",
+   "key": "a root canal",
+   "kind": "chunk",
+   "chunkType": "名词+名词",
+   "text": "a root canal",
+   "meaningZh": "根管治疗",
+   "audioUrl": "https://go.learnyzenglish.com/content/tts/a24322b74a2dcb362f18e2a3f6505f0d83e54ec048d2e66239a4aa2bbbe8e190.mp3",
+   "occurrences": [
+    {
+     "sceneId": "HC-06-001",
+     "titleZh": "跟牙医描述牙疼",
+     "collectionId": "C1",
+     "collectionOrder": 1,
+     "slug": "describing-different-types-of-pain",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Will I need a root canal?",
+     "anchor_start": 54.9,
+     "displayExample": "Will I need a root canal?"
+    },
+    {
+     "sceneId": "HC-06-001",
+     "titleZh": "跟牙医描述牙疼",
+     "collectionId": "C1",
+     "collectionOrder": 1,
+     "slug": "describing-different-types-of-pain",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "At this point, I recommend a filling. If the pain continues or the nerve becomes inflamed, you may need a root canal later.",
+     "anchor_start": 56.2,
+     "displayExample": "At this point, I recommend a filling. If the pain continues or the nerve becomes inflamed, you may need a root canal later."
+    }
+   ]
+  },
+  {
+   "id": "chunk-a-sore-throat",
+   "key": "a sore throat",
+   "kind": "chunk",
+   "chunkType": "形容词+名词",
+   "text": "a sore throat",
+   "meaningZh": "嗓子疼，喉咙痛",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SF-02-002",
+     "titleZh": "打电话请假",
+     "collectionId": "C4",
+     "collectionOrder": 9,
+     "slug": "reporting-a-school-absence",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-02-002/SF-02-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-02-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "He woke up with a fever and a sore throat, so I'm keeping him home.",
+     "anchor_start": 24.37,
+     "displayExample": "He woke up with a fever and a sore throat, so I'm keeping him home."
+    }
+   ]
+  },
+  {
+   "id": "chunk-allergic-to",
+   "key": "allergic to",
+   "kind": "chunk",
+   "chunkType": "介词搭配",
+   "text": "allergic to",
+   "meaningZh": "对……过敏",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SF-04-003",
+     "titleZh": "孩子过敏计划",
+     "collectionId": "C4",
+     "collectionOrder": 11,
+     "slug": "checking-in-about-a-child-s-allergy-plan",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-04-003/SF-04-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-04-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Could you confirm what Leo's allergic to?",
+     "anchor_start": 0.16,
+     "displayExample": "Could you confirm what Leo's allergic to?"
+    }
+   ]
+  },
+  {
+   "id": "chunk-back-in-stock",
+   "key": "back in stock",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "back in stock",
+   "meaningZh": "补货了，重新有货",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SH-01-012",
+     "titleZh": "特价商品卖完，要张Rain Check",
+     "collectionId": "C8",
+     "collectionOrder": 6,
+     "slug": "getting-a-rain-check-for-a-sold-out-sale-item",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-012/SH-01-012-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-012/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "It means you can buy it for the same sale price when it’s back in stock.",
+     "anchor_start": 20.28,
+     "displayExample": "It means you can buy it for the same sale price when it’s back in stock."
+    },
+    {
+     "sceneId": "SH-01-012",
+     "titleZh": "特价商品卖完，要张Rain Check",
+     "collectionId": "C8",
+     "collectionOrder": 6,
+     "slug": "getting-a-rain-check-for-a-sold-out-sale-item",
+     "videoUrl": "https://go.learnyzenglish.com/content/SH-01-012/SH-01-012-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SH-01-012/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "We’ll call you when it’s back in stock.",
+     "anchor_start": 36.56,
+     "displayExample": "We’ll call you when it’s back in stock."
+    }
+   ]
+  },
+  {
+   "id": "chunk-blood-work",
+   "key": "blood work",
+   "kind": "chunk",
+   "chunkType": "名词+名词",
+   "text": "blood work",
+   "meaningZh": "验血，血液检查",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-03-005",
+     "titleZh": "血糖偏高，医生说先观察",
+     "collectionId": "C2",
+     "collectionOrder": 6,
+     "slug": "we-ll-monitor-it-slightly-high-blood-sugar",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-03-005/HC-03-005-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-03-005/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "I'd like you to repeat the blood work in three months.",
+     "anchor_start": 18.15,
+     "displayExample": "I'd like you to repeat the blood work in three months."
+    }
+   ]
+  },
+  {
+   "id": "chunk-drink-plenty-of-fluids",
+   "key": "drink plenty of fluids",
+   "kind": "chunk",
+   "chunkType": "动词+名词",
+   "text": "drink plenty of fluids",
+   "meaningZh": "多喝水，多补充液体",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-03-006",
+     "titleZh": "听懂诊断：病毒感染怎么办",
+     "collectionId": "C2",
+     "collectionOrder": 5,
+     "slug": "discussing-the-diagnosis-it-s-probably-viral",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-03-006/HC-03-006-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-03-006/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Get some rest, drink plenty of fluids, and keep an eye on your symptoms.",
+     "anchor_start": 23.45,
+     "displayExample": "Get some rest, drink plenty of fluids, and keep an eye on your symptoms."
+    }
+   ]
+  },
+  {
+   "id": "chunk-fill-out",
+   "key": "fill out",
+   "kind": "chunk",
+   "chunkType": "短语动词",
+   "text": "fill out",
+   "meaningZh": "填写（表格）",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-04-001",
+     "titleZh": "电话预约流感疫苗",
+     "collectionId": "C2",
+     "collectionOrder": 9,
+     "slug": "booking-flu-shots-by-phone",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-04-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "There's a short form to fill out.",
+     "anchor_start": 42.87,
+     "displayExample": "There's a short form to fill out."
+    }
+   ]
+  },
+  {
+   "id": "chunk-just-in-case",
+   "key": "just in case",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "just in case",
+   "meaningZh": "以防万一",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-04-003",
+     "titleZh": "带孩子去药房打流感疫苗",
+     "collectionId": "C2",
+     "collectionOrder": 10,
+     "slug": "getting-our-flu-shots-at-the-pharmacy",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-04-003/HC-04-003-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-04-003/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Now I need you both to stay in the store for fifteen minutes, just in case.",
+     "anchor_start": 37.81,
+     "displayExample": "Now I need you both to stay in the store for fifteen minutes, just in case."
+    }
+   ]
+  },
+  {
+   "id": "chunk-keep-track-of",
+   "key": "keep track of",
+   "kind": "chunk",
+   "chunkType": "介词搭配",
+   "text": "keep track of",
+   "meaningZh": "持续跟进，记录进展",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SF-03-002",
+     "titleZh": "家长会：整体不错",
+     "collectionId": "C4",
+     "collectionOrder": 2,
+     "slug": "parent-teacher-meeting-doing-ok",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-03-002/SF-03-002-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-03-002/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "How can we keep track of his progress?",
+     "anchor_start": 48.1,
+     "displayExample": "How can we keep track of his progress?"
+    }
+   ]
+  },
+  {
+   "id": "chunk-lose-consciousness",
+   "key": "lose consciousness",
+   "kind": "chunk",
+   "chunkType": "动词+名词",
+   "text": "lose consciousness",
+   "meaningZh": "失去意识，昏过去",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "HC-01-004",
+     "titleZh": "摔到头，先打811",
+     "collectionId": "C2",
+     "collectionOrder": 11,
+     "slug": "hit-my-head-calling-811-first",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-01-004/HC-01-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-01-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Did you lose consciousness?",
+     "anchor_start": 5.96,
+     "displayExample": "Did you lose consciousness?"
+    }
+   ]
+  },
+  {
+   "id": "chunk-proof-of-address",
+   "key": "proof of address",
+   "kind": "chunk",
+   "chunkType": "其他固定搭配",
+   "text": "proof of address",
+   "meaningZh": "地址证明",
+   "audioUrl": null,
+   "occurrences": [
+    {
+     "sceneId": "SF-01-001",
+     "titleZh": "给孩子办入学注册",
+     "collectionId": "C4",
+     "collectionOrder": 7,
+     "slug": "registering-your-child-for-school",
+     "videoUrl": "https://go.learnyzenglish.com/content/SF-01-001/SF-01-001-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/SF-01-001/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "Of course, do you have proof of address?",
+     "anchor_start": 10.65,
+     "displayExample": "Of course, do you have proof of address?"
+    }
+   ]
+  },
+  {
+   "id": "chunk-wear-off",
+   "key": "wear off",
+   "kind": "chunk",
+   "chunkType": "短语动词",
+   "text": "wear off",
+   "meaningZh": "（麻药/药效）消退",
+   "audioUrl": "https://go.learnyzenglish.com/content/tts/2aed482e9c67d6ec8e0604b38cd2c4ea45134616b71575f07979e5b4235aa464.mp3",
+   "occurrences": [
+    {
+     "sceneId": "HC-06-004",
+     "titleZh": "补牙",
+     "collectionId": "C1",
+     "collectionOrder": 4,
+     "slug": "dental-filling",
+     "videoUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-no-subtitles.mp4",
+     "dataUrl": "https://go.learnyzenglish.com/content/HC-06-004/scene.json",
+     "isFreeExperience": false,
+     "anchor_line": "The anesthetic will wear off in a few hours.",
+     "anchor_start": 39.67,
+     "displayExample": "The anesthetic will wear off in a few hours."
+    }
+   ]
+  }
+ ]
+}

@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/app/components/ui/dialog";
 import { membershipErrorMessage, membershipTypeLabel, redeemMembershipCode } from "@/data/membership";
 import { TEST_MODE } from "@/config/site";
+import { MEMBERSHIP_CODE_CHANGE_EVENT, saveMembershipDisplayCode } from "./membership-code-display";
 
 export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void }) {
   const [code, setCode] = useState("");
@@ -25,6 +26,10 @@ export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void 
         setMessage("兑换码无效或已过期，请联系我");
         return;
       }
+      try {
+        saveMembershipDisplayCode(code, unlock, window.localStorage);
+        window.dispatchEvent(new Event(MEMBERSHIP_CODE_CHANGE_EVENT));
+      } catch { /* Display storage must not interrupt a successful redemption. */ }
       setIsSuccess(true);
       setMessage(`${membershipTypeLabel(unlock.type)}已解锁`);
       window.setTimeout(() => onUnlocked?.(), 450);
@@ -51,7 +56,7 @@ export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void 
             onChange={event => setCode(event.target.value)}
             placeholder="输入你的专属兑换码"
             autoComplete="off"
-            className="h-11 w-full rounded-[14px] border border-border bg-background px-4 text-sm font-semibold uppercase tracking-[.06em] text-primary outline-none transition-colors placeholder:normal-case placeholder:tracking-normal placeholder:text-muted-foreground focus:border-primary/45 sm:h-12"
+            className="h-11 w-full rounded-[14px] border border-border bg-background px-4 text-[16px] font-semibold uppercase tracking-[.06em] text-primary outline-none transition-colors placeholder:normal-case placeholder:tracking-normal placeholder:text-muted-foreground focus:border-primary/45 sm:h-12"
           />
           <button type="submit" disabled={submitting} className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-black text-white transition-transform hover:scale-[1.01] disabled:cursor-wait disabled:opacity-65 sm:mt-4 sm:h-12">
             {submitting ? "正在验证…" : "解锁"} {!submitting && <ArrowRight size={16} />}

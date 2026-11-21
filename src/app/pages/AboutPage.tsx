@@ -72,7 +72,7 @@ export function AboutPage() {
       <section className="mx-auto mt-14 max-w-[1180px] px-3 md:mt-16 md:px-8">
         <div className="border-t border-[#DCD4BE] pt-12 md:pt-14">
           <div className="max-w-[720px]">
-            <h2 className="flex items-baseline gap-3 font-zh-serif text-[24px] font-bold text-foreground md:text-[26px]">
+            <h2 className="flex items-baseline gap-3 font-sans text-[24px] font-bold text-foreground md:text-[26px]">
               为什么做
               <span className="display-serif text-[15px] font-medium italic text-muted-foreground">Why</span>
             </h2>
@@ -91,7 +91,7 @@ export function AboutPage() {
 
       <section className="mx-auto max-w-[1180px] px-3 pb-[72px] md:px-8">
         <div className="mt-14 border-t border-[#DCD4BE] pt-12 md:mt-16 md:pt-14">
-        <h2 className="flex items-baseline gap-3 font-zh-serif text-[24px] font-bold text-foreground">
+        <h2 className="flex items-baseline gap-3 font-sans text-[24px] font-bold text-foreground">
           学习方法
           <span className="display-serif text-[15px] font-medium italic text-muted-foreground">How it works</span>
         </h2>
@@ -115,7 +115,7 @@ export function AboutPage() {
       <section className="bg-primary py-[46px] md:py-[60px]">
         <div className="mx-auto max-w-[1180px] px-3 md:px-8">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/55">Who it's for · 适合谁</p>
-          <h2 className="mt-4 font-zh-serif text-[24px] font-bold text-white md:text-[32px]">
+          <h2 className="mt-4 font-sans text-[24px] font-bold text-white md:text-[32px]">
             为想把英语用进真实生活的人而做
           </h2>
           <div className="mt-7 grid gap-4 sm:grid-cols-2">

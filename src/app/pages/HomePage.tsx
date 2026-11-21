@@ -1,10 +1,8 @@
-import { useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, Headphones, PenLine, Play } from "lucide-react";
 import { useFreeTrialScenes } from "@/data/collections-access";
 import { useLatestScenes } from "@/data/scenes-access";
 import { LoadingState, ErrorState, EmptyState } from "@/app/components/DataState";
-import { SentenceListeningCard } from "@/app/components/SentenceListeningCard";
 import { getSceneCardCategoryLabel } from "@/data/scene-categories";
 import type { Scene } from "@/data/types";
 import { responsiveImageProps } from "@/data/responsive-image";
@@ -29,7 +27,7 @@ function HomeEditorialScene({ scene, featured = false, badge = "免费体验", s
         <div className="absolute inset-0 bg-[linear-gradient(145deg,#315848,#0f3527)]" />
       )}
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,19,13,.02)_24%,rgba(5,19,13,.18)_56%,rgba(5,19,13,.9)_100%)]" />
-      {badge ? <span className="absolute left-4 top-4 rounded-full bg-accent px-3 py-1.5 text-[11px] font-black text-primary">{badge}</span> : null}
+      {badge ? <span className="absolute left-4 top-4 rounded-full bg-accent/80 px-3 py-1.5 text-[11px] font-black text-primary">{badge}</span> : null}
       <span className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/92 text-primary shadow-sm backdrop-blur-sm">
         <Play size={15} fill="currentColor" />
       </span>
@@ -44,52 +42,26 @@ function HomeEditorialScene({ scene, featured = false, badge = "免费体验", s
   );
 }
 
-const demoLines = [
-  { speaker: "You", speakerZh: "你", en: "Hi, I'd like to book a cleaning, please.", zh: "你好，我想约一个洗牙。" },
-  { speaker: "Front", speakerZh: "前台", en: "Of course. Have you been here before?", zh: "好的，您之前来过我们这儿吗？" },
-  { speaker: "You", speakerZh: "你", en: "Yes — and this tooth has been bothering me.", zh: "来过，而且这颗牙最近有点不舒服。" },
-  { speaker: "Front", speakerZh: "前台", en: "We'll take a look first, then go from there.", zh: "我们先检查一下，再决定下一步。" },
-];
-
 function SentenceListeningDemo() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [playbackRate, setPlaybackRate] = useState(1);
-  const [repeatLine, setRepeatLine] = useState(false);
-  const [bilingualMode, setBilingualMode] = useState(true);
-  const line = demoLines[activeIndex];
-
-  function moveLine(direction: -1 | 1) {
-    setIsPlaying(false);
-    setActiveIndex(index => Math.min(demoLines.length - 1, Math.max(0, index + direction)));
-  }
-
-  function replayFromBeginning() {
-    setActiveIndex(0);
-    setIsPlaying(true);
-  }
-
   return (
-    <SentenceListeningCard
-      line={line}
-      speakerLabel={line.speaker}
-      speakerZh={line.speakerZh}
-      isLearner={line.speaker.toLowerCase() === "you"}
-      position={activeIndex}
-      total={demoLines.length}
-      isPlaying={isPlaying}
-      onTogglePlay={() => setIsPlaying(value => !value)}
-      onPrevious={() => moveLine(-1)}
-      onNext={() => moveLine(1)}
-      onReplay={replayFromBeginning}
-      playbackRate={playbackRate}
-      onPlaybackRateChange={setPlaybackRate}
-      repeatLine={repeatLine}
-      onRepeatLineChange={setRepeatLine}
-      bilingualMode={bilingualMode}
-      onBilingualModeChange={setBilingualMode}
-      compact
-    />
+    <div role="group" aria-label="逐句精听界面示意" className="rounded-[20px] border border-border bg-white p-3 shadow-[0_14px_38px_rgba(15,53,39,0.08)]">
+      <div className="grid min-h-[180px] grid-cols-[48px_minmax(0,1fr)] items-center gap-4 rounded-[17px] bg-[#F5F1E8] px-5 py-5 text-left">
+        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0F3A2B] text-[13px] font-black text-white">You</span>
+        <div className="min-w-0">
+          <span className="block text-[13px] font-black text-primary">你</span>
+          <p className="mt-2 break-words font-serif text-[22px] leading-snug text-primary md:text-[25px]">Hi, I'd like to book a cleaning, please.</p>
+          <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground md:text-[14px]">你好，我想约一个洗牙。</p>
+        </div>
+      </div>
+      <div aria-hidden="true" className="mt-3 p-3">
+        <div className="flex items-center justify-center gap-3">
+          <span className="w-20 shrink-0 whitespace-nowrap rounded-full border border-border bg-white px-3 py-2 text-center text-[11px] font-black text-primary opacity-35 md:w-24">← 上一句</span>
+          <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-[0_8px_18px_rgba(15,53,39,0.2)]"><Play className="ml-0.5 h-5 w-5 fill-current" /></span>
+          <span className="w-20 shrink-0 whitespace-nowrap rounded-full border border-border bg-white px-3 py-2 text-center text-[11px] font-black text-primary md:w-24">下一句 →</span>
+        </div>
+        <p className="mt-1.5 text-center text-[11px] font-black tabular-nums text-primary">1 / 4</p>
+      </div>
+    </div>
   );
 }
 
@@ -104,12 +76,11 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
       <header className="mx-auto max-w-[1180px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
         <div className="grid gap-6 sm:gap-7 md:grid-cols-[minmax(0,.95fr)_minmax(0,1.05fr)] md:items-center md:gap-4 lg:grid-cols-[minmax(0,.9fr)_minmax(460px,1.1fr)] lg:gap-5 xl:grid-cols-[.94fr_1.06fr] xl:gap-8">
           <div className="relative z-10 max-w-[620px] md:max-w-none">
-            <p className="inline-flex items-center gap-2.5 rounded-full border border-primary/10 bg-white/55 px-3.5 py-2 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground shadow-[0_8px_22px_rgba(18,36,28,.04)] before:block before:h-px before:w-7 before:bg-muted-foreground after:block after:h-1.5 after:w-1.5 after:rounded-full after:bg-accent">Canada · 真实生活英语</p>
-            <h1 className="mt-7 font-normal leading-[0.96] tracking-[-0.02em] text-foreground">
+            <h1 className="font-normal leading-[0.96] tracking-[-0.02em] text-foreground">
               <span className="display-serif block text-[42px] font-semibold sm:text-[48px] md:text-[44px] lg:text-[56px] xl:text-[62px]">Real scenes<br /><em className="mt-2 inline-block bg-[linear-gradient(transparent_72%,rgba(190,244,91,.34)_72%)] pb-1 font-medium">for real life</em></span>
-              <span className="mt-6 block border-l-[3px] border-accent pl-4 font-zh-serif text-[19px] font-bold leading-[1.55] sm:text-[20px] md:mt-6 md:text-[17px] lg:mt-7 lg:text-[20px] xl:text-[22px]">真实生活里的英语，先练熟再上场。</span>
+              <span className="mt-6 block font-sans text-[19px] font-bold leading-[1.55] sm:text-[20px] md:mt-6 md:text-[17px] lg:mt-7 lg:text-[20px] xl:text-[22px]">真实生活里的英语，先排练再上场</span>
             </h1>
-            <p className="mt-5 max-w-[560px] text-[15px] leading-[1.85] text-secondary-foreground md:text-[14px] lg:text-[15px]">看牙、抽血、家校沟通、日常寒暄——每个场景都有视频和跟读，练几遍，<br className="hidden xl:block" />下次就不慌。</p>
+            <p className="mt-5 max-w-[560px] text-[15px] leading-[1.85] text-secondary-foreground md:text-[14px] lg:text-[15px]">看牙、抽血、家校沟通、日常寒暄，每个场景都有视频和跟读，练几遍，<br className="hidden xl:block" />下次就不慌。</p>
             <div className="mt-7 flex flex-wrap gap-3.5 sm:mt-8 md:mt-6 lg:mt-8 lg:gap-4">
               <Link to="/explore" onClick={onExploreEnter} className="inline-flex min-h-[54px] items-center justify-center rounded-full border border-primary bg-primary px-7 py-4 text-[15px] font-black tracking-[0.01em] text-white shadow-[0_10px_24px_rgba(18,53,39,.12)] transition-all hover:-translate-y-0.5 hover:opacity-90 lg:min-h-[58px] lg:px-8 lg:text-[16px]">进入场景库</Link>
               <a href="#free" className="inline-flex min-h-[54px] items-center justify-center rounded-full border border-primary/15 bg-card px-7 py-4 text-[15px] font-black tracking-[0.01em] text-foreground shadow-[0_10px_24px_rgba(18,53,39,.06)] transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:bg-primary/5 lg:min-h-[58px] lg:px-8 lg:text-[16px]">先免费学 3 集 →</a>
@@ -143,7 +114,6 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
                   <p className="mt-0.5 whitespace-nowrap text-[clamp(9.5px,1.8cqw,11px)] text-muted-foreground">一句一句，练到会说</p>
                 </div>
               </div>
-              <div className="mt-[clamp(9px,2cqw,12px)] h-1.5 overflow-hidden rounded-full bg-secondary"><span className="block h-full w-[72%] rounded-full bg-accent" /></div>
             </div>
 
             <div className="absolute bottom-[5%] right-0 z-20 w-[40%] min-w-[170px] max-w-[230px] rounded-[clamp(15px,2.8cqw,18px)] border border-white/80 bg-white/95 p-[clamp(12px,2.4cqw,16px)] shadow-[0_18px_38px_rgba(18,36,28,.15)] backdrop-blur-sm">
@@ -163,7 +133,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Free Experience</p>
-            <h2 className="mt-2 font-zh-serif text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">免费体验区</h2>
+            <h2 className="mt-2 font-sans text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">免费体验区</h2>
           </div>
         </div>
 
@@ -182,7 +152,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
                   <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
                     <div>
                       <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Just Added</p>
-                      <h2 className="mt-2 font-zh-serif text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">最新上架</h2>
+                      <h2 className="mt-2 font-sans text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">最新上架</h2>
                     </div>
                     <Link to="/explore" onClick={onExploreEnter} className="inline-flex items-center gap-2 text-sm font-bold text-primary">逛全部场景 <ArrowRight size={15} /></Link>
                   </div>
@@ -198,18 +168,24 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">How it feels to learn</p>
-            <h2 className="mt-2 font-zh-serif text-[28px] font-bold leading-[1.25] md:text-[34px]">点开一节课，<span className="display-serif font-medium italic">不像上课，像排练生活。</span></h2>
+            <h2 className="mt-2 font-sans text-[28px] font-bold leading-[1.25] md:text-[34px]">如何学习？</h2>
           </div>
-          <p className="max-w-[360px] text-[13px] leading-relaxed text-muted-foreground">先看真实场景，再逐句点读、跟读和整理表达。不是做题，是为下一次交流做准备。</p>
         </div>
 
         <div className="rounded-[24px] bg-primary p-6 text-white md:p-12">
-          <div className="grid gap-6 lg:grid-cols-[1fr_1.12fr] lg:items-start lg:gap-12">
-            <div className="pt-1.5">
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/65">Featured Scene · 看病就医</p>
-              <h3 className="mt-3.5 font-zh-serif text-[28px] font-bold leading-[1.45]">在牙科前台：<br />“我想约一个洗牙，<br />顺便看看这颗牙。”</h3>
-              <p className="mt-4 max-w-[34em] text-[14.5px] leading-[1.9] text-white/75">先看一遍视频，再逐句点读，最后跟读录一遍。每句都放回真实流程里学——不是课本腔，是前台真的会这样说。</p>
-              <div className="mt-6 flex flex-wrap gap-2.5">{["视频", "点读", "跟读"].map((label) => <span key={label} className="rounded-full border border-white/30 px-3.5 py-2 text-xs font-bold">{label}</span>)}</div>
+          <div className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-start lg:gap-12">
+            <div>
+              <h3 className="font-sans text-[28px] font-bold leading-[1.55] md:text-[32px]">
+                <span className="block">点开一个场景</span>
+                <span className="block font-medium text-white/70">不像上课</span>
+                <span className="mt-1 block">像在<span className="relative inline-block pb-3 text-accent">排练生活
+                  <svg aria-hidden="true" viewBox="0 0 180 18" preserveAspectRatio="none" className="pointer-events-none absolute inset-x-0 bottom-0 h-3 w-full fill-none">
+                    <path d="M4 5C48 15 119 15 176 4" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                  </svg>
+                </span></span>
+              </h3>
+              <p className="mt-5 text-sm leading-relaxed text-white/75">按步骤练熟，把学到的英语用进真实生活。</p>
+              <ol aria-label="学习流程" className="mt-8 flex flex-wrap items-center gap-y-3">{["看视频", "练精听", "跟读", "听写", "复习"].map((label, index) => <li key={label} className="flex items-center"><span className="whitespace-nowrap rounded-full border border-white/30 px-3 py-2 text-xs font-bold">{label}</span>{index < 4 && <ArrowRight size={12} className="mx-1.5 shrink-0 text-white/55" aria-hidden="true" />}</li>)}</ol>
             </div>
 
             <div className="min-w-0 text-foreground">

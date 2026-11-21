@@ -11,6 +11,8 @@ import { AboutPage } from "@/app/pages/AboutPage";
 import { ContactPage } from "@/app/pages/ContactPage";
 import { FreeTrialPage } from "@/app/pages/FreeTrialPage";
 import { CollectionPage } from "@/app/pages/CollectionPage";
+import { KitPage } from "@/app/pages/KitPage";
+import { stopKitAudio } from "@/data/kit-audio";
 import { MembershipPage } from "@/app/pages/MembershipPage";
 
 // Manage scroll ourselves: forward/replace navigations start at the top,
@@ -19,6 +21,7 @@ import { MembershipPage } from "@/app/pages/MembershipPage";
 // detail round-trips.
 function ScrollToTop() {
   const location = useLocation();
+  useEffect(() => { stopKitAudio(); }, [location.pathname]);
   const navigationType = useNavigationType();
   const scrollPositions = useRef(new Map<string, number>());
   const prevKeyRef = useRef<string | null>(null);
@@ -92,6 +95,7 @@ export default function App() {
           />
           <Route path="/free-trial" element={<FreeTrialPage />} />
           <Route path="/collections/:collectionId" element={<CollectionPage />} />
+          <Route path="/kit" element={<KitPage />} />
           <Route path="/membership" element={<MembershipPage />} />
           <Route path="/resources" element={<Navigate to="/explore" replace />} />
           <Route path="/about" element={<AboutPage />} />

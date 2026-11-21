@@ -6,7 +6,11 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
-    "validate:collections": "node tools/oss-manifest/validate-collections.mjs tools/oss-manifest/manifest.json"
+    "validate:collections": "node tools/oss-manifest/validate-collections.mjs tools/oss-manifest/manifest.json",
+    "kit:build": "node tools/kit/build-index.mjs",
+    "kit:tts": "node tools/kit/generate-tts.mjs",
+    "kit:test": "node --test tools/kit/index.test.mjs tools/kit/remote.test.mjs tools/kit/word-matches.test.mjs tools/kit/dictation-blank.test.mjs tools/kit/dictation-viewport.test.mjs tools/kit/tts-volume.test.mjs",
+    "kit:check-word-tts": "node tools/kit/check-word-tts.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

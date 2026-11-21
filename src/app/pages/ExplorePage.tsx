@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, type ComponentType } from "react";
-import { Search, X, Stethoscope, Backpack, Baby, MessagesSquare, Sun, UtensilsCrossed, ShoppingBag, KeyRound, Plane, Briefcase } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Search, X } from "lucide-react";
 import { Link, useSearchParams } from "react-router";
+import { CollectionIcon, CollectionIconDefs, collectionShortcutClass } from "@/app/components/CollectionIcon";
 import { SceneCard } from "@/app/components/SceneCard";
 import { useNavVisibility } from "@/app/components/nav-visibility";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
@@ -10,35 +11,6 @@ import type { CollectionWithScenes } from "@/data/collections-access";
 import { isSceneVisible } from "@/data/preview";
 
 const CATALOGUE_TAGS = [{ id: "All", label: "全部" }, ...COLLECTION_TAGS];
-
-type IconComponent = ComponentType<{ size?: number | string; className?: string; strokeWidth?: number | string; fill?: string; fillOpacity?: number | string }>;
-
-function ToothIcon({ size = 24, className, strokeWidth = 1.75, fill = "none", fillOpacity }: { size?: number | string; className?: string; strokeWidth?: number | string; fill?: string; fillOpacity?: number | string }) {
-  return (
-    <svg width={size} height={size} viewBox="2.7 2.9 17.6 17.6" fill={fill} fillOpacity={fillOpacity} stroke="currentColor" strokeWidth={typeof strokeWidth === "number" ? strokeWidth * 0.73 : strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
-      <path d="M12 5.8C10.9 4.9 9.4 4.4 8 4.7 5.9 5.1 4.8 6.7 5.1 8.7c.2 1.4.9 2.5 1.2 4 .3 1.6.5 3.2.9 4.8.2.8 1.3.9 1.7.1.4-.7.6-2.1 1-3.1.3-.8 1-1.4 2.1-1.4s1.8.6 2.1 1.4c.4 1 .6 2.4 1 3.1.4.8 1.5.7 1.7-.1.4-1.6.6-3.2.9-4.8.3-1.5 1-2.6 1.2-4 .3-2-.8-3.6-2.9-4-1.4-.3-2.9.2-4 1.1Z" />
-    </svg>
-  );
-}
-
-const COLLECTION_ICONS: Record<string, IconComponent> = {
-  C1: ToothIcon,
-  C2: Stethoscope,
-  C4: Backpack,
-  C6: Baby,
-  C5: MessagesSquare,
-  C12: Sun,
-  C7: UtensilsCrossed,
-  C8: ShoppingBag,
-  C9: KeyRound,
-  C10: Plane,
-  C11: Briefcase,
-};
-
-function CollectionIcon({ id, size = 18, className, strokeWidth = 1.75 }: { id: string; size?: number; className?: string; strokeWidth?: number }) {
-  const Icon = COLLECTION_ICONS[id] ?? MessagesSquare;
-  return <Icon size={size} className={className} strokeWidth={strokeWidth} fill="url(#yz-icon-fill)" />;
-}
 
 function CollectionShortcuts({ collections, onSelect }: { collections: CollectionWithScenes[]; onSelect: (id: string) => void }) {
   const navRef = useRef<HTMLElement>(null);
@@ -72,7 +44,7 @@ function CollectionShortcuts({ collections, onSelect }: { collections: Collectio
       <nav ref={navRef} aria-label="合集快捷导航" className="overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div ref={rowRef} className="flex w-max min-w-full gap-3 lg:justify-between lg:gap-2">
           {collections.filter(collection => collection.scenes.some(scene => scene.status === "live")).map(collection => (
-            <button key={collection.id} type="button" onClick={() => onSelect(collection.id)} className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary lg:gap-1.5 lg:px-3 lg:text-[12px] xl:gap-2 xl:px-4 xl:text-[13px]">
+            <button key={collection.id} type="button" onClick={() => onSelect(collection.id)} className={collectionShortcutClass}>
               <CollectionIcon id={collection.id} size={15} className="text-primary" />
               {collection.name}
             </button>
@@ -115,7 +87,7 @@ function CollectionSection({ collection, eager = false }: { collection: Collecti
       <div className="mb-3">
         <div className="flex items-center gap-3">
           <CollectionIcon id={collection.id} size={27} className="shrink-0 text-primary" />
-          <h2 id={`collection-${collection.id}`} className="shrink-0 font-zh-serif text-[24px] font-bold leading-tight text-primary">{collection.name}</h2>
+          <h2 id={`collection-${collection.id}`} className="shrink-0 font-sans text-[24px] font-bold leading-tight text-primary">{collection.name}</h2>
           <div className="ml-auto flex shrink-0 items-center gap-3">
             <span className="text-[12px] font-semibold text-secondary-foreground">共 {liveScenes.length} 集</span>
             <Link to={`/collections/${collection.id}`} className="text-[13px] font-bold text-primary hover:underline">查看全部 →</Link>
@@ -173,18 +145,10 @@ export function ExplorePage({
     });
   return (
     <div className="pb-10">
-      <svg aria-hidden="true" className="absolute h-0 w-0">
-        <defs>
-          <linearGradient id="yz-icon-fill" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#1A4A35" stopOpacity="0.34" />
-            <stop offset="52%" stopColor="#1A4A35" stopOpacity="0.12" />
-            <stop offset="100%" stopColor="#1A4A35" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-      </svg>
+      <CollectionIconDefs />
       <div className={`sticky top-[65px] z-40 bg-background transition-transform duration-300 ease-out md:top-[73px] lg:top-[77px] ${navHidden ? "-translate-y-[calc(100%+65px)] md:-translate-y-[calc(100%+73px)] lg:-translate-y-[calc(100%+77px)]" : "translate-y-0"}`}>
         <div className="mx-auto max-w-[1180px] px-3 py-3 md:px-8">
-          <form className="flex w-full items-center gap-3 rounded-full border border-border bg-card py-1 pl-4 pr-1 transition-colors focus-within:border-primary/50 md:pl-5" onSubmit={event => event.preventDefault()}>
+          <form className="flex w-full items-center gap-3 rounded-full bg-card py-1 pl-4 pr-1 shadow-[0_1px_2px_rgba(18,51,37,0.04),0_4px_14px_rgba(18,51,37,0.05)] transition-shadow focus-within:shadow-[0_1px_2px_rgba(18,51,37,0.04),0_4px_14px_rgba(18,51,37,0.05),0_0_0_2px_rgba(26,74,53,0.18)] md:pl-5" onSubmit={event => event.preventDefault()}>
             <Search size={18} className="flex-shrink-0 text-muted-foreground" />
             <input value={searchQuery} onChange={event => setSearchQuery(event.target.value)} onFocus={() => { releaseHoldRef.current = holdNav(); }} onBlur={() => { releaseHoldRef.current?.(); releaseHoldRef.current = null; }}
               placeholder="搜索场景或合集：牙医、退货、点餐…"

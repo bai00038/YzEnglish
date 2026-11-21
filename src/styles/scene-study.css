@@ -1,0 +1,129 @@
+/* Shared listening/dictation composition: content stays in document flow. */
+.scene-page .sentence-listening-card, .scene-page .dictation-practice-card { min-height: 0 !important; padding: 16px !important; border: 0; background: var(--card); box-shadow: 0 1px 2px #12332508, 0 10px 30px #12332514; }
+.scene-page .practice-position { margin: 0 0 10px; color: var(--muted-foreground); font-size: 12px; line-height: 1.5; font-variant-numeric: tabular-nums; text-align: center; }
+.scene-page .sentence-listening-line, .scene-page .dictation-input-card { min-height: 0 !important; padding: 20px !important; grid-template-columns: 44px minmax(0, 1fr) !important; gap: 16px !important; border: 0; box-shadow: none; }
+.scene-page .sentence-speaker-avatar, .scene-page .dictation-avatar { width: 40px !important; height: 40px !important; font-size: 11px !important; }
+.scene-page .practice-action-placeholder, .scene-page .practice-action-placeholder:has(.practice-check) { min-height: 0 !important; }
+.scene-page .practice-action-bar { position: static !important; width: auto; margin: 12px 0 0 !important; padding: 0 !important; border: 0; background: transparent; box-shadow: none; }
+.scene-page .practice-navigation { display: flex; align-items: center; justify-content: center; gap: 22px !important; }
+.scene-page .practice-nav-button { flex: none; width: 96px; min-width: 0; min-height: 40px; padding: 8px 10px !important; border: 1px solid #12332526; border-radius: 99px; background: white; color: var(--primary); font-size: 12px !important; font-weight: 700; white-space: nowrap; }
+.scene-page .practice-nav-button:disabled { opacity: .35; }
+.scene-page .practice-nav-button:hover:not(:disabled) { background: var(--secondary); }
+.scene-page .practice-play-button { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 56px !important; height: 56px !important; border-radius: 50%; background: var(--primary); color: white; box-shadow: 0 8px 18px #0f352726; }
+.scene-page .practice-settings { display: flex; flex-flow: row nowrap; align-items: center; justify-content: center; gap: 8px !important; margin-top: 12px !important; padding-top: 8px !important; border-top: 1px solid #12332514; font-size: 12px; }
+.scene-page .practice-speed, .scene-page .practice-text-mode, .scene-page .practice-speed > div, .scene-page .practice-text-mode > div { display: flex; flex-flow: row nowrap; align-items: center; gap: 4px !important; }
+.scene-page .practice-speed > span, .scene-page .practice-text-mode > span { display: inline; color: var(--muted-foreground); font-size: 12px; }
+.scene-page .practice-settings button { flex: none; min-width: 0; min-height: 24px; padding: 3px 5px; border: 0; border-radius: 5px; background: transparent; color: var(--primary); font-size: 12px; line-height: 1.4; white-space: nowrap; }
+.scene-page .practice-settings button[aria-pressed="true"] { background: var(--accent); }
+.scene-page .practice-check { display: block; width: 100%; min-height: 38px; margin-top: 10px; padding: 8px 12px; border-radius: 12px; background: var(--primary); color: white; font-size: 13px; font-weight: 700; }
+.scene-page .practice-check:disabled { background: #12332514; color: var(--muted-foreground); }
+.scene-page .practice-action-bar button:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.scene-page .scene-video-subtitle { bottom: 8px !important; padding: 0 12px; }
+.scene-page .scene-video-subtitle > div { max-width: 94%; padding: 5px 10px; border-radius: 6px; background: #0009; }
+.scene-page .scene-video-subtitle p:first-child { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; font-size: 16px; line-height: 1.3; }
+.scene-page .scene-video-subtitle p + p { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; margin-top: 3px; font-size: 14px; line-height: 1.3; }
+/* Desktop captions sit above native playback controls; mobile keeps its compact layout. */
+@media (min-width: 769px) {
+  .scene-page .scene-video-subtitle { bottom: clamp(64px, 12%, 96px) !important; padding: 0 24px; }
+  .scene-page .scene-video-subtitle > div { max-width: 90%; padding: 10px 18px; border-radius: 8px; }
+  .scene-page .scene-video-subtitle p:first-child { display: block; overflow: visible; font-size: clamp(20px, 2vw, 26px); line-height: 1.4; }
+  .scene-page .scene-video-subtitle p + p { overflow: visible; white-space: normal; text-overflow: clip; margin-top: 5px; font-size: clamp(18px, 1.6vw, 22px); line-height: 1.4; }
+}
+.scene-keyboard-video-bar { display: none; }
+.scene-video-slot { position: relative; }
+.scene-page .dictation-input-card textarea { min-height: 76px; overflow-y: hidden; }
+@media (max-width: 768px) {
+  .scene-page { --scene-dock-height: calc(100vw * 9 / 16); }
+  .scene-page.is-video-docked .scene-mobile-description, .scene-page.is-video-docked .scene-start-listening { display: none; }
+  .scene-page #section-dialogue { scroll-margin-top: calc(var(--scene-dock-height) + 12px); }
+  .scene-page.is-video-docked .scene-video-frame { position: fixed; z-index: 90; top: var(--scene-viewport-top, 0px); left: 0; right: 0; width: 100%; height: var(--scene-dock-height); aspect-ratio: auto !important; border-radius: 0; }
+  .scene-page.is-video-docked .scene-video-frame video { pointer-events: none; }
+  .scene-page .scene-video-subtitle p:first-child { font-size: 14px; }
+  .scene-page .scene-video-subtitle p + p { font-size: 12px; }
+  .scene-page .sentence-listening-card, .scene-page .dictation-practice-card { padding: 12px !important; margin-bottom: 16px; }
+  .scene-page .sentence-listening-line, .scene-page .dictation-input-card { padding: 12px !important; gap: 8px !important; }
+  .scene-page .sentence-speaker-avatar, .scene-page .dictation-avatar { width: 30px !important; height: 30px !important; }
+  .scene-page .practice-navigation { gap: 18px !important; }
+  .scene-page .practice-play-button { width: 52px !important; height: 52px !important; }
+  .scene-page .practice-settings { gap: 6px !important; margin-top: 8px !important; padding-top: 6px !important; }
+  .scene-page .practice-speed, .scene-page .practice-text-mode, .scene-page .practice-speed > div, .scene-page .practice-text-mode > div { gap: 2px !important; }
+  .scene-page .practice-settings button { padding: 3px 4px; }
+  .scene-page.is-keyboard-open { --scene-dock-height: 44px; }
+  .scene-page.is-video-docked.is-keyboard-open .scene-video-frame > :not(.scene-keyboard-video-bar) { visibility: hidden; }
+  .scene-page.is-video-docked.is-keyboard-open .scene-keyboard-video-bar { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 12px; background: var(--card); color: var(--primary); font-size: 12px; }
+  .scene-keyboard-video-bar > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .scene-page.is-keyboard-open #section-dialogue { padding-bottom: calc(25dvh + 24px); }
+  .mobile-nav-page-padding:has(.scene-page.is-keyboard-open) .mobile-site-nav { display: none; }
+  .scene-page.is-keyboard-open .dictation-practice-card { padding-bottom: 32px !important; }
+  .scene-page .dictation-input-card textarea { font-size: 20px; scroll-margin-top: 60px; scroll-margin-bottom: 24px; }
+}
+@media (max-width: 600px) {
+  .scene-page .sentence-en { font-size: 24px; }
+  .scene-page .scene-mobile-description { display: none !important; }
+  .scene-page.is-video-docked .scene-study-heading { margin-top: 0; margin-bottom: 10px; }
+  .scene-page.is-video-docked .sentence-listening-line { padding: 10px 12px !important; row-gap: 4px !important; }
+  .scene-page.is-video-docked .sentence-en { margin-top: 6px !important; line-height: 1.25; }
+  .scene-page.is-video-docked .sentence-zh { margin-top: 8px; line-height: 1.4; }
+  .scene-page.is-video-docked .practice-position { margin-bottom: 6px; }
+  .scene-page.is-video-docked .practice-action-bar { margin-top: 8px !important; }
+  .scene-page.is-video-docked .practice-settings { margin-top: 8px !important; padding-top: 8px !important; gap: 8px 12px !important; }
+}
+@media (max-width: 768px) {
+  .scene-page.is-video-docked .scene-study-heading { flex-wrap: nowrap; align-items: center; gap: 8px; }
+  .scene-page.is-video-docked .scene-study-heading > :first-child { width: auto; flex: 1; margin-bottom: 0; }
+  .scene-page.is-video-docked .scene-study-heading > :first-child p { display: none; }
+  .scene-page.is-video-docked nav[aria-label="上一集 / 下一集"] { display: none; }
+}
+
+/* Roomy settings on desktop/tablet; compact only when the card is too narrow. */
+.scene-page .practice-action-bar { container-type: inline-size; }
+.scene-page .practice-settings { flex-wrap: wrap; gap: 12px 24px !important; margin-top: 18px !important; padding-top: 16px !important; }
+.scene-page .practice-speed, .scene-page .practice-text-mode, .scene-page .practice-speed > div, .scene-page .practice-text-mode > div { gap: 8px !important; }
+.scene-page .practice-speed > span, .scene-page .practice-text-mode > span { font-size: 13px; }
+/* The pill is 32px tall inside a non-overlapping 44px touch target. */
+.scene-page .practice-settings button { position: relative; isolation: isolate; min-width: 44px; min-height: 44px; padding: 6px 12px; border: 0; border-radius: 999px; background: transparent; font-size: 13px; }
+.scene-page .practice-settings button::before { content: ""; position: absolute; z-index: -1; inset: 6px 0; border: 1px solid var(--border); border-radius: inherit; background: white; pointer-events: none; }
+.scene-page .practice-settings button[aria-pressed="true"] { background: transparent; }
+.scene-page .practice-settings button[aria-pressed="true"]::before { border-color: var(--accent); background: var(--accent); }
+@container (max-width: 520px) {
+  .scene-page .practice-settings { gap: 2px 16px !important; margin-top: 8px !important; padding-top: 8px !important; }
+  .scene-page .practice-speed, .scene-page .practice-text-mode, .scene-page .practice-speed > div, .scene-page .practice-text-mode > div { gap: 6px !important; }
+  .scene-page .practice-settings button { padding-inline: 10px; }
+}
+@media (max-width: 600px) {
+  .scene-page .practice-settings,
+  .scene-page.is-video-docked .practice-settings { row-gap: 0 !important; }
+  .scene-page .practice-settings button,
+  .scene-page .practice-speed > span,
+  .scene-page .practice-text-mode > span { font-size: 12px; }
+}
+
+/* One inline blank, using the same green language as scene word lookup. */
+.scene-page .dictation-blank-sentence { margin-top: 12px; font-family: var(--font-serif); font-size: 28px; line-height: 1.65; color: var(--primary); overflow-wrap: anywhere; }
+.scene-page .dictation-blank-control { display: inline-flex; max-width: 100%; align-items: baseline; gap: 2px; vertical-align: baseline; }
+.scene-page .dictation-blank { appearance: none; height: auto; min-width: 0; max-width: 100%; min-height: 0; padding: 0 4px; vertical-align: baseline; border: 0; border-bottom: 2px solid #0F3527; border-radius: 0; background: transparent; font: inherit; line-height: inherit; color: #0F3527; outline: none; box-shadow: none; }
+.scene-page .dictation-blank:focus-visible { outline: none; border-bottom-width: 3px; }
+.scene-page .dictation-blank-control > span { display: inline-flex; align-self: center; flex: none; }
+.scene-page .dictation-blank.is-correct { border-color: #166534; background: #EAF4D3; }
+.scene-page .dictation-blank.is-incorrect { border-color: #b91c1c; background: #fee2e2; color: #b91c1c; }
+.scene-page .dictation-blank-source { margin-top: 6px; font-size: 12px; color: var(--muted-foreground); }
+.scene-page .blank-feedback-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; font-size: 12px; color: var(--muted-foreground); }
+.scene-page .blank-feedback-row button, .scene-page .blank-hint-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 44px; padding: 4px 8px; color: var(--primary); font-size: 12px; font-weight: 700; }
+.scene-page .blank-correct-mark { color: #166534; }
+.scene-page .blank-incorrect-mark { color: #b91c1c; }
+@media (max-width: 600px) {
+  .scene-page .dictation-blank-sentence { font-size: 24px; line-height: 1.6; }
+}
+
+@media (max-width: 767px) {
+  .mobile-nav-page-padding:has(.scene-page) { padding-bottom: var(--mobile-nav-height); }
+  .mobile-nav-page-padding .scene-page { padding-bottom: 0; }
+  .scene-page #section-language { padding-bottom: 12px; }
+  .scene-page .scene-resources { padding-bottom: 0; }
+  .scene-page #section-pdf { margin-bottom: 0; padding: 16px; gap: 12px; border-radius: 18px; }
+  .scene-page #scene-pdf-title { font-size: 10px; }
+  .scene-page #section-pdf > div > p:first-of-type { margin-top: 8px; font-size: 20px; line-height: 1.3; }
+  .scene-page #section-pdf > div > p + p { margin-top: 6px; font-size: 12px; line-height: 1.5; }
+  .scene-page #section-pdf > button, .scene-page #section-pdf > span { min-height: 44px; padding: 10px 16px; font-size: 13px; }
+  .scene-page .scene-episode-bar-spacer { height: 65px; } /* 64px controls + 1px border */
+}

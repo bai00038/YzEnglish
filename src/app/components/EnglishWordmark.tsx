@@ -1,0 +1,21 @@
+/** Custom outlined lettering: no font dependency, crisp at every display size. */
+export function EnglishWordmark({ className = "" }: { className?: string }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 334 112" fill="none" className={className}>
+      <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+        {/* Eng is slightly lighter than lish. */}
+        <g strokeWidth="12">
+          <path d="M45 19H12V79H45M12 48H42" />
+          <path d="M65 79V40M65 57C65 30 102 30 102 57V79" />
+          <path d="M158 58C158 30 116 30 116 58S158 86 158 58ZM158 40V84C158 106 131 111 118 98" />
+        </g>
+        <g strokeWidth="14">
+          <path d="M184 17V79M207 43V79" />
+          <path d="M254 44C241 34 225 40 226 51C227 62 258 58 258 71C258 84 240 88 229 78" />
+          <path d="M282 17V79M282 57C282 30 320 30 320 57V79" />
+        </g>
+      </g>
+      <circle cx="207" cy="22" r="7" fill="#C0ED35" />
+    </svg>
+  );
+}

@@ -1,73 +1,21 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { CornerDownLeft } from "lucide-react";
-import { diffDictationWords, isDictationExactMatch, type DictationToken } from "@/data/dictation";
-import { speakerAvatarLabel, type SpeakerStyle } from "@/data/speakerRoles";
-import { PracticeActionBar } from "@/app/components/PracticeActionBar";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Check, RotateCcw } from 'lucide-react';
+import { loadKitCatalogue, type KitEntry } from '@/data/kit';
+import { chooseDictationBlank, isBlankAnswerCorrect } from '@/data/dictation-blank';
+import { speakerAvatarLabel } from '@/data/speakerRoles';
+import { PracticeActionBar } from './PracticeActionBar';
+import type { DictationLineInput as LegacyLine } from './FullSentenceDictationPractice';
 
-// One valid, playable dialogue line, pre-filtered by the parent
-// (SceneDetailPage) to lines that both have an exact start/end range AND
-// non-empty English text — see dictationLines there. `index` is the
-// line's position in content.dialogue, the stable key this component
-// uses for both localStorage records and telling the parent which line's
-// exact range to play (via onPlayLine) — never re-derived here.
-export interface DictationLineInput {
-  index: number;
-  en: string;
-  zh: string;
-  speakerLabel: string;
-  speakerStyle: SpeakerStyle;
-}
-
-interface DictationRecord {
-  input: string;
-  checked: boolean;
-  correct: boolean;
-}
-
-type DictationRecords = Record<number, DictationRecord>;
-const DICTATION_SHOW_ZH_STORAGE_KEY = "yzenglish:dictation:showZh";
-
-interface StoredDictationState {
-  position: number;
-  records: DictationRecords;
-}
-
-// Namespaced per scene so switching scenes (or having two scenes open in
-// different tabs) can never read/overwrite another scene's practice
-// state — see dictation spec §9.
-function storageKey(sceneId: number): string {
-  return `yzenglish:dictation:${sceneId}`;
-}
-
-function loadStoredState(sceneId: number): StoredDictationState | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = window.localStorage.getItem(storageKey(sceneId));
-    if (!raw) return null;
-    const parsed: unknown = JSON.parse(raw);
-    if (
-      typeof parsed === "object" && parsed !== null &&
-      typeof (parsed as StoredDictationState).position === "number" &&
-      typeof (parsed as StoredDictationState).records === "object" &&
-      (parsed as StoredDictationState).records !== null
-    ) {
-      return parsed as StoredDictationState;
-    }
-  } catch {
-    // Malformed JSON or storage unavailable (e.g. private browsing) —
-    // practice just starts fresh for this session.
-  }
-  return null;
-}
-
-interface DictationPracticeProps {
+export interface DictationLineInput extends LegacyLine { anchorStart?: number }
+interface DictationRecord { input: string; checked: boolean; correct: boolean }
+type Records = Record<number, DictationRecord>;
+interface Props {
   sceneId: number;
+  externalSceneId: string;
   lines: DictationLineInput[];
-  /** Plays exactly this line's start->end range via the parent's existing single-line player — see playDialogueLine in SceneDetailPage. Never a second/competing playback path. */
-  onPlayLine: (lineIndex: number) => void;
-  /** Pauses the shared <video> element when resetting/retrying or leaving the final sentence. */
+  onPlayLine: (index: number, once?: boolean) => void;
+  onCurrentLineChange?: (index: number | null) => void;
   onStopPlayback: () => void;
-  /** Records one submitted, fully checked dictation pass. Accuracy does not affect completion. */
   onComplete: () => void;
   playbackRate: number;
   onPlaybackRateChange: (rate: number) => void;
@@ -77,389 +25,139 @@ interface DictationPracticeProps {
   onBilingualModeChange: (value: boolean) => void;
   isPlaying: boolean;
 }
+const key = (id: number) => `yzenglish:dictation:${id}`;
+const hintKey = 'yzenglish:dictation:showZh';
+function restore(id: number): Records {
+  try {
+    const saved = JSON.parse(localStorage.getItem(key(id)) ?? 'null');
+    if (!saved || typeof saved.records !== 'object' || !saved.records) return {};
+    return Object.fromEntries(Object.entries(saved.records).filter(([, value]) => {
+      const record = value as DictationRecord;
+      return record && typeof record.input === 'string' && typeof record.checked === 'boolean' && typeof record.correct === 'boolean';
+    })) as Records;
+  } catch { return {}; }
+}
 
-export function DictationPractice({ sceneId, lines, onPlayLine, onStopPlayback, onComplete, playbackRate, onPlaybackRateChange, repeatLine, onRepeatLineChange, bilingualMode, onBilingualModeChange, isPlaying }: DictationPracticeProps) {
+export function DictationPractice(props: Props) {
+  const { sceneId, externalSceneId, lines, onPlayLine, onCurrentLineChange, onStopPlayback, onComplete, isPlaying } = props;
   const [position, setPosition] = useState(0);
-  const [records, setRecords] = useState<DictationRecords>({});
-  const [draft, setDraft] = useState("");
+  const [records, setRecords] = useState<Records>(() => restore(sceneId));
+  const [draft, setDraft] = useState('');
   const [inputFocused, setInputFocused] = useState(false);
+  const [entries, setEntries] = useState<KitEntry[]>([]);
   const [showZh, setShowZh] = useState(() => {
-    if (typeof window === "undefined") return false;
-    try {
-      return window.localStorage.getItem(DICTATION_SHOW_ZH_STORAGE_KEY) === "true";
-    } catch {
-      return false;
-    }
+    try { return localStorage.getItem(hintKey) === 'true'; } catch { return false; }
   });
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const mobileOptionsRef = useRef<HTMLDivElement>(null);
-  // Guards the persist effect below from firing on the very same render
-  // that just restored (or reset) state from storage — without it, a
-  // scene with no saved practice yet would immediately write back an
-  // empty {position:0, records:{}}, which is harmless but pointless, and
-  // a scene *with* saved state would risk a race between "just loaded"
-  // and "about to save" on the same tick.
-  const hasRestoredRef = useRef(false);
-
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [loadedScene, setLoadedScene] = useState(sceneId);
   useEffect(() => {
-    hasRestoredRef.current = false;
-    const stored = loadStoredState(sceneId);
-    if (stored) {
-      // Each entry into Dictation is a new listening pass from sentence 1,
-      // while the learner's earlier answers remain available when they
-      // navigate back through the scene.
-      setPosition(0);
-      setRecords(stored.records);
-    } else {
-      setPosition(0);
-      setRecords({});
-    }
-    hasRestoredRef.current = true;
-  // Deliberately scoped to sceneId only — `lines` changes reference each
-  // render (see dictationLines in SceneDetailPage) but its CONTENT for a
-  // given scene is stable, so re-running this on every lines change would
-  // wipe in-progress practice state for no reason.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    let live = true;
+    void loadKitCatalogue().then(data => { if (live) setEntries([...data.chunks, ...data.words]); }).catch(() => { /* Fallback blanks work immediately, even offline. */ });
+    return () => { live = false; };
+  }, []);
+  useEffect(() => {
+    if (loadedScene === sceneId) return;
+    setLoadedScene(sceneId);
+    setRecords(restore(sceneId)); setPosition(0); setDraft('');
   }, [sceneId]);
-
   useEffect(() => {
-    if (!hasRestoredRef.current) return;
-    if (typeof window === "undefined") return;
-    try {
-      window.localStorage.setItem(storageKey(sceneId), JSON.stringify({ position, records }));
-    } catch {
-      // Storage unavailable — practice still works for this session, it
-      // just won't survive a reload.
-    }
-  }, [sceneId, position, records]);
+    if (loadedScene !== sceneId) return;
+    try { localStorage.setItem(key(sceneId), JSON.stringify({ position, records })); } catch { /* Unavailable storage does not block practice. */ }
+  }, [sceneId, loadedScene, position, records]);
+  useEffect(() => { try { localStorage.setItem(hintKey, String(showZh)); } catch { /* Optional preference. */ } }, [showZh]);
 
-  // Chinese hints are a learner preference, not per-sentence state. Once
-  // the learner turns them on or off, keep that choice across sentence
-  // navigation, scene switches, tab switches, and page reloads.
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      window.localStorage.setItem(DICTATION_SHOW_ZH_STORAGE_KEY, String(showZh));
-    } catch {
-      // Storage unavailable — the preference still persists for this render session.
-    }
-  }, [showZh]);
+  const line = lines[position];
+  const blanks = useMemo(() => lines.map(item => chooseDictationBlank(item.en, externalSceneId, item.anchorStart, entries)), [lines, externalSceneId, entries]);
+  // Once an answer is started, retain that blank if the runtime catalogue arrives late.
+  const startedBlanks = useRef(new Map<string, typeof blanks[number]>());
+  const blankKey = `${sceneId}:${line?.index}`;
+  const blank = startedBlanks.current.get(blankKey) ?? blanks[position];
+  const record = line ? records[line.index] : undefined;
+  const checked = record?.checked ?? false;
+  const checkedCount = lines.filter(item => records[item.index]?.checked).length;
+  const correctCount = lines.filter(item => records[item.index]?.checked && records[item.index]?.correct).length;
+  useEffect(() => { onCurrentLineChange?.(line?.index ?? null); }, [line?.index, onCurrentLineChange]);
+  useEffect(() => { setDraft(record?.input ?? ''); }, [sceneId, position, line?.index]);
 
-  const currentLine = position < lines.length ? lines[position] : null;
-  const currentRecord = currentLine ? records[currentLine.index] : undefined;
-  const isComplete = lines.length > 0 && position >= lines.length;
-  const checked = currentRecord?.checked ?? false;
-
-  // Draft is separate from `records` so every keystroke doesn't write to
-  // (and localStorage-persist) the records map — only Check does that.
-  // Re-syncs from the saved record whenever the current line changes,
-  // which is what makes "上一句" show that line's earlier input/result
-  // again (dictation spec §7) with no extra bookkeeping.
-  useEffect(() => {
-    setDraft(currentRecord?.input ?? "");
-    if (!currentRecord?.checked) textareaRef.current?.focus();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [position, currentLine?.index]);
-
-  const diff = useMemo(() => {
-    if (!currentLine || !checked || !currentRecord) return null;
-    return diffDictationWords(currentLine.en, currentRecord.input);
-  }, [currentLine, checked, currentRecord]);
-
-  const checkedCount = useMemo(() => Object.values(records).filter(r => r.checked).length, [records]);
-  const correctCount = useMemo(() => Object.values(records).filter(r => r.checked && r.correct).length, [records]);
-  const accuracy = checkedCount > 0 ? Math.round((correctCount / checkedCount) * 100) : 0;
-
-  function handleCheck() {
-    if (!currentLine || checked || draft.trim().length === 0) return;
-    const correct = isDictationExactMatch(currentLine.en, draft);
-    setRecords(prev => ({ ...prev, [currentLine.index]: { input: draft, checked: true, correct } }));
+  function submit(reveal = false) {
+    if (!line || !blank || checked || (!reveal && !draft.trim())) return;
+    startedBlanks.current.set(blankKey, blank);
+    const correct = !reveal && isBlankAnswerCorrect(blank.answer, draft);
+    setRecords(previous => ({ ...previous, [line.index]: { input: draft, checked: true, correct } }));
+    if (!correct && !reveal) onPlayLine(line.index, true);
   }
-
-  function goTo(nextPosition: number) {
-    const boundedPosition = Math.min(lines.length, Math.max(0, nextPosition));
-    setPosition(boundedPosition);
-    const nextLine = lines[boundedPosition];
+  function goTo(next: number) {
+    const keepKeyboard = document.activeElement === inputRef.current;
+    const bounded = Math.max(0, Math.min(lines.length, next));
+    setPosition(bounded);
+    const nextLine = lines[bounded];
     if (nextLine) {
       onPlayLine(nextLine.index);
-      window.requestAnimationFrame(() => textareaRef.current?.focus({ preventScroll: true }));
+      if (keepKeyboard) requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
     } else {
       onStopPlayback();
       if (checkedCount === lines.length) onComplete();
     }
   }
-
-  function handleRestart() {
+  function retry() {
+    if (!line) return;
     onStopPlayback();
-    setRecords({});
-    setPosition(0);
-    setDraft("");
-    try {
-      window.localStorage.removeItem(storageKey(sceneId));
-    } catch {
-      // ignore
-    }
+    setRecords(previous => { const next = { ...previous }; delete next[line.index]; return next; });
+    setDraft('');
+    requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
   }
-
-  function handleRetryCurrentLine() {
-    if (!currentLine) return;
-    onStopPlayback();
-    setRecords(previous => {
-      const next = { ...previous };
-      delete next[currentLine.index];
-      return next;
-    });
-    setDraft("");
-    window.requestAnimationFrame(() => textareaRef.current?.focus());
+  function restart() {
+    onStopPlayback(); setRecords({}); setPosition(0); setDraft(''); startedBlanks.current.clear();
   }
+  if (!lines.length) return <div className="rounded-2xl bg-white p-6 text-muted-foreground">该场景暂无可用于听写的精确时间码句子。</div>;
+  if (!line) return <div className="rounded-2xl bg-white px-6 py-10 text-center">
+    <p className="text-xl font-bold text-primary">完成练习</p>
+    <p className="mt-3 text-muted-foreground">已完成 {checkedCount} / {lines.length} 句 · 正确率 {checkedCount ? Math.round(correctCount / checkedCount * 100) : 0}%</p>
+    <button type="button" onClick={restart} className="mt-5 rounded-full bg-primary px-5 py-3 text-white">重新练习</button>
+  </div>;
 
-  function keepInputVisible() {
-    const input = textareaRef.current;
-    const viewport = window.visualViewport;
-    if (!input || !viewport || document.activeElement !== input) return;
-    const rect = input.getBoundingClientRect();
-    const safeTop = viewport.offsetTop + 12;
-    const safeBottom = viewport.offsetTop + viewport.height - 24;
-    if (rect.bottom > safeBottom) {
-      window.scrollBy({ top: rect.bottom - safeBottom + 12, behavior: "auto" });
-    } else if (rect.top < safeTop) {
-      window.scrollBy({ top: rect.top - safeTop - 12, behavior: "auto" });
-    }
-  }
-
-  useEffect(() => {
-    const viewport = window.visualViewport;
-    if (!viewport) return;
-    const update = () => window.requestAnimationFrame(keepInputVisible);
-    viewport.addEventListener("resize", update);
-    return () => {
-      viewport.removeEventListener("resize", update);
-    };
-  });
-
-  if (lines.length === 0) {
-    return (
-      <div className="rounded-2xl border border-dashed border-border bg-card px-6 py-16 text-center">
-        <p className="text-sm font-semibold text-foreground">No timed sentences available for dictation yet.</p>
-        <p className="text-xs text-muted-foreground mt-1">该场景暂无可用于听写的精确时间码句子。</p>
-      </div>
-    );
-  }
-
-  if (isComplete) {
-    const needsReview = checkedCount - correctCount;
-    return (
-      <div className="rounded-2xl px-6 py-14 text-center" style={{ backgroundColor: "#EFF4F1" }}>
-        <p className="text-xl font-black text-primary">Practice complete · 完成练习</p>
-        <p className="text-sm text-muted-foreground mt-3">{checkedCount} / {lines.length} sentences checked · 已完成句数</p>
-        {checkedCount > 0 && (
-          <p className="text-sm text-muted-foreground mt-1">Accuracy · 正确率 {accuracy}%</p>
-        )}
-        <div className="flex items-center justify-center gap-8 mt-6">
-          <div>
-            <p className="text-2xl font-black text-primary">{correctCount}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">完全正确</p>
-          </div>
-          <div>
-            <p className="text-2xl font-black" style={{ color: "#b91c1c" }}>{needsReview}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">需要复习</p>
+  return <div className="dictation-practice-card blank-dictation rounded-[24px] bg-white p-3 md:p-5">
+    <p className="practice-position">第 {position + 1} 句 / 共 {lines.length} 句</p>
+    <div className="dictation-input-card grid w-full items-center rounded-[20px] bg-[#F5F1E8] text-left">
+      <span className="dictation-avatar flex items-center justify-center rounded-full font-black text-white" style={{ backgroundColor: line.speakerStyle.color }}>{speakerAvatarLabel(line.speakerLabel)}</span>
+      <div className="dictation-copy min-w-0">
+        <div className="dictation-role-row flex flex-wrap items-center justify-between gap-2">
+          <span className="text-[15px] font-black text-primary">{line.speakerLabel}</span>
+          <div className="flex items-center gap-1">
+            <button type="button" onClick={restart} disabled={!checkedCount && !draft && position === 0} className="blank-hint-toggle disabled:opacity-35" title="清空本场景听写记录，从第一句重新练习">重新练习</button>
+            <button type="button" onClick={() => setShowZh(value => !value)} aria-pressed={showZh} className="blank-hint-toggle">中文提示 · {showZh ? '开' : '关'}</button>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={handleRestart}
-          className="mt-7 text-sm font-bold rounded-full px-5 py-2.5 transition-opacity hover:opacity-90"
-          style={{ backgroundColor: "#0F3527", color: "#F4EFE6" }}
-        >
-          重新练习 · Restart
-        </button>
-      </div>
-    );
-  }
-
-  if (!currentLine) return null;
-
-  return (
-    <div className="dictation-practice-card min-h-[520px] rounded-[24px] border border-border bg-white p-3 shadow-[0_14px_38px_rgba(15,53,39,0.08)] md:p-5">
-      {/* Match the listening card's speaker-led upper panel without revealing the answer. */}
-      <div className="dictation-input-card grid min-h-[250px] w-full grid-cols-[56px_minmax(0,1fr)] items-center gap-5 rounded-[20px] bg-[#F5F1E8] px-5 py-8 text-left md:grid-cols-[68px_minmax(0,1fr)] md:gap-8 md:px-10 md:py-10">
-        <span
-          className="dictation-avatar flex h-14 w-14 items-center justify-center rounded-full text-[14px] font-black text-white md:h-[68px] md:w-[68px] md:text-[16px]"
-          style={{ backgroundColor: currentLine.speakerStyle.color }}
-        >
-          {speakerAvatarLabel(currentLine.speakerLabel)}
-        </span>
-        <div className="dictation-copy min-w-0">
-          <div className="dictation-role-row flex flex-wrap items-center justify-between gap-3">
-            <span className="block text-[15px] font-black text-primary md:text-[17px]">
-              {currentLine.speakerLabel}
-            </span>
-            <div className="dictation-desktop-options flex flex-wrap items-center justify-end gap-2">
-              <button
-                type="button"
-                onClick={handleRestart}
-                disabled={checkedCount === 0 && draft.trim().length === 0 && position === 0}
-                title="清空本场景全部听写记录，并从第 1 句重新开始"
-                className="rounded-full border border-border bg-white px-4 py-2 text-[12px] font-black text-primary transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35"
-              >
-                全文重新听写
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowZh(value => !value)}
-                aria-pressed={showZh}
-                className={`rounded-full border px-4 py-2 text-[12px] font-black transition-colors ${showZh ? "border-accent bg-accent text-primary" : "border-border bg-white text-primary"}`}
-              >
-                中文提示 · {showZh ? "开" : "关"}
-              </button>
-            </div>
-          </div>
-          <label htmlFor="dictation-input" className="sr-only">输入你听到的英文句子</label>
-          <div className="dictation-input-wrap relative mt-3">
-            <textarea
-              id="dictation-input"
-              ref={textareaRef}
-              value={draft}
-              onChange={e => setDraft(e.target.value)}
-              onFocus={() => {
-                setInputFocused(true);
-                window.setTimeout(keepInputVisible, 280);
-              }}
-              onBlur={() => setInputFocused(false)}
-              onKeyDown={e => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleCheck();
+        <div className="dictation-blank-sentence">
+          {line.en.slice(0, blank.start)}<span className="dictation-blank-control">
+            <input ref={inputRef} key={`${sceneId}:${line.index}`} type="text" value={checked ? (record?.input ?? '') : draft}
+              onPointerDown={event => {
+                if (!checked && document.activeElement !== event.currentTarget && window.matchMedia('(max-width: 768px)').matches) {
+                  event.preventDefault();
+                  event.currentTarget.focus({ preventScroll: true });
                 }
               }}
-              disabled={checked}
-              rows={1}
-              aria-label="输入你听到的英文句子，按回车检查答案"
-              className="h-[76px] w-full max-w-full resize-none rounded-[14px] border-[0.5px] border-primary/10 bg-[#FAF8F2] px-4 py-2.5 font-serif text-[20px] leading-relaxed text-primary focus:border-primary/20 focus:outline-none focus:ring-0 disabled:bg-[#F7F3EA] disabled:text-muted-foreground md:h-[84px] md:text-[22px]"
-            />
-            {!checked && draft.length === 0 && (
-              <span className="pointer-events-none absolute left-4 top-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground/65">
-                <span className="font-serif text-[20px] leading-relaxed md:text-[22px]">输入你听到的英文句子…</span>
-              </span>
-            )}
-          </div>
-          <div ref={mobileOptionsRef} className="dictation-mobile-options mt-2 hidden items-center justify-between gap-3">
-            <button
-              type="button"
-              onClick={handleRestart}
-              disabled={checkedCount === 0 && draft.trim().length === 0 && position === 0}
-              className="text-[12px] font-bold text-primary underline-offset-4 hover:underline disabled:opacity-35"
-            >
-              全文重新听写
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowZh(value => !value)}
-              aria-pressed={showZh}
-              className={`rounded-full border px-3 py-1.5 text-[11px] font-black transition-colors ${showZh ? "border-accent bg-accent text-primary" : "border-border bg-white text-primary"}`}
-            >
-              中文提示 · {showZh ? "开" : "关"}
-            </button>
-          </div>
-          {checked && diff ? (
-            <div className="mt-4 rounded-[16px] border border-primary/10 bg-white/70 p-4">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <span className="text-[12px] font-black text-primary">检查结果</span>
-                <button
-                  type="button"
-                  onClick={handleRetryCurrentLine}
-                  className="rounded-full border border-border bg-white px-3.5 py-1.5 text-[11px] font-black text-primary transition-colors hover:bg-secondary"
-                >
-                  重做本句
-                </button>
-              </div>
-              <div className="grid gap-4 md:grid-cols-2 md:gap-6">
-                <div>
-                  <p className="mb-1.5 text-[12px] font-bold text-muted-foreground">你的答案</p>
-                  <p className="text-[15px] leading-[1.8] md:text-[16px]">
-                    {diff.userTokens.length === 0 ? (
-                      <span className="text-sm italic text-muted-foreground">未作答</span>
-                    ) : (
-                      diff.userTokens.map((token, i) => <WordToken key={i} token={token} />)
-                    )}
-                  </p>
-                </div>
-                <div>
-                  <p className="mb-1.5 text-[12px] font-bold text-muted-foreground">正确答案</p>
-                  <p className="text-[15px] leading-[1.8] md:text-[16px]">
-                    {diff.correctTokens.map((token, i) => <WordToken key={i} token={token} />)}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="dictation-hint-row mt-3 flex min-h-9 flex-wrap items-center justify-between gap-3 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
-              <span className="min-w-0">
-                {showZh
-                  ? <>中文提示：{currentLine.zh || "暂无中文提示"}</>
-                  : <span className="text-muted-foreground/70">需要时可打开中文提示</span>}
-              </span>
-              <span className="flex shrink-0 items-center gap-3">
-                <span className="dictation-enter-hint inline-flex items-center gap-1 text-[11px] font-bold text-muted-foreground/75 md:text-[12px]">
-                  <CornerDownLeft size={14} strokeWidth={2} />
-                  回车检查答案
-                </span>
-              </span>
-            </div>
-          )}
-          {checked && showZh && (
-            <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground md:text-[16px]">
-              中文提示：{currentLine.zh || "暂无中文提示"}
-            </p>
-          )}
+              onChange={event => { startedBlanks.current.set(blankKey, blank); setDraft(event.target.value); }}
+              onFocus={() => { startedBlanks.current.set(blankKey, blank); setInputFocused(true); }} onBlur={() => setInputFocused(false)}
+              onKeyDown={event => { if (event.key === 'Enter' && !event.nativeEvent.isComposing) { event.preventDefault(); submit(); } }}
+              readOnly={checked} autoComplete="off" autoCorrect="off" autoCapitalize="none" spellCheck={false} enterKeyHint="done"
+              aria-label="填写空缺，按回车检查答案" aria-invalid={checked && !record?.correct}
+              className={`dictation-blank ${checked ? record?.correct ? 'is-correct' : 'is-incorrect' : ''}`}
+              style={{ width: `${Math.max(4, Math.min(24, Math.max(blank.answer.length, draft.length) + 1))}ch` }} />
+            {checked && <span aria-label={record?.correct ? '回答正确' : '正确答案见下方'} className={record?.correct ? 'blank-correct-mark' : 'blank-incorrect-mark'}>{record?.correct ? <Check size={16} /> : '✕'}</span>}
+          </span>{line.en.slice(blank.end)}
+        </div>
+        {blank.source && <p className="dictation-blank-source">锦囊库 · {blank.source === 'chunk' ? '词伙' : '词汇'}</p>}
+        {showZh && <p className="dictation-hint-row mt-2 text-muted-foreground">{line.zh || '暂无中文提示'}</p>}
+        <div className="blank-feedback-row" aria-live="polite">
+          {checked ? <><span className="blank-correct-mark">{record?.correct ? '回答正确' : `正确答案：${blank.answer}`}</span><button type="button" onClick={retry}><RotateCcw size={13} />重做本句</button></> : <><span>听整句，只填空缺</span><button type="button" onPointerDown={event => event.preventDefault()} onClick={() => submit(true)}>看答案</button></>}
         </div>
       </div>
-
-      <PracticeActionBar
-        position={position}
-        total={lines.length}
-        onPrevious={() => goTo(position - 1)}
-        previousDisabled={position === 0}
-        isPlaying={isPlaying}
-        onTogglePlay={() => isPlaying ? onStopPlayback() : onPlayLine(currentLine.index)}
-        playLabel={isPlaying ? "暂停当前听写句" : "播放当前听写句"}
-        onNext={() => goTo(position + 1)}
-        playbackRate={playbackRate}
-        onPlaybackRateChange={onPlaybackRateChange}
-        repeatLine={repeatLine}
-        onRepeatLineChange={onRepeatLineChange}
-        bilingualMode={bilingualMode}
-        onBilingualModeChange={onBilingualModeChange}
-        onCheck={handleCheck}
-        checkDisabled={checked || draft.trim().length === 0}
-        floatOnlyWithKeyboard
-        inheritListeningSettings
-        inputFocused={inputFocused}
-        inlineOnly
-      />
-
     </div>
-  );
-}
-
-// Color alone never carries the correct/incorrect distinction — a ✓/symbol
-// suffix and (for anything not correct) an underline both hold regardless
-// of color vision, per dictation spec §10. "incorrect" covers both a
-// wrong word AND a genuinely extra one the user typed (diffDictationWords
-// doesn't distinguish the two — both are "in the user's answer, not
-// matched to the correct sentence").
-function WordToken({ token }: { token: DictationToken }) {
-  const isCorrect = token.status === "correct";
-  const symbol = isCorrect ? "✓" : token.status === "missing" ? "+" : "✕";
-  const statusLabel = token.status === "correct" ? "correct" : token.status === "missing" ? "missing" : "incorrect";
-  return (
-    <span
-      className={`inline-block mr-2 ${isCorrect ? "" : "underline decoration-2"}`}
-      style={{ color: isCorrect ? "#166534" : "#b91c1c" }}
-      aria-label={`${token.text} — ${statusLabel}`}
-    >
-      {token.text}
-      <span aria-hidden="true" className="text-[10px] align-super ml-0.5">{symbol}</span>
-    </span>
-  );
+    <PracticeActionBar position={position} total={lines.length} onPrevious={() => goTo(position - 1)} previousDisabled={position === 0}
+      isPlaying={isPlaying} onTogglePlay={() => isPlaying ? onStopPlayback() : onPlayLine(line.index)} playLabel={isPlaying ? '暂停当前听写句' : '播放当前听写句'}
+      onNext={() => goTo(position + 1)} playbackRate={props.playbackRate} onPlaybackRateChange={props.onPlaybackRateChange}
+      repeatLine={props.repeatLine} onRepeatLineChange={props.onRepeatLineChange} bilingualMode={props.bilingualMode} onBilingualModeChange={props.onBilingualModeChange}
+      onCheck={() => submit()} checkDisabled={checked || !draft.trim()} inputFocused={inputFocused} />
+  </div>;
 }

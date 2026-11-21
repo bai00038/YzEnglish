@@ -1,0 +1,3839 @@
+{
+  "words": [
+    {
+      "id": "word-appointment",
+      "key": "appointment",
+      "kind": "word",
+      "text": "appointment",
+      "meaningZh": "预约",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-006",
+          "titleZh": "牙科诊所约下次复诊",
+          "collectionId": "C1",
+          "collectionOrder": 6,
+          "slug": "booking-your-next-appointment",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-006/HC-06-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "We'll send you a reminder before your appointment.",
+          "anchor_start": 25.72,
+          "displayExample": "We'll send you a reminder before your appointment.",
+          "contextLine": null,
+          "contextStart": null
+        },
+        {
+          "sceneId": "HC-02-001",
+          "titleZh": "到诊所签到并候诊",
+          "collectionId": "C2",
+          "collectionOrder": 3,
+          "slug": "checking-in-at-a-clinic",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-02-001/HC-02-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-02-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Hi, I have an appointment with Dr. Smith at 9:40.",
+          "anchor_start": 0.72,
+          "displayExample": "Hi, I have an appointment with Dr. Smith at 9:40.",
+          "contextLine": null,
+          "contextStart": null
+        },
+        {
+          "sceneId": "HC-04-003",
+          "titleZh": "带孩子去药房打流感疫苗",
+          "collectionId": "C2",
+          "collectionOrder": 10,
+          "slug": "getting-our-flu-shots-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-003/HC-04-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Hi, we have an appointment at ten thirty for flu shots.",
+          "anchor_start": 0,
+          "displayExample": "Hi, we have an appointment at ten thirty for flu shots.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/əˈpɔɪntmɛnt/",
+      "pos": "n.",
+      "note": "指安排好的就诊时间，常与 book、have 或 reminder 连用。"
+    },
+    {
+      "id": "word-filling",
+      "key": "filling",
+      "kind": "word",
+      "text": "filling",
+      "meaningZh": "补牙；补牙材料",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-001",
+          "titleZh": "跟牙医描述牙疼",
+          "collectionId": "C1",
+          "collectionOrder": 1,
+          "slug": "describing-different-types-of-pain",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "At this point, I recommend a filling. If the pain continues or the nerve becomes inflamed, you may need a root canal later.",
+          "anchor_start": 56.2,
+          "displayExample": "At this point, I recommend a filling. If the pain continues or the nerve becomes inflamed, you may need a root canal later.",
+          "contextLine": null,
+          "contextStart": null
+        },
+        {
+          "sceneId": "HC-06-004",
+          "titleZh": "补牙",
+          "collectionId": "C1",
+          "collectionOrder": 4,
+          "slug": "dental-filling",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "I'm going to remove the decay and place the filling now.",
+          "anchor_start": 27.66,
+          "displayExample": "I'm going to remove the decay and place the filling now.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈfɪɫlɪŋ/",
+      "pos": "n.",
+      "note": "在牙科对话中可指补牙这项处理，也可指填入牙洞的材料。"
+    },
+    {
+      "id": "word-pinch",
+      "key": "pinch",
+      "kind": "word",
+      "text": "pinch",
+      "meaningZh": "刺痛一下；掐、刺一下",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-004",
+          "titleZh": "补牙",
+          "collectionId": "C1",
+          "collectionOrder": 4,
+          "slug": "dental-filling",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "You'll feel a little pinch, and then it should start to feel numb.",
+          "anchor_start": 12.3,
+          "displayExample": "You'll feel a little pinch, and then it should start to feel numb.",
+          "contextLine": null,
+          "contextStart": null
+        },
+        {
+          "sceneId": "HC-04-003",
+          "titleZh": "带孩子去药房打流感疫苗",
+          "collectionId": "C2",
+          "collectionOrder": 10,
+          "slug": "getting-our-flu-shots-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-003/HC-04-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Just a quick pinch, buddy.",
+          "anchor_start": 20.01,
+          "displayExample": "Just a quick pinch, buddy.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/pɪntʃ/",
+      "pos": "n. / v.",
+      "note": "本句 a little pinch 指短暂的一下刺痛，而不是持续的疼。"
+    },
+    {
+      "id": "word-pressure",
+      "key": "pressure",
+      "kind": "word",
+      "text": "pressure",
+      "meaningZh": "压感、压力；按压",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-003",
+          "titleZh": "洗牙",
+          "collectionId": "C1",
+          "collectionOrder": 3,
+          "slug": "getting-your-teeth-cleaned",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-003/HC-06-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "You may feel a little pressure around your gums.",
+          "anchor_start": 10.34,
+          "displayExample": "You may feel a little pressure around your gums.",
+          "contextLine": null,
+          "contextStart": null
+        },
+        {
+          "sceneId": "HC-03-004",
+          "titleZh": "在检验中心抽血",
+          "collectionId": "C2",
+          "collectionOrder": 1,
+          "slug": "getting-blood-work-done-at-a-diagnostic-lab",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-004/HC-03-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "All done. Keep pressure on this spot for a few minutes.",
+          "anchor_start": 31.49,
+          "displayExample": "All done. Keep pressure on this spot for a few minutes.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈpɹɛʃɚ/",
+      "pos": "n.",
+      "note": "这里指牙龈周围的压迫感，用来区别于 pain 所指的疼痛。"
+    },
+    {
+      "id": "word-sharp",
+      "key": "sharp",
+      "kind": "word",
+      "text": "sharp",
+      "meaningZh": "硌、尖锐的；刺痛的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-002",
+          "titleZh": "拍牙片",
+          "collectionId": "C1",
+          "collectionOrder": 2,
+          "slug": "taking-dental-x-rays",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "This feels a little sharp on the side.",
+          "anchor_start": 11.04,
+          "displayExample": "This feels a little sharp on the side.",
+          "contextLine": null,
+          "contextStart": null
+        },
+        {
+          "sceneId": "HC-07-006",
+          "titleZh": "腰痛看家庭医生",
+          "collectionId": "C2",
+          "collectionOrder": 7,
+          "slug": "lower-back-pain-at-the-family-doctor",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-006/HC-07-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Is the pain sharp or more of a dull ache?",
+          "anchor_start": 16.39,
+          "displayExample": "Is the pain sharp or more of a dull ache?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ʃɑɹp/",
+      "pos": "adj.",
+      "note": "描述边缘硌人或疼痛尖锐，和 dull 的隐隐钝痛形成对照。"
+    },
+    {
+      "id": "word-sore",
+      "key": "sore",
+      "kind": "word",
+      "text": "sore",
+      "meaningZh": "酸痛；酸痛的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-001",
+          "titleZh": "跟牙医描述牙疼",
+          "collectionId": "C1",
+          "collectionOrder": 1,
+          "slug": "describing-different-types-of-pain",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "No fever, but the gum around that tooth feels a little sore.",
+          "anchor_start": 30.99,
+          "displayExample": "No fever, but the gum around that tooth feels a little sore.",
+          "contextLine": null,
+          "contextStart": null
+        },
+        {
+          "sceneId": "HC-04-003",
+          "titleZh": "带孩子去药房打流感疫苗",
+          "collectionId": "C2",
+          "collectionOrder": 10,
+          "slug": "getting-our-flu-shots-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-003/HC-04-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "No, just a sore arm last time.",
+          "anchor_start": 15.01,
+          "displayExample": "No, just a sore arm last time.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/sɔɹ/",
+      "pos": "adj.",
+      "note": "表示某个部位酸痛或碰着疼；本句形容牙齿周围的牙龈。"
+    },
+    {
+      "id": "word-treatment",
+      "key": "treatment",
+      "kind": "word",
+      "text": "treatment",
+      "meaningZh": "治疗、疗程",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-009",
+          "titleZh": "给孩子咨询牙套",
+          "collectionId": "C1",
+          "collectionOrder": 7,
+          "slug": "orthodontic-consultation-for-a-child",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-009/HC-06-009-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-009/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "If he starts treatment, it might be around two years, with visits about every six weeks.",
+          "anchor_start": 20.98,
+          "displayExample": "If he starts treatment, it might be around two years, with visits about every six weeks.",
+          "contextLine": null,
+          "contextStart": null
+        },
+        {
+          "sceneId": "HC-06-010",
+          "titleZh": "给孩子选择牙套",
+          "collectionId": "C1",
+          "collectionOrder": 8,
+          "slug": "choosing-braces-options",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-010/HC-06-010-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-010/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "How long does the treatment take?",
+          "anchor_start": 21.33,
+          "displayExample": "How long does the treatment take?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈtɹitmənt/",
+      "pos": "n.",
+      "note": "指一段治疗或一套治疗安排；本句在谈正畸治疗所需时间。"
+    },
+    {
+      "id": "word-vibration",
+      "key": "vibration",
+      "kind": "word",
+      "text": "vibration",
+      "meaningZh": "震动",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-004",
+          "titleZh": "补牙",
+          "collectionId": "C1",
+          "collectionOrder": 4,
+          "slug": "dental-filling",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "You'll feel some pressure and vibration, but it shouldn't hurt.",
+          "anchor_start": 30.8,
+          "displayExample": "You'll feel some pressure and vibration, but it shouldn't hurt.",
+          "contextLine": null,
+          "contextStart": null
+        },
+        {
+          "sceneId": "HC-06-005",
+          "titleZh": "种牙手术",
+          "collectionId": "C1",
+          "collectionOrder": 5,
+          "slug": "dental-implant-surgery",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-005/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "You may feel some pressure and vibration, but you shouldn't feel any sharp pain.",
+          "anchor_start": 4.4,
+          "displayExample": "You may feel some pressure and vibration, but you shouldn't feel any sharp pain.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/vaɪˈbɹeɪʃən/",
+      "pos": "n.",
+      "note": "表示震动感，本句把它和 pressure 并列描述操作中的感觉。"
+    },
+    {
+      "id": "word-fever",
+      "key": "fever",
+      "kind": "word",
+      "text": "fever",
+      "meaningZh": "发烧",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-01-002",
+          "titleZh": "孩子发烧时电话约诊",
+          "collectionId": "C2",
+          "collectionOrder": 2,
+          "slug": "calling-about-a-childs-fever",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-01-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Hi, um, my son has a fever of 39 degrees.",
+          "anchor_start": 0,
+          "displayExample": "Hi, um, my son has a fever of 39 degrees.",
+          "contextLine": null,
+          "contextStart": null
+        },
+        {
+          "sceneId": "HC-04-001",
+          "titleZh": "电话预约流感疫苗",
+          "collectionId": "C2",
+          "collectionOrder": 9,
+          "slug": "booking-flu-shots-by-phone",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "And if either of you has a fever that day, call us and we'll rebook.",
+          "anchor_start": 44.67,
+          "displayExample": "And if either of you has a fever that day, call us and we'll rebook.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈfivɚ/",
+      "pos": "n.",
+      "note": "描述发烧常说 have a fever，后面可以补充具体体温。"
+    },
+    {
+      "id": "word-sleeve",
+      "key": "sleeve",
+      "kind": "word",
+      "text": "sleeve",
+      "meaningZh": "袖子",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-004",
+          "titleZh": "在检验中心抽血",
+          "collectionId": "C2",
+          "collectionOrder": 1,
+          "slug": "getting-blood-work-done-at-a-diagnostic-lab",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-004/HC-03-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Please roll up your sleeve and make a fist.",
+          "anchor_start": 29.03,
+          "displayExample": "Please roll up your sleeve and make a fist.",
+          "contextLine": null,
+          "contextStart": null
+        },
+        {
+          "sceneId": "HC-04-003",
+          "titleZh": "带孩子去药房打流感疫苗",
+          "collectionId": "C2",
+          "collectionOrder": 10,
+          "slug": "getting-our-flu-shots-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-003/HC-04-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Roll your sleeve all the way up for me.",
+          "anchor_start": 30.49,
+          "displayExample": "Roll your sleeve all the way up for me.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/sliv/",
+      "pos": "n.",
+      "note": "指衣服袖子；roll up your sleeve 是抽血前常见的操作提示。"
+    },
+    {
+      "id": "word-symptoms",
+      "key": "symptoms",
+      "kind": "word",
+      "text": "symptoms",
+      "meaningZh": "症状",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-01-002",
+          "titleZh": "孩子发烧时电话约诊",
+          "collectionId": "C2",
+          "collectionOrder": 2,
+          "slug": "calling-about-a-childs-fever",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-01-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Could a clinician review his symptoms today?",
+          "anchor_start": 12.09,
+          "displayExample": "Could a clinician review his symptoms today?",
+          "contextLine": null,
+          "contextStart": null
+        },
+        {
+          "sceneId": "HC-03-006",
+          "titleZh": "听懂诊断：病毒感染怎么办",
+          "collectionId": "C2",
+          "collectionOrder": 5,
+          "slug": "discussing-the-diagnosis-it-s-probably-viral",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-006/HC-03-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Get some rest, drink plenty of fluids, and keep an eye on your symptoms.",
+          "anchor_start": 23.45,
+          "displayExample": "Get some rest, drink plenty of fluids, and keep an eye on your symptoms.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈsɪmptəmz/",
+      "pos": "n. 复数",
+      "note": "指身体出现的症状；review his symptoms 表示了解、评估他的症状。"
+    },
+    {
+      "id": "word-urgent",
+      "key": "urgent",
+      "kind": "word",
+      "text": "urgent",
+      "meaningZh": "紧急的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-01-002",
+          "titleZh": "孩子发烧时电话约诊",
+          "collectionId": "C2",
+          "collectionOrder": 2,
+          "slug": "calling-about-a-childs-fever",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-01-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Do you have any urgent slots or after hours appointments?",
+          "anchor_start": 18.85,
+          "displayExample": "Do you have any urgent slots or after hours appointments?",
+          "contextLine": null,
+          "contextStart": null
+        },
+        {
+          "sceneId": "HC-07-007",
+          "titleZh": "胃灼热药房咨询",
+          "collectionId": "C2",
+          "collectionOrder": 8,
+          "slug": "heartburn-consultation-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-007/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "If the chest discomfort doesn't go away or gets worse, get urgent medical help.",
+          "anchor_start": 24.45,
+          "displayExample": "If the chest discomfort doesn't go away or gets worse, get urgent medical help.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈɚdʒənt/",
+      "pos": "adj.",
+      "note": "表示需要尽快处理；urgent slots 指可供紧急情况预约的时段。"
+    },
+    {
+      "id": "word-adjust",
+      "key": "adjust",
+      "kind": "word",
+      "text": "adjust",
+      "meaningZh": "调整",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-002",
+          "titleZh": "拍牙片",
+          "collectionId": "C1",
+          "collectionOrder": 2,
+          "slug": "taking-dental-x-rays",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "I'm sorry, let me adjust it for you.",
+          "anchor_start": 14.88,
+          "displayExample": "I'm sorry, let me adjust it for you.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/əˈdʒʌst/",
+      "pos": "v.",
+      "note": "表示做小幅调整；本句是工作人员回应器具不舒服时的说法。"
+    },
+    {
+      "id": "word-affordable",
+      "key": "affordable",
+      "kind": "word",
+      "text": "affordable",
+      "meaningZh": "价格实惠的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-010",
+          "titleZh": "给孩子选择牙套",
+          "collectionId": "C1",
+          "collectionOrder": 8,
+          "slug": "choosing-braces-options",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-010/HC-06-010-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-010/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Metal is the strongest and most affordable.",
+          "anchor_start": 8.01,
+          "displayExample": "Metal is the strongest and most affordable.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/əˈfɔ(ɹ)dəbəl/",
+      "pos": "adj.",
+      "note": "强调价格在可负担范围内；本句用于比较牙套方案的费用。"
+    },
+    {
+      "id": "word-anesthetic",
+      "key": "anesthetic",
+      "kind": "word",
+      "text": "anesthetic",
+      "meaningZh": "麻药",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-004",
+          "titleZh": "补牙",
+          "collectionId": "C1",
+          "collectionOrder": 4,
+          "slug": "dental-filling",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "The anesthetic will wear off in a few hours.",
+          "anchor_start": 39.67,
+          "displayExample": "The anesthetic will wear off in a few hours.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˌænəsˈtɛtɪk/",
+      "pos": "n.",
+      "note": "这里指麻药；wear off 表示麻药的作用逐渐消退。"
+    },
+    {
+      "id": "word-apply",
+      "key": "apply",
+      "kind": "word",
+      "text": "apply",
+      "meaningZh": "涂抹",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-003",
+          "titleZh": "洗牙",
+          "collectionId": "C1",
+          "collectionOrder": 3,
+          "slug": "getting-your-teeth-cleaned",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-003/HC-06-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Now I'm going to apply fluoride.",
+          "anchor_start": 22.06,
+          "displayExample": "Now I'm going to apply fluoride.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/əˈplaɪ/",
+      "pos": "v.",
+      "note": "本句表示把材料涂到牙齿上，apply fluoride 就是涂氟的表达。"
+    },
+    {
+      "id": "word-assessment",
+      "key": "assessment",
+      "kind": "word",
+      "text": "assessment",
+      "meaningZh": "评估",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-009",
+          "titleZh": "给孩子咨询牙套",
+          "collectionId": "C1",
+          "collectionOrder": 7,
+          "slug": "orthodontic-consultation-for-a-child",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-009/HC-06-009-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-009/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "His teeth are crowded, but we'd need a full assessment first.",
+          "anchor_start": 4.44,
+          "displayExample": "His teeth are crowded, but we'd need a full assessment first.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/əˈsɛsmənt/",
+      "pos": "n.",
+      "note": "指较全面的评估；full assessment 强调还需要进一步了解情况。"
+    },
+    {
+      "id": "word-balance",
+      "key": "balance",
+      "kind": "word",
+      "text": "balance",
+      "meaningZh": "待付余额",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-006",
+          "titleZh": "牙科诊所约下次复诊",
+          "collectionId": "C1",
+          "collectionOrder": 6,
+          "slug": "booking-your-next-appointment",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-006/HC-06-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Your remaining balance today is $85.",
+          "anchor_start": 6.86,
+          "displayExample": "Your remaining balance today is $85.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈbæləns/",
+      "pos": "n.",
+      "note": "这里不是银行总余额，而是这次账单尚未支付的金额。"
+    },
+    {
+      "id": "word-booked",
+      "key": "booked",
+      "kind": "word",
+      "text": "booked",
+      "meaningZh": "已预约好的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-006",
+          "titleZh": "牙科诊所约下次复诊",
+          "collectionId": "C1",
+          "collectionOrder": 6,
+          "slug": "booking-your-next-appointment",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-006/HC-06-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "You're booked for January 15th at 10:30.",
+          "anchor_start": 23.34,
+          "displayExample": "You're booked for January 15th at 10:30.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/bʊkt/",
+      "pos": "adj. / v. 过去分词",
+      "note": "You're booked for… 表示预约已确认，后面接日期或时间。"
+    },
+    {
+      "id": "word-braces",
+      "key": "braces",
+      "kind": "word",
+      "text": "braces",
+      "meaningZh": "牙套",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-009",
+          "titleZh": "给孩子咨询牙套",
+          "collectionId": "C1",
+          "collectionOrder": 7,
+          "slug": "orthodontic-consultation-for-a-child",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-009/HC-06-009-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-009/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "I'd like to ask about braces for my son.",
+          "anchor_start": 0,
+          "displayExample": "I'd like to ask about braces for my son.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈbɹeɪsɪz/",
+      "pos": "n. 复数",
+      "note": "这里指矫正牙齿的牙套；ask about braces 是咨询正畸时的开场说法。"
+    },
+    {
+      "id": "word-bracket",
+      "key": "bracket",
+      "kind": "word",
+      "text": "bracket",
+      "meaningZh": "托槽",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-011",
+          "titleZh": "牙套装好后的护理",
+          "collectionId": "C1",
+          "collectionOrder": 9,
+          "slug": "braces-aftercare",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-011/HC-06-011-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-011/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "If a wire keeps poking him, or a bracket comes loose, give us a call.",
+          "anchor_start": 24.78,
+          "displayExample": "If a wire keeps poking him, or a bracket comes loose, give us a call.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈbɹækɪt/",
+      "pos": "n.",
+      "note": "指牙套上的托槽；comes loose 表示托槽变松或脱落。"
+    },
+    {
+      "id": "word-break",
+      "key": "break",
+      "kind": "word",
+      "text": "break",
+      "meaningZh": "暂停休息",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-003",
+          "titleZh": "洗牙",
+          "collectionId": "C1",
+          "collectionOrder": 3,
+          "slug": "getting-your-teeth-cleaned",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-003/HC-06-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "If you need a break at any time, just raise your hand.",
+          "anchor_start": 2.64,
+          "displayExample": "If you need a break at any time, just raise your hand.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/bɹeɪk/",
+      "pos": "n.",
+      "note": "本句 a break 指操作过程中的短暂休息，而不是把东西弄断。"
+    },
+    {
+      "id": "word-checkup",
+      "key": "checkup",
+      "kind": "word",
+      "text": "checkup",
+      "meaningZh": "检查",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-006",
+          "titleZh": "牙科诊所约下次复诊",
+          "collectionId": "C1",
+          "collectionOrder": 6,
+          "slug": "booking-your-next-appointment",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-006/HC-06-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "The doctor would like to see you again in six months for a checkup and cleaning.",
+          "anchor_start": 14.52,
+          "displayExample": "The doctor would like to see you again in six months for a checkup and cleaning.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈtʃɛkʌp/",
+      "pos": "n.",
+      "note": "表示定期或常规检查；本句和 cleaning 一起说复诊检查及洗牙。"
+    },
+    {
+      "id": "word-cheeks",
+      "key": "cheeks",
+      "kind": "word",
+      "text": "cheeks",
+      "meaningZh": "脸颊",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-011",
+          "titleZh": "牙套装好后的护理",
+          "collectionId": "C1",
+          "collectionOrder": 9,
+          "slug": "braces-aftercare",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-011/HC-06-011-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-011/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "What if the braces rub his cheeks?",
+          "anchor_start": 20.08,
+          "displayExample": "What if the braces rub his cheeks?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/tʃiks/",
+      "pos": "n. 复数",
+      "note": "指脸颊；本句在说牙套摩擦口腔内侧脸颊的情况。"
+    },
+    {
+      "id": "word-chin",
+      "key": "chin",
+      "kind": "word",
+      "text": "chin",
+      "meaningZh": "下巴",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-002",
+          "titleZh": "拍牙片",
+          "collectionId": "C1",
+          "collectionOrder": 2,
+          "slug": "taking-dental-x-rays",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Please place your chin here and bite down on the plastic piece.",
+          "anchor_start": 23.42,
+          "displayExample": "Please place your chin here and bite down on the plastic piece.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/tʃɪn/",
+      "pos": "n.",
+      "note": "指下巴；place your chin here 是拍片时调整姿势的提示。"
+    },
+    {
+      "id": "word-cleaning",
+      "key": "cleaning",
+      "kind": "word",
+      "text": "cleaning",
+      "meaningZh": "洗牙",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-006",
+          "titleZh": "牙科诊所约下次复诊",
+          "collectionId": "C1",
+          "collectionOrder": 6,
+          "slug": "booking-your-next-appointment",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-006/HC-06-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "The doctor would like to see you again in six months for a checkup and cleaning.",
+          "anchor_start": 14.52,
+          "displayExample": "The doctor would like to see you again in six months for a checkup and cleaning.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈklinɪŋ/",
+      "pos": "n.",
+      "note": "牙科语境中指洗牙或牙齿清洁，不是一般的打扫卫生。"
+    },
+    {
+      "id": "word-coverage",
+      "key": "coverage",
+      "kind": "word",
+      "text": "coverage",
+      "meaningZh": "（保险）报销范围",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-009",
+          "titleZh": "给孩子咨询牙套",
+          "collectionId": "C1",
+          "collectionOrder": 7,
+          "slug": "orthodontic-consultation-for-a-child",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-009/HC-06-009-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-009/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Coverage depends on your plan.",
+          "anchor_start": 15.44,
+          "displayExample": "Coverage depends on your plan.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈkʌvəɹɪdʒ/",
+      "pos": "n.",
+      "note": "指保险能报销哪些项目、报销多少；depends on your plan 表示视方案而定。"
+    },
+    {
+      "id": "word-crowded-teeth",
+      "key": "crowded teeth",
+      "kind": "word",
+      "text": "crowded (teeth)",
+      "meaningZh": "（牙齿）拥挤",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-009",
+          "titleZh": "给孩子咨询牙套",
+          "collectionId": "C1",
+          "collectionOrder": 7,
+          "slug": "orthodontic-consultation-for-a-child",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-009/HC-06-009-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-009/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "His teeth are crowded, but we'd need a full assessment first.",
+          "anchor_start": 4.44,
+          "displayExample": "His teeth are crowded, but we'd need a full assessment first.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈkɹaʊdɪd/",
+      "pos": "adj. + n.",
+      "note": "描述牙齿排列拥挤；原句 teeth are crowded 把形容词放在 be 动词后。"
+    },
+    {
+      "id": "word-decay",
+      "key": "decay",
+      "kind": "word",
+      "text": "decay",
+      "meaningZh": "蛀牙、龋坏",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-004",
+          "titleZh": "补牙",
+          "collectionId": "C1",
+          "collectionOrder": 4,
+          "slug": "dental-filling",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "I'm going to remove the decay and place the filling now.",
+          "anchor_start": 27.66,
+          "displayExample": "I'm going to remove the decay and place the filling now.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/dɪˈkeɪ/",
+      "pos": "n.",
+      "note": "牙科语境中指牙齿的龋坏部分；remove the decay 表示去除龋坏。"
+    },
+    {
+      "id": "word-estimate",
+      "key": "estimate",
+      "kind": "word",
+      "text": "estimate",
+      "meaningZh": "预估报价",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-009",
+          "titleZh": "给孩子咨询牙套",
+          "collectionId": "C1",
+          "collectionOrder": 7,
+          "slug": "orthodontic-consultation-for-a-child",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-009/HC-06-009-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-009/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "We can give you an estimate to check with your insurer.",
+          "anchor_start": 16.9,
+          "displayExample": "We can give you an estimate to check with your insurer.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈɛstɨmɨt/",
+      "pos": "n.",
+      "note": "这里指治疗费用的预估报价，方便先向保险公司核实。"
+    },
+    {
+      "id": "word-fluoride",
+      "key": "fluoride",
+      "kind": "word",
+      "text": "fluoride",
+      "meaningZh": "氟（涂氟）",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-003",
+          "titleZh": "洗牙",
+          "collectionId": "C1",
+          "collectionOrder": 3,
+          "slug": "getting-your-teeth-cleaned",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-003/HC-06-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Now I'm going to apply fluoride.",
+          "anchor_start": 22.06,
+          "displayExample": "Now I'm going to apply fluoride.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈflɔɹaɪd/",
+      "pos": "n.",
+      "note": "这里指牙科使用的氟；apply fluoride 用来说明接下来要涂氟。"
+    },
+    {
+      "id": "word-gauze",
+      "key": "gauze",
+      "kind": "word",
+      "text": "gauze",
+      "meaningZh": "纱布",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-005",
+          "titleZh": "种牙手术",
+          "collectionId": "C1",
+          "collectionOrder": 5,
+          "slug": "dental-implant-surgery",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-005/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Bite gently on this gauze for about thirty minutes.",
+          "anchor_start": 37.26,
+          "displayExample": "Bite gently on this gauze for about thirty minutes.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɡɔz/",
+      "pos": "n.",
+      "note": "指纱布；bite on this gauze 是让患者咬住这块纱布的提示。"
+    },
+    {
+      "id": "word-gently",
+      "key": "gently",
+      "kind": "word",
+      "text": "gently",
+      "meaningZh": "轻轻地",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-002",
+          "titleZh": "拍牙片",
+          "collectionId": "C1",
+          "collectionOrder": 2,
+          "slug": "taking-dental-x-rays",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Please bite down gently.",
+          "anchor_start": 6.16,
+          "displayExample": "Please bite down gently.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈdʒɛntli/",
+      "pos": "adv.",
+      "note": "表示轻轻地；用来说明咬合或其他动作不要太用力。"
+    },
+    {
+      "id": "word-grind",
+      "key": "grind",
+      "kind": "word",
+      "text": "grind",
+      "meaningZh": "研磨",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-004",
+          "titleZh": "补牙",
+          "collectionId": "C1",
+          "collectionOrder": 4,
+          "slug": "dental-filling",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Bite down and grind left and right.",
+          "anchor_start": 36.84,
+          "displayExample": "Bite down and grind left and right.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈɡɹaɪnd/",
+      "pos": "v.",
+      "note": "本句配合 bite down，表示咬住后让牙齿左右磨动。"
+    },
+    {
+      "id": "word-gum",
+      "key": "gum",
+      "kind": "word",
+      "text": "gum",
+      "meaningZh": "牙龈",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-001",
+          "titleZh": "跟牙医描述牙疼",
+          "collectionId": "C1",
+          "collectionOrder": 1,
+          "slug": "describing-different-types-of-pain",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "No fever, but the gum around that tooth feels a little sore.",
+          "anchor_start": 30.99,
+          "displayExample": "No fever, but the gum around that tooth feels a little sore.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɡʌm/",
+      "pos": "n.",
+      "note": "这里指牙龈；看上下文区分它和口香糖这一义项。"
+    },
+    {
+      "id": "word-gum-caramel",
+      "key": "gum caramel",
+      "kind": "word",
+      "text": "gum / caramel",
+      "meaningZh": "口香糖 / 焦糖",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-011",
+          "titleZh": "牙套装好后的护理",
+          "collectionId": "C1",
+          "collectionOrder": 9,
+          "slug": "braces-aftercare",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-011/HC-06-011-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-011/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "No sticky or hard foods, no gum or caramel, no popcorn.",
+          "anchor_start": 1.44,
+          "displayExample": "No sticky or hard foods, no gum or caramel, no popcorn.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɡʌm/ · /ˈkæɹəməl/",
+      "pos": "n.",
+      "note": "这是两个并列食物词：gum 指口香糖，caramel 指焦糖。"
+    },
+    {
+      "id": "word-gums",
+      "key": "gums",
+      "kind": "word",
+      "text": "gums",
+      "meaningZh": "牙龈",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-003",
+          "titleZh": "洗牙",
+          "collectionId": "C1",
+          "collectionOrder": 3,
+          "slug": "getting-your-teeth-cleaned",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-003/HC-06-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "You may feel a little pressure around your gums.",
+          "anchor_start": 10.34,
+          "displayExample": "You may feel a little pressure around your gums.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɡʌmz/",
+      "pos": "n. 复数",
+      "note": "指牙龈；around your gums 用来定位口腔里的压感位置。"
+    },
+    {
+      "id": "word-healing",
+      "key": "healing",
+      "kind": "word",
+      "text": "healing",
+      "meaningZh": "愈合",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-005",
+          "titleZh": "种牙手术",
+          "collectionId": "C1",
+          "collectionOrder": 5,
+          "slug": "dental-implant-surgery",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-005/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "In about a week to check the healing.",
+          "anchor_start": 44.32,
+          "displayExample": "In about a week to check the healing.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈhilɪŋ/",
+      "pos": "n.",
+      "note": "表示愈合过程；check the healing 指复诊时查看愈合情况。"
+    },
+    {
+      "id": "word-implant",
+      "key": "implant",
+      "kind": "word",
+      "text": "implant",
+      "meaningZh": "种植体",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-005",
+          "titleZh": "种牙手术",
+          "collectionId": "C1",
+          "collectionOrder": 5,
+          "slug": "dental-implant-surgery",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-005/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Today, we'll be placing an implant in the missing-tooth area.",
+          "anchor_start": 0,
+          "displayExample": "Today, we'll be placing an implant in the missing-tooth area.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɪmˈplɑnt/",
+      "pos": "n.",
+      "note": "牙科语境中指种植体；placing an implant 用来说明本次操作内容。"
+    },
+    {
+      "id": "word-insurance",
+      "key": "insurance",
+      "kind": "word",
+      "text": "insurance",
+      "meaningZh": "（牙科）保险",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-006",
+          "titleZh": "牙科诊所约下次复诊",
+          "collectionId": "C1",
+          "collectionOrder": 6,
+          "slug": "booking-your-next-appointment",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-006/HC-06-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Your insurance covered most of the cost.",
+          "anchor_start": 4.74,
+          "displayExample": "Your insurance covered most of the cost.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɪnˈʃɝəns/",
+      "pos": "n.",
+      "note": "本句指承担部分牙科费用的保险；covered 表示已报销或承担费用。"
+    },
+    {
+      "id": "word-insurer",
+      "key": "insurer",
+      "kind": "word",
+      "text": "insurer",
+      "meaningZh": "保险公司",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-009",
+          "titleZh": "给孩子咨询牙套",
+          "collectionId": "C1",
+          "collectionOrder": 7,
+          "slug": "orthodontic-consultation-for-a-child",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-009/HC-06-009-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-009/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "We can give you an estimate to check with your insurer.",
+          "anchor_start": 16.9,
+          "displayExample": "We can give you an estimate to check with your insurer.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɪnˈʃʊɹɚ/",
+      "pos": "n.",
+      "note": "指保险公司或承保方，和表示保险本身的 insurance 不同。"
+    },
+    {
+      "id": "word-invisalign",
+      "key": "invisalign",
+      "kind": "word",
+      "text": "Invisalign",
+      "meaningZh": "隐适美（品牌）",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-010",
+          "titleZh": "给孩子选择牙套",
+          "collectionId": "C1",
+          "collectionOrder": 8,
+          "slug": "choosing-braces-options",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-010/HC-06-010-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-010/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "There are three main options: metal braces, ceramic braces, and clear aligners like Invisalign.",
+          "anchor_start": 0.0,
+          "displayExample": "There are three main options: metal braces, ceramic braces, and clear aligners like Invisalign.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɪnˈvɪzəlaɪn/",
+      "pos": "专有名词",
+      "note": "指隐适美品牌；原句把它作为 clear aligners 的一个例子。"
+    },
+    {
+      "id": "word-linger",
+      "key": "linger",
+      "kind": "word",
+      "text": "linger",
+      "meaningZh": "持续不退",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-001",
+          "titleZh": "跟牙医描述牙疼",
+          "collectionId": "C1",
+          "collectionOrder": 1,
+          "slug": "describing-different-types-of-pain",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Does the pain go away quickly, or does it linger?",
+          "anchor_start": 22.55,
+          "displayExample": "Does the pain go away quickly, or does it linger?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈlɪŋɡɚ/",
+      "pos": "v.",
+      "note": "描述疼痛或不适迟迟不退；本句与 go away quickly 对照。"
+    },
+    {
+      "id": "word-lip",
+      "key": "lip",
+      "kind": "word",
+      "text": "lip",
+      "meaningZh": "嘴唇",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-004",
+          "titleZh": "补牙",
+          "collectionId": "C1",
+          "collectionOrder": 4,
+          "slug": "dental-filling",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Yes. My lip feels numb too.",
+          "anchor_start": 21.84,
+          "displayExample": "Yes. My lip feels numb too.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/lɪp/",
+      "pos": "n.",
+      "note": "指嘴唇；my lip feels numb 表示嘴唇有麻木感。"
+    },
+    {
+      "id": "word-molar",
+      "key": "molar",
+      "kind": "word",
+      "text": "molar",
+      "meaningZh": "磨牙",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-001",
+          "titleZh": "跟牙医描述牙疼",
+          "collectionId": "C1",
+          "collectionOrder": 1,
+          "slug": "describing-different-types-of-pain",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "One of my lower left molars.",
+          "anchor_start": 7.6,
+          "displayExample": "One of my lower left molars.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈmoʊlɚ/",
+      "pos": "n.",
+      "note": "指后部的磨牙；原句 molars 是复数，lower left 用来说明位置。"
+    },
+    {
+      "id": "word-noticeable",
+      "key": "noticeable",
+      "kind": "word",
+      "text": "noticeable",
+      "meaningZh": "显眼的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-010",
+          "titleZh": "给孩子选择牙套",
+          "collectionId": "C1",
+          "collectionOrder": 8,
+          "slug": "choosing-braces-options",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-010/HC-06-010-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-010/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Ceramic works the same way, but it's tooth-colored, so it's less noticeable.",
+          "anchor_start": 9.99,
+          "displayExample": "Ceramic works the same way, but it's tooth-colored, so it's less noticeable.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈnəʊtɪsəbl̩/",
+      "pos": "adj.",
+      "note": "表示容易被注意到；less noticeable 用来比较牙套是否显眼。"
+    },
+    {
+      "id": "word-orthodontics",
+      "key": "orthodontics",
+      "kind": "word",
+      "text": "orthodontics",
+      "meaningZh": "正畸",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-009",
+          "titleZh": "给孩子咨询牙套",
+          "collectionId": "C1",
+          "collectionOrder": 7,
+          "slug": "orthodontic-consultation-for-a-child",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-009/HC-06-009-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-009/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Does insurance cover orthodontics?",
+          "anchor_start": 9.08,
+          "displayExample": "Does insurance cover orthodontics?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˌɔrθəˈdɑntɪks/",
+      "pos": "n.",
+      "note": "指牙齿矫正或正畸；cover orthodontics 是询问保险是否包含正畸。"
+    },
+    {
+      "id": "word-pain",
+      "key": "pain",
+      "kind": "word",
+      "text": "pain",
+      "meaningZh": "疼痛",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-004",
+          "titleZh": "补牙",
+          "collectionId": "C1",
+          "collectionOrder": 4,
+          "slug": "dental-filling",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "That's normal. Let me know if you feel any pain.",
+          "anchor_start": 24.6,
+          "displayExample": "That's normal. Let me know if you feel any pain.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/peɪn/",
+      "pos": "n.",
+      "note": "表示疼痛；any pain 用来询问或说明是否出现疼痛感。"
+    },
+    {
+      "id": "word-panoramic",
+      "key": "panoramic",
+      "kind": "word",
+      "text": "panoramic",
+      "meaningZh": "全景的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-002",
+          "titleZh": "拍牙片",
+          "collectionId": "C1",
+          "collectionOrder": 2,
+          "slug": "taking-dental-x-rays",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Now we're gonna take a panoramic x -ray.",
+          "anchor_start": 21.06,
+          "displayExample": "Now we're gonna take a panoramic x -ray.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˌpænəˈræmɪk/",
+      "pos": "adj.",
+      "note": "这里修饰 X-ray，表示全景牙片，而不是普通照片的全景模式。"
+    },
+    {
+      "id": "word-polish",
+      "key": "polish",
+      "kind": "word",
+      "text": "polish",
+      "meaningZh": "抛光",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-003",
+          "titleZh": "洗牙",
+          "collectionId": "C1",
+          "collectionOrder": 3,
+          "slug": "getting-your-teeth-cleaned",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-003/HC-06-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Now I'm going to polish your teeth.",
+          "anchor_start": 17.16,
+          "displayExample": "Now I'm going to polish your teeth.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈpɑlɪʃ/",
+      "pos": "v.",
+      "note": "牙科语境中表示给牙齿抛光；后面直接接 your teeth。"
+    },
+    {
+      "id": "word-popcorn",
+      "key": "popcorn",
+      "kind": "word",
+      "text": "popcorn",
+      "meaningZh": "爆米花",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-011",
+          "titleZh": "牙套装好后的护理",
+          "collectionId": "C1",
+          "collectionOrder": 9,
+          "slug": "braces-aftercare",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-011/HC-06-011-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-011/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "No sticky or hard foods, no gum or caramel, no popcorn.",
+          "anchor_start": 1.44,
+          "displayExample": "No sticky or hard foods, no gum or caramel, no popcorn.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈpɒpkɔ(ɹ)n/",
+      "pos": "n.",
+      "note": "指爆米花；本句将它列在其他黏硬食物之后。"
+    },
+    {
+      "id": "word-recommend",
+      "key": "recommend",
+      "kind": "word",
+      "text": "recommend",
+      "meaningZh": "推荐",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-010",
+          "titleZh": "给孩子选择牙套",
+          "collectionId": "C1",
+          "collectionOrder": 8,
+          "slug": "choosing-braces-options",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-010/HC-06-010-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-010/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Which one would you recommend for him?",
+          "anchor_start": 27.97,
+          "displayExample": "Which one would you recommend for him?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɹɛkəˈmɛnd/",
+      "pos": "v.",
+      "note": "表示推荐或建议；Which one would you recommend? 用来请对方比较方案。"
+    },
+    {
+      "id": "word-reminder",
+      "key": "reminder",
+      "kind": "word",
+      "text": "reminder",
+      "meaningZh": "提醒（短信/邮件）",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-006",
+          "titleZh": "牙科诊所约下次复诊",
+          "collectionId": "C1",
+          "collectionOrder": 6,
+          "slug": "booking-your-next-appointment",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-006/HC-06-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "We'll send you a reminder before your appointment.",
+          "anchor_start": 25.72,
+          "displayExample": "We'll send you a reminder before your appointment.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/rɪˈmaɪndɚ/",
+      "pos": "n.",
+      "note": "指提醒消息；appointment reminder 常用于预约前的短信或邮件。"
+    },
+    {
+      "id": "word-removable",
+      "key": "removable",
+      "kind": "word",
+      "text": "removable",
+      "meaningZh": "可摘下的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-010",
+          "titleZh": "给孩子选择牙套",
+          "collectionId": "C1",
+          "collectionOrder": 8,
+          "slug": "choosing-braces-options",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-010/HC-06-010-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-010/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Aligners are removable and almost invisible.",
+          "anchor_start": 13.21,
+          "displayExample": "Aligners are removable and almost invisible.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/rɪˈmuvəbəl/",
+      "pos": "adj.",
+      "note": "表示可以取下来的；本句用来描述 aligners 的特点。"
+    },
+    {
+      "id": "word-rinse",
+      "key": "rinse",
+      "kind": "word",
+      "text": "rinse",
+      "meaningZh": "漱口",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-003",
+          "titleZh": "洗牙",
+          "collectionId": "C1",
+          "collectionOrder": 3,
+          "slug": "getting-your-teeth-cleaned",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-003/HC-06-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Okay, you can rinse now.",
+          "anchor_start": 13.38,
+          "displayExample": "Okay, you can rinse now.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɹɛns/",
+      "pos": "v.",
+      "note": "在牙科对话中常指漱口；you can rinse now 是操作后的提示。"
+    },
+    {
+      "id": "word-rotate",
+      "key": "rotate",
+      "kind": "word",
+      "text": "rotate",
+      "meaningZh": "旋转",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-002",
+          "titleZh": "拍牙片",
+          "collectionId": "C1",
+          "collectionOrder": 2,
+          "slug": "taking-dental-x-rays",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "The machine will rotate around your head.",
+          "anchor_start": 33.5,
+          "displayExample": "The machine will rotate around your head.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈɹoʊteɪt/",
+      "pos": "v.",
+      "note": "表示旋转；本句说明机器会绕着头部转动。"
+    },
+    {
+      "id": "word-rub",
+      "key": "rub",
+      "kind": "word",
+      "text": "rub",
+      "meaningZh": "摩擦",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-011",
+          "titleZh": "牙套装好后的护理",
+          "collectionId": "C1",
+          "collectionOrder": 9,
+          "slug": "braces-aftercare",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-011/HC-06-011-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-011/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "What if the braces rub his cheeks?",
+          "anchor_start": 20.08,
+          "displayExample": "What if the braces rub his cheeks?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɹʌb/",
+      "pos": "v.",
+      "note": "表示反复摩擦；braces rub his cheeks 描述牙套磨到脸颊内侧。"
+    },
+    {
+      "id": "word-sensor",
+      "key": "sensor",
+      "kind": "word",
+      "text": "sensor",
+      "meaningZh": "感应器",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-002",
+          "titleZh": "拍牙片",
+          "collectionId": "C1",
+          "collectionOrder": 2,
+          "slug": "taking-dental-x-rays",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "I'm going to place this small sensor inside your mouth.",
+          "anchor_start": 3.02,
+          "displayExample": "I'm going to place this small sensor inside your mouth.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈsɛnsɚ/",
+      "pos": "n.",
+      "note": "这里指放入口内的感应器；place this small sensor 是拍片前的说明。"
+    },
+    {
+      "id": "word-smoothly",
+      "key": "smoothly",
+      "kind": "word",
+      "text": "smoothly",
+      "meaningZh": "顺利地",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-005",
+          "titleZh": "种牙手术",
+          "collectionId": "C1",
+          "collectionOrder": 5,
+          "slug": "dental-implant-surgery",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-005/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Everything went very smoothly.",
+          "anchor_start": 35.24,
+          "displayExample": "Everything went very smoothly.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈsmuðli/",
+      "pos": "adv.",
+      "note": "表示顺利、没有明显波折；went smoothly 常用来总结过程。"
+    },
+    {
+      "id": "word-sticky",
+      "key": "sticky",
+      "kind": "word",
+      "text": "sticky",
+      "meaningZh": "黏的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-011",
+          "titleZh": "牙套装好后的护理",
+          "collectionId": "C1",
+          "collectionOrder": 9,
+          "slug": "braces-aftercare",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-011/HC-06-011-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-011/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "No sticky or hard foods, no gum or caramel, no popcorn.",
+          "anchor_start": 1.44,
+          "displayExample": "No sticky or hard foods, no gum or caramel, no popcorn.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈstɪki/",
+      "pos": "adj.",
+      "note": "表示黏的；本句用来描述食物的质地，与 hard 并列。"
+    },
+    {
+      "id": "word-stitches",
+      "key": "stitches",
+      "kind": "word",
+      "text": "stitches",
+      "meaningZh": "缝针、缝线",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-005",
+          "titleZh": "种牙手术",
+          "collectionId": "C1",
+          "collectionOrder": 5,
+          "slug": "dental-implant-surgery",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-005/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "The implant is in place. I'm just going to close the area with a few stitches.",
+          "anchor_start": 29.18,
+          "displayExample": "The implant is in place. I'm just going to close the area with a few stitches.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈstɪtʃɪz/",
+      "pos": "n. 复数",
+      "note": "这里指缝合用的针脚或缝线；a few stitches 表示缝上几针。"
+    },
+    {
+      "id": "word-strongest",
+      "key": "strongest",
+      "kind": "word",
+      "text": "strongest",
+      "meaningZh": "最结实的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-010",
+          "titleZh": "给孩子选择牙套",
+          "collectionId": "C1",
+          "collectionOrder": 8,
+          "slug": "choosing-braces-options",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-010/HC-06-010-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-010/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Metal is the strongest and most affordable.",
+          "anchor_start": 8.01,
+          "displayExample": "Metal is the strongest and most affordable.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈstɹɔŋɡəst/",
+      "pos": "adj. 最高级",
+      "note": "是 strong 的最高级；本句比较不同牙套材料的结实程度。"
+    },
+    {
+      "id": "word-swelling",
+      "key": "swelling",
+      "kind": "word",
+      "text": "swelling",
+      "meaningZh": "肿胀",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-001",
+          "titleZh": "跟牙医描述牙疼",
+          "collectionId": "C1",
+          "collectionOrder": 1,
+          "slug": "describing-different-types-of-pain",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Have you noticed any swelling, fever, or a bad taste in your mouth?",
+          "anchor_start": 27.52,
+          "displayExample": "Have you noticed any swelling, fever, or a bad taste in your mouth?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈswɛlɪŋ/",
+      "pos": "n.",
+      "note": "表示肿胀；原句把它和 fever 等情况并列询问。"
+    },
+    {
+      "id": "word-throbbing",
+      "key": "throbbing",
+      "kind": "word",
+      "text": "throbbing",
+      "meaningZh": "跳痛",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-001",
+          "titleZh": "跟牙医描述牙疼",
+          "collectionId": "C1",
+          "collectionOrder": 1,
+          "slug": "describing-different-types-of-pain",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "It's a dull ache most of the time, throbbing.",
+          "anchor_start": 11.66,
+          "displayExample": "It's a dull ache most of the time, throbbing.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈθrɑbɪŋ/",
+      "pos": "adj. / n.",
+      "note": "描述一跳一跳的疼，用来区别于持续的钝痛或尖锐的疼。"
+    },
+    {
+      "id": "word-tongue",
+      "key": "tongue",
+      "kind": "word",
+      "text": "tongue",
+      "meaningZh": "舌头",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-002",
+          "titleZh": "拍牙片",
+          "collectionId": "C1",
+          "collectionOrder": 2,
+          "slug": "taking-dental-x-rays",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Please keep your tongue against the roof of your mouth",
+          "anchor_start": 30.0,
+          "displayExample": "Please keep your tongue against the roof of your mouth",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/tʌŋ/",
+      "pos": "n.",
+      "note": "指舌头；against the roof of your mouth 描述舌头抵住上腭的位置。"
+    },
+    {
+      "id": "word-toothcolored",
+      "key": "toothcolored",
+      "kind": "word",
+      "text": "tooth-colored",
+      "meaningZh": "与牙齿同色的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-010",
+          "titleZh": "给孩子选择牙套",
+          "collectionId": "C1",
+          "collectionOrder": 8,
+          "slug": "choosing-braces-options",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-010/HC-06-010-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-010/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Ceramic works the same way, but it's tooth-colored, so it's less noticeable.",
+          "anchor_start": 9.99,
+          "displayExample": "Ceramic works the same way, but it's tooth-colored, so it's less noticeable.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈtuθˌkʌlɚd/",
+      "pos": "adj.",
+      "note": "表示与牙齿颜色相近；本句解释陶瓷牙套为什么没那么显眼。"
+    },
+    {
+      "id": "word-toothache",
+      "key": "toothache",
+      "kind": "word",
+      "text": "toothache",
+      "meaningZh": "牙疼",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-001",
+          "titleZh": "跟牙医描述牙疼",
+          "collectionId": "C1",
+          "collectionOrder": 1,
+          "slug": "describing-different-types-of-pain",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "I've had a bad toothache for the past two days.",
+          "anchor_start": 3.26,
+          "displayExample": "I've had a bad toothache for the past two days.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈtuθˌeɪk/",
+      "pos": "n.",
+      "note": "指牙疼；a bad toothache 强调疼得厉害，后面可接持续多久。"
+    },
+    {
+      "id": "word-vigorously",
+      "key": "vigorously",
+      "kind": "word",
+      "text": "vigorously",
+      "meaningZh": "用力地",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-005",
+          "titleZh": "种牙手术",
+          "collectionId": "C1",
+          "collectionOrder": 5,
+          "slug": "dental-implant-surgery",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-005/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Have soft, cool foods today, and don't rinse vigorously.",
+          "anchor_start": 39.46,
+          "displayExample": "Have soft, cool foods today, and don't rinse vigorously.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈvɪɡəɹəsli/",
+      "pos": "adv.",
+      "note": "表示用力地或剧烈地；本句用它修饰 rinse 这个漱口动作。"
+    },
+    {
+      "id": "word-wider",
+      "key": "wider",
+      "kind": "word",
+      "text": "wider",
+      "meaningZh": "张得更开",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-003",
+          "titleZh": "洗牙",
+          "collectionId": "C1",
+          "collectionOrder": 3,
+          "slug": "getting-your-teeth-cleaned",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-003/HC-06-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Please open a little wider.",
+          "anchor_start": 6.92,
+          "displayExample": "Please open a little wider.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈwaɪdɚ/",
+      "pos": "adv. 比较级",
+      "note": "本句 open a little wider 表示嘴再张开一些。"
+    },
+    {
+      "id": "word-wire",
+      "key": "wire",
+      "kind": "word",
+      "text": "wire",
+      "meaningZh": "钢丝",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-011",
+          "titleZh": "牙套装好后的护理",
+          "collectionId": "C1",
+          "collectionOrder": 9,
+          "slug": "braces-aftercare",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-011/HC-06-011-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-011/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "If a wire keeps poking him, or a bracket comes loose, give us a call.",
+          "anchor_start": 24.78,
+          "displayExample": "If a wire keeps poking him, or a bracket comes loose, give us a call.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈwaɪɚ/",
+      "pos": "n.",
+      "note": "牙科语境中指牙套上的钢丝；keeps poking 描述钢丝一直扎到的情况。"
+    },
+    {
+      "id": "word-xray",
+      "key": "xray",
+      "kind": "word",
+      "text": "X-ray",
+      "meaningZh": "X 光片",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-06-002",
+          "titleZh": "拍牙片",
+          "collectionId": "C1",
+          "collectionOrder": 2,
+          "slug": "taking-dental-x-rays",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-06-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Hi, I'm gonna take a few x -rays of your teeth today.",
+          "anchor_start": 0.0,
+          "displayExample": "Hi, I'm gonna take a few x -rays of your teeth today.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈɛksˌreɪ/",
+      "pos": "n.",
+      "note": "指 X 光片或 X 光检查；a few X-rays 表示要拍几张片子。"
+    },
+    {
+      "id": "word-ache",
+      "key": "ache",
+      "kind": "word",
+      "text": "ache",
+      "meaningZh": "隐痛、酸痛",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-006",
+          "titleZh": "腰痛看家庭医生",
+          "collectionId": "C2",
+          "collectionOrder": 7,
+          "slug": "lower-back-pain-at-the-family-doctor",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-006/HC-07-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "It's been aching for almost a week.",
+          "anchor_start": 2.31,
+          "displayExample": "It's been aching for almost a week.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/eɪk/",
+      "pos": "v. / n.",
+      "note": "表示持续的隐痛或酸痛；原句 aching 用来说明已经疼了一段时间。"
+    },
+    {
+      "id": "word-allergy",
+      "key": "allergy",
+      "kind": "word",
+      "text": "allergy",
+      "meaningZh": "过敏",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-04-001",
+          "titleZh": "电话预约流感疫苗",
+          "collectionId": "C2",
+          "collectionOrder": 9,
+          "slug": "booking-flu-shots-by-phone",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Good. Any egg allergies, either of you?",
+          "anchor_start": 18.21,
+          "displayExample": "Good. Any egg allergies, either of you?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈælədʒi/",
+      "pos": "n.",
+      "note": "指过敏或过敏情况；egg allergies 是问是否对鸡蛋过敏。"
+    },
+    {
+      "id": "word-ankle",
+      "key": "ankle",
+      "kind": "word",
+      "text": "ankle",
+      "meaningZh": "脚踝",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-05-003",
+          "titleZh": "急诊候诊与分诊",
+          "collectionId": "C2",
+          "collectionOrder": 13,
+          "slug": "waiting-and-triage-in-the-emergency-room",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-05-003/HC-05-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-05-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Chest pain goes before a sprained ankle, every time.",
+          "anchor_start": 13.51,
+          "displayExample": "Chest pain goes before a sprained ankle, every time.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈæŋkəl/",
+      "pos": "n.",
+      "note": "指脚踝；原句 sprained ankle 表示扭伤的脚踝。"
+    },
+    {
+      "id": "word-attack",
+      "key": "attack",
+      "kind": "word",
+      "text": "attack",
+      "meaningZh": "（疾病）发作",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-002",
+          "titleZh": "偏头痛去看家庭医生",
+          "collectionId": "C2",
+          "collectionOrder": 4,
+          "slug": "seeing-a-doctor-for-a-migraine",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-002/HC-03-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "If the attacks keep happening, I can send a referral to a neurologist.",
+          "anchor_start": 46.73,
+          "displayExample": "If the attacks keep happening, I can send a referral to a neurologist.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/əˈtæk/",
+      "pos": "n.",
+      "note": "这里指疾病或症状的一次发作，而不是受到攻击。"
+    },
+    {
+      "id": "word-awake",
+      "key": "awake",
+      "kind": "word",
+      "text": "awake",
+      "meaningZh": "清醒着、醒着",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-01-002",
+          "titleZh": "孩子发烧时电话约诊",
+          "collectionId": "C2",
+          "collectionOrder": 2,
+          "slug": "calling-about-a-childs-fever",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-01-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "He's awake and drinking.",
+          "anchor_start": 17.37,
+          "displayExample": "He's awake and drinking.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/əˈweɪk/",
+      "pos": "adj.",
+      "note": "表示醒着、清醒着；本句用于回答孩子当下的状态。"
+    },
+    {
+      "id": "word-caffeine",
+      "key": "caffeine",
+      "kind": "word",
+      "text": "caffeine",
+      "meaningZh": "咖啡因",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-002",
+          "titleZh": "偏头痛去看家庭医生",
+          "collectionId": "C2",
+          "collectionOrder": 4,
+          "slug": "seeing-a-doctor-for-a-migraine",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-002/HC-03-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "I'll prescribe something to relieve it, and suggest keeping a regular sleep schedule and cutting back on caffeine.",
+          "anchor_start": 39.79,
+          "displayExample": "I'll prescribe something to relieve it, and suggest keeping a regular sleep schedule and cutting back on caffeine.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈkæfin/",
+      "pos": "n.",
+      "note": "指咖啡因；cutting back on caffeine 表示减少咖啡因摄入。"
+    },
+    {
+      "id": "word-chest",
+      "key": "chest",
+      "kind": "word",
+      "text": "chest",
+      "meaningZh": "胸口",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-007",
+          "titleZh": "胃灼热药房咨询",
+          "collectionId": "C2",
+          "collectionOrder": 8,
+          "slug": "heartburn-consultation-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-007/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "I have this burning sensation in my chest right here.",
+          "anchor_start": 0.0,
+          "displayExample": "I have this burning sensation in my chest right here.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/t͡ʃɛst/",
+      "pos": "n.",
+      "note": "指胸部或胸口；in my chest 用来定位不适出现的部位。"
+    },
+    {
+      "id": "word-clinician",
+      "key": "clinician",
+      "kind": "word",
+      "text": "clinician",
+      "meaningZh": "临床医护人员",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-01-002",
+          "titleZh": "孩子发烧时电话约诊",
+          "collectionId": "C2",
+          "collectionOrder": 2,
+          "slug": "calling-about-a-childs-fever",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-01-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Could a clinician review his symptoms today?",
+          "anchor_start": 12.09,
+          "displayExample": "Could a clinician review his symptoms today?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/klɪˈnɪʃən/",
+      "pos": "n.",
+      "note": "泛指负责临床诊疗的医护人员；本句是请求有人评估症状。"
+    },
+    {
+      "id": "word-degrees",
+      "key": "degrees",
+      "kind": "word",
+      "text": "degrees",
+      "meaningZh": "度（体温）",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-01-002",
+          "titleZh": "孩子发烧时电话约诊",
+          "collectionId": "C2",
+          "collectionOrder": 2,
+          "slug": "calling-about-a-childs-fever",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-01-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Hi, um, my son has a fever of 39 degrees.",
+          "anchor_start": 0,
+          "displayExample": "Hi, um, my son has a fever of 39 degrees.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/dɪˈɡɹiz/",
+      "pos": "n. 复数",
+      "note": "在这句中表示体温的度数；39 degrees 跟在 fever 后说明具体温度。"
+    },
+    {
+      "id": "word-dehydration",
+      "key": "dehydration",
+      "kind": "word",
+      "text": "dehydration",
+      "meaningZh": "脱水",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-006",
+          "titleZh": "听懂诊断：病毒感染怎么办",
+          "collectionId": "C2",
+          "collectionOrder": 5,
+          "slug": "discussing-the-diagnosis-it-s-probably-viral",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-006/HC-03-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Yes. Get medical help sooner if you have trouble breathing, chest pain, or signs of dehydration.",
+          "anchor_start": 39.99,
+          "displayExample": "Yes. Get medical help sooner if you have trouble breathing, chest pain, or signs of dehydration.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/dihaɪˈdɹeɪʃən/",
+      "pos": "n.",
+      "note": "表示脱水；signs of dehydration 是描述脱水迹象的搭配。"
+    },
+    {
+      "id": "word-diabetic",
+      "key": "diabetic",
+      "kind": "word",
+      "text": "diabetic",
+      "meaningZh": "糖尿病的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-005",
+          "titleZh": "血糖偏高，医生说先观察",
+          "collectionId": "C2",
+          "collectionOrder": 6,
+          "slug": "we-ll-monitor-it-slightly-high-blood-sugar",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-005/HC-03-005-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-005/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Your blood sugar is a little high, but not in the diabetic range.",
+          "anchor_start": 3.47,
+          "displayExample": "Your blood sugar is a little high, but not in the diabetic range.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/daɪəˈbɛtɪk/",
+      "pos": "adj.",
+      "note": "表示与糖尿病有关的；本句用来修饰血糖数值所处的范围。"
+    },
+    {
+      "id": "word-directions",
+      "key": "directions",
+      "kind": "word",
+      "text": "directions",
+      "meaningZh": "（包装上的）说明",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-007",
+          "titleZh": "胃灼热药房咨询",
+          "collectionId": "C2",
+          "collectionOrder": 8,
+          "slug": "heartburn-consultation-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-007/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "For occasional symptoms, an antacid may help, but follow the directions on the packet.",
+          "anchor_start": 16.63,
+          "displayExample": "For occasional symptoms, an antacid may help, but follow the directions on the packet.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/daɪˈɹɛkʃənz/",
+      "pos": "n. 复数",
+      "note": "这里指药品包装上的使用说明，不是问路时的方向。"
+    },
+    {
+      "id": "word-discomfort",
+      "key": "discomfort",
+      "kind": "word",
+      "text": "discomfort",
+      "meaningZh": "不适",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-007",
+          "titleZh": "胃灼热药房咨询",
+          "collectionId": "C2",
+          "collectionOrder": 8,
+          "slug": "heartburn-consultation-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-007/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "If the chest discomfort doesn't go away or gets worse, get urgent medical help.",
+          "anchor_start": 24.45,
+          "displayExample": "If the chest discomfort doesn't go away or gets worse, get urgent medical help.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/dɪsˈkʌmfət/",
+      "pos": "n.",
+      "note": "表示不舒服或不适，语气比直接说 pain 更宽泛。"
+    },
+    {
+      "id": "word-dizzy",
+      "key": "dizzy",
+      "kind": "word",
+      "text": "dizzy",
+      "meaningZh": "头晕的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-04-003",
+          "titleZh": "带孩子去药房打流感疫苗",
+          "collectionId": "C2",
+          "collectionOrder": 10,
+          "slug": "getting-our-flu-shots-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-003/HC-04-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "In case you feel dizzy, or have a reaction.",
+          "anchor_start": 43.23,
+          "displayExample": "In case you feel dizzy, or have a reaction.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈdɪzi/",
+      "pos": "adj.",
+      "note": "表示头晕的；feel dizzy 用来描述自己当下的感觉。"
+    },
+    {
+      "id": "word-drowsy",
+      "key": "drowsy",
+      "kind": "word",
+      "text": "drowsy",
+      "meaningZh": "犯困的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-04-002",
+          "titleZh": "去药房取处方药",
+          "collectionId": "C2",
+          "collectionOrder": 12,
+          "slug": "picking-up-a-prescription-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-002/HC-04-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "It might make you drowsy, so avoid driving.",
+          "anchor_start": 18.03,
+          "displayExample": "It might make you drowsy, so avoid driving.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈdɹaʊzi/",
+      "pos": "adj.",
+      "note": "表示困倦、昏昏欲睡的；本句在说明服药后可能出现的感觉。"
+    },
+    {
+      "id": "word-dull",
+      "key": "dull",
+      "kind": "word",
+      "text": "dull",
+      "meaningZh": "钝的、隐隐的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-006",
+          "titleZh": "腰痛看家庭医生",
+          "collectionId": "C2",
+          "collectionOrder": 7,
+          "slug": "lower-back-pain-at-the-family-doctor",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-006/HC-07-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Just this dull ache that won't go away.",
+          "anchor_start": 3.81,
+          "displayExample": "Just this dull ache that won't go away.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/dʌl/",
+      "pos": "adj.",
+      "note": "描述隐隐的、钝钝的疼；dull ache 是本句中的固定搭配。"
+    },
+    {
+      "id": "word-exactly",
+      "key": "exactly",
+      "kind": "word",
+      "text": "exactly",
+      "meaningZh": "确切地；没错",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-005",
+          "titleZh": "血糖偏高，医生说先观察",
+          "collectionId": "C2",
+          "collectionOrder": 6,
+          "slug": "we-ll-monitor-it-slightly-high-blood-sugar",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-005/HC-03-005-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-005/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "What does that mean exactly?",
+          "anchor_start": 10.35,
+          "displayExample": "What does that mean exactly?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɪɡˈzæk(t)li/",
+      "pos": "adv.",
+      "note": "What does that mean exactly? 用来追问一句话具体是什么意思。"
+    },
+    {
+      "id": "word-fast-fasting",
+      "key": "fast fasting",
+      "kind": "word",
+      "text": "fast / fasting",
+      "meaningZh": "禁食 / 空腹中",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-004",
+          "titleZh": "在检验中心抽血",
+          "collectionId": "C2",
+          "collectionOrder": 1,
+          "slug": "getting-blood-work-done-at-a-diagnostic-lab",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-004/HC-03-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Got it. Did you fast for this test?",
+          "anchor_start": 16.87,
+          "displayExample": "Got it. Did you fast for this test?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/fæst/ · /ˈfæstɪŋ/",
+      "pos": "v. / n.",
+      "note": "fast 表示禁食，fasting 表示禁食状态；本句在确认检查前是否空腹。"
+    },
+    {
+      "id": "word-fever-cold",
+      "key": "fever cold",
+      "kind": "word",
+      "text": "fever / cold",
+      "meaningZh": "发烧 / 感冒",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-04-003",
+          "titleZh": "带孩子去药房打流感疫苗",
+          "collectionId": "C2",
+          "collectionOrder": 10,
+          "slug": "getting-our-flu-shots-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-003/HC-04-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "No fever, no cold?",
+          "anchor_start": 10.41,
+          "displayExample": "No fever, no cold?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈfivɚ/ · /koʊld/",
+      "pos": "n.",
+      "note": "这是两个并列症状词：fever 指发烧，cold 在这里指感冒。"
+    },
+    {
+      "id": "word-fist",
+      "key": "fist",
+      "kind": "word",
+      "text": "fist",
+      "meaningZh": "拳头",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-004",
+          "titleZh": "在检验中心抽血",
+          "collectionId": "C2",
+          "collectionOrder": 1,
+          "slug": "getting-blood-work-done-at-a-diagnostic-lab",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-004/HC-03-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Please roll up your sleeve and make a fist.",
+          "anchor_start": 29.03,
+          "displayExample": "Please roll up your sleeve and make a fist.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/fɪst/",
+      "pos": "n.",
+      "note": "指握起来的拳头；make a fist 是抽血前常见的动作提示。"
+    },
+    {
+      "id": "word-fluids",
+      "key": "fluids",
+      "kind": "word",
+      "text": "fluids",
+      "meaningZh": "液体、补液",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-006",
+          "titleZh": "听懂诊断：病毒感染怎么办",
+          "collectionId": "C2",
+          "collectionOrder": 5,
+          "slug": "discussing-the-diagnosis-it-s-probably-viral",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-006/HC-03-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Get some rest, drink plenty of fluids, and keep an eye on your symptoms.",
+          "anchor_start": 23.45,
+          "displayExample": "Get some rest, drink plenty of fluids, and keep an eye on your symptoms.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈfluɪdz/",
+      "pos": "n. 复数",
+      "note": "这里指可饮用的液体；drink plenty of fluids 用于说明多补充液体。"
+    },
+    {
+      "id": "word-frustrating",
+      "key": "frustrating",
+      "kind": "word",
+      "text": "frustrating",
+      "meaningZh": "让人窝火的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-05-003",
+          "titleZh": "急诊候诊与分诊",
+          "collectionId": "C2",
+          "collectionOrder": 13,
+          "slug": "waiting-and-triage-in-the-emergency-room",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-05-003/HC-05-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-05-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Yeah, it's frustrating.",
+          "anchor_start": 4.07,
+          "displayExample": "Yeah, it's frustrating.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/fɹʌˈstɹeɪ̯tɪŋ/",
+      "pos": "adj.",
+      "note": "表示一件事让人烦躁或挫败；描述事情用 frustrating，描述人的感受常用 frustrated。"
+    },
+    {
+      "id": "word-headache",
+      "key": "headache",
+      "kind": "word",
+      "text": "headache",
+      "meaningZh": "头痛",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-002",
+          "titleZh": "偏头痛去看家庭医生",
+          "collectionId": "C2",
+          "collectionOrder": 4,
+          "slug": "seeing-a-doctor-for-a-migraine",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-002/HC-03-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Doctor, I've had a really bad headache for the past two days, mostly on the right side, throbbing.",
+          "anchor_start": 3.19,
+          "displayExample": "Doctor, I've had a really bad headache for the past two days, mostly on the right side, throbbing.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈhɛdeɪk/",
+      "pos": "n.",
+      "note": "指头痛；a really bad headache 强调程度，后面常补位置或持续时间。"
+    },
+    {
+      "id": "word-heartburn",
+      "key": "heartburn",
+      "kind": "word",
+      "text": "heartburn",
+      "meaningZh": "烧心、胃灼热",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-007",
+          "titleZh": "胃灼热药房咨询",
+          "collectionId": "C2",
+          "collectionOrder": 8,
+          "slug": "heartburn-consultation-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-007/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "It could be heartburn.",
+          "anchor_start": 15.09,
+          "displayExample": "It could be heartburn.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈhɑrtbɜrn/",
+      "pos": "n.",
+      "note": "表示烧心、胃灼热的感觉；原句用 it could be 表达一种可能性。"
+    },
+    {
+      "id": "word-improvement",
+      "key": "improvement",
+      "kind": "word",
+      "text": "improvement",
+      "meaningZh": "好转、改善",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-006",
+          "titleZh": "听懂诊断：病毒感染怎么办",
+          "collectionId": "C2",
+          "collectionOrder": 5,
+          "slug": "discussing-the-diagnosis-it-s-probably-viral",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-006/HC-03-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "If it's been more than 10 days with no improvement, or you start feeling better and then get worse again, give us a call.",
+          "anchor_start": 31.51,
+          "displayExample": "If it's been more than 10 days with no improvement, or you start feeling better and then get worse again, give us a call.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɪmˈpɹuvmənt/",
+      "pos": "n.",
+      "note": "表示情况好转；no improvement 指症状没有改善。"
+    },
+    {
+      "id": "word-infection",
+      "key": "infection",
+      "kind": "word",
+      "text": "infection",
+      "meaningZh": "感染",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-006",
+          "titleZh": "听懂诊断：病毒感染怎么办",
+          "collectionId": "C2",
+          "collectionOrder": 5,
+          "slug": "discussing-the-diagnosis-it-s-probably-viral",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-006/HC-03-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Everything points to a viral infection.",
+          "anchor_start": 14.39,
+          "displayExample": "Everything points to a viral infection.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɪnˈfɛkʃən/",
+      "pos": "n.",
+      "note": "指感染；viral infection 是病毒感染这一表达。"
+    },
+    {
+      "id": "word-jaw",
+      "key": "jaw",
+      "kind": "word",
+      "text": "jaw",
+      "meaningZh": "下巴",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-007",
+          "titleZh": "胃灼热药房咨询",
+          "collectionId": "C2",
+          "collectionOrder": 8,
+          "slug": "heartburn-consultation-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-007/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Is it more like pressure or tightness, any shortness of breath, sweating, or pain in your arm or jaw?",
+          "anchor_start": 5.13,
+          "displayExample": "Is it more like pressure or tightness, any shortness of breath, sweating, or pain in your arm or jaw?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/d͡ʒɑ/",
+      "pos": "n.",
+      "note": "指颌部、下颌；本句把它和手臂等部位并列定位疼痛。"
+    },
+    {
+      "id": "word-lungs",
+      "key": "lungs",
+      "kind": "word",
+      "text": "lungs",
+      "meaningZh": "肺",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-006",
+          "titleZh": "听懂诊断：病毒感染怎么办",
+          "collectionId": "C2",
+          "collectionOrder": 5,
+          "slug": "discussing-the-diagnosis-it-s-probably-viral",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-006/HC-03-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Your strep test was negative, and your lungs sound clear.",
+          "anchor_start": 2.77,
+          "displayExample": "Your strep test was negative, and your lungs sound clear.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/lʌŋz/",
+      "pos": "n. 复数",
+      "note": "指肺；lungs sound clear 是医护描述听诊结果的一种说法。"
+    },
+    {
+      "id": "word-mattress",
+      "key": "mattress",
+      "kind": "word",
+      "text": "mattress",
+      "meaningZh": "床垫",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-006",
+          "titleZh": "腰痛看家庭医生",
+          "collectionId": "C2",
+          "collectionOrder": 7,
+          "slug": "lower-back-pain-at-the-family-doctor",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-006/HC-07-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Hmm, last weekend I helped a friend move a mattress.",
+          "anchor_start": 11.35,
+          "displayExample": "Hmm, last weekend I helped a friend move a mattress.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈmætɹɪs/",
+      "pos": "n.",
+      "note": "指床垫；move a mattress 在本句中说明最近做过的搬抬动作。"
+    },
+    {
+      "id": "word-medication",
+      "key": "medication",
+      "kind": "word",
+      "text": "medication",
+      "meaningZh": "药物",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-005",
+          "titleZh": "血糖偏高，医生说先观察",
+          "collectionId": "C2",
+          "collectionOrder": 6,
+          "slug": "we-ll-monitor-it-slightly-high-blood-sugar",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-005/HC-03-005-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-005/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "So I don't need medication?",
+          "anchor_start": 15.59,
+          "displayExample": "So I don't need medication?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/mɛdɪˈkeɪʃən/",
+      "pos": "n.",
+      "note": "泛指药物或药物治疗；need medication 用来询问是否需要用药。"
+    },
+    {
+      "id": "word-migraine",
+      "key": "migraine",
+      "kind": "word",
+      "text": "migraine",
+      "meaningZh": "偏头痛",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-002",
+          "titleZh": "偏头痛去看家庭医生",
+          "collectionId": "C2",
+          "collectionOrder": 4,
+          "slug": "seeing-a-doctor-for-a-migraine",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-002/HC-03-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Those symptoms are pretty typical of a migraine.",
+          "anchor_start": 24.73,
+          "displayExample": "Those symptoms are pretty typical of a migraine.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈmaɪɡɹeɪn/",
+      "pos": "n.",
+      "note": "指偏头痛；a migraine 表示一次偏头痛或这种头痛情况。"
+    },
+    {
+      "id": "word-nausea",
+      "key": "nausea",
+      "kind": "word",
+      "text": "nausea",
+      "meaningZh": "恶心",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-002",
+          "titleZh": "偏头痛去看家庭医生",
+          "collectionId": "C2",
+          "collectionOrder": 4,
+          "slug": "seeing-a-doctor-for-a-migraine",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-002/HC-03-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Any nausea, or sensitivity to light?",
+          "anchor_start": 11.49,
+          "displayExample": "Any nausea, or sensitivity to light?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈnɔsɪə/",
+      "pos": "n.",
+      "note": "表示恶心、想吐的感觉；问诊中常与其他症状并列询问。"
+    },
+    {
+      "id": "word-negative-positive",
+      "key": "negative positive",
+      "kind": "word",
+      "text": "negative / positive",
+      "meaningZh": "阴性 / 阳性",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-006",
+          "titleZh": "听懂诊断：病毒感染怎么办",
+          "collectionId": "C2",
+          "collectionOrder": 5,
+          "slug": "discussing-the-diagnosis-it-s-probably-viral",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-006/HC-03-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Your strep test was negative, and your lungs sound clear.",
+          "anchor_start": 2.77,
+          "displayExample": "Your strep test was negative, and your lungs sound clear.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/-ɾɪv/ · /ˈpɑzɪ̈tɪv/",
+      "pos": "adj.",
+      "note": "在检测语境中分别指阴性和阳性；原句 negative 描述这次检测结果。"
+    },
+    {
+      "id": "word-neurologist",
+      "key": "neurologist",
+      "kind": "word",
+      "text": "neurologist",
+      "meaningZh": "神经科医生",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-002",
+          "titleZh": "偏头痛去看家庭医生",
+          "collectionId": "C2",
+          "collectionOrder": 4,
+          "slug": "seeing-a-doctor-for-a-migraine",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-002/HC-03-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "If the attacks keep happening, I can send a referral to a neurologist.",
+          "anchor_start": 46.73,
+          "displayExample": "If the attacks keep happening, I can send a referral to a neurologist.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/nʊˈrɑlədʒɪst/",
+      "pos": "n.",
+      "note": "指神经科医生；a referral to a neurologist 表示转诊到神经科。"
+    },
+    {
+      "id": "word-occasional",
+      "key": "occasional",
+      "kind": "word",
+      "text": "occasional",
+      "meaningZh": "偶尔的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-007",
+          "titleZh": "胃灼热药房咨询",
+          "collectionId": "C2",
+          "collectionOrder": 8,
+          "slug": "heartburn-consultation-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-007/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "For occasional symptoms, an antacid may help, but follow the directions on the packet.",
+          "anchor_start": 16.63,
+          "displayExample": "For occasional symptoms, an antacid may help, but follow the directions on the packet.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/əˈkeɪʒ(ə)nəl/",
+      "pos": "adj.",
+      "note": "表示偶尔出现的；occasional symptoms 指并非一直存在的症状。"
+    },
+    {
+      "id": "word-pharmacy",
+      "key": "pharmacy",
+      "kind": "word",
+      "text": "pharmacy",
+      "meaningZh": "药房",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-04-001",
+          "titleZh": "电话预约流感疫苗",
+          "collectionId": "C2",
+          "collectionOrder": 9,
+          "slug": "booking-flu-shots-by-phone",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "He's old enough to get it here at the pharmacy.",
+          "anchor_start": 9.51,
+          "displayExample": "He's old enough to get it here at the pharmacy.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈfɑɹməsi/",
+      "pos": "n.",
+      "note": "指药房；at the pharmacy 表示在药房这个地点。"
+    },
+    {
+      "id": "word-physio",
+      "key": "physio",
+      "kind": "word",
+      "text": "physio",
+      "meaningZh": "理疗、物理治疗",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-006",
+          "titleZh": "腰痛看家庭医生",
+          "collectionId": "C2",
+          "collectionOrder": 7,
+          "slug": "lower-back-pain-at-the-family-doctor",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-006/HC-07-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "I'll refer you for physio and try not to sit for more than an hour at a time.",
+          "anchor_start": 25.05,
+          "displayExample": "I'll refer you for physio and try not to sit for more than an hour at a time.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈfɪzɪəʊ/",
+      "pos": "n. 口语",
+      "note": "是 physiotherapy 的常见简称；本句用于谈转去做物理治疗。"
+    },
+    {
+      "id": "word-portal",
+      "key": "portal",
+      "kind": "word",
+      "text": "portal",
+      "meaningZh": "在线门户",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-004",
+          "titleZh": "在检验中心抽血",
+          "collectionId": "C2",
+          "collectionOrder": 1,
+          "slug": "getting-blood-work-done-at-a-diagnostic-lab",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-004/HC-03-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "You can also check them online on our portal.",
+          "anchor_start": 41.21,
+          "displayExample": "You can also check them online on our portal.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈpɔɹtəl/",
+      "pos": "n.",
+      "note": "这里指可登录查看资料的在线平台；our portal 是诊所的线上入口。"
+    },
+    {
+      "id": "word-prescribe",
+      "key": "prescribe",
+      "kind": "word",
+      "text": "prescribe",
+      "meaningZh": "开（处方）",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-04-002",
+          "titleZh": "去药房取处方药",
+          "collectionId": "C2",
+          "collectionOrder": 12,
+          "slug": "picking-up-a-prescription-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-002/HC-04-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Great. The doctor prescribed amoxicillin.",
+          "anchor_start": 10.73,
+          "displayExample": "Great. The doctor prescribed amoxicillin.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/pɹɪˈskɹaɪb/",
+      "pos": "v.",
+      "note": "表示开具处方或开药；后面直接接开出的药名。"
+    },
+    {
+      "id": "word-prescription",
+      "key": "prescription",
+      "kind": "word",
+      "text": "prescription",
+      "meaningZh": "处方；处方药",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-04-002",
+          "titleZh": "去药房取处方药",
+          "collectionId": "C2",
+          "collectionOrder": 12,
+          "slug": "picking-up-a-prescription-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-002/HC-04-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Hi, I'm here to pick up a prescription for Aria.",
+          "anchor_start": 1.63,
+          "displayExample": "Hi, I'm here to pick up a prescription for Aria.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/pɝˈskɹɪpʃən/",
+      "pos": "n.",
+      "note": "可以指处方，也可在取药时指按处方配好的药；pick up a prescription 就是来取药。"
+    },
+    {
+      "id": "word-promise",
+      "key": "promise",
+      "kind": "word",
+      "text": "promise",
+      "meaningZh": "保证、承诺",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-01-002",
+          "titleZh": "孩子发烧时电话约诊",
+          "collectionId": "C2",
+          "collectionOrder": 2,
+          "slug": "calling-about-a-childs-fever",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-01-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "I'll check, but I can't promise a spot.",
+          "anchor_start": 22.09,
+          "displayExample": "I'll check, but I can't promise a spot.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈpɹɑmɪs/",
+      "pos": "v.",
+      "note": "表示保证或承诺；can't promise a spot 表示无法保证一定有名额。"
+    },
+    {
+      "id": "word-range",
+      "key": "range",
+      "kind": "word",
+      "text": "range",
+      "meaningZh": "范围",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-005",
+          "titleZh": "血糖偏高，医生说先观察",
+          "collectionId": "C2",
+          "collectionOrder": 6,
+          "slug": "we-ll-monitor-it-slightly-high-blood-sugar",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-005/HC-03-005-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-005/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Your blood sugar is a little high, but not in the diabetic range.",
+          "anchor_start": 3.47,
+          "displayExample": "Your blood sugar is a little high, but not in the diabetic range.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɹeɪndʒ/",
+      "pos": "n.",
+      "note": "指数值范围；in the…range 用来说明检测数值落在哪个区间。"
+    },
+    {
+      "id": "word-reaction",
+      "key": "reaction",
+      "kind": "word",
+      "text": "reaction",
+      "meaningZh": "（不良）反应",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-04-003",
+          "titleZh": "带孩子去药房打流感疫苗",
+          "collectionId": "C2",
+          "collectionOrder": 10,
+          "slug": "getting-our-flu-shots-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-003/HC-04-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Any bad reaction to a vaccine before?",
+          "anchor_start": 12.67,
+          "displayExample": "Any bad reaction to a vaccine before?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɹiˈækʃən/",
+      "pos": "n.",
+      "note": "本句指接种后出现的反应；bad reaction 强调不良反应。"
+    },
+    {
+      "id": "word-rebook",
+      "key": "rebook",
+      "kind": "word",
+      "text": "rebook",
+      "meaningZh": "改期",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-04-001",
+          "titleZh": "电话预约流感疫苗",
+          "collectionId": "C2",
+          "collectionOrder": 9,
+          "slug": "booking-flu-shots-by-phone",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "And if either of you has a fever that day, call us and we'll rebook.",
+          "anchor_start": 44.67,
+          "displayExample": "And if either of you has a fever that day, call us and we'll rebook.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/riˈbʊk/",
+      "pos": "v.",
+      "note": "表示重新安排预约；本句是把原来的预约换到其他时间。"
+    },
+    {
+      "id": "word-record",
+      "key": "record",
+      "kind": "word",
+      "text": "record",
+      "meaningZh": "接种记录",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-04-003",
+          "titleZh": "带孩子去药房打流感疫苗",
+          "collectionId": "C2",
+          "collectionOrder": 10,
+          "slug": "getting-our-flu-shots-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-003/HC-04-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Here's your record for today.",
+          "anchor_start": 49.79,
+          "displayExample": "Here's your record for today.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈɹɛkɚd/",
+      "pos": "n.",
+      "note": "这里指接种记录；your record for today 是本次接种的记录。"
+    },
+    {
+      "id": "word-refer",
+      "key": "refer",
+      "kind": "word",
+      "text": "refer",
+      "meaningZh": "转诊",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-006",
+          "titleZh": "腰痛看家庭医生",
+          "collectionId": "C2",
+          "collectionOrder": 7,
+          "slug": "lower-back-pain-at-the-family-doctor",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-006/HC-07-006-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-006/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "I'll refer you for physio and try not to sit for more than an hour at a time.",
+          "anchor_start": 25.05,
+          "displayExample": "I'll refer you for physio and try not to sit for more than an hour at a time.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɹɪˈfɝ/",
+      "pos": "v.",
+      "note": "医疗语境中指转诊；refer you for physio 表示转去接受物理治疗。"
+    },
+    {
+      "id": "word-relax",
+      "key": "relax",
+      "kind": "word",
+      "text": "relax",
+      "meaningZh": "放松、松开",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-004",
+          "titleZh": "在检验中心抽血",
+          "collectionId": "C2",
+          "collectionOrder": 1,
+          "slug": "getting-blood-work-done-at-a-diagnostic-lab",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-004/HC-03-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "You can relax your fist now.",
+          "anchor_start": 34.97,
+          "displayExample": "You can relax your fist now.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɹɪˈlæks/",
+      "pos": "v.",
+      "note": "本句 relax your fist 表示松开握着的拳头，不是让人去休息。"
+    },
+    {
+      "id": "word-results",
+      "key": "results",
+      "kind": "word",
+      "text": "results",
+      "meaningZh": "检查结果",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-004",
+          "titleZh": "在检验中心抽血",
+          "collectionId": "C2",
+          "collectionOrder": 1,
+          "slug": "getting-blood-work-done-at-a-diagnostic-lab",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-004/HC-03-004-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-004/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Thank you. When and how can I get the results?",
+          "anchor_start": 36.67,
+          "displayExample": "Thank you. When and how can I get the results?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ɹɪˈzʌlts/",
+      "pos": "n. 复数",
+      "note": "指检查或检测结果；get the results 是询问何时拿到结果的说法。"
+    },
+    {
+      "id": "word-sensation",
+      "key": "sensation",
+      "kind": "word",
+      "text": "sensation",
+      "meaningZh": "感觉",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-007",
+          "titleZh": "胃灼热药房咨询",
+          "collectionId": "C2",
+          "collectionOrder": 8,
+          "slug": "heartburn-consultation-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-007/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "I have this burning sensation in my chest right here.",
+          "anchor_start": 0.0,
+          "displayExample": "I have this burning sensation in my chest right here.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/sɛnˈseɪʃən/",
+      "pos": "n.",
+      "note": "表示身体感受到的感觉；a burning sensation 描述灼烧感。"
+    },
+    {
+      "id": "word-shortly",
+      "key": "shortly",
+      "kind": "word",
+      "text": "shortly",
+      "meaningZh": "很快、一会儿",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-02-001",
+          "titleZh": "到诊所签到并候诊",
+          "collectionId": "C2",
+          "collectionOrder": 3,
+          "slug": "checking-in-at-a-clinic",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-02-001/HC-02-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-02-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "The doctor will call you shortly.",
+          "anchor_start": 20.44,
+          "displayExample": "The doctor will call you shortly.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ʃɔɹtli/",
+      "pos": "adv.",
+      "note": "表示不久、一会儿；will call you shortly 用来说明很快会联系或叫到你。"
+    },
+    {
+      "id": "word-slot-spot",
+      "key": "slot spot",
+      "kind": "word",
+      "text": "slot / spot",
+      "meaningZh": "名额、时段",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-01-002",
+          "titleZh": "孩子发烧时电话约诊",
+          "collectionId": "C2",
+          "collectionOrder": 2,
+          "slug": "calling-about-a-childs-fever",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-01-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Do you have any urgent slots or after hours appointments?",
+          "anchor_start": 18.85,
+          "displayExample": "Do you have any urgent slots or after hours appointments?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/slɒt/ · /spɑt/",
+      "pos": "n.",
+      "note": "slot 常指可预约时段，spot 可指空出的名额；本句在询问紧急预约是否有空位。"
+    },
+    {
+      "id": "word-sprain",
+      "key": "sprain",
+      "kind": "word",
+      "text": "sprain",
+      "meaningZh": "扭伤",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-05-003",
+          "titleZh": "急诊候诊与分诊",
+          "collectionId": "C2",
+          "collectionOrder": 13,
+          "slug": "waiting-and-triage-in-the-emergency-room",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-05-003/HC-05-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-05-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Chest pain goes before a sprained ankle, every time.",
+          "anchor_start": 13.51,
+          "displayExample": "Chest pain goes before a sprained ankle, every time.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/spɹeɪn/",
+      "pos": "v. / n.",
+      "note": "表示扭伤；原句 sprained 修饰 ankle，说明脚踝已经扭伤。"
+    },
+    {
+      "id": "word-stress-stressful",
+      "key": "stress stressful",
+      "kind": "word",
+      "text": "stress / stressful",
+      "meaningZh": "压力 / 压力大的",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-002",
+          "titleZh": "偏头痛去看家庭医生",
+          "collectionId": "C2",
+          "collectionOrder": 4,
+          "slug": "seeing-a-doctor-for-a-migraine",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-002/HC-03-002-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-002/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Have you been under a lot of stress lately?",
+          "anchor_start": 27.73,
+          "displayExample": "Have you been under a lot of stress lately?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/stɹɛs/ · /ˈstɹɛsfəl/",
+      "pos": "n. / adj.",
+      "note": "stress 是压力，stressful 形容事情让人有压力；本句用 a lot of stress 描述近期状态。"
+    },
+    {
+      "id": "word-sweating",
+      "key": "sweating",
+      "kind": "word",
+      "text": "sweating",
+      "meaningZh": "出汗",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-007",
+          "titleZh": "胃灼热药房咨询",
+          "collectionId": "C2",
+          "collectionOrder": 8,
+          "slug": "heartburn-consultation-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-007/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Is it more like pressure or tightness, any shortness of breath, sweating, or pain in your arm or jaw?",
+          "anchor_start": 5.13,
+          "displayExample": "Is it more like pressure or tightness, any shortness of breath, sweating, or pain in your arm or jaw?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈswɛtɪŋ/",
+      "pos": "n. / v.-ing",
+      "note": "表示出汗；本句把它列在其他身体症状之间询问。"
+    },
+    {
+      "id": "word-throat",
+      "key": "throat",
+      "kind": "word",
+      "text": "throat",
+      "meaningZh": "喉咙",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-007",
+          "titleZh": "胃灼热药房咨询",
+          "collectionId": "C2",
+          "collectionOrder": 8,
+          "slug": "heartburn-consultation-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-007/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "It feels like the burning is coming up my throat.",
+          "anchor_start": 11.85,
+          "displayExample": "It feels like the burning is coming up my throat.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈθɹoʊt/",
+      "pos": "n.",
+      "note": "指喉咙；up my throat 描述灼烧感向喉咙上移的感觉。"
+    },
+    {
+      "id": "word-tightness",
+      "key": "tightness",
+      "kind": "word",
+      "text": "tightness",
+      "meaningZh": "紧绷感",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-07-007",
+          "titleZh": "胃灼热药房咨询",
+          "collectionId": "C2",
+          "collectionOrder": 8,
+          "slug": "heartburn-consultation-at-the-pharmacy",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-07-007/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "Is it more like pressure or tightness, any shortness of breath, sweating, or pain in your arm or jaw?",
+          "anchor_start": 5.13,
+          "displayExample": "Is it more like pressure or tightness, any shortness of breath, sweating, or pain in your arm or jaw?",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈtaɪtnəs/",
+      "pos": "n.",
+      "note": "表示发紧、紧绷感；问诊里常与 pressure 并列描述胸口感觉。"
+    },
+    {
+      "id": "word-treat",
+      "key": "treat",
+      "kind": "word",
+      "text": "treat",
+      "meaningZh": "治疗",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-03-005",
+          "titleZh": "血糖偏高，医生说先观察",
+          "collectionId": "C2",
+          "collectionOrder": 6,
+          "slug": "we-ll-monitor-it-slightly-high-blood-sugar",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-03-005/HC-03-005-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-03-005/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "It means we don't need to treat it right now, but we do want to keep an eye on it.",
+          "anchor_start": 12.21,
+          "displayExample": "It means we don't need to treat it right now, but we do want to keep an eye on it.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/tɹit/",
+      "pos": "v.",
+      "note": "表示进行治疗；treat it 指对前面提到的情况采取治疗。"
+    },
+    {
+      "id": "word-triage",
+      "key": "triage",
+      "kind": "word",
+      "text": "triage",
+      "meaningZh": "分诊",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-05-003",
+          "titleZh": "急诊候诊与分诊",
+          "collectionId": "C2",
+          "collectionOrder": 13,
+          "slug": "waiting-and-triage-in-the-emergency-room",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-05-003/HC-05-003-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-05-003/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "But they do triage here — it's not first come, first served.",
+          "anchor_start": 5.87,
+          "displayExample": "But they do triage here — it's not first come, first served.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈtɹiɑʒ/",
+      "pos": "n.",
+      "note": "指分诊；原句用它解释为什么并非按先到先看的顺序安排。"
+    },
+    {
+      "id": "word-weekday",
+      "key": "weekday",
+      "kind": "word",
+      "text": "weekday",
+      "meaningZh": "工作日",
+      "audioUrl": null,
+      "occurrences": [
+        {
+          "sceneId": "HC-04-001",
+          "titleZh": "电话预约流感疫苗",
+          "collectionId": "C2",
+          "collectionOrder": 9,
+          "slug": "booking-flu-shots-by-phone",
+          "videoUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-no-subtitles.mp4",
+          "dataUrl": "https://go.learnyzenglish.com/content/HC-04-001/scene.json",
+          "isFreeExperience": false,
+          "anchor_line": "He has school on weekdays, and I work.",
+          "anchor_start": 29.37,
+          "displayExample": "He has school on weekdays, and I work.",
+          "contextLine": null,
+          "contextStart": null
+        }
+      ],
+      "phonetic": "/ˈwikdeɪ/",
+      "pos": "n.",
+      "note": "指周一至周五这样的工作日；on weekdays 表示在工作日。"
+    }
+  ]
+}

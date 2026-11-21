@@ -1,17 +1,14 @@
 import type { ReactNode } from "react";
 import { Clock, Globe, BarChart2, MessageSquareText } from "lucide-react";
 
-function getLevelStyle(level: string) {
-  if (level === "A1–A2") return "bg-emerald-100 text-emerald-800";
-  if (level === "A2–B1") return "bg-amber-100 text-amber-800";
-  if (level === "B1–B2") return "bg-orange-100 text-orange-800";
-  return "bg-secondary text-muted-foreground";
-}
-
-export function LevelBadge({ level }: { level: string }) {
+export function LevelBadge({ level, variant = "detail", className = "" }: { level: string; variant?: "cover" | "detail" | "meta"; className?: string }) {
+  const value = level?.trim().replace(/([A-C][12])\s*[-–—]\s*([A-C][12])/gi, "$1–$2");
+  if (!value) return null;
+  const labels: Record<string, string> = { beginner: "初级 · Beginner", "beginner+": "初级进阶 · Beginner+", intermediate: "中级 · Intermediate" };
+  const label = labels[value.toLowerCase()] ?? value;
   return (
-    <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-md ${getLevelStyle(level)}`}>
-      <BarChart2 size={9} />{level}
+    <span aria-label={`内容难度：${label}`} className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full font-sans font-medium ${variant === "meta" ? "text-xs text-muted-foreground" : variant === "cover" ? "bg-primary/80 px-2.5 py-1 text-[10px] text-white backdrop-blur-sm" : "border border-primary/15 bg-primary/5 px-3 py-1 text-[12px] text-primary"} ${className}`}>
+      {variant !== "cover" && <BarChart2 size={12} aria-hidden="true" />}{label}
     </span>
   );
 }

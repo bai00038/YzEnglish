@@ -1,13 +1,19 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, type CSSProperties } from "react";
 import { Link, useParams, useSearchParams } from "react-router";
-import { ChevronRight, ChevronLeft, Download, Info, LockKeyhole, Play } from "lucide-react";
+import { ChevronRight, ChevronLeft, Download, Info, LoaderCircle, LockKeyhole, Play, Volume2 } from "lucide-react";
 import { useSceneDetail } from "@/data/scenes-access";
 import { useCollection } from "@/data/collections-access";
 import { getSceneCategoryLabel } from "@/data/scene-categories";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
 import { DictationPractice, type DictationLineInput } from "@/app/components/DictationPractice";
 import { MembershipUnlockModal } from "@/app/components/MembershipUnlockModal";
+import "@/styles/kit.css";
+import { playKitTts, stopKitAudio, useKitAudio } from "@/data/kit-audio";
+import { normalizeKitText } from "@/data/kit";
+import { useMobileStudyVideo } from "@/app/hooks/useMobileStudyVideo";
+import "@/styles/scene-study.css";
 import { SentenceListeningCard } from "@/app/components/SentenceListeningCard";
+import { SceneKitText } from "@/app/components/SceneKitText";
 import { buildSceneSpeakers, normalizeSpeaker, SPEAKER_STYLES } from "@/data/speakerRoles";
 import { getSceneProgressId, readLearningProgress, updateLearningPosition, writeLearningProgress, type LearningStep } from "@/data/learning-progress";
 import { membershipErrorMessage, requestProtectedAssetUrl, SECURE_MEMBERSHIP_ENABLED, useMembershipAccess } from "@/data/membership";
@@ -29,11 +35,24 @@ function KeyExpressionCard({
   isLastRow: boolean;
   isLastItem: boolean;
 }) {
+  const audio = useKitAudio();
+  const selected = audio.id === `tts:${normalizeKitText(item.expressionEn)}`;
+  const active = selected && !audio.error;
   return (
-    <div className={`border-b border-dashed border-primary/15 py-4 first:pt-0 ${isFirstRow ? "md:pt-0" : ""} ${isLastRow ? "md:border-b-0 md:pb-0" : ""} ${isLastItem ? "border-b-0 pb-0" : ""}`}>
-      <p className="font-serif text-[20px] leading-snug text-primary">{item.expressionEn}</p>
+    <button type="button" onClick={() => { void playKitTts(item.expressionEn, undefined, { boost: true }); }}
+      aria-label={`听发音 ${item.expressionEn}`} aria-pressed={active}
+      className={`group block w-full cursor-pointer text-left border-b border-dashed border-primary/15 py-4 first:pt-0 ${isFirstRow ? "md:pt-0" : ""} ${isLastRow ? "md:border-b-0 md:pb-0" : ""} ${isLastItem ? "border-b-0 pb-0" : ""}`}>
+      <div className="flex items-start gap-3">
+        <p className="min-w-0 flex-1 font-serif text-[20px] leading-snug text-primary">{item.expressionEn}</p>
+        <span className="phrase-audio-control">
+          <span className={`mt-1 block flex-none transition-opacity ${active ? "text-primary opacity-100" : "text-primary opacity-50 group-hover:opacity-100"}`}>
+            {active && audio.loading ? <LoaderCircle size={16} className="animate-spin" /> : <Volume2 size={17} />}
+          </span>
+          {selected && audio.error && <span role="status" className="phrase-audio-error">{audio.error}</span>}
+        </span>
+      </div>
       <p className="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">{item.expressionZh}</p>
-    </div>
+    </button>
   );
 }
 
@@ -166,12 +185,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const pendingRestoreVideoTimeRef = useRef<number | null>(null);
   const lastVideoProgressWriteRef = useRef(0);
   const [videoPaused, setVideoPaused] = useState(true);
-  const [subtitleLang, setSubtitleLang] = useState<"off" | "en" | "zh">("off");
+  const [subtitleLang, setSubtitleLang] = useState<"off" | "en" | "zh">("zh");
   const [videoCurrentTime, setVideoCurrentTime] = useState(0);
   const [studyTab, setStudyTab] = useState<StudyTabKey>("listening");
   const [repeatLine, setRepeatLine] = useState(false);
   const repeatLineRef = useRef(false);
   const studySectionRef = useRef<HTMLDivElement>(null);
+  const { videoDocked, keyboardOpen, viewportTop, enterStudy } = useMobileStudyVideo(studySectionRef, Boolean(content && canAccessMemberContent && protectedVideoUrl));
   // Continuous video playback may update subtitles, but the sentence
   // listening card stays on sentence 1 until the learner intentionally
   // starts or interacts with sentence-listening practice.
@@ -393,7 +413,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     const checkPosition = () => {
       frameId = null;
       const section = studySectionRef.current;
-      if (!section) return;
+      if (!section || window.matchMedia('(max-width: 768px)').matches) return;
 
       const currentScrollY = window.scrollY;
       const scrollingDown = currentScrollY > lastScrollY;
@@ -696,7 +716,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     endTime: number,
     startTime: number,
     lineIndex: number,
-    range: { start: number; end: number }
+    range: { start: number; end: number },
+    allowRepeat = true
   ) {
     const video = videoRef.current;
     if (!video) return;
@@ -722,7 +743,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
       markSentenceCompleted(lineIndex, endTime);
 
-      if (repeatLineRef.current && playRequestRef.current === requestId) {
+      if (allowRepeat && repeatLineRef.current && playRequestRef.current === requestId) {
         const restartAfterSeek = () => {
           pendingSeekedHandlerRef.current = null;
           if (!repeatLineRef.current || playRequestRef.current !== requestId) return;
@@ -788,7 +809,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     }
   }
 
-  function playDialogueLine(lineIndex: number, range: { start: number; end: number }) {
+  function playDialogueLine(lineIndex: number, range: { start: number; end: number }, allowRepeat = true) {
+    stopKitAudio();
     const video = videoRef.current;
     if (!video) return;
     // Cancel whatever the previous click left in flight — a stale
@@ -844,7 +866,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     const beginPlayback = () => {
       if (playRequestRef.current !== requestId) return; // superseded by a later click
       video.play();
-      watchForLineEnd(requestId, trueEnd, trueStart, lineIndex, range);
+      watchForLineEnd(requestId, trueEnd, trueStart, lineIndex, range, allowRepeat);
     };
 
     // Setting currentTime to (near) its current value seeks nowhere, so
@@ -919,7 +941,9 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     }
 
     window.requestAnimationFrame(() => {
-      studySectionRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
+      if (!enterStudy()) {
+        studySectionRef.current?.scrollIntoView({ behavior: window.matchMedia('(max-width: 768px)').matches ? "instant" : "auto", block: "start" });
+      }
     });
   }
 
@@ -977,6 +1001,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
         return {
           index,
           en: line.en,
+          anchorStart: dialogueLineRawRanges.get(index)?.start,
           zh: line.zh,
           speakerLabel: (speaker?.en ?? line.speaker).toUpperCase(),
           speakerStyle: speaker?.style ?? SPEAKER_STYLES[0],
@@ -1009,11 +1034,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // Reuses the exact same single-line player used by "单句精听" (see
   // playDialogueLine above) with the line's playback range — no second
   // playback path.
-  function playDictationLine(lineIndex: number) {
+  function playDictationLine(lineIndex: number, once = false) {
     const range = dialogueLinePlaybackRanges.get(lineIndex);
     if (!range) return;
     saveLearningPosition("dialogue", range.start);
-    playDialogueLine(lineIndex, range);
+    playDialogueLine(lineIndex, range, !once);
   }
 
   // video.pause() itself triggers the <video>'s onPause handler above,
@@ -1068,7 +1093,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   ];
 
   return (
-    <div className="scene-page bg-background px-3 py-4 md:px-6 md:py-5">
+    <div className={`scene-page bg-background px-3 py-4 md:px-6 md:py-5 ${videoDocked ? "is-video-docked" : ""} ${keyboardOpen ? "is-keyboard-open" : ""}`}
+      style={{ "--scene-viewport-top": `${viewportTop}px` } as CSSProperties}>
       <div className="scene-shell mx-auto max-w-[1240px] overflow-hidden rounded-[28px] border border-primary/15 bg-card shadow-[0_12px_40px_rgba(15,53,39,0.04)]">
 
       {/* Breadcrumb */}
@@ -1156,7 +1182,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   image) or, before scene.video_url is synced from the Google
                   Sheet, as a poster-style background — never shown as a bare
                   standalone image. ── */}
-              <div className="relative w-full overflow-hidden rounded-[20px] bg-black shadow-[0_16px_40px_rgba(15,53,39,0.12)]" style={{ aspectRatio: "16 / 9" }}>
+              <div className="scene-video-slot" style={{ aspectRatio: "16 / 9" }}>
+              <div className="scene-video-frame relative w-full overflow-hidden rounded-[20px] bg-black shadow-[0_16px_40px_rgba(15,53,39,0.12)]" style={{ aspectRatio: "16 / 9" }}>
+                {videoDocked && keyboardOpen && <div className="scene-keyboard-video-bar">
+                  <span>{scene.titleZh || scene.titleEn}</span>
+                </div>}
                 {!canAccessMemberContent ? (
                   <button
                     type="button"
@@ -1193,7 +1223,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   <div className="relative w-full h-full">
                     <video
                       ref={videoRef}
-                      controls
+                      controls={!videoDocked}
                       controlsList="nodownload noremoteplayback"
                       disablePictureInPicture
                       playsInline
@@ -1204,6 +1234,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       onContextMenu={(event) => event.preventDefault()}
                       onDragStart={(event) => event.preventDefault()}
                       onPlay={() => {
+                        stopKitAudio();
                         setVideoPaused(false);
                         // activeEndRef is set (before video.play() is
                         // called) only by playDialogueLine — so a play
@@ -1348,7 +1379,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         </button>
                       </div>
                     )}
-                    {videoPaused && (
+                    {videoPaused && !videoDocked && (
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                         <button
                           type="button"
@@ -1357,7 +1388,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                             videoRef.current?.play();
                           }}
                           aria-label="Play video"
-                          className="pointer-events-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent text-primary shadow-[0_8px_24px_rgba(0,0,0,0.22)] transition-transform hover:scale-105 md:h-20 md:w-20"
+                          className="pointer-events-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent/75 text-primary shadow-[0_8px_24px_rgba(0,0,0,0.22)] transition-transform hover:scale-105 md:h-20 md:w-20"
                         >
                           <Play className="ml-1 h-7 w-7 fill-current md:h-9 md:w-9" />
                         </button>
@@ -1383,6 +1414,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 )}
               </div>
 
+              </div>
               <div className="scene-mobile-description mt-3 hidden">
                 <p ref={mobileDescRef} className={`text-[13px] leading-relaxed text-[#3A4A42] ${descriptionExpanded ? "" : "line-clamp-2"}`}>
                   {scene.desc || scene.titleEn}
@@ -1394,7 +1426,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 )}
               </div>
 
-              <div className="mt-4 flex justify-center max-[480px]:mt-3">
+              <div className="scene-start-listening mt-4 flex justify-center max-[480px]:mt-3">
                 <button
                   type="button"
                   onClick={() => canAccessMemberContent ? startSentenceListening() : setMembershipModalOpen(true)}
@@ -1460,6 +1492,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               ) : studyTab === "dictation" ? (
                 <DictationPractice
                   sceneId={scene.id}
+                  externalSceneId={scene.externalId ?? ''}
                   lines={dictationLines}
                   onPlayLine={playDictationLine}
                   onStopPlayback={stopDictationPlayback}
@@ -1478,6 +1511,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
               ) : (
                 <SentenceListeningCard
                   line={currentStudyLine ?? null}
+                  englishContent={currentStudyLine && <SceneKitText text={currentStudyLine.en} sceneId={scene.externalId ?? ""}
+                    anchorStart={currentStudyLineIndex === null ? undefined : dialogueLineRawRanges.get(currentStudyLineIndex)?.start} />}
                   speakerLabel={currentStudySpeakerLabel}
                   speakerZh={currentStudyIsLearner ? "你" : (currentStudySpeaker?.zh || currentStudySpeakerLabel)}
                   isLearner={currentStudyIsLearner}
@@ -1511,10 +1546,10 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 ───────────────────────────────────────────── */}
             <section id="section-language" aria-labelledby="scene-language-title" className="scene-section-pad scroll-mt-24 px-5 pb-12 max-[480px]:pb-9 md:px-10 md:pb-16">
               <StepHeading number="03" title="知识点" hint="这一课真正要带走的" titleId="scene-language-title" />
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3">
                 {/* Key Expressions — from public.key_expressions (or its legacy-tips fallback) */}
                 {keyExpressionItems.length > 0 && (
-                  <div className="rounded-[20px] border border-border bg-white p-5 md:p-7">
+                  <div className="rounded-[20px] border border-border bg-white p-5 md:px-7 md:py-6">
                     <h3 className="mb-6 text-[18px] font-black text-primary">核心表达</h3>
                     <div className="relative overflow-hidden rounded-[16px]">
                       <div className={`grid grid-cols-1 gap-x-8 transition-all md:grid-cols-2 ${!canAccessMemberContent ? "pointer-events-none select-none blur-[7px] opacity-40" : ""}`} aria-hidden={!canAccessMemberContent}>
@@ -1548,7 +1583,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                 {/* Culture & Local Tips — from public.culture_tips (or its legacy-tips fallback) */}
                 {cultureTipItems.length > 0 && (
-                  <div className="rounded-[20px] border border-border bg-white p-5 md:p-7">
+                  <div className="rounded-[20px] border border-border bg-white p-5 md:px-7 md:py-6">
                     <h3 className="mb-6 text-[18px] font-black text-primary">文化与本地提示</h3>
                     <div className="relative min-h-[120px] overflow-hidden rounded-[16px]">
                       <div className={`transition-all ${!canAccessMemberContent ? "pointer-events-none select-none blur-[7px] opacity-40" : ""}`} aria-hidden={!canAccessMemberContent}>
@@ -1576,7 +1611,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
             {/* ─────────────────────────────────────────────
                 LIGHT SECTION: PDF · Related · Prev/Next
                 ───────────────────────────────────────────── */}
-            <section className="scene-section-pad px-5 pb-10 max-[480px]:pb-8 md:px-10 md:pb-12">
+            <section className="scene-section-pad scene-resources px-5 pb-10 max-[480px]:pb-8 md:px-10 md:pb-12">
               <div>
 
                 {/* PDF download — scene.pdfUrl comes straight from Supabase scenes.pdf_url;
@@ -1729,7 +1764,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       </div>
       {scene && scene.collectionId && (prevScene || nextScene) ? (
         <>
-          <div aria-hidden="true" className="h-[70px] lg:h-[76px]" />
+          <div aria-hidden="true" className="scene-episode-bar-spacer h-[70px] lg:h-[76px]" />
           <nav aria-label="上一集 / 下一集" className={`fixed inset-x-0 bottom-[var(--mobile-nav-height)] z-40 border-t border-primary/15 bg-white/95 shadow-[0_-10px_36px_rgba(15,53,39,0.10)] backdrop-blur-md lg:bottom-0 ${episodeBarHidden ? "hidden" : ""}`}>
             <div className="mx-auto flex h-[64px] max-w-[1240px] items-center gap-2 px-3 sm:gap-3 sm:px-5">
               {prevScene ? (

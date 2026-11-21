@@ -1,0 +1,1220 @@
+[
+  {
+    "text": "appointment",
+    "spokenText": "appointment",
+    "normalizedKey": "appointment",
+    "file": "fd37f875ad2991f4970fa81e409b41963ecddb667729a9bc7264b0c5e0880817.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "filling",
+    "spokenText": "filling",
+    "normalizedKey": "filling",
+    "file": "f02990135436f2214ea94a42f98c901e0b6918c44a68907531577f7421e1e1a0.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "pinch",
+    "spokenText": "pinch",
+    "normalizedKey": "pinch",
+    "file": "46f9504a7a71e4b5b3466c964f19d07062cf70c3b966b0b32201a056bd73d9e2.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "pressure",
+    "spokenText": "pressure",
+    "normalizedKey": "pressure",
+    "file": "b667446e6eb2552fbe29d98e8f5c3bb7197cad4ab1ec72cf710c406956e71e55.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "sharp",
+    "spokenText": "sharp",
+    "normalizedKey": "sharp",
+    "file": "632e93023886160a2a5494cd49aeb72994fc61f6834355d175a423b99715a9df.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "sore",
+    "spokenText": "sore",
+    "normalizedKey": "sore",
+    "file": "2eab005be0d086bc981564bc35783a01fd74cc1d1b9cd2e373558bcba096b8f6.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "treatment",
+    "spokenText": "treatment",
+    "normalizedKey": "treatment",
+    "file": "60c411b2baec2ab58d4494dd7a1efcec94ed33e8737a24a920ab58a59284208d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "vibration",
+    "spokenText": "vibration",
+    "normalizedKey": "vibration",
+    "file": "d6740176da76c7e5ec367c9155b211e3899b451fb44e6b221b187d5b8fc41304.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "fever",
+    "spokenText": "fever",
+    "normalizedKey": "fever",
+    "file": "1e44a1c45388c81c1a4bba7c14aa8d54cf11d442c99efc62a68d103cfdd308b8.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "sleeve",
+    "spokenText": "sleeve",
+    "normalizedKey": "sleeve",
+    "file": "18159f6fa757e618ab6e52d3d2ed2df7766083a41f1d737b515a636c0f813d37.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "symptoms",
+    "spokenText": "symptoms",
+    "normalizedKey": "symptoms",
+    "file": "4f8413e951f36c2874ed0fc163e683822f5619ca459b56f87a1f79ef80113606.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "urgent",
+    "spokenText": "urgent",
+    "normalizedKey": "urgent",
+    "file": "f9d37c23fcc0f03c15a86aba71dce01dd0baa7a1568180e60c2347a5863151bc.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "adjust",
+    "spokenText": "adjust",
+    "normalizedKey": "adjust",
+    "file": "2549c096fc692b123129bd12e6536ce3e34017bebcf81bdccd4bce705cc16e6a.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "affordable",
+    "spokenText": "affordable",
+    "normalizedKey": "affordable",
+    "file": "2570319fef239a21af6d12898ce01309a8f2c055cbd1f085587153a045c92e35.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "anesthetic",
+    "spokenText": "anesthetic",
+    "normalizedKey": "anesthetic",
+    "file": "e3d936b1cf5bccfd2138be11560c093eaff1c9130dc8e13b313af15238bb061e.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "apply",
+    "spokenText": "apply",
+    "normalizedKey": "apply",
+    "file": "97a5e41b45ddd2b2381046e77ccfa5c45d3553b81b66aeba7ed5c460c660f93f.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "assessment",
+    "spokenText": "assessment",
+    "normalizedKey": "assessment",
+    "file": "89c08f7a02989db85066486407e81228ddadae03a30b293e5298cd050bd92db7.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "balance",
+    "spokenText": "balance",
+    "normalizedKey": "balance",
+    "file": "5751e048eb6fee3eb9bb4ea70f107f19c35863766bee5100044e52ab60d9edcf.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "booked",
+    "spokenText": "booked",
+    "normalizedKey": "booked",
+    "file": "6796883fecf6b1accddf2392813da69bfbf7612c9a758679090c1059b139365d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "braces",
+    "spokenText": "braces",
+    "normalizedKey": "braces",
+    "file": "1c775808276a155c66a8fec3010ead48f0141e41a4d82d9ceac5c08d34b63f45.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "bracket",
+    "spokenText": "bracket",
+    "normalizedKey": "bracket",
+    "file": "11c1eee0e02516b19e263d060a3c9f80535bee655ae7e1a3afe8ddd045135ed1.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "break",
+    "spokenText": "break",
+    "normalizedKey": "break",
+    "file": "14ebe56a5008e7c251101e9e1fdbe281ab0a82bd6fa00a5cef746b9ee0dd31d1.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "checkup",
+    "spokenText": "checkup",
+    "normalizedKey": "checkup",
+    "file": "8c3878832bc188aee2a2c0e4d5ed9cb563b5c40e4617f32352c3770337b28e6e.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "cheeks",
+    "spokenText": "cheeks",
+    "normalizedKey": "cheeks",
+    "file": "e7adc837a3baffa82e0033f709339397c5dd2ef9b040fb2f124987c69572fce7.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "chin",
+    "spokenText": "chin",
+    "normalizedKey": "chin",
+    "file": "4beeb72de58b9de8213c730346b36e2e10a794533f4b58b439ca3b76ecfbd18f.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "cleaning",
+    "spokenText": "cleaning",
+    "normalizedKey": "cleaning",
+    "file": "db709dbd299db08f60a8a5dfb06e4be2f01903776d391b25e97b26ec933b0ebd.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "coverage",
+    "spokenText": "coverage",
+    "normalizedKey": "coverage",
+    "file": "c3a3091b9d32267d0b3175ee14f70a1e0b3d7292d0a0fa45020ced5fb764d620.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "crowded (teeth)",
+    "spokenText": "crowded",
+    "normalizedKey": "crowded teeth",
+    "file": "4ea697a267b04080ce5ed02c12330cca11a8f0efb59802aec6fddf7d92cca360.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "decay",
+    "spokenText": "decay",
+    "normalizedKey": "decay",
+    "file": "2db681579fbe43e8e0d7ae0a009fa8b894d17934454ded75431f7b6c34d602f9.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "estimate",
+    "spokenText": "estimate",
+    "normalizedKey": "estimate",
+    "file": "79e1d925e79c904a9cf8ef433d2eb255d5e3f1a881e45d7e3ea1121a86da1749.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "fluoride",
+    "spokenText": "fluoride",
+    "normalizedKey": "fluoride",
+    "file": "38578759abfeafba192f987b02a5d86555c5635e51733a2f1bad4aaf92c23f82.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "gauze",
+    "spokenText": "gauze",
+    "normalizedKey": "gauze",
+    "file": "ca96106d142172ede2db7c771f86fe59c8d3f8431244c47a2c5e2c76d7cdbc80.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "gently",
+    "spokenText": "gently",
+    "normalizedKey": "gently",
+    "file": "cf1bb8219ec112d20543dc0c10af6d9aceb8701b655da989c245fb49525f3f1c.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "grind",
+    "spokenText": "grind",
+    "normalizedKey": "grind",
+    "file": "3026fac023c67598797c8c7da4ac6cf653f832b2c9de761d3922fb85ea086b1c.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "gum",
+    "spokenText": "gum",
+    "normalizedKey": "gum",
+    "file": "3e46c8846ec5016c238d9f68c89c5efaeea89d565399881ba15b36ece1d699af.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "gum / caramel",
+    "spokenText": "gum, caramel",
+    "normalizedKey": "gum caramel",
+    "file": "bc3ad0c7b38152d1ee8a6f99c38eeaf4d09b28c3dc2806aa309e0bbed0683594.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "gums",
+    "spokenText": "gums",
+    "normalizedKey": "gums",
+    "file": "faf6d7e522790b57b8f3a34d53ecaf4226e54e900790cb2461d9378e58a4c373.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "healing",
+    "spokenText": "healing",
+    "normalizedKey": "healing",
+    "file": "e904883f02b0baeb3c5a6b90a7ba0b083e0497ddbd588ddd22c06c89dd5f1569.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "implant",
+    "spokenText": "implant",
+    "normalizedKey": "implant",
+    "file": "c3863ec1e58a6a4dc8fa26f0148ffca03caf98deea2d3a16a4bb03b80e926ed6.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "insurance",
+    "spokenText": "insurance",
+    "normalizedKey": "insurance",
+    "file": "64e8937abc6d71cf2d2f0fe05e52c33666883443ae4e8af7924c71198caa1f9d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "insurer",
+    "spokenText": "insurer",
+    "normalizedKey": "insurer",
+    "file": "9475a5970e0d3b96f19fca06c19d9235df6728836503a1d498b0124578aa113d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "Invisalign",
+    "spokenText": "Invisalign",
+    "normalizedKey": "invisalign",
+    "file": "5de320b545cd3ac543832f0cafb9bb22033a182baedfcefbf28da9a4c1343004.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "linger",
+    "spokenText": "linger",
+    "normalizedKey": "linger",
+    "file": "7d21b3384028efa0e6414090a0f14f953d09223c338da9860bd57b039984c5fe.mp3",
+    "hasAudio": true
+  },
+  {
+    "text": "lip",
+    "spokenText": "lip",
+    "normalizedKey": "lip",
+    "file": "8ac1ef5381caf75418d7c46a13480588df3557a33ad43516f65742bcc7931c6a.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "molar",
+    "spokenText": "molar",
+    "normalizedKey": "molar",
+    "file": "0fc4c84a9858a1c0b70c4f30582d5545439cb85b7bf5b66bd7ffc8acf4a587b3.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "noticeable",
+    "spokenText": "noticeable",
+    "normalizedKey": "noticeable",
+    "file": "34b953d3ca4ee7c462e14a33faa0b699d572872c30a13b378d2bd0a8fa331362.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "orthodontics",
+    "spokenText": "orthodontics",
+    "normalizedKey": "orthodontics",
+    "file": "f9efdb015755502a6296b48ed9fd786861395f8bb007ab2e0c1c17e4153988be.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "pain",
+    "spokenText": "pain",
+    "normalizedKey": "pain",
+    "file": "5c78c8e7160e76ba9b6c41f74247bb7ba4887f5c06faecd6b9a009785b248c72.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "panoramic",
+    "spokenText": "panoramic",
+    "normalizedKey": "panoramic",
+    "file": "13ea1198083b374de09553aeb373bde2b88fa48866b728c30a9c262c4ee19078.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "polish",
+    "spokenText": "polish",
+    "normalizedKey": "polish",
+    "file": "8a741eb9c8922e9e08fc1b0538535461c44d22bd48e1ed6bd7424f3fe7d78745.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "popcorn",
+    "spokenText": "popcorn",
+    "normalizedKey": "popcorn",
+    "file": "0a4ef253e3fef22cb9d3bc5280386f9f2d1cf351da6582d8254659d1b27ea0b3.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "recommend",
+    "spokenText": "recommend",
+    "normalizedKey": "recommend",
+    "file": "0eb15ad185af2b351ef4be172745e9dcdfca32f2b0b4e96ffc45af98e813b74d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "reminder",
+    "spokenText": "reminder",
+    "normalizedKey": "reminder",
+    "file": "9ce7011ab48f26c2e69f772f41379d695e0b04fefddd78d0b1d4952383ba3995.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "removable",
+    "spokenText": "removable",
+    "normalizedKey": "removable",
+    "file": "30190ac54aa41e27a2550b5ada5ee16a16ec53d27fc9d6c061c3c6fd5d98df78.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "rinse",
+    "spokenText": "rinse",
+    "normalizedKey": "rinse",
+    "file": "7d535f27315c57ec3942c1af6056addcf57f09df9b7702a306561784bca24a99.mp3",
+    "hasAudio": true
+  },
+  {
+    "text": "rotate",
+    "spokenText": "rotate",
+    "normalizedKey": "rotate",
+    "file": "299bcf54c044b1b5d49a18da354e16f240b695a1f3a55f1e5217595de59fbb3d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "rub",
+    "spokenText": "rub",
+    "normalizedKey": "rub",
+    "file": "abaa209d9c23bcac23419e95fe4b2211676823147a1025ddedc155a7c5b428da.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "sensor",
+    "spokenText": "sensor",
+    "normalizedKey": "sensor",
+    "file": "ca73f61034afc26d96c85c0d2285e1f08b283b891426cef8c05eda5bf3e12ddf.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "smoothly",
+    "spokenText": "smoothly",
+    "normalizedKey": "smoothly",
+    "file": "ce4f792e165382412653044541a8a77f5db9e7aea2cd5b84fb8da3740f0b1620.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "sticky",
+    "spokenText": "sticky",
+    "normalizedKey": "sticky",
+    "file": "964a9431ff491fd7e0d7436ea1ed3e76e15d1d2e34fae585cdfca3c57805cf75.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "stitches",
+    "spokenText": "stitches",
+    "normalizedKey": "stitches",
+    "file": "cb08eea8a417da7773e8487071ec348f3efe159ade38c6c754fdfb3eaec4bebe.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "strongest",
+    "spokenText": "strongest",
+    "normalizedKey": "strongest",
+    "file": "a0a416e1b1bb34846487be269d8338ff8e057b411c5d04dd25fb7df487a6ed4f.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "swelling",
+    "spokenText": "swelling",
+    "normalizedKey": "swelling",
+    "file": "a40c2e8d54e6e05624a813d774b6f59766c187bf6cd673ea6a142faf70938d88.mp3",
+    "hasAudio": true
+  },
+  {
+    "text": "throbbing",
+    "spokenText": "throbbing",
+    "normalizedKey": "throbbing",
+    "file": "82c25c1d817760f9b0cbbf2f5953a24d08d44ce9c852791d1daf73e037a05455.mp3",
+    "hasAudio": true
+  },
+  {
+    "text": "tongue",
+    "spokenText": "tongue",
+    "normalizedKey": "tongue",
+    "file": "b2715212d939ec804d6dba79efbb62ba7c0b2ae61772a83c1a8c8256ae1d9ad8.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "tooth-colored",
+    "spokenText": "tooth-colored",
+    "normalizedKey": "toothcolored",
+    "file": "2f5b168390a476841cb9d0e37ab2c84c99cbb106b24528a3585759126ec1d86c.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "toothache",
+    "spokenText": "toothache",
+    "normalizedKey": "toothache",
+    "file": "7153a86186dd04c026f5e0ed94194e8ffe14b690cada08ba6b79ef1b16d3f76d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "vigorously",
+    "spokenText": "vigorously",
+    "normalizedKey": "vigorously",
+    "file": "e8c40e7f285e4a9fbb98bad7a55c9a406000fe961d477855f004fcca89b36f55.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "wider",
+    "spokenText": "wider",
+    "normalizedKey": "wider",
+    "file": "c7148011a9acf8fd977eeece47ef5f39a8690cf374b0eeb42843c74f7be67a5e.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "wire",
+    "spokenText": "wire",
+    "normalizedKey": "wire",
+    "file": "9b2abfc29cc47494c87171177c2af369fff9f067fd768f6f58c5d83e5c658507.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "X-ray",
+    "spokenText": "X-ray",
+    "normalizedKey": "xray",
+    "file": "1a46e6a68c37e8f969bab5d6fe6ce7b4deda2a17d80e1a7142e9c005b108f608.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "ache",
+    "spokenText": "ache",
+    "normalizedKey": "ache",
+    "file": "8f7111e5e2ef50b5711db6b1c556f45ec59db01e1ae0900ad1d2104b95bb30d2.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "allergy",
+    "spokenText": "allergy",
+    "normalizedKey": "allergy",
+    "file": "d128b6760194ca9924546306a48b76f53d2c157628abf348c32d99f590e6792c.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "ankle",
+    "spokenText": "ankle",
+    "normalizedKey": "ankle",
+    "file": "9abfc382e356ede3cbeba794cde5f90dfe1313f99c3d53bb3abe73e6091e4c26.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "attack",
+    "spokenText": "attack",
+    "normalizedKey": "attack",
+    "file": "fca30679635be3bbce1ca7d8a9ceb8f0daceaaa80e4cf645584db5ccc0dbf0b2.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "awake",
+    "spokenText": "awake",
+    "normalizedKey": "awake",
+    "file": "f245940166d1611d76b3def5535433a738cd431035a42a245fa921bb37d9ec02.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "caffeine",
+    "spokenText": "caffeine",
+    "normalizedKey": "caffeine",
+    "file": "9251f129e36d22db1b07c86a83bc9268948d98bd80be3b9c6eb8c48ed0ef22ac.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "chest",
+    "spokenText": "chest",
+    "normalizedKey": "chest",
+    "file": "7ca0d7019158ccd92de4eb351a1e9eded193a1eb3e760b09b154595f0436f0b4.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "clinician",
+    "spokenText": "clinician",
+    "normalizedKey": "clinician",
+    "file": "87ddbb4e5cec0c1d499273a5ce49bcdcd583294e75b9535af09642e7f3c6dc5d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "degrees",
+    "spokenText": "degrees",
+    "normalizedKey": "degrees",
+    "file": "67e565733661bf1a7d36500840e4ecf4a844436fdebfd57eab8518b57a19ae0c.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "dehydration",
+    "spokenText": "dehydration",
+    "normalizedKey": "dehydration",
+    "file": "9f91500a3e3c3a2161f60cea67e4e58155dbee578f0784e8c69a30a0514c1abf.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "diabetic",
+    "spokenText": "diabetic",
+    "normalizedKey": "diabetic",
+    "file": "58322a5b5937f9402c2b2c20c91f00f279e2a82822725dbc0feba4fe9c0618ab.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "directions",
+    "spokenText": "directions",
+    "normalizedKey": "directions",
+    "file": "b36fd74a8e0dc652645d44e57511b5b668158f7ac9aa7ae504885cf03eca4974.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "discomfort",
+    "spokenText": "discomfort",
+    "normalizedKey": "discomfort",
+    "file": "4577e0d592336abb88978517c2d732e1548b28bc45c6241063d16aed62a85bcd.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "dizzy",
+    "spokenText": "dizzy",
+    "normalizedKey": "dizzy",
+    "file": "d810e2523920525379158a2817711b8cd181fb3d9f9f3a8c2b9f3effbb9caf4d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "drowsy",
+    "spokenText": "drowsy",
+    "normalizedKey": "drowsy",
+    "file": "8978c132949a4dba6232c1fdca501e0d117e635c04227a5c162825de7674a56f.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "dull",
+    "spokenText": "dull",
+    "normalizedKey": "dull",
+    "file": "8f68ea0282db37900c1a8360c30c1940c52076c880c2dfa946d42bb63170d204.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "exactly",
+    "spokenText": "exactly",
+    "normalizedKey": "exactly",
+    "file": "24065231df1b28929df88139f986d509bc2aed39f17c7566cea5d0f25e7f299f.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "fast / fasting",
+    "spokenText": "fast, fasting",
+    "normalizedKey": "fast fasting",
+    "file": "579e7a5151e56cb64ac8ee33f5be49849259503354c9bb1610ea5d9e8b16f291.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "fever / cold",
+    "spokenText": "fever, cold",
+    "normalizedKey": "fever cold",
+    "file": "a3c1b3fb2ff57441d2ca04a0736dad47c0890c8528de66ce5e32258a69507abc.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "fist",
+    "spokenText": "fist",
+    "normalizedKey": "fist",
+    "file": "91f49598ac3a9ff6bdebfee273fa1321bf7cc63f5c85f19ebb659dec95d94cdb.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "fluids",
+    "spokenText": "fluids",
+    "normalizedKey": "fluids",
+    "file": "e817554809a544bd0a897e79cd194acd79a51c79cdcbd94a0f45c5d91e563bf2.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "frustrating",
+    "spokenText": "frustrating",
+    "normalizedKey": "frustrating",
+    "file": "013033b433bfda4584192b339a5258c37f5d8b421c76d3e8ddc63c75ac6347b9.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "headache",
+    "spokenText": "headache",
+    "normalizedKey": "headache",
+    "file": "cfa9ac1e084975b5d6463e32652c85bad6355a5ab32399618f89f222e68dc335.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "heartburn",
+    "spokenText": "heartburn",
+    "normalizedKey": "heartburn",
+    "file": "ed0761f7f4b6558303b8b20451818b2142935004632acb789a69b11edc1664d1.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "improvement",
+    "spokenText": "improvement",
+    "normalizedKey": "improvement",
+    "file": "62a4a0e9fbff1ed4b03bd12357240ba193b915b612e8e0638e27e6ffbbefe423.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "infection",
+    "spokenText": "infection",
+    "normalizedKey": "infection",
+    "file": "3f36e4307cf5d409bb92dbe13b4478bf2ddd1f93e9a3150e4c6b8a76e4f408d5.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "jaw",
+    "spokenText": "jaw",
+    "normalizedKey": "jaw",
+    "file": "f695e71ab38157263ecb2c8544f33651a4376507d3d282923f0f601da80ce024.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "lungs",
+    "spokenText": "lungs",
+    "normalizedKey": "lungs",
+    "file": "69d651fbde41b2f0ee0867b467375de92ab9616e8fc6f27662d044888c4213a3.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "mattress",
+    "spokenText": "mattress",
+    "normalizedKey": "mattress",
+    "file": "098223b63ef7e402c389cc0d991da1f923401ec28c110f2cface63807a58b09d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "medication",
+    "spokenText": "medication",
+    "normalizedKey": "medication",
+    "file": "876636910b597ab4f30f72770544d3d02bc2f416f24f9eb19a8d920a01f844ef.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "migraine",
+    "spokenText": "migraine",
+    "normalizedKey": "migraine",
+    "file": "9be41eeda9615665b3de5b8f6b3f04fffe17c86c0300c316af1a99f4ba4c550b.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "nausea",
+    "spokenText": "nausea",
+    "normalizedKey": "nausea",
+    "file": "e31040de4051bb5c21170eea8d3690ac4706d9fd6d119771e743936fae3f878b.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "negative / positive",
+    "spokenText": "negative, positive",
+    "normalizedKey": "negative positive",
+    "file": "e87dd2646562e3981d17ce44b86b8726ac5b40795d3546b4a08ba03b4690ad96.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "neurologist",
+    "spokenText": "neurologist",
+    "normalizedKey": "neurologist",
+    "file": "ffc71ff0955dcfcd384955f159681776d0d31f158585a5ba369164e6f3ec0487.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "occasional",
+    "spokenText": "occasional",
+    "normalizedKey": "occasional",
+    "file": "b46253821445b83b9e8635514ab11496c706957c0fa2da609c9a0789740c8e6a.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "pharmacy",
+    "spokenText": "pharmacy",
+    "normalizedKey": "pharmacy",
+    "file": "20b04a4f018b89f369ce009213afc6369f59fe1c903c0770732ec7402163c358.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "physio",
+    "spokenText": "physio",
+    "normalizedKey": "physio",
+    "file": "43f5a72e85cad6f1efe492b41f3ce23bde19866fc837563fa23f0ac373d38819.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "portal",
+    "spokenText": "portal",
+    "normalizedKey": "portal",
+    "file": "d0960501f8971be812f2e5494426e08cdbb2cbc3b3190ba60075f14b8da7178a.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "prescribe",
+    "spokenText": "prescribe",
+    "normalizedKey": "prescribe",
+    "file": "6ce34a94e412486a65337355b079e59af2b59ecf9a83f1bf556a0f91ff16a763.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "prescription",
+    "spokenText": "prescription",
+    "normalizedKey": "prescription",
+    "file": "758768c3ca261d8585e6b015f3347600da49407c3cf17f0a158c4e3487f772f4.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "promise",
+    "spokenText": "promise",
+    "normalizedKey": "promise",
+    "file": "3513d9452af7c1768eeba7e47bdd0920aeb18360dc15a1a7759fc0f0e4f3ca02.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "range",
+    "spokenText": "range",
+    "normalizedKey": "range",
+    "file": "2269c0be009b610cfdbb8cfe9253ad37cf95062fb3f5a7560268ff259ea9f087.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "reaction",
+    "spokenText": "reaction",
+    "normalizedKey": "reaction",
+    "file": "511639a4a9a23cceb83e1acb0aab58260e6f5136051197008bb7951dd6c06ad4.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "rebook",
+    "spokenText": "rebook",
+    "normalizedKey": "rebook",
+    "file": "6c230923943e0597fa8c1dc2d0177877e5cdbd4e477c3ee07b7ac55e5761b4ab.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "record",
+    "spokenText": "record",
+    "normalizedKey": "record",
+    "file": "70ce871f8a3d3fb449bc3c3ace6547cef02dfc74ffe48d912532a724bfdbe5b9.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "refer",
+    "spokenText": "refer",
+    "normalizedKey": "refer",
+    "file": "a4b64ad329a8b29e200803810cd689c9dc02b6e628a1819936a5c0d51d561db8.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "relax",
+    "spokenText": "relax",
+    "normalizedKey": "relax",
+    "file": "51945df720a5a6e216939c07a49713aa1745b28c88a901548d3c499fc34a7057.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "results",
+    "spokenText": "results",
+    "normalizedKey": "results",
+    "file": "c099142bc3186ded72786ba27e9ea6d2da240fb9fd3fe79b479ecf8e734b2850.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "sensation",
+    "spokenText": "sensation",
+    "normalizedKey": "sensation",
+    "file": "595f053100ff2951992165de4576db0099b48b26251737b22acec4bc31d89440.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "shortly",
+    "spokenText": "shortly",
+    "normalizedKey": "shortly",
+    "file": "eed2d3e17776016d896f1062a5eaf7c54fa6e75246201be38533d5ffe36cb3e8.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "slot / spot",
+    "spokenText": "slot, spot",
+    "normalizedKey": "slot spot",
+    "file": "72b8be6576629ccff26eae0baf6d77498fd247365c0f9a323bbb045e17386c49.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "sprain",
+    "spokenText": "sprain",
+    "normalizedKey": "sprain",
+    "file": "8ceea682e6f3ff3788164898c2c7d040b2deba5ec2bc104a52206db0434b7a9d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "stress / stressful",
+    "spokenText": "stress, stressful",
+    "normalizedKey": "stress stressful",
+    "file": "09a707dc3d6809ae365fb7bf18aa7845e9bbf3e81eb7cb67a29574a40481dc6d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "sweating",
+    "spokenText": "sweating",
+    "normalizedKey": "sweating",
+    "file": "082c8ca10d0dcda4c58d4b9226b32551db5522101764d4a142a5740716316921.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "throat",
+    "spokenText": "throat",
+    "normalizedKey": "throat",
+    "file": "48cf13f481ae6828d98963f106d1e60961e8eec53971d98dd652c55e9403fc78.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "tightness",
+    "spokenText": "tightness",
+    "normalizedKey": "tightness",
+    "file": "f42cede9e63414abdc9fe94ad80a713e1d72d646ed4f70f74cad817491f42e4f.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "treat",
+    "spokenText": "treat",
+    "normalizedKey": "treat",
+    "file": "a5075550e1f2376f804a057923b34bfedc630ce3e1adce55dfbd7270bed20f40.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "triage",
+    "spokenText": "triage",
+    "normalizedKey": "triage",
+    "file": "0f916789d300a986c41cdb23c248926aaec1f73a9bbae0a7efae074f16480baf.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "weekday",
+    "spokenText": "weekday",
+    "normalizedKey": "weekday",
+    "file": "82d048d26ee2fdd4122f1385fba47ffbdc7c3e4e8d6d86c088998dc4f6d6ec40.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "flosser",
+    "spokenText": "flosser",
+    "normalizedKey": "flosser",
+    "file": "dd4d6552bba3335fb7fa86c70bd85857417a8c924aa1df7b773ad471ffafeb3b.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "aligner",
+    "spokenText": "aligner",
+    "normalizedKey": "aligner",
+    "file": "195cdc7bdbfeed7370202ac8f2d17f6091eafc69050297251481b27065918b30.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "copay",
+    "spokenText": "copay",
+    "normalizedKey": "copay",
+    "file": "5c58ea4302e11f7fc3bc193321dc61ae7e4dde881a110895f2f81e4d4729f085.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "antacid",
+    "spokenText": "antacid",
+    "normalizedKey": "antacid",
+    "file": "6277f59310ad1e81ed7d7958846ed5ccd330c25fa235e5cdfb3245d44e9fbc49.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "amoxicillin",
+    "spokenText": "amoxicillin",
+    "normalizedKey": "amoxicillin",
+    "file": "6bf39e02999bcec2fcd14c2211b6effcfff459be7c69cda01a92c2483f0b806c.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "inflamed",
+    "spokenText": "inflamed",
+    "normalizedKey": "inflamed",
+    "file": "04affe222f1235f688a6839691464f433cf68e8633f6fdf6b7311a94ad5d605b.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "strep",
+    "spokenText": "strep",
+    "normalizedKey": "strep",
+    "file": "ef172ca1bd1e1c9fe990294ff47b820ddb1c367330319d3695d9d1960c1fe29b.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "antibiotic",
+    "spokenText": "antibiotic",
+    "normalizedKey": "antibiotic",
+    "file": "856fa50792e3c8450607ea8a10bdfd534f0ca9a649266cc84e2413a981bb5483.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "numb",
+    "spokenText": "numb",
+    "normalizedKey": "numb",
+    "file": "5d3cf1bce50c08742da64756bd81b277f04eed791a6eb9542b5e29d8492720bd.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "blurred",
+    "spokenText": "blurred",
+    "normalizedKey": "blurred",
+    "file": "51dda46d7c96fcb30abd858467d53b8a74fb486ae37772dbcea2d8b44f057b36.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "referral",
+    "spokenText": "referral",
+    "normalizedKey": "referral",
+    "file": "44574c4ba2ea74ad4bf1e184133cdbf4e7390a3690beff6a7364511a70ec208e.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "cavity",
+    "spokenText": "cavity",
+    "normalizedKey": "cavity",
+    "file": "31eb5cb46700fa44a322f145e0c8c87685110581414cf97fcb7a0f8a0b97a25d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "ceramic",
+    "spokenText": "ceramic",
+    "normalizedKey": "ceramic",
+    "file": "cb816f613ff3b3600ab65aa2f1682fc959637f13d25ded620490e3072b0917d5.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "relieve",
+    "spokenText": "relieve",
+    "normalizedKey": "relieve",
+    "file": "be169a7e712b89de7b3d71e214edd529d71c1f607312b3a57d8b93a0c6cab35f.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "wax",
+    "spokenText": "wax",
+    "normalizedKey": "wax",
+    "file": "57abfafa3540c266d66af8bc0f676ee80278eee7422ea08856adcb293d381395.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "cheek",
+    "spokenText": "cheek",
+    "normalizedKey": "cheek",
+    "file": "3549b2a205e694bb30890f4dd83697cea531aba59a76562f65264a60be55f55f.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "flu",
+    "spokenText": "flu",
+    "normalizedKey": "flu",
+    "file": "92f75a33d5898073e05d74e0e7a5be539093a92d3050e730f33cc88e8e220222.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "vaccine",
+    "spokenText": "vaccine",
+    "normalizedKey": "vaccine",
+    "file": "bcc3aa029a10fa3e5ede44b898028d054bfa26b4e591ca25ad47a8daba9b204b.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "viral",
+    "spokenText": "viral",
+    "normalizedKey": "viral",
+    "file": "a172ddf41dd327dcac2c4211c298221f360f2d7488f9f1225070ece19b262991.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "slot",
+    "spokenText": "slot",
+    "normalizedKey": "slot",
+    "file": "6558838331b742a6f1d5935b32b4612aecdbcc7254868c7eeece68fbd0149ea3.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "lung",
+    "spokenText": "lung",
+    "normalizedKey": "lung",
+    "file": "d08c7b739fee1f2f2d6cdf054660d7349289d11552d825ef225f21cdda50b112.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "consciousness",
+    "spokenText": "consciousness",
+    "normalizedKey": "consciousness",
+    "file": "003a7a99f8dc0add83b823f6c3bdff93822b97116104d8c073aaf9cf55e0835f.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "strain",
+    "spokenText": "strain",
+    "normalizedKey": "strain",
+    "file": "cf0fa94d45324732cfdda486e66c0c41aaddef29557ebcaf77dc7f2ceda90649.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "examine",
+    "spokenText": "examine",
+    "normalizedKey": "examine",
+    "file": "ccb261d43dccffa7475815572d1b031be3731cb77d5772cf90207cae491142df.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "nerve",
+    "spokenText": "nerve",
+    "normalizedKey": "nerve",
+    "file": "5a1c2d155cdc566ea28528724c0afc6abae976d480853a41448ac81fc938aaf3.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "trigger",
+    "spokenText": "trigger",
+    "normalizedKey": "trigger",
+    "file": "683259feabbf5eb39895d7a5d3f4872d6989d5fa7a3eca713251d996d99a1630.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "breath",
+    "spokenText": "breath",
+    "normalizedKey": "breath",
+    "file": "367a1c592458c1b0ab948e37f993feeda943b0a03b70ee6633c51beb78de8ed8.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "sensitive",
+    "spokenText": "sensitive",
+    "normalizedKey": "sensitive",
+    "file": "2d5e8600a4fba66e5c6a513a6e77421f4079cdb8728ed12b810196584b0bbde2.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "confirm",
+    "spokenText": "confirm",
+    "normalizedKey": "confirm",
+    "file": "3f267c2ab422e502bad8e60ff9e55666ec59b725e561bf1629c48a1578a08c79.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "muscle",
+    "spokenText": "muscle",
+    "normalizedKey": "muscle",
+    "file": "db875b25b06f03288326ac9783c3bce4614677825e1025bb0df84d0dc2f537c9.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "loose",
+    "spokenText": "loose",
+    "normalizedKey": "loose",
+    "file": "b5e0eee6e28efca6d6ad05d7b8a94631576037ec9e5ff6d305fe89faa0e1032e.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "tooth",
+    "spokenText": "tooth",
+    "normalizedKey": "tooth",
+    "file": "9722d4a4b59ce537542d9abe02c5c6b363102390a5df88bc490c19b76d55c30b.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "vision",
+    "spokenText": "vision",
+    "normalizedKey": "vision",
+    "file": "5944ae849448011ca08c3785f1de1a54c8a96d6c23f787f9d962b624edd4151d.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "burning",
+    "spokenText": "burning",
+    "normalizedKey": "burning",
+    "file": "5221409b64943f25d1fb90d85377d1f5ba1ea173218cc7d87d12814934f49b6c.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "crowded",
+    "spokenText": "crowded",
+    "normalizedKey": "crowded",
+    "file": "e3b93359365856652e759ad9ff915402f59cb91358d7d088b0b2e925c9934359.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "emergency",
+    "spokenText": "emergency",
+    "normalizedKey": "emergency",
+    "file": "b955e6cd0808744cf5cba260906e156ab4c43076b4c933dea0a1df1baae2a4bb.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "scale",
+    "spokenText": "scale",
+    "normalizedKey": "scale",
+    "file": "f469802a31447f90d6a033d43f18db7ebfbee7cc3c378024bcc0f1573d3feef8.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "negative",
+    "spokenText": "negative",
+    "normalizedKey": "negative",
+    "file": "09f04951af4cd503877815fd30f98e3af8d3d50a0972e83a4aaa42f4fba59761.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "metal",
+    "spokenText": "metal",
+    "normalizedKey": "metal",
+    "file": "03ecab669ba200ba17f994677e88894400fd627e6f70439247ce0cbda8ca9a20.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "blood",
+    "spokenText": "blood",
+    "normalizedKey": "blood",
+    "file": "3e8e40c0af5f5ea5a94837f090631379e090fdb2fcf0c65a65859ae051e2c794.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "shot",
+    "spokenText": "shot",
+    "normalizedKey": "shot",
+    "file": "8dccea5217902053b636f0e105c590eb30db4280b8a7a51806110f7ff7b5177e.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "cover",
+    "spokenText": "cover",
+    "normalizedKey": "cover",
+    "file": "3fa405a8301ace34d11cf44a816080b8f0e49a48fbd048b8aef1543a8c58bdb6.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "mouth",
+    "spokenText": "mouth",
+    "normalizedKey": "mouth",
+    "file": "4cf35cf87435b1ba3c6d96ce33914cceb116138913ece44e6501ba0f0388f19b.mp3",
+    "hasAudio": false
+  },
+  {
+    "text": "heal",
+    "spokenText": "heal",
+    "normalizedKey": "heal",
+    "file": "599f8341fe3e0fd23de7d89500b8224965ab536307049a175bcd30331d0918c5.mp3",
+    "hasAudio": false
+  }
+]

@@ -15,3 +15,9 @@ Thumbs.db
 
 *.log
 npm-debug.log*
+
+# Generated TTS cache
+tools/kit/.tts-cache/
+
+# Local-only delta clip fixtures
+tools/kit/clips/
