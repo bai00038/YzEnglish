@@ -78,8 +78,8 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
         <div className="grid gap-6 sm:gap-7 md:grid-cols-[minmax(0,.95fr)_minmax(0,1.05fr)] md:items-center md:gap-4 lg:grid-cols-[minmax(0,.9fr)_minmax(460px,1.1fr)] lg:gap-5 xl:grid-cols-[.94fr_1.06fr] xl:gap-8">
           <div className="relative z-10 max-w-[620px] md:max-w-none">
             <h1 className="font-normal leading-[0.96] tracking-[-0.02em] text-foreground">
-              <span className="display-serif block text-[42px] font-semibold sm:text-[48px] md:text-[44px] lg:text-[56px] xl:text-[62px]">Real scenes<br /><em className="mt-2 inline-block bg-[linear-gradient(transparent_72%,rgba(190,244,91,.34)_72%)] pb-1 font-medium">for real life</em></span>
-              <span className="mt-6 block font-sans text-[19px] font-bold leading-[1.55] sm:text-[20px] md:mt-6 md:text-[17px] lg:mt-7 lg:text-[20px] xl:text-[22px]">真实生活里的英语，先排练再上场</span>
+              <span className="display-serif block text-[42px] font-semibold sm:text-[48px] md:text-[44px] lg:text-[56px] xl:text-[62px]"><span className="home-hero-brand">Real scenes</span><br /><em className="mt-2 inline-block bg-[linear-gradient(transparent_72%,rgba(190,244,91,.34)_72%)] pb-1 font-medium">for real life</em></span>
+              <span className="mt-6 block font-sans text-[19px] font-bold leading-[1.55] sm:text-[20px] md:mt-6 md:text-[17px] lg:mt-7 lg:text-[20px] xl:text-[22px]">深入真实场景，摆脱口语困境</span>
             </h1>
             <p className="mt-5 max-w-[560px] text-[15px] leading-[1.85] text-secondary-foreground md:text-[14px] lg:text-[15px]">看牙、抽血、家校沟通、日常寒暄，每个场景都有视频和跟读，练几遍，<br className="hidden xl:block" />下次就不慌。</p>
             <div className="mt-7 flex flex-wrap gap-3.5 sm:mt-8 md:mt-6 lg:mt-8 lg:gap-4">

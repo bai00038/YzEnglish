@@ -7,12 +7,15 @@ let announcements: SiteMessage[] = [];
 let pending: Promise<void> | undefined;
 let version = 0;
 let lastLoaded = 0;
+let loaded = false;
 function notify() { version++; listeners.forEach(listener => listener()); }
 function subscribe(listener: () => void) { listeners.add(listener); return () => { listeners.delete(listener); }; }
 function readIds(): string[] {
   try { const value = JSON.parse(localStorage.getItem(READ_KEY) || '[]'); return Array.isArray(value) ? value.filter(id => typeof id === 'string') : []; } catch { return []; }
 }
 export function markMessagesRead(ids: string[]) {
+  const alreadyRead = new Set([...readIds(), ...sessionRead]);
+  if (ids.every(id => alreadyRead.has(id))) return;
   try { localStorage.setItem(READ_KEY, JSON.stringify([...new Set([...readIds(), ...ids])])); } catch { /* Storage may be disabled. */ }
   // Keep the current tab functional even when localStorage is unavailable.
   ids.forEach(id => sessionRead.add(id)); notify();
@@ -28,9 +31,9 @@ async function loadAnnouncements() {
       const response = await fetch(url, { signal: controller.signal, cache: 'no-cache' });
       if (!response.ok) return;
       const value: unknown = await response.json();
-      if (isAnnouncementFile(value)) { announcements = value.announcements; notify(); }
+      if (isAnnouncementFile(value)) announcements = value.announcements;
     } catch { /* Preserve the last valid list; never fabricate announcements. */ }
-    finally { clearTimeout(timeout); lastLoaded = Date.now(); pending = undefined; }
+    finally { clearTimeout(timeout); lastLoaded = Date.now(); pending = undefined; loaded = true; notify(); }
   })();
   return pending;
 }
@@ -48,5 +51,5 @@ export function useMessages() {
   }, []);
   const messages = [...expiryNotice(unlock, now), ...announcements.filter(item => Date.parse(item.publishedAt) <= now)].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
   const unread = unreadMessageIds(messages, [...readIds(), ...sessionRead]);
-  return { messages, unread, hasUnread: unread.length > 0 };
+  return { messages, unread, hasUnread: unread.length > 0, loading: !loaded };
 }

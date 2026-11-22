@@ -1,5 +1,6 @@
 import { ViewModeSwitch } from "@/app/components/ViewModeSwitch";
 import { KitEntryList } from "@/app/components/KitEntryList";
+import { PageHeading } from "@/app/components/PageHeading";
 import { PageSectionHeader } from "@/app/components/PageSectionHeader";
 import { EntryCardReview, KitPageLayout } from "@/app/components/KitEntryCard";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -158,7 +159,7 @@ export function KitPage() {
   }, [entries, selectedIndex, isHome, listMode, isUnlocked]);
 
   if (!isUnlocked && !isHome) return <section className="kit-page kit-locked">
-    <LockKeyhole size={34} /><h1>锦囊库</h1>
+    <LockKeyhole size={34} /><PageHeading subtitle="Survival Kit">锦囊库</PageHeading>
     <p>从真实场景里提炼表达和核心词，听原句，随时回到课程。</p>
     <button type="button" className="kit-primary is-pill" onClick={() => setModalOpen(true)}>输入会员码，打开锦囊库</button>
     <MembershipUnlockModal open={modalOpen} onOpenChange={setModalOpen} />

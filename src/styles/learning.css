@@ -45,17 +45,6 @@
 .learning-view-switch {display:flex;gap:4px;margin-bottom:16px}
 .learning-view-switch button,.learning-text-button {font-size:13px;padding:8px 14px;border-radius:24px}
 .learning-view-switch button[aria-pressed=true] {background:var(--secondary);font-weight:700}
-.learning-message {display:block;padding:18px;text-align:left;width:100%}
-.learning-message+.learning-message {border-top:1px solid var(--border)}
-.learning-message-header {display:flex;align-items:baseline;gap:8px}
-.learning-message-header strong {font-weight:700;flex:1}
-.learning-message-header .unread-dot {flex-shrink:0;width:7px;height:7px;border-radius:50%;background:#c84840}
-.learning-message.read {color:#86847d}
-.learning-message.read strong {font-weight:400}
-.learning-message p {font-size:13px;line-height:1.8;margin:8px 0}
-.learning-message-meta {display:flex;gap:10px;font-size:11px;color:#86847d}
-.learning-message-meta span {background:var(--secondary);padding:1px 5px;border-radius:5px}
-.learning-message a {display:inline-block;margin-top:10px;font-size:13px;text-decoration:underline}
 @media(min-width:768px) {
  .learning-page {padding:28px 0 40px}.learning-container {padding:0 32px}
  .learning-title-row {margin-bottom:20px}.learning-title-row h1,.learning-page h1 {font-size:33px}.learning-title-row h1 em {font-size:17px}

@@ -1,6 +1,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  --font-serif: "Lora", "Songti SC", "STSong", "SimSun", serif;
   --font-size: 16px;
   /* Shared height for the fixed mobile bottom nav (MobileNav.tsx) — also
      drives the bottom padding App.tsx adds so page content/footer can
@@ -84,7 +85,7 @@
 
 @theme inline {
   --font-sans: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
-  --font-serif: "Newsreader", "Songti SC", "STSong", "SimSun", serif;
+  --font-serif: "Lora", "Songti SC", "STSong", "SimSun", serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -207,7 +208,7 @@
   }
 
   .display-serif {
-    font-family: 'Newsreader', 'Songti SC', 'STSong', 'SimSun', serif;
+    font-family: 'Lora', 'Songti SC', 'STSong', 'SimSun', serif;
     letter-spacing: -0.035em;
   }
 

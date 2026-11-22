@@ -4,7 +4,6 @@ import { NotebookEntryActions } from '@/app/components/NotebookEntryActions';
 import { PageSectionHeader } from "@/app/components/PageSectionHeader";
 import { LearningEmptyState } from '@/app/components/LearningEmptyState';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Link } from 'react-router';
 import { EntryCardReview, KitPageLayout } from '@/app/components/KitEntryCard';
 import { LearningSceneRows, useLearningScenes } from '@/app/components/LearningSceneRows';
 import { MembershipUnlockModal } from '@/app/components/MembershipUnlockModal';
@@ -12,7 +11,6 @@ import { loadKitCatalogue, type KitEntry } from '@/data/kit';
 import { setEntryLearned, syncMemberLearning, useMemberLearning } from '@/data/member-learning';
 import { useMembershipAccess } from '@/data/membership';
 import { stopKitAudio } from '@/data/kit-audio';
-import { markMessagesRead, useMessages } from '@/data/messages';
 import '@/styles/kit.css';
 import '@/styles/learning.css';
 
@@ -91,20 +89,5 @@ function LearnedContent() {
     {learned.length === 0 ? <LearningEmptyState kind="learned" /> : !entries ? <p className="learning-empty" role="status">{failed ? '条目加载失败，请刷新重试。' : '正在加载条目…'}</p> : <KitEntryList entries={learned.map(id => listItem(id, entries))}
       renderAction={item => <button type="button" className="kit-entry-list-action" disabled={!ready} aria-label={`恢复 ${item.text}`} onClick={() => setEntryLearned(item.id, false)}>+ 恢复</button>} />}
 
-  </LearningPage>;
-}
-export function MessagesPage() {
-  const { messages, unread } = useMessages();
-  return <LearningPage title="消息中心" description="查看学习提醒与全站公告">
-    {unread.length > 0 && <button className="learning-text-button mb-3" onClick={() => markMessagesRead(unread)}>全部标为已读</button>}
-    {messages.length === 0 ? <LearningEmptyState kind="messages" /> : <div className="learning-card">{messages.map(message => {
-      const isUnread = unread.includes(message.id);
-      return <article className={`learning-message ${isUnread ? '' : 'read'}`} key={message.id}>
-        <button className="learning-message-header w-full text-left" aria-label={`${isUnread ? '阅读' : '已读'}：${message.title}`} onClick={() => markMessagesRead([message.id])}>{isUnread && <span className="unread-dot" />}<strong>{message.title}</strong></button>
-        <p>{message.body}</p><div className="learning-message-meta"><span>{message.type === 'personal' ? '个人提醒' : message.type === 'new-scene' ? '新集上线' : '全站公告'}</span><time dateTime={message.publishedAt}>{new Date(message.publishedAt).toLocaleDateString('zh-CN')}</time></div>
-        {message.href && <Link to={message.href} onClick={() => markMessagesRead([message.id])}>查看详情 ›</Link>}
-        {isUnread && <button className="learning-text-button" onClick={() => markMessagesRead([message.id])}>标为已读</button>}
-      </article>;
-    })}</div>}
   </LearningPage>;
 }

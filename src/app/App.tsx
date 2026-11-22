@@ -1,3 +1,4 @@
+import { MessagesPage, MessageDetailPage } from "@/app/pages/MessagesPage";
 import { useState, useEffect, useRef } from "react";
 import { Routes, Route, Navigate, useLocation, useNavigationType } from "react-router";
 import { DesktopNav } from "@/app/components/DesktopNav";
@@ -13,7 +14,7 @@ import { FreeTrialPage } from "@/app/pages/FreeTrialPage";
 import { CollectionPage } from "@/app/pages/CollectionPage";
 import { KitPage } from "@/app/pages/KitPage";
 import { stopKitAudio } from "@/data/kit-audio";
-import { LearningScenesPage, VocabularyPage, LearnedPage, MessagesPage } from "@/app/pages/LearningPages";
+import { LearningScenesPage, VocabularyPage, LearnedPage } from "@/app/pages/LearningPages";
 import { MembershipPage } from "@/app/pages/MembershipPage";
 
 // Manage scroll ourselves: forward/replace navigations start at the top,
@@ -103,6 +104,7 @@ export default function App() {
           <Route path="/membership/vocabulary" element={<VocabularyPage />} />
           <Route path="/membership/learned" element={<LearnedPage />} />
           <Route path="/membership/messages" element={<MessagesPage />} />
+          <Route path="/membership/messages/detail" element={<MessageDetailPage />} />
           <Route path="/resources" element={<Navigate to="/explore" replace />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />

@@ -45,3 +45,16 @@ test('blocked storage still clears current-tab dots; missing announcements stay 
   const empty = await harness({ response: {} });
   assert.equal(empty.api.useMessages().messages.length, 0);
 });
+
+test('reading one detail clears only that unread ID; reading all details clears the shared signal', async () => {
+  const h = await harness({ response: { announcements: [notice, { ...notice, id: 'notice-b' }] } });
+  assert.equal(h.api.useMessages().unread.length, 2);
+  h.api.markMessagesRead(['notice-a']);
+  assert.equal(h.api.useMessages().hasUnread, true);
+  assert.equal(h.api.useMessages().unread.length, 1);
+  assert.equal(h.api.useMessages().unread[0], 'notice-b');
+  h.api.markMessagesRead(['notice-a']); // Reopening a detail is idempotent.
+  assert.equal(h.api.useMessages().unread.length, 1);
+  h.api.markMessagesRead(['notice-b']);
+  assert.equal(h.api.useMessages().hasUnread, false);
+});
