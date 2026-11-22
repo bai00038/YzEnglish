@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { MEMBERSHIP_CODE_STORAGE_KEY, saveMembershipDisplayCode, readMembershipDisplayCode, maskMembershipDisplayCode } from '../../src/app/components/membership-code-display.ts';
 
 const membership = { type: 'year', expiresAt: '2040-01-01T00:00:00Z', unlockedAt: '2039-01-01T00:00:00Z' };
-for (const [code, masked] of [['YZ-Y-ABCD-EFGH', 'YZ-Y-******'], ['YZ-TEST-ABCD-EFGH', 'YZ-TEST-******'], ['YZ-ABCDEFGH', 'YZ-******']]) {
+for (const [code, masked] of [['YZ-Y-ABCD-EFGH', 'YZ-Y-••••••'], ['YZ-TEST-ABCD-EFGH', 'YZ-TEST-••••••'], ['YZ-ABCDEFGH', 'YZ-••••••']]) {
   test(`masks the random portion of ${code.split('-').slice(0, 2).join('-')}`, () => assert.equal(maskMembershipDisplayCode(code), masked));
 }
 

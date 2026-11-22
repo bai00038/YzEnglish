@@ -13,6 +13,7 @@ import { FreeTrialPage } from "@/app/pages/FreeTrialPage";
 import { CollectionPage } from "@/app/pages/CollectionPage";
 import { KitPage } from "@/app/pages/KitPage";
 import { stopKitAudio } from "@/data/kit-audio";
+import { LearningScenesPage, VocabularyPage, LearnedPage, MessagesPage } from "@/app/pages/LearningPages";
 import { MembershipPage } from "@/app/pages/MembershipPage";
 
 // Manage scroll ourselves: forward/replace navigations start at the top,
@@ -97,6 +98,11 @@ export default function App() {
           <Route path="/collections/:collectionId" element={<CollectionPage />} />
           <Route path="/kit" element={<KitPage />} />
           <Route path="/membership" element={<MembershipPage />} />
+          <Route path="/membership/scenes" element={<LearningScenesPage />} />
+          <Route path="/membership/completed" element={<LearningScenesPage completed />} />
+          <Route path="/membership/vocabulary" element={<VocabularyPage />} />
+          <Route path="/membership/learned" element={<LearnedPage />} />
+          <Route path="/membership/messages" element={<MessagesPage />} />
           <Route path="/resources" element={<Navigate to="/explore" replace />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />

@@ -1,3 +1,4 @@
+import { PageHeading } from "@/app/components/PageHeading";
 import { ArrowLeft, ArrowRight, FileText, LockKeyhole } from "lucide-react";
 import { Link, useParams } from "react-router";
 import { LoadingState, ErrorState } from "@/app/components/DataState";
@@ -17,7 +18,7 @@ export function CollectionPage() {
 
   const collections = data ?? [];
   const collection = collections.find(item => item.id === collectionId);
-  if (!collection) return <div className="mx-auto max-w-[1180px] px-5 py-20 text-center md:px-8"><h1 className="text-3xl font-bold">没有找到这个合集</h1><Link to="/explore" className="mt-5 inline-block underline">返回场景库</Link></div>;
+  if (!collection) return <div className="mx-auto max-w-[1180px] px-5 py-20 text-center md:px-8"><PageHeading>没有找到这个合集</PageHeading><Link to="/explore" className="mt-5 inline-block underline">返回场景库</Link></div>;
 
   const liveScenes = collection.scenes.filter(scene => scene.status === "live");
   const liveCount = liveScenes.length;
@@ -36,9 +37,7 @@ export function CollectionPage() {
                 : `共 ${collection.scenes.length} 集 · 已上线 ${liveCount} 集`}
             </p>
           </div>
-          <h1 className="flex flex-wrap items-baseline gap-x-3 font-zh-serif text-[26px] font-bold leading-[1.15] text-primary md:text-[38px]">
-            {collection.name}<span className="display-serif text-[18px] font-medium italic text-muted-foreground md:text-[20px]">{collection.titleEn}</span>
-          </h1>
+          <PageHeading subtitle={collection.titleEn}>{collection.name}</PageHeading>
           <p className="mt-1 max-w-[760px] text-[13.5px] leading-relaxed text-secondary-foreground md:mt-1.5 md:text-base">{collection.tagline}</p>
           {learningProgress.hasAnyProgress && (
             <div className="mt-3">

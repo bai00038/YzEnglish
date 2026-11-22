@@ -1,0 +1,21 @@
+/* Shared page insets and header rules are independent of the selected view. */
+.kit-page.section-page {padding-top:16px;padding-bottom:28px}
+.kit-page.section-page.kit-card-page {padding-bottom:8px}
+.page-section-header {flex:none;min-width:0;font-family:var(--font-sans);color:var(--primary)}
+.page-section-back {display:inline-flex;align-items:center;gap:6px;min-height:24px;margin-bottom:8px;font-size:13px;font-weight:600;line-height:20px;color:var(--primary);white-space:nowrap}
+.page-section-back:hover {opacity:.7}
+.page-section-title-row {display:flex;align-items:flex-start;gap:12px}
+.page-section-title-copy {flex:1;min-width:0}
+.page-section-heading-row {display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 12px}
+.page-section-description {margin:4px 0 0;font-size:12px;line-height:1.5;color:#6e6a5e}
+.page-section-header-action {flex:none}
+.page-section-controls {margin-top:10px}
+.page-section-header .learning-view-switch {margin:0;color:var(--primary)}
+.page-section-header .kit-filter-chips {margin-top:0;padding-top:0;padding-bottom:4px}
+@media(min-width:768px) {
+ .kit-page.section-page {padding-top:28px;padding-bottom:40px}
+ .kit-page.section-page.kit-card-page {padding-bottom:16px}
+ .page-section-back {min-height:28px;margin-bottom:12px;font-size:14px}
+ .page-section-description {margin-top:6px;font-size:13px}
+ .page-section-controls {margin-top:16px}
+}

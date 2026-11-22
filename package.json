@@ -13,7 +13,8 @@
     "kit:check-word-tts": "node tools/kit/check-word-tts.mjs",
     "learning:test": "node --test tools/kit/member-learning.test.mjs && npm test --prefix aliyun-membership-api",
     "build:staging": "vite build --mode staging",
-    "deploy:staging": "node tools/staging/deploy.mjs"
+    "deploy:staging": "node tools/staging/deploy.mjs",
+    "learning:ui:test": "node --test tools/messages/*.test.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

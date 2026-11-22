@@ -1,0 +1,17 @@
+/* Shared Chinese page and section heading scale. English lesson text keeps its own reading typography. */
+.site-page-heading,
+.kit-page .site-page-heading,
+.learning-page .site-page-heading {
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px;
+  font-family:var(--font-sans);font-size:28px;font-weight:700;line-height:1.2;letter-spacing:-.02em;color:var(--primary);
+}
+.site-heading {min-width:0}
+.site-heading-kicker {display:flex;align-items:center;gap:10px;font-family:var(--font-sans);font-size:11px;font-weight:600;line-height:1.4;letter-spacing:.16em;text-transform:uppercase;color:#78847d;margin:0 0 7px}
+.site-heading-kicker::before {content:'';display:block;flex:none;width:24px;height:1px;background:currentColor}
+.learning-title-row {align-items:flex-end}
+.kit-home,.learning-page {padding-top:16px}
+@media(min-width:768px) {
+ .site-page-heading,.kit-page .site-page-heading,.learning-page .site-page-heading {font-size:34px}
+ .site-heading-kicker {font-size:12px;margin-bottom:8px}
+ .kit-home,.learning-page {padding-top:28px}
+}

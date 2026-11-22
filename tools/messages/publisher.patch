@@ -1,0 +1,19 @@
+--- a/01_Workflow/yz-english-publish-scene/scripts/publish_scene.py
++++ b/01_Workflow/yz-english-publish-scene/scripts/publish_scene.py
+@@ -485,0 +486,10 @@
++    announcement_published = False
++    if verified:
++        try:
++            with tempfile.TemporaryDirectory(prefix="yz-announcement-entry-") as temp_name:
++                entry_path = Path(temp_name) / "entry.json"
++                entry_path.write_text(json.dumps(plan["entry"], ensure_ascii=False), encoding="utf-8")
++                run(["node", str(root / ".site-visual-refresh" / "tools" / "messages" / "publish-scene-announcement.mjs"), str(entry_path)])
++                announcement_published = True
++        except PublishError as exc:
++            print(f"课程已发布；公告尚未发布，可单独重试公告：{exc}", file=sys.stderr)
+@@ -492 +502 @@
+-        "entry": plan["entry"], "verified": verified,
++        "entry": plan["entry"], "verified": verified, "announcementPublished": announcement_published,
+@@ -500 +510 @@
+-    return 0 if verified else 2
++    return 0 if verified and announcement_published else 2

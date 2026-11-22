@@ -1,0 +1,75 @@
+.learning-page {padding:10px 0 28px;color:var(--primary)}
+.learning-container {max-width:1180px;margin:auto;padding:0 12px}
+.learning-title-row {display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:12px}
+.learning-title-row h1,.learning-page h1 {font-size:24px;font-weight:700;line-height:1.2;font-family:'Songti SC','STSong','SimSun',serif}
+.learning-title-row h1 em {font-family:serif;font-size:13px;font-weight:400;color:#6e6a5e;margin-left:4px}
+.learning-mail {position:relative;display:grid;place-items:center;width:40px;height:36px;border-radius:50%}
+.learning-dot {position:absolute;right:4px;top:3px;width:7px;height:7px;border-radius:50%;background:#c84840;box-shadow:0 0 0 2px var(--background)}
+.learning-card {background:#fff;border-radius:22px;box-shadow:0 1px 2px #12332508,0 10px 30px #12332514;overflow:hidden}
+.membership-status-heading {display:flex;align-items:center;gap:9px;margin:0 16px;padding:14px 0 12px;border-bottom:1px solid var(--border)}
+.membership-status-heading>strong {font-size:16px;font-weight:700}
+.membership-shield {display:grid;place-items:center;flex:none;width:24px;height:24px;border-radius:50%;background:var(--secondary);color:#6e6a5e}
+.membership-shield.unlocked {background:var(--primary);color:#d3c273}
+.membership-expiry {margin-left:auto;white-space:nowrap;font-size:12px;color:#817f73}
+.membership-status-body {padding:4px 16px 9px}
+.membership-status-body>.mt-5 {margin-top:0;font-size:13px}
+.membership-locked {padding:14px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-size:12px}
+.membership-locked button {border-radius:30px;padding:10px 16px;background:var(--primary);color:#fff;font-weight:600}
+.learning-section-heading {display:flex;justify-content:space-between;align-items:center;margin:12px 0 8px}
+.learning-section-heading h2 {font-size:18px;font-weight:700}
+.learning-section-heading a {font-size:12px}
+.learning-scene-row {display:flex;align-items:center;gap:12px;padding:8px 12px}
+.learning-scene-row+.learning-scene-row {border-top:1px solid var(--border)}
+.learning-scene-row:hover {background:color-mix(in srgb,var(--secondary) 35%,white)}
+.learning-scene-cover {flex:none;width:104px;height:59px;border-radius:10px;overflow:hidden;background:#e9e4da}
+.learning-scene-cover img {width:100%;height:100%;object-fit:cover}
+.learning-scene-info {flex:1;min-width:0}
+.learning-scene-info>strong {display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:700}
+.learning-scene-progress {display:flex;align-items:center;gap:8px;font-size:10px;margin:4px 0}
+.learning-progress-track {height:3px;border-radius:5px;background:var(--secondary);flex:1;overflow:hidden}
+.learning-progress-track>span {height:100%;display:block;background:var(--accent)}
+.learning-scene-meta {display:flex;align-items:center;justify-content:space-between;gap:4px;font-size:10px;color:#746f64}
+.learning-scene-meta>span {white-space:nowrap;color:var(--primary);font-weight:600}
+.learning-completed-link {display:block;text-align:center;font-size:12px;padding:8px 0}
+.learning-expand-button {width:100%;cursor:pointer}
+.learning-expand-button:hover {background:color-mix(in srgb,var(--secondary) 35%,white)}
+.learning-expand-button:focus-visible {outline:2px solid var(--primary);outline-offset:-4px}
+.learning-word-entrances {margin-top:16px}
+.learning-word-entrances>a {display:flex;gap:12px;align-items:center;padding:17px 18px}
+.learning-word-entrances>a+a {border-top:1px solid var(--border)}
+.learning-word-entrances a>span {margin-left:auto;font-size:13px}
+.learning-empty {padding:28px 4px;font-size:14px;color:#746f64;line-height:1.8}
+.learning-mobile-footer {display:flex;justify-content:center;gap:12px;margin:26px 0 0;font-size:12px;color:#746f64}
+.learning-back {display:inline-block;font-size:13px;margin-bottom:18px}
+.learning-description {font-size:13px;color:#746f64;margin:8px 0 20px}
+.learning-view-switch {display:flex;gap:4px;margin-bottom:16px}
+.learning-view-switch button,.learning-text-button {font-size:13px;padding:8px 14px;border-radius:24px}
+.learning-view-switch button[aria-pressed=true] {background:var(--secondary);font-weight:700}
+.learning-message {display:block;padding:18px;text-align:left;width:100%}
+.learning-message+.learning-message {border-top:1px solid var(--border)}
+.learning-message-header {display:flex;align-items:baseline;gap:8px}
+.learning-message-header strong {font-weight:700;flex:1}
+.learning-message-header .unread-dot {flex-shrink:0;width:7px;height:7px;border-radius:50%;background:#c84840}
+.learning-message.read {color:#86847d}
+.learning-message.read strong {font-weight:400}
+.learning-message p {font-size:13px;line-height:1.8;margin:8px 0}
+.learning-message-meta {display:flex;gap:10px;font-size:11px;color:#86847d}
+.learning-message-meta span {background:var(--secondary);padding:1px 5px;border-radius:5px}
+.learning-message a {display:inline-block;margin-top:10px;font-size:13px;text-decoration:underline}
+@media(min-width:768px) {
+ .learning-page {padding:28px 0 40px}.learning-container {padding:0 32px}
+ .learning-title-row {margin-bottom:20px}.learning-title-row h1,.learning-page h1 {font-size:33px}.learning-title-row h1 em {font-size:17px}
+ .membership-status-heading {margin:0 22px;padding:18px 0 14px}.membership-status-body {padding:6px 22px 13px}.membership-status-heading>strong {font-size:18px}.membership-expiry {font-size:14px}
+ .membership-status-body>.mt-5 {margin-top:0;font-size:13px}.learning-section-heading {margin-top:24px}.learning-scene-row {padding:14px 18px;gap:18px}.learning-scene-cover {width:160px;height:90px}.learning-scene-info>strong {font-size:18px}.learning-scene-progress {margin:10px 0;font-size:12px}.learning-scene-meta {font-size:12px}
+}
+@media(min-width:1024px) {.learning-mobile-footer {display:none}}
+
+/* Empty states share the site's white card, quiet palette and type scale. */
+.learning-empty-state {display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:340px;padding:32px 24px 36px;margin:20px 0 12px}
+.learning-empty-art {width:190px;height:135px;flex:none;margin-bottom:14px}
+.learning-empty-state h2 {font-family:var(--font-sans);font-size:20px;font-weight:700;line-height:1.45;color:var(--primary)}
+.learning-empty-state p {max-width:360px;margin:10px 0 0;font-size:14px;line-height:1.85;color:#746f64;text-wrap:pretty}
+.learning-empty-action {display:inline-flex;align-items:center;justify-content:center;min-height:40px;margin-top:22px;padding:9px 20px;border-radius:999px;background:var(--primary);color:#fff;font-size:13px;font-weight:600}
+.learning-empty-action:hover {opacity:.9}
+.learning-empty-action:focus-visible {outline:2px solid var(--primary);outline-offset:4px}
+@media(min-width:768px) {.learning-empty-state {min-height:380px;padding:40px 32px 44px}.learning-empty-art {width:210px;height:149px}}

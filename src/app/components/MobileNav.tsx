@@ -1,10 +1,12 @@
+import { useMessages } from "@/data/messages";
 import { Link, useLocation } from "react-router";
 import { Home, Grid, UserRound, BookOpen, LockKeyhole } from "lucide-react";
 import { useMembershipAccess } from "@/data/membership";
 import { isNavActive } from "@/app/components/nav-utils";
 
 export function MobileNav() {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const { hasUnread } = useMessages();
   const { isUnlocked } = useMembershipAccess();
   const items = [
     { label: "首页", path: "/", Icon: Home },
@@ -21,11 +23,12 @@ export function MobileNav() {
       }}
     >
       {items.map(({ label, path, Icon }) => {
-        const active = isNavActive(pathname, path);
+        const active = isNavActive(pathname, path, search);
         return (
           <Link key={label} to={path} className="group flex-1 flex flex-col items-center justify-center gap-1 py-2">
             <div className={`flex items-center justify-center relative w-9 h-6 rounded-full transition-colors ${active ? "bg-secondary" : "group-hover:bg-secondary group-active:bg-secondary"}`}>
               {path === "/kit" && !isUnlocked && <LockKeyhole size={9} className="absolute -right-0.5 -top-0.5 text-muted-foreground" />}
+              {path === "/membership" && hasUnread && <span className="learning-dot" aria-label="有未读消息" />}
               <Icon size={19} className={active ? "text-[#0F3527]" : "text-[#666]"} strokeWidth={active ? 2.5 : 1.75} />
             </div>
             <span className={`text-[10px] font-semibold ${active ? "text-[#0F3527]" : "text-[#666]"}`}>{label}</span>

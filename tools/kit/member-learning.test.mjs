@@ -83,3 +83,46 @@ test('changing membership never imports the previous member cache or old anonymo
   assert.deepEqual(plain(changed.api.useMemberLearning().mistakes), []);
   assert.deepEqual(plain(changed.api.useMemberLearning().learned), []);
 });
+
+test('notebook learned/restore round trip preserves provenance across browsers, reloads and offline queue', async () => {
+  const a = await client(); const b = await client();
+  await a.api.activateMemberLearning();
+  const id = 'word-roundtrip-provenance';
+  a.api.addMistake(id, 'dictation', 'HC-06-001'); await a.api.syncMemberLearning();
+  const original = plain(a.api.useMemberLearning().mistakes.find(item => item.entryId === id));
+  a.api.setEntryLearned(id, true);
+  assert.equal(a.api.useMemberLearning().notebook.some(item => item.entryId === id), false);
+  assert.equal(a.api.useMemberLearning().learned.includes(id), true);
+  assert.deepEqual(plain(a.api.useMemberLearning().mistakes.find(item => item.entryId === id)), original);
+  await a.api.syncMemberLearning(); await b.api.activateMemberLearning();
+  assert.equal(b.api.useMemberLearning().notebook.some(item => item.entryId === id), false);
+  assert.equal(b.api.useMemberLearning().learned.includes(id), true);
+  b.setOnline(false); b.api.setEntryLearned(id, false); await b.api.syncMemberLearning();
+  assert.deepEqual(plain(b.api.useMemberLearning().notebook.find(item => item.entryId === id)), original);
+  assert.equal(b.api.useMemberLearning().phase, 'offline');
+  const reloaded = await client(b.storage, b.cookie); await reloaded.api.activateMemberLearning();
+  await a.api.syncMemberLearning();
+  assert.deepEqual(plain(a.api.useMemberLearning().notebook.find(item => item.entryId === id)), original);
+  assert.equal(a.api.useMemberLearning().learned.includes(id), false);
+});
+
+test('legacy learned-only restoration creates a notebook entry; re-adding and dictation errors reopen learned entries', async () => {
+  const c = await client(); await c.api.activateMemberLearning();
+  const id = 'word-legacy-restore';
+  c.api.setEntryLearned(id, true); await c.api.syncMemberLearning();
+  assert.equal(c.api.useMemberLearning().mistakes.some(item => item.entryId === id), false);
+  c.api.setEntryLearned(id, false);
+  const restored = c.api.useMemberLearning().notebook.find(item => item.entryId === id);
+  assert.equal(restored.source, 'manual'); assert.equal(restored.sceneId, null);
+  await c.api.syncMemberLearning();
+  c.api.setEntryLearned(id, true); await c.api.syncMemberLearning();
+  c.api.addMistake(id, 'dictation', 'HC-06-002');
+  assert.equal(c.api.useMemberLearning().learned.includes(id), false);
+  assert.equal(c.api.useMemberLearning().notebook.find(item => item.entryId === id).source, 'dictation');
+  await c.api.syncMemberLearning();
+  const other = await client(); await other.api.activateMemberLearning();
+  assert.equal(other.api.useMemberLearning().learned.includes(id), false);
+  assert.equal(other.api.useMemberLearning().notebook.filter(item => item.entryId === id).length, 1);
+  c.api.setEntryLearned(id, true); c.api.addMistake(id, 'manual'); await c.api.syncMemberLearning();
+  assert.equal(c.api.useMemberLearning().notebook.find(item => item.entryId === id).source, 'manual');
+});

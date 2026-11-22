@@ -1,3 +1,4 @@
+import { PageHeading } from "@/app/components/PageHeading";
 import { useEffect, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { Link, useSearchParams } from "react-router";
@@ -170,7 +171,7 @@ export function ExplorePage({
         {loading ? <LoadingState label="Loading scene library…" /> : error ? <ErrorState message={error} /> : hasActiveFilter ? (
           <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h1 className="font-zh-serif text-[22px] font-bold text-primary">搜索结果</h1>
+              <PageHeading>搜索结果</PageHeading>
               <p className="text-[13px] font-semibold text-muted-foreground">共 {filteredScenes.length} 个场景</p>
             </div>
             {filteredScenes.length ? (

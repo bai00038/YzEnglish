@@ -22,5 +22,5 @@ export function readMembershipDisplayCode(raw: string, membership: MembershipUnl
 export function maskMembershipDisplayCode(code: string): string {
   const prefix = code.match(/^YZ-(?:TEST|TRIAL|FOUNDER|YEAR|MONTH|Y|M|F)(?=-|$)/)?.[0]
     ?? (code.startsWith("YZ-") ? "YZ" : "");
-  return `${prefix ? prefix + "-" : ""}******`;
+  return `${prefix ? prefix + "-" : ""}••••••`;
 }

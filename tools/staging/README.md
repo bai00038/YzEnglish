@@ -2,7 +2,7 @@
 
 Use `npm run deploy:staging` from the repository root. It builds with `.env.staging`, checks the emitted API URL, and syncs **only** `oss://yz-english-site-staging/`. It has no bucket override and does not delete remote objects.
 
-The static bucket must use public-read and the same static website configuration as production (index `index.html`, error document `index.html`). The member-data bucket remains private. Never place member records, API secrets or function environment files in the static build.
+The static bucket must use public-read and the same static website configuration as production (index `index.html`, error document `index.html` with HTTP status `200`). The member-data bucket remains private. Never place member records, API secrets or function environment files in the static build.
 
 Before acceptance:
 
@@ -14,3 +14,7 @@ Before acceptance:
 6. Run §十五.8 with browsers A and B and the same test code. Production deployment remains blocked until the owner explicitly says acceptance passed.
 
 Only the frontend is uploaded by `deploy:staging`; it does not deploy a function or switch domain bindings automatically.
+
+§十六：运行 `npm run learning:ui:test` 检查学习总览筛选和消息状态。公告文件 `/announcements.json` 是运行时数据，sync 会排除它，仅在不存在时初始化为空；以后可直接更新 staging 桶里的该 JSON，无需重新部署网页。
+
+OSS 单页应用回退需要错误页 `index.html` 且返回 `200`，以便直接打开 `/membership/...`。参见 [阿里云静态网站托管说明](https://www.alibabacloud.com/help/en/oss/user-guide/hosting-static-websites)。

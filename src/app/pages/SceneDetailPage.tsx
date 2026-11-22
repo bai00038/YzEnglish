@@ -1,3 +1,4 @@
+import { buildSceneHref, getSceneNavigation } from "@/data/scene-navigation";
 import { useState, useEffect, useMemo, useRef, type CSSProperties } from "react";
 import { Link, useParams, useSearchParams } from "react-router";
 import { ChevronRight, ChevronLeft, Download, Info, LoaderCircle, LockKeyhole, Play, Volume2 } from "lucide-react";
@@ -112,6 +113,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 }) {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
+  const sceneNavigation = getSceneNavigation(searchParams);
+  const adjacentSceneHref = (nextSlug: string) => buildSceneHref(nextSlug, { from: sceneNavigation.from });
   const { data, loading, error } = useSceneDetail(slug ?? "");
   const { isUnlocked } = useMembershipAccess();
   const [membershipModalOpen, setMembershipModalOpen] = useState(false);
@@ -1078,8 +1081,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       <div className="max-w-lg mx-auto px-4 py-24 text-center">
         <p className="text-sm font-semibold text-foreground">This scene is being prepared</p>
         <p className="text-xs text-muted-foreground mt-1">该场景正在准备中，敬请期待。</p>
-        <Link to="/explore" className="text-xs font-bold text-primary inline-flex items-center gap-0.5 mt-4 hover:opacity-70 transition-opacity">
-          Back to Explore <ChevronRight size={12} />
+        <Link to={sceneNavigation.returnTo} className="text-xs font-bold text-primary inline-flex items-center gap-0.5 mt-4 hover:opacity-70 transition-opacity">
+          {sceneNavigation.returnLabel} <ChevronRight size={12} />
         </Link>
       </div>
     );
@@ -1100,20 +1103,20 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       {/* Breadcrumb */}
       <div className="scene-section-pad scene-breadcrumb px-5 pt-4 md:px-10 md:pt-5">
         <div className="scene-breadcrumb-row flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3 text-[12px] font-semibold text-muted-foreground md:text-[13px]">
-          <Link to="/explore" className="inline-flex items-center gap-1 text-primary transition-opacity hover:opacity-65">
-            <ChevronLeft size={15} /> 返回场景库
+          <Link to={sceneNavigation.returnTo} className="inline-flex items-center gap-1 text-primary transition-opacity hover:opacity-65">
+            <ChevronLeft size={15} /> {sceneNavigation.returnLabel}
           </Link>
           <nav aria-label="场景路径" className="scene-breadcrumb-path flex items-center gap-1">
-            <Link to="/explore" className="transition-colors hover:text-primary">场景库</Link>
+            <Link to={sceneNavigation.returnTo} className="transition-colors hover:text-primary">{sceneNavigation.section}</Link>
             <span aria-hidden="true">/</span>
-            {scene.collectionId ? (
+            {!sceneNavigation.from && <>{scene.collectionId ? (
               <Link to={`/collections/${scene.collectionId}`} className="transition-colors hover:text-primary">
                 {collection?.name ?? getSceneCategoryLabel(scene.category)}
               </Link>
             ) : (
               <span>{getSceneCategoryLabel(scene.category)}</span>
             )}
-            <span aria-hidden="true">/</span>
+            <span aria-hidden="true">/</span></>}
             <span className="text-primary">{scene.titleZh}</span>
           </nav>
         </div>
@@ -1669,7 +1672,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {related.map(r => (
-                        <Link key={r.id} to={`/scenes/${r.slug}`}
+                        <Link key={r.id} to={adjacentSceneHref(r.slug)}
                           className="flex items-start gap-3 border border-border rounded-xl p-3.5 bg-card text-left hover:border-primary/30 hover:shadow-sm transition-all">
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-bold text-foreground leading-snug">{r.titleEn}</p>
@@ -1687,7 +1690,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   <div className="hidden gap-4 md:grid md:grid-cols-2">
                     {prevScene ? (
                       <Link
-                        to={`/scenes/${prevScene.slug}`}
+                        to={adjacentSceneHref(prevScene.slug)}
                         className="group flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-white p-6 text-left transition-colors hover:bg-secondary"
                       >
                         <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
@@ -1721,7 +1724,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
                     {nextScene ? (
                       <Link
-                        to={`/scenes/${nextScene.slug}`}
+                        to={adjacentSceneHref(nextScene.slug)}
                         className="group flex min-h-[142px] flex-col justify-between rounded-[22px] border border-primary/15 bg-white p-6 text-left transition-colors hover:bg-secondary md:text-right"
                       >
                         <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
@@ -1768,7 +1771,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
           <nav aria-label="上一集 / 下一集" className={`fixed inset-x-0 bottom-[var(--mobile-nav-height)] z-40 border-t border-primary/15 bg-white/95 shadow-[0_-10px_36px_rgba(15,53,39,0.10)] backdrop-blur-md lg:bottom-0 ${episodeBarHidden ? "hidden" : ""}`}>
             <div className="mx-auto flex h-[64px] max-w-[1240px] items-center gap-2 px-3 sm:gap-3 sm:px-5">
               {prevScene ? (
-                <Link to={`/scenes/${prevScene.slug}`} className="inline-flex h-11 shrink-0 items-center gap-0.5 rounded-full border border-primary/25 px-3.5 text-[13px] font-bold text-primary transition-colors hover:bg-secondary">
+                <Link to={adjacentSceneHref(prevScene.slug)} className="inline-flex h-11 shrink-0 items-center gap-0.5 rounded-full border border-primary/25 px-3.5 text-[13px] font-bold text-primary transition-colors hover:bg-secondary">
                   <ChevronLeft size={16} />上一集
                 </Link>
               ) : (
@@ -1780,13 +1783,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 {collection?.name ? `${collection.name} · ` : ""}第 {scene.collectionOrder ?? "—"} 集
               </p>
               {nextScene ? (
-                <Link to={`/scenes/${nextScene.slug}`} className="inline-flex h-11 min-w-0 flex-1 shrink items-center justify-center gap-1 rounded-full bg-primary px-4 text-[13px] font-bold text-white transition-opacity hover:opacity-90 sm:flex-initial">
+                <Link to={adjacentSceneHref(nextScene.slug)} className="inline-flex h-11 min-w-0 flex-1 shrink items-center justify-center gap-1 rounded-full bg-primary px-4 text-[13px] font-bold text-white transition-opacity hover:opacity-90 sm:flex-initial">
                   <span className="truncate">下一集：{nextScene.titleZh}</span>
                   <ChevronRight size={16} className="shrink-0" />
                 </Link>
               ) : (
-                <Link to="/explore" className="inline-flex h-11 shrink-0 items-center gap-1 rounded-full bg-primary px-4 text-[13px] font-bold text-white transition-opacity hover:opacity-90">
-                  回到场景库<ChevronRight size={16} className="shrink-0" />
+                <Link to={sceneNavigation.returnTo} className="inline-flex h-11 shrink-0 items-center gap-1 rounded-full bg-primary px-4 text-[13px] font-bold text-white transition-opacity hover:opacity-90">
+                  {sceneNavigation.returnLabel}<ChevronRight size={16} className="shrink-0" />
                 </Link>
               )}
             </div>

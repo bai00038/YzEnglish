@@ -1,3 +1,4 @@
+import { PageHeading } from "@/app/components/PageHeading";
 import { Link } from "react-router";
 import { ArrowRight, Headphones, PenLine, Play } from "lucide-react";
 import { useFreeTrialScenes } from "@/data/collections-access";
@@ -132,8 +133,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
       <section className="mx-auto max-w-[1180px] scroll-mt-24 px-5 pb-2 pt-7 md:px-8" id="free">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Free Experience</p>
-            <h2 className="mt-2 font-sans text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">免费体验区</h2>
+            <PageHeading as="h2" subtitle="Free Experience">免费体验区</PageHeading>
           </div>
         </div>
 
@@ -151,8 +151,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
                 <div>
                   <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
                     <div>
-                      <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">Just Added</p>
-                      <h2 className="mt-2 font-sans text-[28px] font-bold leading-[1.2] tracking-[-0.02em]">最新上架</h2>
+                      <PageHeading as="h2" subtitle="Just Added">最新上架</PageHeading>
                     </div>
                     <Link to="/explore" onClick={onExploreEnter} className="inline-flex items-center gap-2 text-sm font-bold text-primary">逛全部场景 <ArrowRight size={15} /></Link>
                   </div>
@@ -167,8 +166,7 @@ export function HomePage({ onExploreEnter }: { onExploreEnter?: () => void }) {
       <section className="mx-auto max-w-[1180px] px-5 pb-2 pt-12 md:px-8" id="learn">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground before:block before:h-px before:w-7 before:bg-muted-foreground">How it feels to learn</p>
-            <h2 className="mt-2 font-sans text-[28px] font-bold leading-[1.25] md:text-[34px]">如何学习？</h2>
+            <PageHeading as="h2" subtitle="How it feels to learn">如何学习？</PageHeading>
           </div>
         </div>
 

@@ -122,9 +122,17 @@ export function syncMemberLearning(): Promise<void> {
   return running;
 }
 function schedule() { if (!timer) timer = setTimeout(() => { timer = undefined; void syncMemberLearning(); }, 700); }
-function change(value: Change) {
-  if (!active) return;
-  pending.push(value); state = apply(state, value); persist(); schedule();
+function changeMany(changes: Change[]) {
+  if (!active || !changes.length) return;
+  pending.push(...changes); state = changes.reduce(apply, state); persist(); schedule();
+}
+function change(value: Change) { changeMany([value]); }
+
+// Learned entries keep their source record for a lossless return to the notebook.
+// Only this derived list is shown/counted as pending notebook work.
+export function notebookEntries(data: Pick<MemberLearning, 'mistakes' | 'learned'>) {
+  const known = new Set(data.learned);
+  return data.mistakes.filter(item => !known.has(item.entryId));
 }
 export function recordMemberProgress(sceneId: string, value: CloudProgress) {
   if (!active) return;
@@ -134,15 +142,28 @@ export function recordMemberProgress(sceneId: string, value: CloudProgress) {
 }
 export function memberProgressStorageKey(sceneId: string) { return active ? `yz_learning_detail_${owner || 'pending'}_${sceneId}` : `yz_progress_${sceneId}`; }
 export function memberProgress(): Record<string, CloudProgress> | null { return active ? state.progress : null; }
-export function setEntryLearned(entryId: string, learned: boolean) { change({ type: learned ? 'learn' : 'unlearn', entryId }); }
+export function setEntryLearned(entryId: string, learned: boolean) {
+  if (learned) { change({ type: 'learn', entryId }); return; }
+  const changes: Change[] = [];
+  // Older learned-only records have no notebook provenance. Restore them as a
+  // manual entry before clearing the learned mark, using existing API operations.
+  if (state.learned.includes(entryId) && !state.mistakes.some(item => item.entryId === entryId)) {
+    changes.push({ type: 'addMistake', value: { entryId, source: 'manual', sceneId: null, addedAt: new Date().toISOString() } });
+  }
+  changes.push({ type: 'unlearn', entryId });
+  changeMany(changes);
+}
 export function addMistake(entryId: string, source: Mistake['source'], sceneId: string | null = null) {
-  change({ type: 'addMistake', value: { entryId, source, sceneId, addedAt: new Date().toISOString() } });
+  const changes: Change[] = [{ type: 'addMistake', value: { entryId, source, sceneId, addedAt: new Date().toISOString() } }];
+  // Re-adding a word, including a new dictation error, returns it to review.
+  if (state.learned.includes(entryId)) changes.push({ type: 'unlearn', entryId });
+  changeMany(changes);
 }
 export function removeMistake(entryId: string) { change({ type: 'removeMistake', entryId }); }
 function subscribe(listener: () => void) { window.addEventListener(EVENT, listener); return () => window.removeEventListener(EVENT, listener); }
 export function useMemberLearning() {
   useSyncExternalStore(subscribe, () => revision, () => 0);
-  return { ...state, phase, ready };
+  return { ...state, notebook: notebookEntries(state), phase, ready };
 }
 if (typeof window !== 'undefined') {
   window.addEventListener('online', () => { void syncMemberLearning(); });

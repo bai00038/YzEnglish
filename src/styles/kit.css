@@ -107,8 +107,8 @@
 .kit-card-navigation .kit-primary { border-color: var(--kit-green); }
 .kit-card-navigation button:not(.kit-primary) { background: white; color: var(--kit-green); border-color: #1a4a3566; }
 .kit-card-navigation button:not(.kit-primary):hover:not(:disabled) { background: #eaf1e9; border-color: var(--kit-green); }
-.kit-entry-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; margin-top: 16px; }
-.kit-entry-list button { min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; text-align: left; padding: 14px 15px; background: white; border-radius: 13px; box-shadow: 0 1px 2px #12332508, 0 10px 30px #12332514; }
+.kit-entry-list { --kit-muted:#6e6a5e; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; margin-top: 16px; }
+.kit-entry-list > .kit-entry-tile { color:#1c1c1a; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; text-align: left; padding: 14px 15px; background: white; border-radius: 13px; box-shadow: 0 1px 2px #12332508, 0 10px 30px #12332514; }
 .kit-entry-list strong { display: block; font-family: var(--font-serif, Georgia, serif); font-size: 17px; font-weight: 400; overflow-wrap: anywhere; }
 .kit-entry-list small { display: block; font-size: 12px; color: var(--kit-muted); margin-top: 3px; }
 .kit-entry-list svg { flex: none; color: #b7af97; }
@@ -406,3 +406,16 @@
 
 .member-notebook { --kit-green:#1a4a35; --kit-deep:#123325; --kit-cream:#f2ede4; --kit-line:#ddd5c0; --kit-muted:#6e6a5e; }
 .member-notebook .kit-card-navigation { width:100%; max-width:640px; }
+
+/* A single quiet action row below the examples, shared with word popovers. */
+.kit-learning-actions {flex-shrink:0;display:flex;justify-content:flex-end;flex-wrap:nowrap;margin:6px 0 0;gap:0}
+.kit-learning-actions button {min-height:28px;padding:2px 0;background:transparent;border-radius:0;font-size:12px;line-height:24px;white-space:nowrap}
+.notebook-entry-actions {gap:18px}
+.notebook-entry-actions button:first-child {font-weight:600}
+
+.kit-learning-actions button[data-saved="true"]:disabled {opacity:1;cursor:default}
+
+.kit-entry-list-copy {flex:1;min-width:0}
+.kit-entry-list-action {flex:none;white-space:nowrap;min-height:32px;color:var(--primary);font-size:13px;font-weight:600}
+.kit-entry-list-action:disabled {opacity:.4;cursor:default}
+.kit-entry-list .kit-learning-actions {margin:0;flex:none}
