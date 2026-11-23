@@ -6,7 +6,7 @@ const SESSION_SECONDS = 30 * 24 * 60 * 60;
 const ACTIVE_SESSION_SECONDS = 15 * 60;
 const DEVICE_SECONDS = 365 * 24 * 60 * 60;
 const SCENE_ID_RE = /^(?:[A-Z]{2,4}-\d{2}-\d{3}|[A-Z]{2,4}-\d{3})$/;
-const SAFE_OBJECT_RE = /^[A-Za-z0-9][A-Za-z0-9._\- /]{1,500}\.(?:mp4|pdf)$/i;
+const SAFE_OBJECT_RE = /^[A-Za-z0-9][A-Za-z0-9._\- /]{1,500}\.(?:mp4|mp3|pdf)$/i;
 
 class RuntimeRateLimiter {
   constructor({ limit = 8, windowMs = 10 * 60 * 1000 } = {}) {

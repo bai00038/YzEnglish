@@ -20,7 +20,10 @@
 - 实际生成使用 `npm run kit:tts -- --kit` 或 `npm run kit:tts -- --scenepage`。不带 --upload 时只写本地音频缓存。
 - --upload 会写入线上 OSS 并更新音频索引，只在用户明确要求上传音频时使用。
 - .env.tts.local 保存 GEMINI_API_KEY，已被 Git 忽略。
-- 声音固定 Lumi（en-us-lumi），风格固定 Podcast (Calm, measured delivery)。已有音频按归一化键复用，不重复生成。
+- 当前声音为 Kore，风格为 Podcast。Gemini 3.8 的朗读正文只传目标词句，风格单独放在 `speechMetadata.style`，不得把指令写进正文。
+- 正确缓存使用 `.tts-cache/kore-podcast-lufs16-v2/`；v1 的 249 条已因读出提示语而撤回，不能当作已完成音频复用。
+- 生成后执行 `node tools/kit/check-tts-content.mjs`：用 Gemini 3.5 Transcribe 专用逐字转写核对实际音频并严格对照目标文本，将结果及文件 SHA-256 保存为 `content-qa.json`。数字等转写差异也会阻止发布，需要核查，不能跳过。
+- `--upload` 会要求每个目标都有与当前文件和请求配置匹配的成功转写记录。仅能解码、响度正常或传输哈希一致，都不代表朗读内容正确。
 
 ## 本地原声片段
 
@@ -50,3 +53,12 @@ Vite 的 local-kit-clips 插件在 dev 模式把存在于本地的片段映射�
 - 例句排除当前出处、去重并优先其他场景，只显示一条。无其他出处时例句与数量提示均隐藏。
 - 数量提示为纯文字，不再跳转锦囊库。
 - **上线前必须执行 `npm run kit:check-word-tts -- --remote`**。130 词的 OSS 发音未齐备时该检查返回失败；本地构建与预览仍允许。
+
+## 2026-11-23 续跑记录
+
+- 当前锦囊库清单为 347 条（表达/词伙 173、词汇 174）；本批按表达/词伙原顺序生成，从 Of course 到 I need to，下一条 I wanted to。
+- 新增 85 条；81 条内容核对通过，4 条待复核（Could I、Please don't、At this point、How does）。加上此前 Thank you 样音，v2 缓存共 86 条。86 条均通过解码、MP3/单声道/24kHz 与峰值检查。
+- TTS 和专用在线转写均明确返回每日 100 次请求额度耗尽，已停止 API 调用；生成的成功文件数不等于请求次数。未上传 OSS、未修改网站播放索引，也未动 Muse 的旧批次裁剪成果。
+- 通用生成模型曾对 1 秒 Have you 样音转写出无关长句；离线 Whisper 和专用转写均证实实际是 Have you。原失败记录保留在 content-qa.json 的 previousCheck 中。核对器现改用专用转写，请求间隔至少 11 秒；默认遇到内容不符停止，--continue-on-mismatch 仅将不符项留待复核并继续，不会标为通过，最终仍以非零状态提示待复核。
+- 在线额度用完后，剩余 30 条用本机 Whisper base.en 全片转写（无目标文本提示、无裁剪）核对；只有归一化文字完全匹配且逐词最低 probability >= 0.4 才计入通过，其他留待复核，不以期望文字伪造通过。
+- 结果均在 .tts-cache/kore-podcast-lufs16-v2/：preview-2026-11-23.html、batch-report-2026-11-23.json/.csv、technical-qa-2026-11-23.json、offline-asr-2026-11-23.jsonl 与 content-qa.json。内容核对有遗留通用模型、专用模型、离线模型三种来源，实际来源见逐条 transcriptModel（无该字段的旧记录为 gemini-3.8-flash）。

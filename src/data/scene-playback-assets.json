@@ -1,0 +1,406 @@
+{
+  "SH-01-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-01-004/SH-01-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-01-004/SH-01-004-low.mp4"
+  },
+  "FD-01-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/FD-01-001/FD-01-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/FD-01-001/FD-01-001-low.mp4"
+  },
+  "HC-01-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-01-002/HC-01-002-low.mp4"
+  },
+  "FD-01-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/FD-01-002/FD-01-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/FD-01-002/FD-01-002-low.mp4"
+  },
+  "ST-01-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-01-001/ST-01-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-01-001/ST-01-001-low.mp4"
+  },
+  "ST-01-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-01-002/ST-01-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-01-002/ST-01-002-low.mp4"
+  },
+  "NCP-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/NCP-001/NCP-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/NCP-001/NCP-001-low.mp4"
+  },
+  "HC-06-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-06-002/HC-06-002-low.mp4"
+  },
+  "HC-06-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-06-003/HC-06-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-06-003/HC-06-003-low.mp4"
+  },
+  "HC-06-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-06-004/HC-06-004-low.mp4"
+  },
+  "HC-06-005": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-06-005/HC-06-005-low.mp4"
+  },
+  "HC-06-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-06-001/HC-06-001-low.mp4"
+  },
+  "HC-06-006": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-06-006/HC-06-006-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-06-006/HC-06-006-low.mp4"
+  },
+  "HC-06-009": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-06-009/HC-06-009-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-06-009/HC-06-009-low.mp4"
+  },
+  "SH-01-007": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-01-007/SH-01-007-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-01-007/SH-01-007-low.mp4"
+  },
+  "DL-01-007": {
+    "audioUrl": "https://go.learnyzenglish.com/content/DL-01-007/DL-01-007-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/DL-01-007/DL-01-007-low.mp4"
+  },
+  "PE-02-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/PE-02-003/PE-02-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/PE-02-003/PE-02-003-low.mp4"
+  },
+  "PE-01-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/PE-01-002/PE-01-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/PE-01-002/PE-01-002-low.mp4"
+  },
+  "PE-01-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/PE-01-001/PE-01-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/PE-01-001/PE-01-001-low.mp4"
+  },
+  "HO-01-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HO-01-003/HO-01-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HO-01-003/HO-01-003-low.mp4"
+  },
+  "HO-01-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HO-01-004/HO-01-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HO-01-004/HO-01-004-low.mp4"
+  },
+  "HC-02-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-02-001/HC-02-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-02-001/HC-02-001-low.mp4"
+  },
+  "SF-03-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-03-001/SF-03-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-03-001/SF-03-001-low.mp4"
+  },
+  "SF-03-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-03-002/SF-03-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-03-002/SF-03-002-low.mp4"
+  },
+  "SF-03-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-03-003/SF-03-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-03-003/SF-03-003-low.mp4"
+  },
+  "SF-03-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-03-004/SF-03-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-03-004/SF-03-004-low.mp4"
+  },
+  "SF-02-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-02-003/SF-02-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-02-003/SF-02-003-low.mp4"
+  },
+  "SF-02-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-02-004/SF-02-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-02-004/SF-02-004-low.mp4"
+  },
+  "ST-01-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-01-003/ST-01-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-01-003/ST-01-003-low.mp4"
+  },
+  "ST-01-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-01-004/ST-01-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-01-004/ST-01-004-low.mp4"
+  },
+  "ST-02-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-02-001/ST-02-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-02-001/ST-02-001-low.mp4"
+  },
+  "ST-02-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-02-002/ST-02-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-02-002/ST-02-002-low.mp4"
+  },
+  "ST-02-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-02-004/ST-02-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-02-004/ST-02-004-low.mp4"
+  },
+  "ST-03-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-03-002/ST-03-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-03-002/ST-03-002-low.mp4"
+  },
+  "ST-03-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-03-003/ST-03-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-03-003/ST-03-003-low.mp4"
+  },
+  "ST-03-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-03-001/ST-03-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-03-001/ST-03-001-low.mp4"
+  },
+  "ST-04-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-04-001/ST-04-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-04-001/ST-04-001-low.mp4"
+  },
+  "ST-05-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-05-001/ST-05-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-05-001/ST-05-001-low.mp4"
+  },
+  "ST-05-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-05-002/ST-05-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-05-002/ST-05-002-low.mp4"
+  },
+  "ST-04-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-04-004/ST-04-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-04-004/ST-04-004-low.mp4"
+  },
+  "ST-06-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-06-003/ST-06-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-06-003/ST-06-003-low.mp4"
+  },
+  "ST-06-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/ST-06-004/ST-06-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/ST-06-004/ST-06-004-low.mp4"
+  },
+  "FD-01-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/FD-01-003/FD-01-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/FD-01-003/FD-01-003-low.mp4"
+  },
+  "FD-01-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/FD-01-004/FD-01-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/FD-01-004/FD-01-004-low.mp4"
+  },
+  "FD-01-005": {
+    "audioUrl": "https://go.learnyzenglish.com/content/FD-01-005/FD-01-005-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/FD-01-005/FD-01-005-low.mp4"
+  },
+  "FD-01-006": {
+    "audioUrl": "https://go.learnyzenglish.com/content/FD-01-006/FD-01-006-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/FD-01-006/FD-01-006-low.mp4"
+  },
+  "FD-01-007": {
+    "audioUrl": "https://go.learnyzenglish.com/content/FD-01-007/FD-01-007-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/FD-01-007/FD-01-007-low.mp4"
+  },
+  "FD-01-008": {
+    "audioUrl": "https://go.learnyzenglish.com/content/FD-01-008/FD-01-008-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/FD-01-008/FD-01-008-low.mp4"
+  },
+  "SH-01-005": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-01-005/SH-01-005-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-01-005/SH-01-005-low.mp4"
+  },
+  "SH-01-009": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-01-009/SH-01-009-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-01-009/SH-01-009-low.mp4"
+  },
+  "SH-01-010": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-01-010/SH-01-010-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-01-010/SH-01-010-low.mp4"
+  },
+  "SH-01-011": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-01-011/SH-01-011-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-01-011/SH-01-011-low.mp4"
+  },
+  "SH-01-012": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-01-012/SH-01-012-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-01-012/SH-01-012-low.mp4"
+  },
+  "SH-01-013": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-01-013/SH-01-013-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-01-013/SH-01-013-low.mp4"
+  },
+  "SH-01-014": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-01-014/SH-01-014-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-01-014/SH-01-014-low.mp4"
+  },
+  "HC-06-010": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-06-010/HC-06-010-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-06-010/HC-06-010-low.mp4"
+  },
+  "HC-06-011": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-06-011/HC-06-011-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-06-011/HC-06-011-low.mp4"
+  },
+  "HC-03-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-03-004/HC-03-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-03-004/HC-03-004-low.mp4"
+  },
+  "HC-03-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-03-002/HC-03-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-03-002/HC-03-002-low.mp4"
+  },
+  "HC-03-006": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-03-006/HC-03-006-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-03-006/HC-03-006-low.mp4"
+  },
+  "HC-03-005": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-03-005/HC-03-005-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-03-005/HC-03-005-low.mp4"
+  },
+  "HC-07-006": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-07-006/HC-07-006-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-07-006/HC-07-006-low.mp4"
+  },
+  "HC-07-007": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-07-007/HC-07-007-low.mp4"
+  },
+  "HC-04-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-04-001/HC-04-001-low.mp4"
+  },
+  "HC-04-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-04-003/HC-04-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-04-003/HC-04-003-low.mp4"
+  },
+  "PE-02-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/PE-02-004/PE-02-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/PE-02-004/PE-02-004-low.mp4"
+  },
+  "HC-01-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-01-004/HC-01-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-01-004/HC-01-004-low.mp4"
+  },
+  "HC-04-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-04-002/HC-04-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-04-002/HC-04-002-low.mp4"
+  },
+  "HC-05-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HC-05-003/HC-05-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HC-05-003/HC-05-003-low.mp4"
+  },
+  "SF-01-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-01-001/SF-01-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-01-001/SF-01-001-low.mp4"
+  },
+  "SF-02-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-02-002/SF-02-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-02-002/SF-02-002-low.mp4"
+  },
+  "SF-04-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-04-001/SF-04-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-04-001/SF-04-001-low.mp4"
+  },
+  "SF-05-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-05-001/SF-05-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-05-001/SF-05-001-low.mp4"
+  },
+  "SF-04-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-04-003/SF-04-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-04-003/SF-04-003-low.mp4"
+  },
+  "SF-03-005": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-03-005/SF-03-005-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-03-005/SF-03-005-low.mp4"
+  },
+  "SF-04-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-04-002/SF-04-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-04-002/SF-04-002-low.mp4"
+  },
+  "SF-05-006": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SF-05-006/SF-05-006-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SF-05-006/SF-05-006-low.mp4"
+  },
+  "FD-01-011": {
+    "audioUrl": "https://go.learnyzenglish.com/content/FD-01-011/FD-01-011-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/FD-01-011/FD-01-011-low.mp4"
+  },
+  "FD-01-010": {
+    "audioUrl": "https://go.learnyzenglish.com/content/FD-01-010/FD-01-010-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/FD-01-010/FD-01-010-low.mp4"
+  },
+  "DL-02-009": {
+    "audioUrl": "https://go.learnyzenglish.com/content/DL-02-009/DL-02-009-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/DL-02-009/DL-02-009-low.mp4"
+  },
+  "DL-01-010": {
+    "audioUrl": "https://go.learnyzenglish.com/content/DL-01-010/DL-01-010-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/DL-01-010/DL-01-010-low.mp4"
+  },
+  "DL-01-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/DL-01-001/DL-01-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/DL-01-001/DL-01-001-low.mp4"
+  },
+  "DL-01-006": {
+    "audioUrl": "https://go.learnyzenglish.com/content/DL-01-006/DL-01-006-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/DL-01-006/DL-01-006-low.mp4"
+  },
+  "HO-03-005": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HO-03-005/HO-03-005-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HO-03-005/HO-03-005-low.mp4"
+  },
+  "HO-01-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HO-01-001/HO-01-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HO-01-001/HO-01-001-low.mp4"
+  },
+  "HO-03-006": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HO-03-006/HO-03-006-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HO-03-006/HO-03-006-low.mp4"
+  },
+  "HO-02-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HO-02-001/HO-02-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HO-02-001/HO-02-001-low.mp4"
+  },
+  "SH-02-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-02-004/SH-02-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-02-004/SH-02-004-low.mp4"
+  },
+  "SH-02-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-02-001/SH-02-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-02-001/SH-02-001-low.mp4"
+  },
+  "SH-02-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-02-002/SH-02-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-02-002/SH-02-002-low.mp4"
+  },
+  "SH-03-002": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-03-002/SH-03-002-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-03-002/SH-03-002-low.mp4"
+  },
+  "SH-03-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-03-003/SH-03-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-03-003/SH-03-003-low.mp4"
+  },
+  "SH-03-004": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-03-004/SH-03-004-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-03-004/SH-03-004-low.mp4"
+  },
+  "SH-03-005": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-03-005/SH-03-005-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-03-005/SH-03-005-low.mp4"
+  },
+  "SH-03-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-03-001/SH-03-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-03-001/SH-03-001-low.mp4"
+  },
+  "SH-03-007": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-03-007/SH-03-007-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-03-007/SH-03-007-low.mp4"
+  },
+  "SH-01-006": {
+    "audioUrl": "https://go.learnyzenglish.com/content/SH-01-006/SH-01-006-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/SH-01-006/SH-01-006-low.mp4"
+  },
+  "HO-03-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/HO-03-003/HO-03-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/HO-03-003/HO-03-003-low.mp4"
+  },
+  "CA-01-001": {
+    "audioUrl": "https://go.learnyzenglish.com/content/CA-01-001/CA-01-001-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/CA-01-001/CA-01-001-low.mp4"
+  },
+  "TR-02-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/TR-02-003/TR-02-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/TR-02-003/TR-02-003-low.mp4"
+  },
+  "PE-01-003": {
+    "audioUrl": "https://go.learnyzenglish.com/content/PE-01-003/PE-01-003-audio.mp3",
+    "lowUrl": "https://go.learnyzenglish.com/content/PE-01-003/PE-01-003-low.mp4"
+  }
+}

@@ -1,3 +1,4 @@
+import { LoopToggle } from "./LoopToggle";
 import { Pause, Play } from "lucide-react";
 import { CompactPracticeActionBar } from './CompactPracticeActionBar';
 
@@ -49,7 +50,7 @@ export function PracticeActionBar(props: PracticeActionBarProps) {
         <div className="practice-speed"><span>速度</span><div>
           {PLAYBACK_RATES.map(rate => <button type="button" key={rate} onClick={() => onPlaybackRateChange(rate)} aria-pressed={playbackRate === rate}>{rate}×</button>)}
         </div></div>
-        <button type="button" onClick={() => onRepeatLineChange(!repeatLine)} aria-pressed={repeatLine}>循环 · {repeatLine ? "开" : "关"}</button>
+        <LoopToggle enabled={repeatLine} onChange={onRepeatLineChange} single />
         <div className="practice-text-mode"><span>文本</span><div>
           <button type="button" onClick={() => onBilingualModeChange(false)} aria-pressed={!bilingualMode}>英文</button>
           <button type="button" onClick={() => onBilingualModeChange(true)} aria-pressed={bilingualMode}>双语</button>

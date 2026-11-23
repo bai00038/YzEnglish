@@ -144,6 +144,8 @@ export interface Scene {
   videoPoster?: string;
   pdfUrl?: string;
   video_url?: string | null;
+  audioUrl?: string | null;
+  lowUrl?: string | null;
   subtitleCues?: SubtitleCue[] | null;
   content?: SceneContent;
   collectionId?: string;

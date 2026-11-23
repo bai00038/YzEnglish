@@ -214,3 +214,22 @@ test('staging cookie namespace does not replace production credentials', async (
   assert.equal(learning.statusCode, 200);
   assert.ok(learning.headers['Set-Cookie'][0].startsWith('yz_member_staging_session='));
 });
+
+// Lock-screen playback adds audio, without changing authentication/path rules.
+test("signs member MP3 and low MP4 only under the authenticated scene prefix", async () => {
+  const { app } = setup();
+  const redeemed = await app(request("/v1/membership/redeem", { method: "POST", body: { code } }));
+  const cookie = responseCookies(redeemed);
+  for (const suffix of ["-audio.mp3", "-low.mp4"]) {
+    const objectKey = `content/HC-06-001/HC-06-001${suffix}`;
+    const response = await app(request("/v1/content/sign", { method: "POST", cookie, body: { sceneId: "HC-06-001", objectKey } }));
+    assert.equal(response.statusCode, 200);
+    assert.ok(JSON.parse(response.body).url.includes(objectKey));
+  }
+  for (const objectKey of ["content/HC-06-002/HC-06-002-audio.mp3", "content/HC-06-001/../private.mp3", "content/HC-06-001/script.js"]) {
+    const response = await app(request("/v1/content/sign", { method: "POST", cookie, body: { sceneId: "HC-06-001", objectKey } }));
+    assert.equal(response.statusCode, 400);
+  }
+  const anonymous = await app(request("/v1/content/sign", { method: "POST", body: { sceneId: "HC-06-001", objectKey: "content/HC-06-001/HC-06-001-audio.mp3" } }));
+  assert.equal(anonymous.statusCode, 401);
+});

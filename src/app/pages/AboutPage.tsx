@@ -1,4 +1,6 @@
 import { Link } from "react-router";
+import { PageHeading } from "@/app/components/PageHeading";
+import "@/styles/about.css";
 import { useScenes } from "@/data/scenes-access";
 
 const METHOD_STEPS = [
@@ -40,17 +42,14 @@ export function AboutPage() {
         <div className="grid gap-10 md:grid-cols-[1.25fr_.55fr] md:gap-20">
           <div>
             <p className="editorial-kicker">About · 关于我们</p>
-            <h1 className="display-serif mt-2.5 text-[32px] font-bold leading-[1.08] tracking-[-0.01em] text-primary md:text-[44px]">
-              Real scenes for real life.
+            <h1 className="mt-4 font-sans text-[32px] font-bold leading-[1.2] tracking-[-0.01em] text-primary md:text-[44px]">
+              专为哑巴英语学习者而生
             </h1>
-            <p className="mt-2.5 font-zh-serif text-[18px] font-bold text-foreground md:text-[20px]">
-              为真实生活，练真场景英语。
+            <p className="mt-4 max-w-[640px] font-sans text-[18px] font-semibold leading-relaxed text-primary md:text-[20px]">
+              自信地开口讲英语，蜕去应试英语留下的外壳。
             </p>
-            <p className="display-serif mt-4 max-w-[640px] text-[16px] italic leading-relaxed text-secondary-foreground md:text-[16.5px]">
-              YZ English turns real overseas life into watchable, practicable English scenes — so you walk in prepared, not surprised.
-            </p>
-            <p className="mt-2 max-w-[640px] text-base leading-relaxed text-secondary-foreground">
-              把海外真实生活做成看得见、练得出的英语场景，让你有准备地走进每一个场景。
+            <p className="mt-3 max-w-[640px] text-base leading-relaxed text-secondary-foreground">
+              把海外真实生活做成看得见、练得出的英语场景，一集一个真实场景，先排练，再上场，让你有准备地走进每一个场景，<strong className="font-semibold">自信地开口</strong>。
             </p>
             <div className="mt-5"><ExploreButton /></div>
           </div>
@@ -72,10 +71,10 @@ export function AboutPage() {
       <section className="mx-auto mt-14 max-w-[1180px] px-3 md:mt-16 md:px-8">
         <div className="border-t border-[#DCD4BE] pt-12 md:pt-14">
           <div className="max-w-[720px]">
-            <h2 className="flex items-baseline gap-3 font-sans text-[24px] font-bold text-foreground md:text-[26px]">
-              为什么做
-              <span className="display-serif text-[15px] font-medium italic text-muted-foreground">Why</span>
-            </h2>
+            <PageHeading as="h2" subtitle="WHY">为什么做</PageHeading>
+            <p className="mt-4 text-base leading-relaxed text-secondary-foreground">
+              我自己就是"哑巴英语"过来的。考试、单词都没问题，到了加拿大，看牙、开家长会、跟邻居聊天，还是开口就卡。我们这一代人学的英语，缺的从来不是单词，是没在真实场景里练过。
+            </p>
             <p className="display-serif mt-4 text-[16.5px] italic leading-relaxed text-secondary-foreground">
               Many learners aren't held back by poor English, but by never having lived that situation in English before. Not knowing what comes next is what makes people nervous.
             </p>
@@ -91,13 +90,10 @@ export function AboutPage() {
 
       <section className="mx-auto max-w-[1180px] px-3 pb-[72px] md:px-8">
         <div className="mt-14 border-t border-[#DCD4BE] pt-12 md:mt-16 md:pt-14">
-        <h2 className="flex items-baseline gap-3 font-sans text-[24px] font-bold text-foreground">
-          学习方法
-          <span className="display-serif text-[15px] font-medium italic text-muted-foreground">How it works</span>
-        </h2>
+        <PageHeading as="h2" subtitle="HOW IT WORKS">学习方法</PageHeading>
         <div className="mt-4 grid gap-5 md:grid-cols-3">
           {METHOD_STEPS.map((step) => (
-            <article key={step.num} className="rounded-[22px] border border-border bg-card p-6 md:p-[26px]">
+            <article key={step.num} className="rounded-[22px] bg-white p-6 shadow-[0_1px_2px_rgba(18,51,37,.03),0_10px_30px_rgba(18,51,37,.08)] md:p-[26px]">
               <span className="display-serif grid h-[46px] w-[46px] place-items-center rounded-full bg-primary text-base font-bold text-white">
                 {step.num}
               </span>
@@ -112,12 +108,12 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-primary py-[46px] md:py-[60px]">
+      <section className="about-audience bg-primary py-[46px] md:py-[60px]">
         <div className="mx-auto max-w-[1180px] px-3 md:px-8">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/55">Who it's for · 适合谁</p>
-          <h2 className="mt-4 font-sans text-[24px] font-bold text-white md:text-[32px]">
-            为想把英语用进真实生活的人而做
-          </h2>
+          <PageHeading as="h2" subtitle="WHO IT'S FOR">为想把英语用进真实生活的人而做</PageHeading>
+          <p className="mt-4 text-[15.5px] leading-relaxed text-white/[0.78]">
+            不管你还在国内准备出发，还是已经在海外安家——看病不慌、开家长会不慌、跟邻居聊天不慌，把日子一天一天过稳、过好。
+          </p>
           <div className="mt-7 grid gap-4 sm:grid-cols-2">
             {AUDIENCES.map((audience) => (
               <div key={audience} className="flex items-center gap-3 rounded-[18px] border border-white/15 bg-white/[0.06] px-5 py-5 text-base text-white/90 md:px-6">

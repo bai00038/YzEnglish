@@ -7,6 +7,7 @@ import type {
   SceneContent,
   TipType,
 } from "./types";
+import playbackAssets from "./scene-playback-assets.json";
 import { isSceneNew } from "./scene-badges";
 import { CURRENT_SCENE_METADATA, DEFAULT_COLLECTIONS, PLANNED_FREE_SCENES } from "./content-collections";
 
@@ -97,6 +98,8 @@ export interface ManifestScene {
   desc: string;
   photo?: string;
   video_url?: string;
+  audioUrl?: string;
+  lowUrl?: string;
   pdfUrl?: string;
   externalId: string;
   dataUrl?: string;
@@ -131,7 +134,10 @@ async function fetchContentManifest(): Promise<ContentManifest> {
         scenes: [
           ...json.scenes,
           ...PLANNED_FREE_SCENES.filter(scene => !remoteIds.has(scene.externalId)),
-        ],
+        ].map(scene => ({
+          ...(playbackAssets as Record<string, { audioUrl: string; lowUrl: string }>)[scene.externalId],
+          ...scene,
+        })),
       };
     })();
     manifestPromise.catch(() => { manifestPromise = null; });
@@ -176,6 +182,8 @@ export function manifestEntryToScene(entry: ManifestScene): Scene {
     videoPoster: contentImageUrl(videoPosterUrl(entry.photo)),
     pdfUrl: PDF_URL_OVERRIDES[entry.slug] ?? entry.pdfUrl ?? undefined,
     video_url: entry.video_url ?? undefined,
+    audioUrl: entry.audioUrl ?? undefined,
+    lowUrl: entry.lowUrl ?? undefined,
     collectionId: entry.collectionId ?? fallback?.collectionId,
     collectionOrder: entry.collectionOrder ?? fallback?.collectionOrder,
     tags: entry.tags ?? fallback?.tags ?? [],

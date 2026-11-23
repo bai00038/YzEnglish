@@ -127,3 +127,25 @@
   .scene-page #section-pdf > button, .scene-page #section-pdf > span { min-height: 44px; padding: 10px 16px; font-size: 13px; }
   .scene-page .scene-episode-bar-spacer { height: 65px; } /* 64px controls + 1px border */
 }
+
+/* Shared diameter keeps the loop thumb and selected subtitle circle identical. */
+.scene-video-controls { --scene-control-circle: 28px; position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 10px; }
+.scene-subtitle-switch { display: flex; align-items: center; gap: 16px; padding: 3px 8px; border-radius: 999px; background: #0008; }
+.scene-subtitle-option { display: inline-flex; align-items: center; justify-content: center; width: var(--scene-control-circle); height: var(--scene-control-circle); padding: 0; border-radius: 50%; font-size: 12px; line-height: 1; font-weight: 700; transition: color .15s, background-color .15s; }
+.scene-loop-switch { display: flex; align-items: center; flex-shrink: 0; width: calc(var(--scene-control-circle) * 2 + 6px); height: calc(var(--scene-control-circle) + 6px); padding: 3px; border: 0; border-radius: 999px; background: #0008; cursor: pointer; }
+.scene-loop-thumb { display: flex; align-items: center; justify-content: center; width: var(--scene-control-circle); height: var(--scene-control-circle); border-radius: 50%; background: white; color: #B8BEBA; transform: translateX(0); transition: transform .18s ease, color .15s; }
+.scene-loop-switch[aria-checked="true"] .scene-loop-thumb { transform: translateX(var(--scene-control-circle)); color: var(--primary); }
+/* Invisible hit padding: subtitle targets are 40 × 44px on mobile.
+   Horizontal gaps keep expanded targets separate; visible circles stay 24px. */
+.scene-video-controls button { position: relative; }
+.scene-subtitle-option::after { content: ""; position: absolute; inset: -10px -8px; border-radius: inherit; }
+.scene-loop-switch::after { content: ""; position: absolute; inset: -7px -5px; border-radius: inherit; }
+.scene-video-controls button:focus-visible { outline: 2px solid white; outline-offset: 2px; }
+@media (max-width: 768px) {
+  .scene-video-controls { --scene-control-circle: 24px; top: 14px; right: 12px; }
+  .scene-subtitle-option { font-size: 11px; }
+  .scene-loop-thumb svg { width: 12px; height: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-loop-thumb { transition: none; }
+}

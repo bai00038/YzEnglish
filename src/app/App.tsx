@@ -1,3 +1,4 @@
+import { ScenePlaybackProvider } from "@/app/components/ScenePlaybackProvider";
 import { MessagesPage, MessageDetailPage } from "@/app/pages/MessagesPage";
 import { useState, useEffect, useRef } from "react";
 import { Routes, Route, Navigate, useLocation, useNavigationType } from "react-router";
@@ -75,7 +76,7 @@ export default function App() {
   };
 
   return (
-    <div className="mobile-nav-page-padding min-h-screen bg-background text-foreground">
+    <ScenePlaybackProvider><div className="mobile-nav-page-padding min-h-screen bg-background text-foreground">
       <NavVisibilityProvider>
       <ScrollToTop />
       <DesktopNav />
@@ -113,6 +114,6 @@ export default function App() {
       </main>
       <MobileNav />
       </NavVisibilityProvider>
-    </div>
+    </div></ScenePlaybackProvider>
   );
 }

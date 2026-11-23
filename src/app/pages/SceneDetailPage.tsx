@@ -1,5 +1,9 @@
+import { useSplitPlayer } from "@/lib/split-player";
+import { useScenePlayback } from "@/app/components/ScenePlaybackProvider";
+import { LoopToggle } from "@/app/components/LoopToggle";
+import { PageHeading } from "@/app/components/PageHeading";
 import { buildSceneHref, getSceneNavigation } from "@/data/scene-navigation";
-import { useState, useEffect, useMemo, useRef, type CSSProperties } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback, type CSSProperties } from "react";
 import { Link, useParams, useSearchParams } from "react-router";
 import { ChevronRight, ChevronLeft, Download, Info, LoaderCircle, LockKeyhole, Play, Volume2 } from "lucide-react";
 import { useSceneDetail } from "@/data/scenes-access";
@@ -89,7 +93,7 @@ function StepHeading({ number, title, hint, titleId }: { number: string; title: 
 
 // Playback-speed control — the same rate applies to normal continuous
 // playback, single-line playback, repeat playback, and any future
-// dictation mode, since they all drive the one shared <video> element
+// dictation mode, since they all drive the shared audio master clock
 // (see the playbackRate effect below). 1 is always the default.
 const PLAYBACK_RATES = [0.8, 1, 1.2] as const;
 const PLAYBACK_RATE_STORAGE_KEY = "yzenglish:playbackRate";
@@ -112,6 +116,8 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   setBilingualMode: (v: boolean) => void;
 }) {
   const { slug } = useParams<{ slug: string }>();
+  const player = useSplitPlayer();
+  const { openScene, episodeLoop, setEpisodeLoop } = useScenePlayback();
   const [searchParams] = useSearchParams();
   const sceneNavigation = getSceneNavigation(searchParams);
   const adjacentSceneHref = (nextSlug: string) => buildSceneHref(nextSlug, { from: sceneNavigation.from });
@@ -184,9 +190,11 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     [content?.dialogue]
   );
 
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const pendingRestoreVideoTimeRef = useRef<number | null>(null);
-  const lastVideoProgressWriteRef = useRef(0);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const attachVideo = useCallback((video: HTMLVideoElement | null) => {
+    videoRef.current = video;
+    player.attachVideo(video);
+  }, [player]);
   const [videoPaused, setVideoPaused] = useState(true);
   const [subtitleLang, setSubtitleLang] = useState<"off" | "en" | "zh">("zh");
   const [videoCurrentTime, setVideoCurrentTime] = useState(0);
@@ -225,42 +233,29 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     let cancelled = false;
     setProtectedAssetError("");
     if (!scene || !canAccessMemberContent) {
-      setProtectedVideoUrl(null);
-      setProtectedPdfUrl(null);
+      setProtectedVideoUrl(null); setProtectedPdfUrl(null);
       return () => { cancelled = true; };
     }
-    if (!requiresSignedAssets) {
-      setProtectedVideoUrl(scene.video_url ?? null);
-      setProtectedPdfUrl(scene.pdfUrl ?? null);
-      return () => { cancelled = true; };
-    }
-    const sceneId = scene.externalId;
-    if (!sceneId) {
-      setProtectedAssetError("该课程缺少安全资源编号，请联系我处理");
-      return () => { cancelled = true; };
-    }
-    setProtectedVideoUrl(null);
-    setProtectedPdfUrl(null);
+    if (player.track?.id !== progressSceneId) setProtectedVideoUrl(null);
+    const savedTime = shouldResumeProgress ? readLearningProgress(progressSceneId).videoTime : 0;
     void Promise.all([
-      scene.video_url ? requestProtectedAssetUrl(sceneId, scene.video_url) : Promise.resolve(null),
-      scene.pdfUrl ? requestProtectedAssetUrl(sceneId, scene.pdfUrl) : Promise.resolve(null),
-    ]).then(([videoUrl, pdfUrl]) => {
-      if (cancelled) return;
-      setProtectedVideoUrl(videoUrl);
-      setProtectedPdfUrl(pdfUrl);
-    }).catch(error => {
-      if (cancelled) return;
-      setProtectedAssetError(membershipErrorMessage(error));
-    });
+      openScene(scene, collection?.scenes ?? [scene], sceneNavigation.from, savedTime),
+      !scene.pdfUrl ? Promise.resolve(null) : requiresSignedAssets
+        ? requestProtectedAssetUrl(scene.externalId!, scene.pdfUrl) : Promise.resolve(scene.pdfUrl),
+    ]).then(([track, pdfUrl]) => {
+      if (cancelled || !track) return;
+      setProtectedVideoUrl(track.videoUrl); setProtectedPdfUrl(pdfUrl);
+      setVideoCurrentTime(player.currentTime); setVideoPaused(player.paused);
+    }).catch(error => { if (!cancelled) setProtectedAssetError(membershipErrorMessage(error)); });
     return () => { cancelled = true; };
-  }, [canAccessMemberContent, requiresSignedAssets, scene?.externalId, scene?.isFreeExperience, scene?.pdfUrl, scene?.video_url]);
+  }, [canAccessMemberContent, requiresSignedAssets, scene, collection, openScene, player, progressSceneId, shouldResumeProgress, sceneNavigation.from]);
 
   function saveLearningPosition(step: LearningStep, videoTime?: number) {
     if (!progressSceneId) return;
     const current = readLearningProgress(progressSceneId);
     updateLearningPosition(progressSceneId, {
       lastStep: step,
-      videoTime: videoTime ?? videoRef.current?.currentTime ?? current.videoTime,
+      videoTime: videoTime ?? player.currentTime ?? current.videoTime,
     });
   }
 
@@ -295,7 +290,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
         writeLearningProgress(progressSceneId, {
           downloadedPdf: true,
           lastStep: "pdf",
-          videoTime: videoRef.current?.currentTime ?? 0,
+          videoTime: player.currentTime,
         });
       }
     } catch {
@@ -311,15 +306,15 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // an activeSubtitleLine/activeDialogueLineIndex against the NEW scene's
   // lines before the new <video> element reports its own real position.
   useEffect(() => {
-    setVideoCurrentTime(0);
-    setVideoPaused(true);
+    setVideoCurrentTime(player.track?.id === progressSceneId ? player.currentTime : 0);
+    setVideoPaused(player.track?.id === progressSceneId ? player.paused : true);
     setPinnedLineIndex(null);
     setSentenceListeningActive(false);
     setStudyTab("listening");
     cancelRangePlayback();
     // A freshly-loaded <video> element defaults to 1× — reapply the
     // user's selected speed so switching scenes doesn't silently reset it.
-    if (videoRef.current) videoRef.current.playbackRate = playbackRate;
+    player.setRate(playbackRate);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene?.id]);
 
@@ -333,15 +328,6 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   useEffect(() => {
     if (!scene || !progressSceneId || !shouldResumeProgress) return;
     const saved = readLearningProgress(progressSceneId);
-    pendingRestoreVideoTimeRef.current = saved.videoTime;
-    const video = videoRef.current;
-    if (video && video.readyState >= 1) {
-      const maxTime = Number.isFinite(video.duration) ? Math.max(0, video.duration - 0.1) : saved.videoTime;
-      const restoredTime = Math.min(saved.videoTime, maxTime);
-      video.currentTime = restoredTime;
-      setVideoCurrentTime(restoredTime);
-      pendingRestoreVideoTimeRef.current = null;
-    }
     const sectionId = {
       watch: "section-watch",
       dialogue: "section-dialogue",
@@ -354,13 +340,13 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     return () => window.clearTimeout(timeoutId);
   }, [progressSceneId, scene, shouldResumeProgress]);
 
-  // Applies the selected speed to the live <video> element immediately on
+  // Applies the selected speed to the shared player immediately on
   // change, and persists it — this is the ONLY place playbackRate is
   // written to the element outside of the scene-switch/loadedmetadata
   // safety nets below, so continuous play, single-line play, repeat, and
   // seeking all inherit it without any per-mode handling.
   useEffect(() => {
-    if (videoRef.current) videoRef.current.playbackRate = playbackRate;
+    player.setRate(playbackRate);
     try {
       window.localStorage.setItem(PLAYBACK_RATE_STORAGE_KEY, String(playbackRate));
     } catch {
@@ -371,6 +357,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
   useEffect(() => {
     repeatLineRef.current = repeatLine;
+    player.setRangeRepeat(repeatLine);
   }, [repeatLine]);
 
   useEffect(() => {
@@ -393,7 +380,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       const current = readLearningProgress(progressSceneId);
       updateLearningPosition(progressSceneId, {
         lastStep: config.step,
-        videoTime: videoRef.current?.currentTime ?? current.videoTime,
+        videoTime: player.currentTime ?? current.videoTime,
       });
     }, { threshold: 0.35, rootMargin: "-12% 0px -45% 0px" });
     steps.forEach(({ id }) => {
@@ -644,257 +631,15 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   const activeEndRef = useRef<number | null>(null);
   const activeLineIndexRef = useRef<number | null>(null);
 
-  // Frame-accurate end-of-line watcher. video.currentTime as read from a
-  // requestAnimationFrame poll is the browser's best-effort estimate of
-  // playback position, not the timestamp of the frame actually on
-  // screen — HTMLVideoElement.requestVideoFrameCallback's mediaTime IS
-  // that timestamp, straight from the compositor, so it's the most
-  // accurate stop signal script can get. Used when available; rAF
-  // polling currentTime directly is the fallback for browsers without
-  // rVFC. Deliberately no early-stop margin subtracted from end_time
-  // here — stopping a fixed amount early doesn't fix imprecision, it
-  // just trades "bleeds into the next line" for "clips this line's own
-  // ending," and end_time must play in full.
-  const frameRequestRef = useRef<number | null>(null);
-  const videoFrameRequestRef = useRef<number | null>(null);
-  const endWatchIntervalRef = useRef<number | null>(null);
-  // Moving directly from one sentence to another briefly pauses the
-  // shared video while it seeks. That internal pause must not be treated
-  // as the learner stopping playback, or onPause would tear down the new
-  // sentence's range watcher before the seek finishes.
-  const suppressNextPauseCleanupRef = useRef(false);
-  // The 'seeked' listener currently pending after a click set currentTime
-  // but before the browser finished the seek — must be individually
-  // removable so a second line click while the first seek is still in
-  // flight cancels the stale one instead of both firing play().
-  const pendingSeekedHandlerRef = useRef<(() => void) | null>(null);
-  // Bumped on every playDialogueLine call. Captured by each async step
-  // (the 'seeked' handler, the frame-watcher loop) so a step that
-  // finishes after a *later* click has already moved on to a different
-  // line recognizes itself as stale and no-ops instead of acting on an
-  // outdated end_time or restarting playback the user has moved past.
-  const playRequestRef = useRef(0);
-
-  // Opt-in evidence dump for diagnosing single-line playback boundaries —
-  // off by default so it never ships noisy. Flip on from devtools with
-  // `window.__DEBUG_DIALOGUE_TIMING = true` before clicking a line, no
-  // code change needed.
-  const isDialogueTimingDebugEnabled = () =>
-    typeof window !== "undefined" && (window as unknown as Record<string, unknown>).__DEBUG_DIALOGUE_TIMING === true;
-
+  // Sentence timing is owned by the same audio clock as continuous play.
   function cancelRangePlayback() {
-    if (endWatchIntervalRef.current !== null) {
-      window.clearInterval(endWatchIntervalRef.current);
-      endWatchIntervalRef.current = null;
-    }
-    if (frameRequestRef.current !== null) {
-      cancelAnimationFrame(frameRequestRef.current);
-      frameRequestRef.current = null;
-    }
-    const video = videoRef.current;
-    if (
-      video &&
-      videoFrameRequestRef.current !== null &&
-      typeof video.cancelVideoFrameCallback === "function"
-    ) {
-      video.cancelVideoFrameCallback(videoFrameRequestRef.current);
-    }
-    videoFrameRequestRef.current = null;
-    if (video && pendingSeekedHandlerRef.current) {
-      video.removeEventListener("seeked", pendingSeekedHandlerRef.current);
-      pendingSeekedHandlerRef.current = null;
-    }
-    activeEndRef.current = null;
-    activeLineIndexRef.current = null;
+    player.clearRange(); activeEndRef.current = null; activeLineIndexRef.current = null;
   }
-
-  // Polls playback position every rendered frame and pauses the instant
-  // it reaches (never before) endTime — the ONLY thing that pauses
-  // single-line playback; onTimeUpdate below is display-only. requestId
-  // is this call's playRequestRef snapshot: if a newer line click has
-  // since bumped playRequestRef, this loop stops touching the video
-  // instead of fighting the new playback.
-  function watchForLineEnd(
-    requestId: number,
-    endTime: number,
-    startTime: number,
-    lineIndex: number,
-    range: { start: number; end: number },
-    allowRepeat = true
-  ) {
-    const video = videoRef.current;
-    if (!video) return;
-
-    // Several stop triggers race below; the first to reach endTime
-    // wins and the rest must no-op.
-    let stopped = false;
-    const stopInterval = () => {
-      if (endWatchIntervalRef.current !== null) {
-        window.clearInterval(endWatchIntervalRef.current);
-        endWatchIntervalRef.current = null;
-      }
-    };
-    stopInterval();
-
-    const stopAt = (t: number) => {
-      if (stopped) return;
-      stopped = true;
-      stopInterval();
-      if (isDialogueTimingDebugEnabled()) {
-        console.table({ expectedEnd: endTime, actualPauseTime: t, overrun: t - endTime });
-      }
-
-      markSentenceCompleted(lineIndex, endTime);
-
-      if (allowRepeat && repeatLineRef.current && playRequestRef.current === requestId) {
-        const restartAfterSeek = () => {
-          pendingSeekedHandlerRef.current = null;
-          if (!repeatLineRef.current || playRequestRef.current !== requestId) return;
-          activeEndRef.current = endTime;
-          setVideoCurrentTime(startTime);
-          if (video.paused) video.play();
-          watchForLineEnd(requestId, endTime, startTime, lineIndex, range);
-        };
-        pendingSeekedHandlerRef.current = restartAfterSeek;
-        video.addEventListener("seeked", restartAfterSeek, { once: true });
-        video.currentTime = startTime;
-        return;
-      }
-
-      video.pause(); // triggers onPause below, which clears activeEndRef
-      video.currentTime = endTime;
-      setVideoCurrentTime(t);
-    };
-
-    // Three triggers race to stopAt; whichever reaches endTime first
-    // wins. rVFC is frame-accurate on desktop, but on phones its
-    // cadence follows frame presentation — irregular when the video
-    // is small or partly off-screen — and the rAF fallback is
-    // throttled the same way, so on mobile the stop could land a few
-    // hundred ms late and bleed into the next line (verified
-    // 2026-11-13). A plain 25ms interval keeps polling currentTime
-    // regardless of presentation, which bounds the overshoot to
-    // ~one interval everywhere.
-    const poll = () => {
-      if (stopped || playRequestRef.current !== requestId || activeEndRef.current === null) return;
-      const t = video.currentTime;
-      if (t >= endTime) {
-        stopAt(t);
-        return;
-      }
-      setVideoCurrentTime(t);
-    };
-    endWatchIntervalRef.current = window.setInterval(poll, 25);
-
-    if (typeof video.requestVideoFrameCallback === "function") {
-      const tick = (_now: number, metadata: { mediaTime: number }) => {
-        if (stopped || playRequestRef.current !== requestId || activeEndRef.current === null) return;
-        if (metadata.mediaTime >= endTime) {
-          stopAt(metadata.mediaTime);
-          return;
-        }
-        setVideoCurrentTime(metadata.mediaTime);
-        videoFrameRequestRef.current = video.requestVideoFrameCallback(tick);
-      };
-      videoFrameRequestRef.current = video.requestVideoFrameCallback(tick);
-    } else {
-      const tick = () => {
-        if (stopped || playRequestRef.current !== requestId || activeEndRef.current === null) return;
-        const t = video.currentTime;
-        if (t >= endTime) {
-          stopAt(t);
-          return;
-        }
-        setVideoCurrentTime(t);
-        frameRequestRef.current = requestAnimationFrame(tick);
-      };
-      frameRequestRef.current = requestAnimationFrame(tick);
-    }
-  }
-
   function playDialogueLine(lineIndex: number, range: { start: number; end: number }, allowRepeat = true) {
     stopKitAudio();
-    const video = videoRef.current;
-    if (!video) return;
-    // Cancel whatever the previous click left in flight — a stale
-    // frame-watcher loop still polling toward the OLD line's end_time,
-    // or a still-pending 'seeked' listener from a seek that hasn't
-    // landed yet — before starting this one.
-    cancelRangePlayback();
-    const requestId = ++playRequestRef.current;
-    // `range` is the caller's playback range (dialogueLinePlaybackRanges):
-    // the authored timing plus a small clamped pre/post-roll, so the
-    // line's acoustic tail is not clipped at its authored end_time.
-    const trueStart = range.start;
-    const trueEnd = range.end;
-    if (!video.paused) {
-      suppressNextPauseCleanupRef.current = true;
-      video.pause();
-    } else {
-      // iOS Safari (and strict Android WebViews) reject play() calls
-      // made outside a user-gesture handler until the element has
-      // played once. This function seeks first and plays from the
-      // async 'seeked' callback, so on a fresh page that deferred
-      // play() was refused and the study card's play button looked
-      // dead until the video's own play button had been tapped once
-      // (verified on a phone, 2026-11-13). Unlock the element
-      // synchronously inside this gesture: play() + pause() in the
-      // same turn presents no audio, but marks the element as
-      // gesture-played so the deferred play() below is allowed. The
-      // suppress flag covers the pause event this queues, exactly
-      // like the branch above.
-      suppressNextPauseCleanupRef.current = true;
-      const unlockAttempt = video.play();
-      if (unlockAttempt) unlockAttempt.catch(() => {});
-      video.pause();
-    }
-    activeEndRef.current = trueEnd;
-    activeLineIndexRef.current = lineIndex;
+    activeEndRef.current = range.end; activeLineIndexRef.current = lineIndex;
     setPinnedLineIndex(lineIndex);
-
-    if (isDialogueTimingDebugEnabled()) {
-      const line = content?.dialogue[lineIndex];
-      const nextLine = content?.dialogue[lineIndex + 1];
-      console.table({
-        lineIndex,
-        rawStart: line?.start,
-        rawEnd: line?.end,
-        parsedStart: range.start,
-        parsedEnd: range.end,
-        videoCurrentTimeBeforeSeek: video.currentTime,
-        nextLineStart: nextLine?.start ?? null,
-      });
-    }
-
-    const beginPlayback = () => {
-      if (playRequestRef.current !== requestId) return; // superseded by a later click
-      video.play();
-      watchForLineEnd(requestId, trueEnd, trueStart, lineIndex, range, allowRepeat);
-    };
-
-    // Setting currentTime to (near) its current value seeks nowhere, so
-    // no 'seeked' event would ever fire — play immediately in that case
-    // rather than hanging.
-    if (Math.abs(video.currentTime - trueStart) < 0.005) {
-      beginPlayback();
-      return;
-    }
-
-    const onSeeked = () => {
-      pendingSeekedHandlerRef.current = null;
-      // video.currentTime is only updated to the seek target once this
-      // event fires — beginPlayback (and so the frame watcher) must
-      // never run before it, or it starts measuring against the
-      // pre-seek position.
-      if (playRequestRef.current !== requestId) return; // superseded by a later click
-      if (isDialogueTimingDebugEnabled()) {
-        console.table({ requestedStart: trueStart, actualSeekedTime: video.currentTime });
-      }
-      beginPlayback();
-    };
-    pendingSeekedHandlerRef.current = onSeeked;
-    video.addEventListener("seeked", onSeeked, { once: true });
-    video.currentTime = trueStart;
+    player.playRange({ ...range, id: String(lineIndex) }, studyTab === "dictation" ? "dictation" : "listening", allowRepeat && repeatLineRef.current);
   }
 
   const playableDialogueLineIndexes = useMemo(
@@ -920,6 +665,21 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     && currentStudyLineIndex !== null
     && pinnedLineIndex === currentStudyLineIndex;
 
+  useEffect(() => {
+    if (!progressSceneId) return;
+    return player.on(event => {
+      if (event.track?.id !== progressSceneId) return;
+      setVideoCurrentTime(event.time); setVideoPaused(event.paused);
+      if (event.mode === "episode" && event.type === "play") {
+        activeEndRef.current = null; activeLineIndexRef.current = null; setPinnedLineIndex(null);
+      }
+      if (event.type === "pause") { activeEndRef.current = null; activeLineIndexRef.current = null; }
+      if (event.type === "rangeend" && event.range?.id !== undefined) {
+        markSentenceCompleted(Number(event.range.id), event.time);
+      }
+    });
+  }, [player, progressSceneId]);
+
   function playStudyLine(lineIndex: number) {
     const range = dialogueLinePlaybackRanges.get(lineIndex);
     if (!range) return;
@@ -930,6 +690,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
   function startSentenceListening() {
     saveLearningPosition("dialogue");
+    player.setMode("listening");
     setSentenceListeningActive(true);
     repeatLineRef.current = false;
     setRepeatLine(false);
@@ -939,7 +700,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
     if (firstLineIndex !== undefined) {
       playStudyLine(firstLineIndex);
     } else {
-      videoRef.current?.pause();
+      player.pause();
       cancelRangePlayback();
     }
 
@@ -952,7 +713,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
 
   function toggleCurrentStudyLine() {
     if (isCurrentStudyLinePlaying) {
-      videoRef.current?.pause();
+      player.pause();
       return;
     }
     if (currentStudyLineIndex !== null) playStudyLine(currentStudyLineIndex);
@@ -975,7 +736,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   function switchStudyTab(tab: StudyTabKey) {
     if (tab === studyTab) return;
     saveLearningPosition("dialogue");
-    videoRef.current?.pause();
+    player.pause();
     cancelRangePlayback();
     if (tab === "dictation") {
       // Dictation always starts as a fresh pass from sentence 1. Repeating
@@ -984,6 +745,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       repeatLineRef.current = false;
       setRepeatLine(false);
     }
+    player.setMode(tab === "dictation" ? "dictation" : "listening");
     setStudyTab(tab);
   }
 
@@ -1030,7 +792,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       sentencesTotal: playableDialogueLineIndexes.length,
       dictationAvailable: dictationLines.length > 0,
       lastStep: "dialogue",
-      videoTime: videoRef.current?.currentTime ?? 0,
+      videoTime: player.currentTime,
     });
   }
 
@@ -1049,7 +811,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
   // to immediately stop whatever the dictation tab's frame watcher was
   // still polling toward, with no separate cleanup path to keep in sync.
   function stopDictationPlayback() {
-    videoRef.current?.pause();
+    player.pause();
   }
 
   if (loading) {
@@ -1126,9 +888,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
       <div className="scene-section-pad scene-identity px-5 pb-4 pt-3 max-[480px]:pb-3 max-[480px]:pt-2 md:px-10 md:pb-5 md:pt-4">
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-8">
           <div className="min-w-0 max-w-[760px]">
-            <h1 className="scene-title font-serif text-[30px] font-semibold leading-[1.08] tracking-[-0.025em] text-primary max-[480px]:text-[22px] md:text-[38px]">
-              {scene.titleZh}
-            </h1>
+            <PageHeading className="scene-title">{scene.titleZh}</PageHeading>
             <p className="scene-desktop-description mt-2 max-w-[690px] text-[14px] leading-relaxed text-[#3A4A42] md:text-[15px]">
               {scene.desc || scene.titleEn}
             </p>
@@ -1225,7 +985,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 ) : protectedVideoUrl ? (
                   <div className="relative w-full h-full">
                     <video
-                      ref={videoRef}
+                      ref={attachVideo}
                       controls={!videoDocked}
                       controlsList="nodownload noremoteplayback"
                       disablePictureInPicture
@@ -1236,114 +996,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                       draggable={false}
                       onContextMenu={(event) => event.preventDefault()}
                       onDragStart={(event) => event.preventDefault()}
-                      onPlay={() => {
-                        stopKitAudio();
-                        setVideoPaused(false);
-                        // activeEndRef is set (before video.play() is
-                        // called) only by playDialogueLine — so a play
-                        // event with it still null means this is normal
-                        // continuous playback (big button or native
-                        // controls), which should track the video's own
-                        // time again rather than stay pinned to whichever
-                        // line was last clicked.
-                        if (activeEndRef.current === null) {
-                          setPinnedLineIndex(null);
-                          saveLearningPosition("watch", videoRef.current?.currentTime ?? 0);
-                        }
-                      }}
-                      onPlaying={() => setVideoPaused(false)}
-                      onPause={() => {
-                        setVideoPaused(true);
-                        if (suppressNextPauseCleanupRef.current) {
-                          suppressNextPauseCleanupRef.current = false;
-                          return;
-                        }
-                        const video = videoRef.current;
-                        const isDialoguePlayback = activeEndRef.current !== null;
-                        if (
-                          !isDialoguePlayback
-                          && progressSceneId
-                          && video
-                          && Number.isFinite(video.duration)
-                          && video.duration > 0
-                        ) {
-                          writeLearningProgress(progressSceneId, {
-                            videoPercent: (video.currentTime / video.duration) * 100,
-                            sentencesTotal: playableDialogueLineIndexes.length,
-                            dictationAvailable: dictationLines.length > 0,
-                            lastStep: "watch",
-                            videoTime: video.currentTime,
-                          });
-                        }
-                        // Any pause — manual, native-controls, or the
-                        // frame watcher's own auto-stop (see
-                        // watchForLineEnd) — ends single-line mode.
-                        // Whatever resumes playback next (big play
-                        // button, native controls, another line click) is
-                        // never held to a stale line's end time.
-                        cancelRangePlayback();
-                      }}
-                      // Display-only: keeps videoCurrentTime (and so the
-                      // highlight/subtitle) in sync during ordinary
-                      // continuous playback, i.e. whenever the frame
-                      // watcher isn't already doing that at a much higher
-                      // resolution for single-line playback. Never pauses
-                      // the video itself — see watchForLineEnd for why
-                      // timeupdate's firing rate is too coarse for that.
-                      onTimeUpdate={e => {
-                        setVideoCurrentTime(e.currentTarget.currentTime);
-                        if (!e.currentTarget.paused) setVideoPaused(false);
-                        const now = Date.now();
-                        if (now - lastVideoProgressWriteRef.current >= 1500) {
-                          lastVideoProgressWriteRef.current = now;
-                          const isDialoguePlayback = activeEndRef.current !== null;
-                          if (isDialoguePlayback) {
-                            saveLearningPosition("dialogue", e.currentTarget.currentTime);
-                          } else if (progressSceneId && Number.isFinite(e.currentTarget.duration) && e.currentTarget.duration > 0) {
-                            writeLearningProgress(progressSceneId, {
-                              videoPercent: (e.currentTarget.currentTime / e.currentTarget.duration) * 100,
-                              sentencesTotal: playableDialogueLineIndexes.length,
-                              dictationAvailable: dictationLines.length > 0,
-                              lastStep: "watch",
-                              videoTime: e.currentTarget.currentTime,
-                            });
-                          }
-                        }
-                      }}
-                      onEnded={e => {
-                        const completedDialogueLine = activeLineIndexRef.current;
-                        if (completedDialogueLine !== null) {
-                          markSentenceCompleted(completedDialogueLine, e.currentTarget.duration);
-                        } else if (progressSceneId) {
-                          writeLearningProgress(progressSceneId, {
-                            videoPercent: 100,
-                            sentencesTotal: playableDialogueLineIndexes.length,
-                            dictationAvailable: dictationLines.length > 0,
-                            lastStep: "watch",
-                            videoTime: 0,
-                          });
-                        }
-                        cancelRangePlayback();
-                        e.currentTarget.currentTime = 0;
-                        setVideoCurrentTime(0);
-                        setVideoPaused(true);
-                      }}
-                      // Some browsers reset playbackRate to 1 when a new
-                      // <source> finishes loading — reapply the selected
-                      // speed once metadata is ready, same value as the
-                      // playbackRate effect above.
-                      onLoadedMetadata={e => {
-                        e.currentTarget.playbackRate = playbackRate;
-                        if (pendingRestoreVideoTimeRef.current !== null) {
-                          const maxTime = Number.isFinite(e.currentTarget.duration) ? Math.max(0, e.currentTarget.duration - 0.1) : pendingRestoreVideoTimeRef.current;
-                          const restoredTime = Math.min(pendingRestoreVideoTimeRef.current, maxTime);
-                          e.currentTarget.currentTime = restoredTime;
-                          setVideoCurrentTime(restoredTime);
-                          pendingRestoreVideoTimeRef.current = null;
-                        }
-                      }}
                     >
-                      <source src={protectedVideoUrl} />
                       Your browser does not support video playback.
                     </video>
                     {subtitleLang !== "off" && activeSubtitleLine && (
@@ -1354,13 +1007,15 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         </div>
                       </div>
                     )}
-                    {dialogueLineAudioRanges.size > 0 && (
-                      <div className="absolute top-3 right-3 flex items-center gap-0.5 rounded-full bg-black/50 p-1 text-xs font-bold">
+                    <div className="scene-video-controls">
+                      <LoopToggle enabled={episodeLoop} onChange={setEpisodeLoop} overlay />
+                      {dialogueLineAudioRanges.size > 0 && (
+                      <div className="scene-subtitle-switch">
                         <button
                           type="button"
                           onClick={() => setSubtitleLang("off")}
                           aria-pressed={subtitleLang === "off"}
-                          className={`px-2.5 py-1 rounded-full transition-colors ${subtitleLang === "off" ? "bg-white text-black" : "text-white hover:bg-white/20"}`}
+                          className={`scene-subtitle-option ${subtitleLang === "off" ? "bg-white text-black" : "text-white hover:bg-white/20"}`}
                         >
                           Off
                         </button>
@@ -1368,7 +1023,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                           type="button"
                           onClick={() => setSubtitleLang("en")}
                           aria-pressed={subtitleLang === "en"}
-                          className={`px-2.5 py-1 rounded-full transition-colors ${subtitleLang === "en" ? "bg-white text-black" : "text-white hover:bg-white/20"}`}
+                          className={`scene-subtitle-option ${subtitleLang === "en" ? "bg-white text-black" : "text-white hover:bg-white/20"}`}
                         >
                           EN
                         </button>
@@ -1376,27 +1031,14 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                           type="button"
                           onClick={() => setSubtitleLang("zh")}
                           aria-pressed={subtitleLang === "zh"}
-                          className={`px-2.5 py-1 rounded-full transition-colors ${subtitleLang === "zh" ? "bg-white text-black" : "text-white hover:bg-white/20"}`}
+                          className={`scene-subtitle-option ${subtitleLang === "zh" ? "bg-white text-black" : "text-white hover:bg-white/20"}`}
                         >
                           中
                         </button>
                       </div>
-                    )}
-                    {videoPaused && !videoDocked && (
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            cancelRangePlayback(); // resuming from the big button is always continuous playback
-                            videoRef.current?.play();
-                          }}
-                          aria-label="Play video"
-                          className="pointer-events-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent/75 text-primary shadow-[0_8px_24px_rgba(0,0,0,0.22)] transition-transform hover:scale-105 md:h-20 md:w-20"
-                        >
-                          <Play className="ml-1 h-7 w-7 fill-current md:h-9 md:w-9" />
-                        </button>
-                      </div>
-                    )}
+                      )}
+                    </div>
+
                   </div>
                 ) : (scene.videoPoster ?? scene.photo) ? (
                   <div className="relative w-full h-full">
@@ -1429,7 +1071,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 )}
               </div>
 
-              <div className="scene-start-listening mt-4 flex justify-center max-[480px]:mt-3">
+              <div className="scene-start-listening mt-4 flex flex-wrap items-center justify-center gap-3 max-[480px]:mt-3">
                 <button
                   type="button"
                   onClick={() => canAccessMemberContent ? startSentenceListening() : setMembershipModalOpen(true)}
@@ -1441,6 +1083,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                   <span className="text-muted-foreground">{playableDialogueLineIndexes.length} 句</span>
                   <span aria-hidden="true">↓</span>
                 </button>
+
               </div>
 
               {/* ── Study mode tabs ── */}

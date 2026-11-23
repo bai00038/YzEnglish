@@ -4,6 +4,7 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { normalizeText } from "./normalize.mjs";
+import { buildTtsRequest } from "./tts-request.mjs";
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
 const VOICE = "Kore";
@@ -13,8 +14,8 @@ const MODEL = "gemini-3.8-flash-tts";
 const bucket = "yz-english-videos";
 const baseUrl = "https://go.learnyzenglish.com";
 const indexPath = path.join(root, "src/data/kit/audio-index.json");
-const cache = path.join(root, "tools/kit/.tts-cache/kore-podcast-lufs16-v1");
-const config = { voice: VOICE, voiceId: VOICE_ID, style: STYLE, model: MODEL, loudness: { integrated: -16, truePeak: -1.5 } };
+const cache = path.join(root, "tools/kit/.tts-cache/kore-podcast-lufs16-v2");
+const config = { requestFormat: "verbatim-speech-metadata-v2", voice: VOICE, voiceId: VOICE_ID, style: STYLE, model: MODEL, loudness: { integrated: -16, truePeak: -1.5 } };
 const fingerprint = JSON.stringify(config);
 const args = process.argv.slice(2);
 const dryRun = args.includes("--dry-run");
@@ -105,13 +106,7 @@ async function processText(key, text) {
       try {
         result = await api(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
           method: "POST",
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: `Read in a Podcast style. Speak only the following English text, without any introduction or commentary:\n${text}` }] }],
-            generationConfig: {
-              responseModalities: ["AUDIO"],
-              speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE_ID } } },
-            },
-          }),
+          body: JSON.stringify(buildTtsRequest(text, { voiceId: VOICE_ID, style: STYLE })),
         });
         break;
       } catch (error) {
@@ -165,6 +160,21 @@ if (failure) {
 }
 // Generation and publication are separate phases. Never publish a partial batch.
 if (upload) {
+  // A valid MP3/loudness measurement does not prove it says the right words.
+  const qaPath = path.join(cache, "content-qa.json");
+  if (!fs.existsSync(qaPath)) throw new Error("Run node tools/kit/check-tts-content.mjs before publishing; transcript QA is required");
+  const qa = JSON.parse(fs.readFileSync(qaPath, "utf8"));
+  if (qa.configFingerprint !== fingerprint) throw new Error("Transcript QA does not match this voice/request configuration");
+  for (const [key, text] of texts) {
+    const file = path.join(cache, crypto.createHash("sha256").update(key).digest("hex") + ".mp3");
+    const checked = qa.entries?.[key];
+    if (!fs.existsSync(file) || !checked?.passed
+      || checked.sha256 !== crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex")
+      || normalizeText(checked.expectedText) !== normalizeText(text)
+      || normalizeText(checked.transcript) !== normalizeText(text)) {
+      throw new Error(`Missing or stale transcript QA for ${key}; nothing uploaded`);
+    }
+  }
   for (const [key] of texts) {
     const hash = crypto.createHash("sha256").update(key).digest("hex");
     if (!fs.existsSync(path.join(cache, hash + ".mp3"))) throw new Error("Batch incomplete; nothing uploaded");

@@ -1,0 +1,59 @@
+任务：修复已有 TTS 音频（裁去被读出的提示语），本轮不生成新音频、不上传。
+
+工作目录：
+/Users/bingbai/Library/CloudStorage/OneDrive-Personal/00Bingo/English/Yz-English/.site-visual-refresh
+分支：codex/visual-refresh
+交接时间：2026-11-22（America/Toronto）
+
+一、用户授权与范围
+用户让 Muse 接管这项音频裁剪任务。继续修复已生成的 249 条；保留原文件，逐条核对裁后内容，不能用一个固定秒数裁全部。此轮只做本地修复和验收清单，不上传 OSS、不部署网站、不自动重新生成。若之后用户明确要求上传，再发布通过验收的文件。
+不要修改或回退现有 AboutPage.tsx、SceneDetailPage.tsx、about.css 等未提交的网站改动。不要 git reset/clean，不要擅自 commit。
+
+二、当前真实状态
+1. 错误源缓存：tools/kit/.tts-cache/kore-podcast-lufs16-v1/，249 个完整 MP3。
+2. 大部分源音频开头读出了：Read in a Podcast style. Speak only the following English text, without any introduction or commentary. 后面才是目标词句。少量源文件本来就只有目标词句。
+3. 已撤回本批线上链接，线上 audio-index.json 恢复原有 103 条；不要重新发布旧批次。旧 OSS 文件未删除，但线上索引不再引用它们。
+4. 已裁剪并通过裁后转写的文件有 13 条，位于：
+   tools/kit/.tts-cache/kore-podcast-lufs16-v1-repaired/
+   repair-report.json 中 13 条 passed:true / status:repaired，1 条 blocked（此前接口限流），其余尚未处理。还剩 236 条需要处理或复查。
+5. 没有音频生成、转写或裁剪进程在后台运行（交接时已检查）。
+6. 另有正确生成的新样音 1 条（Thank you），位于 kore-podcast-lufs16-v2/，不是上述裁剪成果，不要混算。
+
+三、已写好的续跑工具（未提交）
+- tools/kit/repair-tts.mjs：批量续跑，读取旧批次报告中的目标词句，逐词转写源音频，选择目标词句的尾部范围，ffmpeg 裁剪和响度处理，再独立转写裁后文件。结果写 repair-report.json，按输入/输出 SHA-256 跳过已通过的文件。不会上传，也不会生成 TTS。
+- tools/kit/tts-repair.mjs：安全边界与文本比较；拒绝前后语音过近、不认识的额外语音、缺词或多词等情况。保留带保护余量的词头词尾。donuts/doughnuts 作为拼写差异处理。
+- tools/kit/tts-repair.test.mjs：仅修复逻辑相关测试，4 项通过。
+- tools/kit/transcribe-local-whisper.py：独立离线逐词转写 worker，尚未接入 repair-tts.mjs。
+
+直接续跑：
+cd '/Users/bingbai/Library/CloudStorage/OneDrive-Personal/00Bingo/English/Yz-English/.site-visual-refresh'
+node --test tools/kit/tts-repair.test.mjs
+node tools/kit/repair-tts.mjs
+
+脚本自动跳过已有 13 条通过记录；blocked 可重试；转写缓存位于 repaired/asr/，也会复用。
+关键：Gemini 3.5 Transcribe 当前是每分钟 10 次请求。repair-tts.mjs 已将全局请求间隔改为 6500ms，禁止恢复为 650ms。每个未处理文件通常需要源音频、裁后音频各一次转写，按限速全部完成大约还需 45–50 分钟。持续查看进度并处理 review，不要看到进程启动就当作完成。
+.env.tts.local 内已有 GEMINI_API_KEY；脚本自行读取。不要在聊天、日志或 Git 中显示或提交密钥。运行续跑会使用 Gemini 转写配额/费用，不使用 TTS 生成配额。
+
+四、离线方案的现状与限制
+Python Whisper 和 Torch 已在本机安装；官方 base.en 模型已下载到：
+  tools/kit/.tts-cache/whisper-models/base.en.pt
+离线单样本结果：/tmp/yz-whisper-test-result.jsonl
+一条 9 秒源音频的转写耗时约 15.65 秒（4 个 CPU 线程）。时间戳存在风险：样本把目标短语第一个 a 错对齐到前一段 commentary 的尾部，且该词 probability 约 0.076。因此不能直接把 Whisper 的所有时间戳当可靠边界批量裁剪。若想接入离线加速，必须处理低置信词和边界、进行独立裁后内容核验；否则继续现有在线续跑即可。
+离线脚本是 JSON-lines 输入/输出，启动后先输出 ready，stdin 每行 {"id":1,"file":"绝对 MP3 路径"}，stdout 返回 text、逐词时间戳及耗时。保持单进程复用模型，不要每条重新加载。
+
+五、验收要求
+- 成功文件：只剩目标词句，开头没有 Podcast/Speak only 等提示语，不能截掉首音或尾音。
+- 不确定的边界、正文读错、裁后转写不符，放入 review 清单；不能把 ASR 结果改写成期望文本来伪造通过。
+- 原始文件保留；修复结果独立目录。
+- 格式：MP3 / 单声道 / 24kHz / 96kbps；响度目标 -16 LUFS、真峰值目标 -1.5dBTP，检查解码/时长/无削波。短词响度不能只凭波形大小判断。
+- 已通过的样本包括：a six-pack of doughnuts（9.0s -> 1.96s）、No worries（0.96s）、an early meeting（1.26s）。
+- 最后交付准确数量：修复通过、原本干净、需复核/需重新生成、尚未处理。生成一个可逐条播放的本地试听页，标明目标词句与结果。不要把失败的也计入“完成”。
+- 不跑网站全量回归；只跑音频修复相关测试和检查。
+
+六、与本任务有关但不应混用的文件
+- 原批次 batch-qa-2026-11-22.json：files 包含 249 个目标及文件名；状态已标 rejected-spoken-instructions。此前通过的只是技术检查，不能作为内容验收依据。
+- generate-tts.mjs、tts-request.mjs 已修正新生成请求：正文只传目标词句，Podcast 在 speechMetadata.style。新生成使用 v2 缓存，避免复用坏文件。
+- check-tts-content.mjs 给新生成 v2 文件做转写核对，不是旧批次裁剪工具。generate-tts.mjs 的 --upload 已增加转写记录与文件哈希校验，但本轮不要运行 --upload。
+- 网站线上 catalogue 分类已经更新，不能再把老清单的 127 表达/46 词伙当作线上当前分类数量。本任务以原批次 249 个源文件及目标文本为范围即可。
+
+完成后只报告本地修复结果和试听页，等待用户决定是否上传。
