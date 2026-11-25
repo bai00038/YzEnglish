@@ -9,6 +9,7 @@ import { ArrowRight, ArrowRightLeft, BookOpen, LockKeyhole, Search, X } from "lu
 import { useMembershipAccess } from "@/data/membership";
 import { loadKitCatalogue, loadKitClipsIndex, loadKitAudioIndex, matchesKitSearch, type KitCatalogue, type KitEntry } from "@/data/kit";
 import { stopKitAudio } from "@/data/kit-audio";
+import { kitTestCatalogue } from "@/data/kit-test-access";
 import { MembershipUnlockModal } from "@/app/components/MembershipUnlockModal";
 import { CollectionIcon, CollectionIconDefs, collectionShortcutClass } from "@/app/components/CollectionIcon";
 import "@/styles/kit.css";
@@ -48,7 +49,7 @@ export function KitPage() {
     setLoadError(false);
     void loadKitClipsIndex().catch(() => {});
     void loadKitAudioIndex().catch(() => {});
-    loadKitCatalogue().then(data => { if (!cancelled) setCatalogue(data); })
+    loadKitCatalogue().then(data => { if (!cancelled) setCatalogue(kitTestCatalogue(data)); })
       .catch(() => { if (!cancelled) setLoadError(true); });
     return () => { cancelled = true; };
   }, [attempt]);

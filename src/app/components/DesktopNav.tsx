@@ -18,10 +18,10 @@ export function DesktopNav() {
         </Link>
 
         <div className="ml-auto hidden items-center gap-1 text-[15px] font-medium text-[#666] lg:flex xl:gap-2 xl:text-[16px]">
-          {([['/', '首页'], ['/explore', '场景库'], ['/kit', '锦囊库'], ['/membership', '我的学习']] as [string, string][]).map(([path, label]) => (
+          {([['/', '首页'], ['/explore', '场景库'], ['/kit', '锦囊库'], ['/my-learning', '我的学习']] as [string, string][]).map(([path, label]) => (
             <Link key={path} to={path}
               className={`relative rounded-full px-4 py-2.5 transition-colors xl:px-5 xl:py-3 ${isNavActive(pathname, path, search) ? 'bg-secondary font-semibold text-[#0F3527]' : 'hover:bg-secondary hover:text-foreground'}`}>
-              {label}{path === "/membership" && hasUnread && <span className="learning-dot" aria-label="有未读消息" />}{path === "/kit" && !isUnlocked && <LockKeyhole size={12} className="ml-1 inline" />}
+              {label}{path === "/my-learning" && hasUnread && <span className="learning-dot" aria-label="有未读消息" />}{path === "/kit" && !isUnlocked && <LockKeyhole size={12} className="ml-1 inline" />}
             </Link>
           ))}
           {!isUnlocked && <a href="/#free" className="ml-1 rounded-full border border-accent bg-accent px-4 py-2.5 font-semibold text-primary transition-[filter] hover:brightness-95 xl:px-5 xl:py-3">免费体验</a>}

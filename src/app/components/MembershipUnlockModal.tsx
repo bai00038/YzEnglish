@@ -6,8 +6,8 @@ import { membershipErrorMessage, membershipTypeLabel, redeemMembershipCode } fro
 import { TEST_MODE } from "@/config/site";
 import { MEMBERSHIP_CODE_CHANGE_EVENT, saveMembershipDisplayCode } from "./membership-code-display";
 
-export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void }) {
-  const [code, setCode] = useState("");
+export function MembershipUnlockPanel({ onUnlocked, initialCode = "" }: { onUnlocked?: () => void; initialCode?: string }) {
+  const [code, setCode] = useState(initialCode);
   const [message, setMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -46,7 +46,7 @@ export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void 
       <section className="rounded-[18px] border border-primary/15 bg-white p-4 sm:rounded-[20px] sm:p-6 md:rounded-r-none md:p-8">
         <div className="flex items-center gap-2 text-primary">
           <LockKeyhole className="h-5 w-5" />
-          <h3 className="font-zh-serif text-lg font-bold">已有兑换码</h3>
+          <h3 className="font-sans text-lg font-bold">已有兑换码</h3>
         </div>
         <form onSubmit={handleSubmit} className="mt-3 sm:mt-6">
           <label htmlFor={codeInputId} className="sr-only">兑换码</label>
@@ -75,7 +75,7 @@ export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void 
       <section className="rounded-[18px] border border-primary/15 bg-secondary p-4 sm:rounded-[20px] sm:p-6 md:rounded-l-none md:border-l-0 md:p-8">
         {TEST_MODE ? (
           <div className="flex h-full min-h-0 flex-col justify-center sm:min-h-[280px]">
-            <h3 className="font-zh-serif text-lg font-bold text-primary">测试阶段</h3>
+            <h3 className="font-sans text-lg font-bold text-primary">测试阶段</h3>
             <p className="mt-1.5 text-xs font-semibold leading-5 text-secondary-foreground sm:mt-3 sm:text-sm sm:leading-7">
               会员暂未开放购买。首页有 3 集免费体验，先学完看看合不合你的节奏，会员开放时会在粉丝群和公众号通知。有问题可以扫码添加 Aria 企业微信问我。
             </p>
@@ -92,7 +92,7 @@ export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void 
         ) : (
           <>
             <p className="text-[11px] font-black uppercase tracking-[.16em] text-muted-foreground">还没有兑换码</p>
-            <h3 className="mt-1.5 font-zh-serif text-xl font-bold text-primary sm:mt-3 sm:text-2xl">开通会员</h3>
+            <h3 className="mt-1.5 font-sans text-xl font-bold text-primary sm:mt-3 sm:text-2xl">开通会员</h3>
             <p className="mt-2 text-xs leading-relaxed text-secondary-foreground sm:mt-4 sm:text-sm">会员可学全部场景：完整视频 + 逐句精听 + 配套讲义 PDF。</p>
             <div className="mt-2 overflow-hidden rounded-[14px] border border-primary/15 bg-white/55 text-xs font-black text-primary sm:mt-4 sm:text-sm">
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-primary/10 px-4 py-2.5">
@@ -131,7 +131,7 @@ export function MembershipUnlockPanel({ onUnlocked }: { onUnlocked?: () => void 
   );
 }
 
-export function MembershipUnlockModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+export function MembershipUnlockModal({ open, onOpenChange, initialCode = "" }: { open: boolean; onOpenChange: (open: boolean) => void; initialCode?: string }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -139,10 +139,10 @@ export function MembershipUnlockModal({ open, onOpenChange }: { open: boolean; o
         closeButtonClassName="membership-modal-close right-2 top-2 z-[60] inline-flex h-11 w-11 items-center justify-center rounded-full bg-card/95 opacity-100 shadow-sm backdrop-blur-sm sm:right-4 sm:top-4 sm:h-10 sm:w-10 sm:bg-transparent sm:shadow-none"
       >
         <DialogHeader className="space-y-1 pr-12 sm:space-y-2 sm:pr-8">
-          <DialogTitle className="font-zh-serif text-lg font-bold text-primary sm:text-xl">会员内容 · 输入兑换码解锁</DialogTitle>
+          <DialogTitle className="font-sans text-lg font-bold text-primary sm:text-xl">会员内容 · 输入兑换码解锁</DialogTitle>
           <DialogDescription className="text-xs sm:text-sm">一次解锁后会保存在当前浏览器，下次回来可继续学习。</DialogDescription>
         </DialogHeader>
-        <MembershipUnlockPanel onUnlocked={() => onOpenChange(false)} />
+        <MembershipUnlockPanel initialCode={initialCode} onUnlocked={() => onOpenChange(false)} />
       </DialogContent>
     </Dialog>
   );

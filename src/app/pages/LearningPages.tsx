@@ -14,9 +14,9 @@ import { stopKitAudio } from '@/data/kit-audio';
 import '@/styles/kit.css';
 import '@/styles/learning.css';
 
-function LearningPage({ title, children, description, review = false, controls }: { title: string; children: ReactNode; description?: string; review?: boolean; controls?: ReactNode }) {
+function LearningPage({ title, children, description, review = false, action }: { title: string; children: ReactNode; description?: string; review?: boolean; action?: ReactNode }) {
   return <KitPageLayout cardMode={review} className="section-page">
-    <PageSectionHeader title={title} description={description} back={{ to: '/membership', label: '返回我的学习' }} controls={controls} />
+    <PageSectionHeader title={title} description={description} back={{ to: '/my-learning', label: '返回我的学习' }} action={action} />
     {children}
   </KitPageLayout>;
 }
@@ -67,8 +67,8 @@ function VocabularyContent() {
   useEffect(() => { stopKitAudio(); }, [selected?.entryId, view]);
   const sourceLabel = (source: string) => source === 'dictation' ? '听写错题' : '收藏';
   const review = view === 'cards' && Boolean(entry);
-  const controls = <ViewModeSwitch variant="tabs" listMode={view === 'list'} count={mistakes.length} onChange={list => setView(list ? 'list' : 'cards')} />;
-  return <LearningPage title="生词本" description={`共 ${mistakes.length} 词 · 学会后可移到「已学会」。`} review={review} controls={controls}>
+  const action = <ViewModeSwitch listMode={view === 'list'} onChange={list => setView(list ? 'list' : 'cards')} />;
+  return <LearningPage title="生词本" description={`共 ${mistakes.length} 词 · 学会后可移到「已学会」。`} review={review} action={action}>
     <SyncStatus />
     {mistakes.length === 0 ? <LearningEmptyState kind="vocabulary" />
       : !entries ? <p role="status" className="learning-empty">{failed ? '条目加载失败，请刷新重试。' : '正在加载条目…'}</p>

@@ -5,14 +5,16 @@
 .scene-kit-popup { position: fixed; z-index: 10001; display: flex; flex-direction: column; border: 0; color: #0F3527; background: #FFFEFB; box-shadow: 0 1px 2px #12332508, 0 18px 50px #12332526; outline: none; }
 .scene-kit-popup.is-floating { width: min(400px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); border-radius: 22px; }
 .scene-kit-popup.is-sheet { bottom: 0; left: 0; right: 0; max-height: 70vh; max-height: 70dvh; border-radius: 24px 24px 0 0; padding-bottom: env(safe-area-inset-bottom); animation: scene-kit-rise .2s ease-out; }
-.scene-kit-popup-scroll { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 24px; border-radius: inherit; }
+.scene-kit-popup-scroll { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 20px; border-radius: inherit; }
 .scene-kit-popup.is-sheet .scene-kit-popup-scroll { padding-top: 8px; }
 .scene-kit-arrow { position: absolute; top: -6px; width: 12px; height: 12px; transform: translateX(-50%) rotate(45deg); background: #FFFEFB; pointer-events: none; }
 .scene-kit-arrow.is-above { top: auto; bottom: -6px; }
 .scene-kit-drag { flex: none; display: grid; place-items: center; height: 30px; touch-action: none; }
 .scene-kit-drag span { width: 36px; height: 4px; border-radius: 99px; background: #b7c4b9; }
 .scene-kit-category { font-family: var(--font-sans); font-size: 11px; color: #6F7C74; padding-right: 20px; }
-.scene-kit-title-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-right: 16px; }
+.scene-kit-title-row { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.scene-kit-word-heading { display:flex;align-items:center;gap:10px;flex:1;min-width:0 }
+.scene-kit-title-row > .kit-learning-actions {margin:0;flex:none}
 .scene-kit-title { min-width: 0; font-family: var(--font-serif, Georgia, serif); font-size: 28px; line-height: 1.25; font-weight: 400; overflow-wrap: anywhere; }
 .scene-kit-title-play { display: block; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; overflow-wrap: inherit; cursor: pointer; border-radius: 4px; }
 .scene-kit-pronunciation { display: flex; align-items: center; gap: 10px; margin-top: 6px; font-family: var(--font-sans); font-style: normal; font-size: 14px; color: #6F7C74; }

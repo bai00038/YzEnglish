@@ -1,0 +1,2277 @@
+{
+  "what can i get for you": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/a2d7f784ee62acfcbac55394ba03fcc547511e1f91a74bbaa1dfd61df52cf648.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "a side of fries": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/81ca490caa0e3723352d1f846f5a67e9fabe2ba9756155981768a8bc23709923.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "pickup or delivery": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/3872874e9618470bac935fffe9f00e0efeb763d04400a40c6e1e5930c09798fc.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "id like two chicken rice bowls": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/e06729fd91b7c1c21fec4e74dca4a745443c8aa820d854a16d052481eff5f89b.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "whats the delivery address": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/767f66dc473c7b9b96e8a54d4707acce540b9b3ef8a0eef53e530c8c8126657a.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "maple avenuenot maple street": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/c4304cba40920f059b911f5c784cc73827bb86609cf32c2834cbd07d0ada25b4.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "is there a buzzer code": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/ff7dc33db9e5de9f6bb82410e547798bb5ee40e4bb7c1642a891199ea58391d9.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "please bring it to the unit door": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/d8074cad5eba8adbd1093cd11c134f2682e1993eee028fee3680597a92518740.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "it should arrive in about forty to fortyfive minutes": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/4b7d22f79ee4fcb8cfb8e19dad76e3af5f1d6321e5710aceb2c9873f0e77823f.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "can i pay by card when it arrives": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/c241c07e4bd346e4ff0c0815d30b2daa2bfa586ae81f4ced0b0986d5b11cdc32.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "the driver can bring a card terminal": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/ebeecee91387f91e0342dc4d6b0e58d5ced718f5041bfad80aa85317c8821fe2.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "hows your day going so far": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/25612184092c97234842970e77fac223678bc5b73b359a5a5902b26b52a9bf8a.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "morning": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/c23b31a0179b550f8a18fb06bc52a26e32333540369073d646da5c84a4dc341f.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "pretty good": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/074b97dda04cb91e70fd95de977233e58c5c43f559909342383241f588f5c619.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "your total is thirtyeight dollars and sixty cents": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/2781d969299db8455eb083010556afaca0ad1ec217961fe4d1e8e57eddb77f96.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "just heading to work": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/2adcbe797d54204ecbd4df10eba1a92d7ad73d11c82d9560307b2aca94c9aa74.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "how about you": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/91a2a3ab094da2e2beb1fd232f3687f26262b445dbfe7895a4376640cc56d865.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "an early meeting": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/037ca2148baf4ead512480ec835e9b81a36bf4bcb181db10c4076fba7b654925.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "busy morning": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/33cd67234fc3e39403c9d4be64d0f12accf72f654290bae386010017ba2d0fb6.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "have a good one": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/99c39b3fac92dbab73d0603a64f37668264dabd3f54a6b703f0c89851bc431d2.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "this is me": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/dd81cb79f11bedd77be0000f28e264e2c4b42376c76b891c7845b172c071d631.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "it shouldnt be too bad": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/092462b9214a01328996af05fb74146fd31b9499d700f8265ebfb90da50c838c.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "cool down": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/71f18c1fb4bcc415224bb0eaa71e5c90c583bdf3060d3165ef15c24d2b9bc374.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "didnt it": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/5b161e003b0429beba20f9331da87d9a73ed1fcf0ddfeff4efcd16200a3d48da.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "were you expecting this weather": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/c406dd3f1680e1c26bc0b97114e8eef9a87ce9bef35da23b1be011dc30b9ed88.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "not at all": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/d440a63a2025f47b42d3a44ec2697f78f012dde5f559003754cfa2e3dedb948e.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "i guess": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/4581e668ab769adec63e6f7c48bec4169dc2fdef4b3cab6a7cb034d3a3040bfc.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "summer is really over": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/95935e6011ede169f7d668972bdaccc67ec4271b2572d2426c6023e3a0b5c117.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "looks that way": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/4050958370c4d604f2ad343ac24c9dbe70d0a9bd67b7124762bb39e8aac09f53.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "the lines moving": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/abbfbc43ca0fa8501d6e1530f8bc96b20e1d621f8891bf3ac052f1791722b1e9.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "temporary resident": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/9db42e0d77d65c640165f8fc71bfb25d1bd49eb792cf8acb586e7b110a922cb0.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "immigration documents": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/213e725bc8181c6d85196c224f684d9956cd379dba253ab4b80a78e25bf8b0dd.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "what brings you to canada": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/1c38113e5ded5690dd564a1335d36e359916638e59306ce0b9bb1414ea3124fc.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "international student": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/3b95b7da3d4a7b0f327ebc7167ba7246494c9b43a0e5a2ce2bf6b321f2f0af74.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "letter of introduction": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/09ac2a688a7d26f2b34a9ae0003efd9e586efebbf8aa03c86a4e203cfbc941f2.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "student residence": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/a1358a5f1e1a6120d6f8cfe4628ae0ff1324ad7d6838d772e0b58be9b77619c1.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "could you repeat that more slowly please": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/aa393ea016b200973e125173d8b9e8b6cd5e6670d0fb59c8b6dc94ce5a9de269.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "declare": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/b7012df7548775c20321ac66c42253e001f5728a66c3309b5706d40409d149b9.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "carryon": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/6030eb0e0bd30e90d5635b21378c4e480735b30b86da1c1c7dc7e3e9e8804f54.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "study permit": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/59ddc50a3dee690a0f9524576ee59b026517af6676b6640520feb445fd01d73e.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "animal products": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/74892559f563aa8b17f145ce055ff947411237b245cd641a91ae52ed65109ff8.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "packaged snacks": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/10c5e3c8e45a02625d62865fa5784c6cdc7bd05cf66d336ef9892c5d70607fb3.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "take a few xrays of your teeth": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/47d8f47d343440396f37786f9a75903992b2dc67ffd9841dcf96bb7a59e5c051.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "place this small sensor inside your mouth": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/58caa2205d6bd65d13704fca5f19422de191f797801ec2e6e834eee14a3870d1.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "bite down gently": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/a9e66efa4d23f174429c4442f61acc8d6a31a042282f1f9b202aff995f8f3add.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "it feels a little sharp on the side": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/d97545548d5c8e1bafa6ac3d8ac724593d120971fa4bddafa218db9da117ab69.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "let me adjust it for you": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/5a8e1746dc3f15e98f27badf1670c4a2af392fe7ba167891b6eef52be0cfa901.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "a panoramic xray": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/2240060b3be4a17afa66c0194df08e899cc3ce123264241264ab1f0c4ecfa525.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "place your chin here": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/88292bfa6f17dbb264c80bd253ee1184522f3d01cb78f25b51141e51ed5c48d7.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "the roof of your mouth": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/afea729e04501219fc32b5fc81393c4c598a0cf3b01779499ae1a0594bfe0baa.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "stay very still": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/2106649c827f7ed3198f260fdfdba48795624edb0a657042f2a474a29ca3bb68.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "rotate around your head": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/908e42cc3522fad8da42fdbe49c4be4180361ea892b5b4a4c21dfb17f3c440a2.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "clean your teeth": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/b4925a840df25a99ac4c2bb5abefccc6a3691140fa6360891784759c7ddece0c.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "need a break": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/bcf88d1fadb91677261ed17b060a7b50c2c7a0deb1921f4733def1bac6ceb7c9.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "raise your hand": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/be9db9411d40ac250d0de7ce694815151725f3c3a7803cb7b155ab909d489aac.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "open a little wider": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/fc2ed403efcb0c86dcb8cc9d49d2d7ee507ee88b523cf9c41393fbcbc139ba9c.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "feel a little pressure": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/26726cd0ca48d926439b688071148c4ab44ad7cb0b5e03240c0049b17af14fe0.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "rinse": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/7d535f27315c57ec3942c1af6056addcf57f09df9b7702a306561784bca24a99.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "polish your teeth": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/d1dd928b89515fdcdba8afc0716f1700969677ff4c41cee2ebc69454d15d450a.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "apply fluoride": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/fda97a4543baf60ff899f644a2517b07334158ac176d9345d7b5f4fe8ddba43d.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "dont eat or drink anything for 30 minutes": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/a3f7b26dcb576d9b6d892674bd4aa385f625086f7466f1ff56132795471d0bb3.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "numb the area": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/9667c766c433b3739356f5d65407e7e05e524b2f426483a478214d82d5c91848.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "feel numb": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/41ff1d7697dfae4eb3bddbc836aa5b09370828bcd5c001327e8dc616044c862f.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "feel a little pinch": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/b5f4a724256fcf5a1f11e316a589ea71bdd7bc825179a51147dd260bf72d4e48.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "remove the decay": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/71ccc16f8965f10134938f1f146f4d9aa4a19efff721e97af7e0a2232cb700d9.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "pressure and vibration": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/acefae12721f24f24171a98c6daee1692de6bb348bda84f5820068e570db0c35.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "place the filling": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/96dff89ebca7977ebf6247dcae80879521fb4a0c26c929eed1090fd2167eddf5.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "shouldnt hurt": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/c8d5885fff7fae4ad3f45185b43e0b65ec11254c97b9007a805bee5275eb9f8b.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "bite down and grind": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/d122b827444337841c92085af3a89ab0fb59d6467f2067aea5878781e60a3a2c.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "wear off": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/2aed482e9c67d6ec8e0604b38cd2c4ea45134616b71575f07979e5b4235aa464.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "bite your lip": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/54c29278c5e8e7c40aeaffc1788363cdc4d5ad0066a17665aef363192ccf1446.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "place an implant": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/f40db4f5568560cbb0bb52f551a82b77e9fa51b4d775c5efaa6a8d37eedc29cd.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "feel any sharp pain": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/8ae774b07eb7d88445d0a0fbf686ee09164b0285da84a91ee838254679393a4f.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "a small pinch": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/cc63b0937740e4e262e838dc87f3f14ddd7f8de1047d4c2884f6b7c213155f6d.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "completely numb": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/fffa393efa3715295ddd0ae1c83df54e0b7e45ea6933a96d39275aad4bbcf308.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "just pressure": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/fb28d678b28937da3de9bef4711d23201174274f0cca4f4815e4868d1bc86b73.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "close the area with a few stitches": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/39678f2d775fa96c469ff27f4d88575571505d3331c697ab21c0ea3ddb263b0c.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "bite gently on this gauze": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/3af2590ef792b972e11dde2d974a4056bde0e69f60415ca7a2648061c165d944.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "check the healing": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/12281fb24179a4333f43bc1974736db4229413500b08ffd940b2065b396d58e1.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "a dull ache": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/a100e000964358bc26c8cf75e35a0ea374066afdada152bbc14c0eb9755d85fc.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "throbbing": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/82c25c1d817760f9b0cbbf2f5953a24d08d44ce9c852791d1daf73e037a05455.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "bite down": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/1794a236d1ce341d7f348c60f1a3ad7c7320b96a30ad8c05d952fa82c9dedb91.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "sensitive to hot or cold": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/b5914210ed671e283480b3c249627f03310a00d24b838f9ed79a97bbbc5f396a.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "trigger a sharp pain": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/1e871a6ee79f44b2b036353b77f43eb78ed16b49545eff1b21cc2cbcc1e24c4e.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "linger": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/7d21b3384028efa0e6414090a0f14f953d09223c338da9860bd57b039984c5fe.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "swelling": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/a40c2e8d54e6e05624a813d774b6f59766c187bf6cd673ea6a142faf70938d88.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "a deep cavity": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/d6fa335286beb048c14a4280c1588785af6e782ad348d59a0ad6e54fff5b4c30.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "reach the nerve": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/3e81d21459ce9b5b45edcdffcf18a90db368379bb256b3afba34779360e4662e.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "a root canal": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/24e8b71188aab67566786e5f128635e0634d8d6c2f17da592621a938e12164fb.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "covered most of the cost": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/51381c44e5d04b359e6aff612497c4ceadd453b7b0fdfbae129ca04624d9573f.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "remaining balance": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/8bcf6b590859c7060cf264d881cb63f5075e34eae40e7ab24a4b64587b9aacc1.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "pay by credit card": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/2f2b08fdc8261fdc311f578c5ce0cc32f4b2b015e01ed13be11b759d6ecc6362.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "youre all set": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/881f9a1b9196a275ebc44bb1dda30a2adc34e7bd41d34895c7667984ecf84209.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "a checkup and cleaning": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/163620364ffc2891c4449e9411cadd6aba2e2dae3b688ee4e32d0c15fb042eb1.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "in six months": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/91a6f13e1a1fae0a964a230087ff1ca87b546fd192466b32b00fd3429e8f7dd1.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "youre booked for": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/67678e7f9f90dd6d6af9ee30e192e2a03edf69db5ef58a65e924475e9a908509.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "send you a reminder": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/3e28a314e214808dba09791e23077e8d3cee6540c950ed920beaf83a768e8be8.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "ask about braces for my son": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/35cbdb12cf0a3d58c3a5335a0c6be86db7904d5af2a54a364dcf7dad6724a6d9.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "his teeth are crowded": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/8ec53015c6b43e6860c5c7cb53f16b790dad73048c7896cfb6ab8be838a6a01d.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "does insurance cover orthodontics": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/9ce6ef08fdda05e7f4626fc0e49877f31878a62a3d9de3a478a816cde7182b2b.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "coverage depends on your plan": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/8b47b2c1d897bc9ce0d1af870f017e49afc4ee18949251542b672bcf6a5c4ce8.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "give you an estimate": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/d7e2fb9144ad89e7354d7f0df45b7ef077b7731850e549753d29af93750d0ac2.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "how much would it cost": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/046d8dc8bd00e9e977be607387a1fe2884c8892392a048168aeb016fc1e3a9d0.mp3",
+    "voice": "Lumi",
+    "style": "Podcast (Calm, measured delivery)"
+  },
+  "thank you": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/86a40dd0c68e57f5a343381f43712e69318c4fdee973a42b99eaaf3d8b752c41.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "of course": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/380ebed29e965754f0ae415017038cd6dbed1cd9dd5e086d0742b044e133b47a.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "you can": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/263eeaeef0615d77adfe3f578327a93b890ced98a2202c263f842bca85a664a0.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "thank you for": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/7f16eeaf80c9edbbfe35db16504981da5eaaef131bf6a8aea029d32e8604f656.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "got it": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/516e5bf42b931d2035f75e98340a34e9ce48079aacf6a7daa06f2c6737d6ad5f.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "do you have": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/38d509255bdb845887779ad382b9cbbcf694d8ef749400b118c40779e03b6e5c.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "thanks": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/d74bc0eb1ee8ebce895140e769831485b0ece1c39cc236b9925922b3209ba219.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "no problem": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/8d4b0204d4710e1aa4fa1aa723a4744b009e15a4ffb962f68238f274fc734a82.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "have a great day": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/7454a45f14aec2c7c14cc9b3f1baef7deaea59c0ff825754516cdb300fd87db5.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "have you": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/2afc0373a4fe004b86766a843e58b589dfadc07ce1fa269909848de8d69a16ce.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "how can i help you": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/6845786b9cfd6ce5b16e7b7df3d8526f55091253443fae9ff5415993c47358f8.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "let me": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/cf57f3fa7bdaacc439cec63e0eb37f6c8599b91c914b5dfe399ec489111a25a3.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "you too": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/dfae2fc365058f611e2de63b508da4e2e093dbebe1d3b342b6e59081f38e38fc.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "are you": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/c47515d0ee2e17980ef385d2dfc8102e87c6033c843993adebeffdc901520a2d.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "im going to": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/40b48534d569f29234dff53a35edd78ad99deecf98aac99636b5452583650f16.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "id like to": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/a1a6ae6d7c1c18928eed0621507262ed2f2336af68db7888caf6ced550abd780.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "is there anything": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/8d78412befbbab2617f1e2da836e606f82815996b371dc4ebdda3d7faf0402a4.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "can i": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/73b8c9cee6f0657a781ef0fb1a19a92c6b3b1afea63a25ae3f7c7d2f78253c97.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "ill take it": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/efc509c39e5a7eb315c99af99301670e09f10c47c8f705080b10dcf65eec2db8.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "could you please": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/1d1a6d3e93ca9d965e84daa954bed981526577512c8487f1983d0991ab1b0568.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "im sorry": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/a47bd0ee7f9c371e9a3ea2fa87978af84c49658c2b6d6e04dea504c995eb8599.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "hi there": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/59b750f9df8709a9cbb703f78cfdb8561157b1a5252d3e4abd504fd09519fa41.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "is it": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/d7fdf49362ceea1589ba5339ae277caeb33286ed6eb4858dc87e7a7bd133c35f.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "can i get can i have": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/090569b71eb3a9db2194326fbc566d0389f48ccc7f71b5f7356fc39f29e23b87.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "here you go": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/fe152085632c47f08c921f7f4b8e6cda160c8890e0152f02d2b4e4b0866cc5f2.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "how much": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/9a740b0f62895eed21098da2e781cd51376855d5a7eddf0d7f6e38f64a6f838b.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "i think": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/bed7e214bec7ef9af3b9ef216efc72e6582dedb66c291c6faafa546df4d7de13.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "is there are there": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/bd14fbfee37f349d7bc1c5c99d6dd60504a249aa0acbab8c233b1ecfc054b799.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "all set": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/bec178c7cab37cf0757333ee78ef5b895ee6254e0486c11bb7ed47b96782362e.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "would you like": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/71d7524541d81277d895b75a468d8e480849f159e78879ec88437484df49402b.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "how long": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/e031c658e21bfa2b8b7eabd99ac404cef94e27031e816906111f14a1015edd28.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "nice to meet you": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/12886fccdd9bf114fe39f3f6418062ad65c92ceaad9cf37fd7578529848efd6b.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "yes please": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/0d34651b6cfd83c0f4372f27a482af104113b6de101b98629886dd08267be55e.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "can you": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/1de06b746734a34dc320de8236be9059908915bcd42b417711fb544b9f5e6ef1.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "do i need": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/0abf547b89cb819b1654561fac735c2e9957e447ae1269dc255628e32c86079a.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "i see": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/861e3a6647d18442b9ca073d23dede559f236a98efe0a99ed88f1c50869b035c.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "heres your": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/b13a67da43d656889699532829fd21a4088c2587d62084a8948b5d1e6f77a5be.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "ill pay by card": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/bfeca354c2389155f8b3e9c2248ecaa1278d0ac78490d378ee6d37e31f8d2beb.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "ive been": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/aa86a767019164a18f47d1834308a3ad2bb1282ed60f1130621c7d5b720f5200.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "let me know if": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/0140bf1dd432ea6e2bbcf63588b0ab08edf2eba6226f0cf6ce3bdd4568e49dae.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "its been": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/3aa5e3ae31684c6eb78cf7cf93dad84d2df7ca755725096b09e2c31471a26af4.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "not yet": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/c5e8a5006c19aa80c0fda6c8932be2fa8b2afcdbd79ecb0ca6618a8ea6568ef9.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "looks like": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/e5820661d6c6438186521e51638b06e51eadbe2614319562356aaa13fe56f9a7.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "that sounds good": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/e4df85cda19f886ce39859ba06acf024b9016c59f7d9fd99372a5ee4d3b3ec5a.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "all the time": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/da9b5bc8f866af5f03bd212aa18b2347a47b3315abf2f3b133bbfbb5d0cd5de8.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "keep an eye on": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/880480a7b67cf2d7d3615cf6b1f93365e3313d42fd926b11cc47978db2124632.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "a couple of": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/89fe32bac8f3789c2dab4f3ea49b2cc6aabf989bc863ca49df9153122b087c65.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "all done": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/0ae02fa47b0802716d48b1908560b455ba0d45c6460a9a66a2368125a435c20a.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "a lot of": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/a2743ccb0295d8261d255bd5b560ff2665fe138eb859570115cb31a93e14e4bb.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "can i see": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/05708ae458a39199f6e46f76e078c0ec319747da95a694e19930d8af57be7eda.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "anything else": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/1a1fed9068c4dc727c8c5ec7293477d6ec2a0faf3f2cb3c1b29798882daaedfa.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "did you find everything you were looking for": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/bd74ea690328e61e2ac76c4073bf8a166c833ce347cda84c10da39d5d74a80b9.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "do you need": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/8044fd965dd3c9562061517cc35255e76897d6c248e015b6775b4621e3289811.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "does it": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/2f150ed8b0c4868b07739e6d28563977249ca9fa0fb70b9763d3dd701460ddc3.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "good morning": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/c3d7b9682aeb9e444bf8d37e426e2e73e30667563954186b618f2224db51aa44.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "excuse me": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/6cf45bafd11575cc03cd8244b7fc75915370ed86a87b92483061a6367b252c7d.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "how would you like": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/959e72f7e9bb5abc36a26bab3328d2d95854c1e9fece39a31c070af149e685a5.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "id like": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/c9f60f538850ec05ebc39377fb6538c073a1d67c22502a3b0d2ceffdbee86e66.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "is that": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/3e24c05b77cefa315378eaaf85fd17f55d435d8bf809133d6a47859a7cb9634c.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "its my first time": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/3c00af731f245635cacd139951bb02004e8a30d4a10537281070875e067a848a.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "please bring": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/c196422b7e457420e17e6002bdc3228a82f4ad32f413470e061be966376e7809.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "should i": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/af42b75409bf32e702a0a9f50f55c254f31fafee154e33615a267b492742dd64.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "what kind of": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/1b963a3f0a709af1122e35f92f1f0bd2c74d5d0436103fc674313fe4d258533f.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "what time": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/b501a2ef38b731b4bc31738812b86898a9753869dca9e3390726a3ae8989ccf2.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "whats the difference between": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/23bbe4d16904683785247c9bb4318671867e208bd1a6b1abf57151e5df4cbff5.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "which one": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/8d5dcead2860cee1acd4bef8c3ef074f19eaca2006464f38589e93d2f526d5f3.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "could i get": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/8541900856610766d113b504c688b4524307c66e0382c1b3c46f514cbe8d0b01.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "you should": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/e2d419ece0b3ec4e97ae41fd39b382e7403f27d60391c6af80e23d3db1448601.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "are you looking for": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/f3a561ad5f0ed59b1ddbc2ce5a04184c3796a26323cfbf0da0144ff581b2cc24.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "do you think": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/50d803caa24bd0de1c81348780c81fec8f0f9bc40336894fe8554f20d8241570.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "enjoy the rest of": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/5375409127f38c44fa78369676e1ca74ded560647221521b7f86e8322270168d.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "for the past": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/b08268ca0f1d4e7eac884595e552ee1b125a74cfc78960d04afacefbdb1f3a6d.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "give us a call": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/3a95dba55fdfd7fcbedc9236fc6cebc6dc9ba37b8a8779a86416cea04b5a3cf0.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "good to know": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/e545823814dfcb8c92aae621a8fb4902223394b36c64f94ad97941ac723005a3.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "good afternoon": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/c2d39e1bd9817ba6323e1b9503d9d69866d5e558f2b27e21b92525036cd4da67.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "how are you": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/ae1fbc2f995f26001cb89d37bcf284c7e6fa9c0a839a057371266c3727c12e7a.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "hows your day going": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/0ae0b9b401499627789308bca48f159cccf165ff651b238ad9df21224caf5852.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "how about": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/1d3d38abd485a2c7f4497b72ae3b2952678852963c35597ae25bdf0ddd771415.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "i have an appointment": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/fe39989724e8da9910585a4c361572645d2c85cbe6d1019ec5f38a656776fef2.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "i need to": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/a3ef29de39838aa21b28c72babb8801f6012bf6426e7e30a5a6baf1101647ea6.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "ill have": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/4419205c42ae90d56e4c002c90e6a6315754e50f7493e9dfbc5462ef71796168.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "i wanted to": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/359466b7a78667b51d793a1a949a12959c946caa34e96643c612090987edd914.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "ive had": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/2e664f71556737b348482c7a321bd50d5914a738447bc4569337eccd300d8dd8.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "im looking for": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/02c303785ca0efbc274c0c342b6ba96637c9df593f85aa1534ca20da38215a31.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "it depends on": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/fb0583789078cc876af32fed867f2ade4d9413dd6abf9419b23e051880c73afe.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "it feels like": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/2764f9039616fff17522b3add595097c3a4c6f6abd565983bc1157ae70b05668.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "let me take a look": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/bf6763834362df706af74f429cc5ffe60054c8ae777e0c846accdcafaace86bc.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "let me check": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/94afda2c51926fe0ced161962d1f04c65f8f2c197a66fcc3558ac688feba0b2a.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "make sure": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/cdba16af1eda6b1bedeb4c25f5a589bf9a68554c53a45582b7e8ef0f802af397.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "may i have your": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/b239b5faae855452eec71696a1ec83270cecef38d66ebac28e09922b43514473.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "may i": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/098def9cc904ad561de79a1f77851a4bd49a982e36d0f0620368b0f5b992f6b4.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "no worries": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/542316544619a9dc819ce3c1fa434e73d8b017079e6d7f97f0eba1f18fee98ac.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "im calling about": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/13eb03bfc85b8dae955e72dc3f650254dc2463215957ee9c6eece6aa226d1c96.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "no thats everything": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/7e8eceb7cd7555c43840d1b172d24bc633e598c2dd687c5b24bfc8fc0efefc78.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "not right now": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/a2877941f1c8e878ef937e941fd8c2e49f419f95798ed452ce20e469144d1023.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "same here": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/50af18149706061624e385d35a15be0b505ec17f2fe0cde932ffd6d53d9ed803.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "see you around": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/dd1933729d32955348ec2a8ef3cf1b0888b20ab3188fd04f449b77ea8bcf203a.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "shall we": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/22b41a53bdc43bfa4d18968c9a158226a2d6a665fb9cfb0d7c8b7234622b8f65.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "thats good to hear": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/36179c5d5a201b414c9294ae9ac6be8459ea89bcc22e7c71496b460965e97bb1.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "try not to": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/9ea6eb5b4c88bc120acc43272108cfd020f20ffc7f0d16c8ba699ac024495a0a.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "well call you": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/b6102f0a43165a16679f75bc7f98cc12cb71b651a4cb4477357ea14299eb43f8.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "what would you like": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/d94b40726f7487478988a496024b01a1f788c15b91cc051990c559e3c32ac5ff.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "whats the": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/e37e0f1629336f2c6908e8510a466daf2281be5a0bb7931861ccf0306eaad2f2.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "whats your": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/de98cd224f5dc0b5db45731b0174cfe88ec43dac512ccd5593810b160695f849.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "when did": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/1a62aedbcd24fe8b553aa3a772631a33bc18e25b0198f2d89c962870f3df9c4f.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "when should i": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/14f142c315c6e934fd0b190bbe91f651feb6b08896a415eaf3c24a2fed02bea5.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "you may feel": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/c4dcb7810a47df9497ee72cffc813f203e14d518b4b586168ebfca67bc043b5b.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "can i pay by card": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/d7cb1177b56936627d31ef434ded03ee7ddda986303278391dd03399bc674d28.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "what brings you in today": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/b4a6ce76c97a49b52666ba36a0e0963818d23be1a5ed38de54e1e1dfc0a0858e.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "where will you be staying": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/66f2c7f1210d22fbe846640f3eaea649cfaa0fa72cc0088f780a0d5632d32bd1.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "ill let you know": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/aac7ec7f7c6a4d04d740e87672bc4071b3f837b2f8f47fada96adb1e681b2e6a.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "how is he doing": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/ef4124c442df12b7c59e0ec36e90043376c413f8de39ba5c77f6b4e6f2d15a48.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "what are you looking for": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/5f5c25b1ccbc49b5a059ca1a5b06118511db6339a8e5c7bc16bd88cbcab4d736.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "give it a go": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/978a75e0afcd502faa09afa3d2d453a685171acd2711b32f544f13e58bc18f68.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "how did everything go": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/8a305ce70f825970eec33e4126da95186656cbaca6a4f0e5f1b68f187baba1aa.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "could you repeat that": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/c935f8544066a82b442219e2c9b1d8142eb49106663b1156b8d1c94f6899d7ff.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "i was just about to": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/35535630c621e3296eb9b7ce10714f4e8e7670c7474f25939fb106dd8c9c3392.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "health card": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/932997a265eedd380dd676fb8d42052eb0078ef41ad2163c334e5b541b98ddb5.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "pick up": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/6c7156646389e0d92eaaf428b9c42bd13c5dd8f4fbe362ee99302bf76bfdfff5.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "business days": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/19bd974a7e3e49c77309afac6c817565277c812583a90508b450577b53ab3e40.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "check in": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/55e3f78ace83bd36811db1e13be721894b995f6e5b418b7bf8e80fba6d4e4e34.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "fragrancefree": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/01429775ea6b25258ec9577d1cf1775a35b28db6653d23fc268e39297a60f0fa.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "try on": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/c8ea53b1cb3d2c156c344ce7a97b49096e25bf59cdf2853bfc5017d62047f7e6.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "sold out": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/b348b20ad0b652532596d4be419b4bccfb48752a2933fd139c18043e497824fd.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "by the way": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/1868a43607cd629405265ca9410aada9f45847f29193f4d8809aedac2b625ce3.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "a name for the order": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/7a43c55960c969530162b13b5e197031ccb2f41f625b59d2f0cc450a48e04fcf.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "fall behind": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/2f66ebd94deee96a5fe51a47a73236991f9d967d38ec2df3fd7c610a9c018e9b.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "fully booked": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/b156e8ce976228f587196294a873d248a98e7505185428d0645bd462acb05c39.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "get used to": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/28c92d2a3d18636402d1fe8bc04b45ff9e4db7478a848116a7bfd958095afb00.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "loyalty card": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/276f6d1eb67d7bd9ba550e0887fd0952692b785b65a215bfb9c2e1e412934ce5.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "on sale": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/8ed2fc9931238c554f9e0b0e1e1d3d6f15793c8e3432766dcc3b91c66b409943.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "original payment method": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/fc3d19ba1c0711e46bbc5956c591d0abfa9f4f6a4012f79393e44a61caa55607.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "photo id": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/49843f85783e45ab77c7cdbe3c5fee1f2c4d460b4258347b061ccc30e5559301.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "reading comprehension": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/b275707f1e47a31cccd796c9fcfd8bf11bf39fc3da27acc5ae208dd1de0789dd.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "sign up": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/7ec6ec5166876385f2e752f1dd7ba8fa9fa15683003e274ac39e75ff25049f71.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "sharp pain": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/17a658b6c9d995064d883e7076d2c3d807163496a4f8fd9c84eb8483d148491b.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "sale price": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/db588eb2bbf4cd067d6e7253e093bd40581d44f3250db9da19ca473070c18bdd.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "allergic to": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/529b5cbecbae1cbe4b63e7ba42b147f2307118f99bb8f2687c7636857ba7a05a.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "back in stock": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/9fb99f6423bb8ffde8d000196573eb233526554b4bc7c355396db04370691e4f.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "blood work": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/06a34817715733c92c98d72a08ab1ff8f2ae87ddfaef214dd4d39bcb9980e4c3.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "just in case": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/a818f2fca0bf03a619695b218cd8efeb081ee9fad1bfd65a3bac9892abd75fb2.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  },
+  "drink plenty of fluids": {
+    "audioUrl": "https://go.learnyzenglish.com/content/tts/staging/kore-podcast-lufs16-v2/640e54060dd1bb79c5b3de37f56e5b46e341e72b02e1464e4d19bc9d2c683315.mp3",
+    "requestFormat": "verbatim-speech-metadata-v2",
+    "voice": "Kore",
+    "voiceId": "Kore",
+    "style": "Podcast",
+    "model": "gemini-3.8-flash-tts",
+    "loudness": {
+      "integrated": -16,
+      "truePeak": -1.5
+    }
+  }
+}

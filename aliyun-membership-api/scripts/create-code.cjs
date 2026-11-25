@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const { keyedHash, normalizeCode, randomId } = require("../src/security.cjs");
 const { OssMembershipRepository, createOssClient } = require("../src/repository.cjs");
+const { deviceLimit: DEVICE_LIMIT } = require('../config/membership.json');
 
 function arg(name, fallback) {
   const index = process.argv.indexOf(`--${name}`);
@@ -15,8 +16,8 @@ async function main() {
   const plainCode = normalizeCode(arg("code", `YZ-${randomId(12).toUpperCase()}`));
   const expiresAt = type === "founder" ? null : arg("expires", "");
   if (type !== "founder" && !Number.isFinite(Date.parse(expiresAt))) throw new Error("--expires must be an ISO date");
-  const maxDevices = Number(arg("max-devices", "2"));
-  if (!Number.isInteger(maxDevices) || maxDevices < 1 || maxDevices > 10) throw new Error("--max-devices must be 1-10");
+  const maxDevices = Number(arg("max-devices", String(DEVICE_LIMIT)));
+  if (maxDevices !== DEVICE_LIMIT) throw new Error(`--max-devices must match the shared device limit (${DEVICE_LIMIT})`);
   if (!process.env.MEMBERSHIP_OSS_BUCKET) throw new Error("MEMBERSHIP_OSS_BUCKET must be set");
   const client = createOssClient(process.env, process.env.MEMBERSHIP_OSS_BUCKET);
   const repository = new OssMembershipRepository(client, process.env.MEMBERSHIP_DATA_PREFIX);

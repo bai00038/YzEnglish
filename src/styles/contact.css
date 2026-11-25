@@ -1,0 +1,41 @@
+.contact-page {max-width:760px;margin:0 auto;padding:34px 20px 56px;color:var(--foreground)}
+.contact-intro {margin-top:12px;font-size:15.5px;line-height:1.75;color:var(--muted-foreground)}
+.contact-section {margin-top:30px}
+.contact-section-heading {display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:12px}
+.contact-section-heading h2 {font-size:17px;font-weight:700;color:var(--primary)}
+.contact-section-heading span {font-size:12.5px;color:var(--muted-foreground)}
+.contact-card {background:var(--card);border-radius:22px;box-shadow:0 1px 2px #12332508,0 10px 30px #12332514;overflow:hidden}
+.contact-human {display:flex;gap:20px;align-items:center;padding:22px}
+.contact-human-qr {flex:none;width:152px;height:152px;display:flex;align-items:center;justify-content:center;padding:8px;border:1px solid var(--border);border-radius:14px;background:#fbfaf6;isolation:isolate}
+.contact-qr-image {display:block;width:92px;height:92px;object-fit:contain;border-radius:8px}
+/* Blend the original QR image’s white paper into its frame without altering the QR asset. */
+.contact-human-qr .contact-qr-image {width:100%;height:100%;mix-blend-mode:multiply}
+.contact-human h3 {font-size:16.5px;font-weight:700;color:var(--primary);margin-bottom:7px}
+.contact-human p,.contact-qa p {font-size:14.5px;line-height:1.75;color:var(--muted-foreground)}
+.contact-human b,.contact-qa b {color:var(--foreground);font-weight:600}
+.contact-add-button {margin-top:13px}
+.contact-qa {padding:4px 22px}
+.contact-qa-item {padding:16px 0;border-bottom:1px solid var(--border)}
+.contact-qa-item:last-child {border-bottom:none}
+.contact-qa-item h3 {font-size:15.5px;font-weight:700;display:flex;gap:9px;align-items:baseline}
+.contact-qa-item i {font-style:normal;flex:none;width:19px;height:19px;border-radius:50%;background:#eaf4d3;color:var(--primary);font-size:11.5px;display:inline-flex;align-items:center;justify-content:center;transform:translateY(2px)}
+.contact-qa p {margin-top:6px;padding-left:28px}
+.contact-socials {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:22px}
+.contact-social {min-width:0;border:1px solid var(--border);border-radius:16px;background:#fbfaf6;padding:16px 10px 13px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.contact-social b {font-size:14.5px;font-weight:600}
+@media(max-width:480px) {
+ .contact-human {flex-direction:column;text-align:center;gap:16px}
+ .contact-human p {text-align:left}
+}
+
+@media(min-width:768px) {
+ .contact-social {min-height:224px;padding:24px 12px;gap:16px;justify-content:center}
+ .contact-social .contact-qr-image {width:140px;height:140px;max-width:100%}
+}
+@media(max-width:767px) {
+ .contact-socials {display:flex;flex-direction:column;gap:0;padding:0 20px}
+ .contact-social {flex-direction:row;gap:24px;padding:20px 0;border:0;border-radius:0;background:transparent;text-align:left}
+ .contact-social+.contact-social {border-top:1px solid var(--border)}
+ .contact-social .contact-qr-image {flex:none;width:112px;height:112px}
+ .contact-social b {font-size:16px}
+}

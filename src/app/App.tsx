@@ -1,3 +1,7 @@
+import { PurchasePage } from "@/app/pages/PurchasePage";
+import { PaymentPolicyPage } from "@/app/pages/PaymentPolicyPage";
+import { PaymentReturnPage } from "@/app/pages/PaymentReturnPage";
+import { legacyLearningLocation } from "@/data/site-routes";
 import { ScenePlaybackProvider } from "@/app/components/ScenePlaybackProvider";
 import { MessagesPage, MessageDetailPage } from "@/app/pages/MessagesPage";
 import { useState, useEffect, useRef } from "react";
@@ -22,6 +26,11 @@ import { MembershipPage } from "@/app/pages/MembershipPage";
 // but a browser Back/Forward (POP) restores the scroll position the user
 // had on that page, keyed by history entry so it survives Explore <-> scene
 // detail round-trips.
+function LegacyLearningRedirect() {
+  const { pathname, search, hash } = useLocation();
+  return <Navigate to={legacyLearningLocation(pathname, search, hash)} replace />;
+}
+
 function ScrollToTop() {
   const location = useLocation();
   useEffect(() => { stopKitAudio(); }, [location.pathname]);
@@ -99,13 +108,18 @@ export default function App() {
           <Route path="/free-trial" element={<FreeTrialPage />} />
           <Route path="/collections/:collectionId" element={<CollectionPage />} />
           <Route path="/kit" element={<KitPage />} />
-          <Route path="/membership" element={<MembershipPage />} />
-          <Route path="/membership/scenes" element={<LearningScenesPage />} />
-          <Route path="/membership/completed" element={<LearningScenesPage completed />} />
-          <Route path="/membership/vocabulary" element={<VocabularyPage />} />
-          <Route path="/membership/learned" element={<LearnedPage />} />
-          <Route path="/membership/messages" element={<MessagesPage />} />
-          <Route path="/membership/messages/detail" element={<MessageDetailPage />} />
+          <Route path="/membership" element={<PurchasePage />} />
+          <Route path="/refund-policy" element={<PaymentPolicyPage kind="refund" />} />
+          <Route path="/terms" element={<PaymentPolicyPage kind="terms" />} />
+          <Route path="/payment/return" element={<PaymentReturnPage />} />
+          <Route path="/membership/*" element={<LegacyLearningRedirect />} />
+          <Route path="/my-learning" element={<MembershipPage />} />
+          <Route path="/my-learning/scenes" element={<LearningScenesPage />} />
+          <Route path="/my-learning/completed" element={<LearningScenesPage completed />} />
+          <Route path="/my-learning/vocabulary" element={<VocabularyPage />} />
+          <Route path="/my-learning/learned" element={<LearnedPage />} />
+          <Route path="/my-learning/messages" element={<MessagesPage />} />
+          <Route path="/my-learning/messages/detail" element={<MessageDetailPage />} />
           <Route path="/resources" element={<Navigate to="/explore" replace />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />

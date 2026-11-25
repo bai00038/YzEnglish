@@ -5,6 +5,8 @@ import { LoaderCircle, Volume2 } from 'lucide-react';
 import { loadKitAudioIndex, loadKitCatalogue, loadKitClipsIndex, type KitEntry, type KitOccurrence } from '@/data/kit';
 import { findKitWordMatches, kitLookupExamples, type KitWordMatch } from '@/data/kit-word-matches';
 import { playKitExample, playKitTts, useKitAudio } from '@/data/kit-audio';
+import { useMembershipAccess } from '@/data/membership';
+import { MembershipUnlockModal } from './MembershipUnlockModal';
 import '@/styles/scene-kit.css';
 
 function ExampleAudio({ occurrence }: { occurrence: KitOccurrence }) {
@@ -25,9 +27,9 @@ function EntryDetails({ entry, occurrence, audioUrl }: { entry: KitEntry; occurr
   const exampleActive = Boolean(other && audio.id === `source:${other.sceneId}:${other.anchor_start}` && !audio.error);
   const ownError = audio.id === `tts:${entry.key}` || (other && audio.id === `source:${other.sceneId}:${other.anchor_start}`);
   return <>
-    <KitLearningActions entryId={entry.id} sceneId={occurrence.sceneId} />
     <p className="scene-kit-category">锦囊库 · 词汇</p>
     <div className="scene-kit-title-row">
+      <div className="scene-kit-word-heading">
       <Dialog.Title className="scene-kit-title">
         <button type="button" className="scene-kit-title-play"
           aria-label={`${ttsActive ? '停止' : '播放'}单词发音：${entry.text}`}
@@ -40,6 +42,8 @@ function EntryDetails({ entry, occurrence, audioUrl }: { entry: KitEntry; occurr
         onClick={() => { void playKitTts(entry.text, audioUrl); }}>
         {ttsActive && audio.loading ? <LoaderCircle size={19} className="animate-spin" aria-hidden="true" /> : <Volume2 size={19} className={ttsActive ? 'scene-kit-speaking' : undefined} aria-hidden="true" />}
       </button>
+      </div>
+      <KitLearningActions entryId={entry.id} sceneId={occurrence.sceneId} />
     </div>
     <Dialog.Description className="sr-only">条目释义、发音和原声例句</Dialog.Description>
     {entry.phonetic && <p className="scene-kit-pronunciation">{entry.phonetic}</p>}
@@ -61,12 +65,14 @@ function EntryDetails({ entry, occurrence, audioUrl }: { entry: KitEntry; occurr
         <ExampleAudio occurrence={other} />
       </li></ul>
     </>}
-    <p role="status" className="scene-kit-error">{ownError && audio.error ? (audio.error === '短语发音制作中' ? '单词发音制作中' : audio.error) : ownError && audio.loading ? '正在加载音频…' : ''}</p>
+    {ownError && audio.error && <p role="status" className="scene-kit-error">{audio.error === '短语发音制作中' ? '单词发音制作中' : audio.error}</p>}
     {otherExamples.length > 0 && <p className="scene-kit-hint">锦囊库里还有 {otherExamples.length} 句原声例句</p>}
   </>;
 }
 
 export function SceneKitText({ text, sceneId, anchorStart }: { text: string; sceneId: string; anchorStart?: number }) {
+  const { isUnlocked } = useMembershipAccess();
+  const [unlockOpen, setUnlockOpen] = useState(false);
   const [entries, setEntries] = useState<KitEntry[]>([]);
   const [audioIndex, setAudioIndex] = useState<Record<string, { audioUrl: string }>>({});
   const [selection, setSelection] = useState<{ match: KitWordMatch; anchor: HTMLButtonElement } | null>(null);
@@ -89,6 +95,10 @@ export function SceneKitText({ text, sceneId, anchorStart }: { text: string; sce
     return () => media.removeEventListener('change', change);
   }, []);
   useEffect(() => { setSelection(null); }, [sceneId]);
+  useEffect(() => {
+    if (!isUnlocked) setSelection(null);
+    else setUnlockOpen(false);
+  }, [isUnlocked]);
   const matches = useMemo(() => findKitWordMatches(text, sceneId, anchorStart, entries), [text, sceneId, anchorStart, entries]);
   useLayoutEffect(() => {
     if (!selection || mobile) return;
@@ -121,11 +131,13 @@ export function SceneKitText({ text, sceneId, anchorStart }: { text: string; sce
       aria-label={`查看词汇：${match.entry.text}`} aria-haspopup="dialog" aria-expanded={selection?.match === match}
       onPointerDown={event => event.stopPropagation()} onKeyDown={event => { if (event.key === ' ' || event.key === 'Enter') event.stopPropagation(); }} onClick={event => {
         event.stopPropagation();
+        if (!isUnlocked) { setUnlockOpen(true); return; }
         setPosition(previous => ({ ...previous, ready: false }));
         setSelection({ match, anchor: event.currentTarget });
       }}>{text.slice(match.start, match.end)}</button></Fragment>;
   });
   return <>{parts}{text.slice(cursor)}
+    <MembershipUnlockModal open={unlockOpen} onOpenChange={setUnlockOpen} />
     <Dialog.Root open={Boolean(selection)} onOpenChange={open => { if (!open) setSelection(null); }}>
       {selection && <Dialog.Portal>
         <Dialog.Overlay className="scene-kit-overlay" onClick={event => { event.stopPropagation(); setSelection(null); }} />

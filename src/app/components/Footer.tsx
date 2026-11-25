@@ -1,11 +1,13 @@
 import { Link } from "react-router";
 import { useSyncExternalStore } from 'react';
-import { Music2, BookMarked, MessageCircle } from "lucide-react";
+import { Music2, BookMarked, MessageCircle, LockKeyhole } from "lucide-react";
+
+import { useMembershipAccess } from "@/data/membership";
 
 const SOCIAL_ICONS = [
   { label: "抖音", Icon: Music2 },
   { label: "小红书", Icon: BookMarked },
-  { label: "微信公众号", Icon: MessageCircle },
+  { label: "视频号", Icon: MessageCircle },
 ];
 
 const DESKTOP_NAV_QUERY = '(min-width: 1024px)'; // Matches MobileNav's lg:hidden.
@@ -16,6 +18,7 @@ function subscribeToDesktopNav(listener: () => void) {
 }
 
 export function Footer() {
+  const { isUnlocked } = useMembershipAccess();
   const desktopNav = useSyncExternalStore(subscribeToDesktopNav, () => window.matchMedia(DESKTOP_NAV_QUERY).matches, () => true);
   if (!desktopNav) return null;
   return (
@@ -26,7 +29,7 @@ export function Footer() {
             <Link to="/" aria-label="Yz English 首页" className="block w-fit">
               <img src="/yz-english-lockup-v2.png?v=0b159232c140" alt="" width={578} height={179} className="block h-auto w-[164px] object-contain" />
             </Link>
-            <p className="mt-2 text-sm text-white/60">真实生活里的英语，先排练再上场</p>
+            <p className="mt-2 text-sm text-white/60">深入真实场景，摆脱口语困境</p>
             <div role="img" aria-label="Real scenes for real life." className="mt-5 w-[280px] max-w-full bg-accent"
               style={{ aspectRatio: "1844 / 853", maskImage: "url('/yz-english-slogan-transparent.png?v=b713fc61ce86')", WebkitMaskImage: "url('/yz-english-slogan-transparent.png?v=b713fc61ce86')", maskSize: "contain", WebkitMaskSize: "contain", maskRepeat: "no-repeat", WebkitMaskRepeat: "no-repeat" }} />
           </div>
@@ -34,8 +37,8 @@ export function Footer() {
           <div>
             <p className="mb-4 text-xs font-medium tracking-[0.28em] text-white/50">导航</p>
             <nav className="grid gap-2.5 text-[15px]" aria-label="页脚导航">
-              {([["首页", "/"], ["场景库", "/explore"], ["我的学习", "/membership"], ["免费体验", "/free-trial"], ["关于", "/about"], ["联系我们", "/contact"]] as [string, string][]).map(([label, path]) => (
-                <Link key={label} to={path} className="w-fit text-white/85 transition-colors hover:text-accent">{label}</Link>
+              {([["首页", "/"], ["场景库", "/explore"], ["锦囊库", "/kit"], ["我的学习", "/my-learning"], ["关于", "/about"], ["联系我们", "/contact"]] as [string, string][]).map(([label, path]) => (
+                <Link key={label} to={path} className="flex w-fit items-center gap-1 text-white/85 transition-colors hover:text-accent">{label}{path === "/kit" && !isUnlocked && <LockKeyhole size={12} aria-label="未解锁" />}</Link>
               ))}
             </nav>
           </div>

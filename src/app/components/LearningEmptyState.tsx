@@ -8,7 +8,7 @@ const content: Record<EmptyKind, { title: string; description: string; href?: st
   completed: { title: '第一集学完后，在这里相见', description: '学完的场景会收在这里，随时回来，再练一遍。', href: '/explore', action: '去学一集' },
   vocabulary: { title: '把想记住的词，收在这里', description: '收藏的词和听写错题会放进生词本，方便随时翻卡复习。', href: '/kit', action: '去锦囊库看看' },
   learned: { title: '学会的每一个，都留在这里', description: '已学会的条目会保留在这里，也可以随时恢复学习。', href: '/kit', action: '去锦囊库学习' },
-  messages: { title: '暂时没有新消息', description: '学习提醒和全站公告会出现在这里。', href: '/membership', action: '返回我的学习' },
+  messages: { title: '暂时没有新消息', description: '学习提醒和全站公告会出现在这里。', href: '/my-learning', action: '返回我的学习' },
 };
 function EmptyIllustration({ kind }: { kind: EmptyKind }) {
   return <svg className="learning-empty-art" viewBox="0 0 220 156" fill="none" aria-hidden="true" focusable="false">

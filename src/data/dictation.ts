@@ -22,6 +22,27 @@ const TENS = new Map([
 ].map((word, index) => [word, (index + 2) * 10]));
 const SCALES = new Map([["thousand", 1_000], ["million", 1_000_000], ["billion", 1_000_000_000]]);
 
+// Explicit spelling variants, not synonyms or fuzzy spelling: these should
+// never penalize listening comprehension. Keep raw text unchanged for display.
+const SPELLING_VARIANTS: Record<string, string> = {
+  ok: "okay",
+  alright: "all right",
+  colour: "color", colours: "colors",
+  coloured: "colored", colouring: "coloring",
+  favourite: "favorite", favourites: "favorites",
+  flavour: "flavor", flavours: "flavors",
+  neighbour: "neighbor", neighbours: "neighbors", neighbourhood: "neighborhood",
+  centre: "center", centres: "centers",
+  theatre: "theater", theatres: "theaters",
+  travelling: "traveling", travelled: "traveled", traveller: "traveler", travellers: "travelers",
+  cancelled: "canceled", cancelling: "canceling",
+  organise: "organize", organised: "organized", organising: "organizing",
+  recognise: "recognize", recognised: "recognized", recognising: "recognizing",
+  apologise: "apologize", apologised: "apologized", apologising: "apologizing",
+  licence: "license", licences: "licenses",
+  grey: "gray",
+};
+
 const unit = [...NUMBER_WORDS.keys()].slice(1, 10).join("|");
 const underHundred = `(?:${[...NUMBER_WORDS.keys()].slice(1).join("|")}|(?:${[...TENS.keys()].join("|")})(?:[ -](?:${unit}))?)`;
 const group = `(?:(?:${unit}) hundred(?:(?: and)? ${underHundred})?|${underHundred})`;
@@ -93,7 +114,8 @@ export function normalizeDictationText(text: string): string {
       /[.,:]/.test(mark) && /\d/.test(source[index - 1] ?? "") && /\d/.test(source[index + 1] ?? "") ? mark : "",
     )
     .replace(/\s+/g, " ")
-    .trim();
+    .trim()
+    .replace(/\b[a-z]+\b/g, word => Object.hasOwn(SPELLING_VARIANTS, word) ? SPELLING_VARIANTS[word] : word);
 }
 
 // Dictation checks listening comprehension, so a standard contraction and

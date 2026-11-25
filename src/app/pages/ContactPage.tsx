@@ -1,117 +1,48 @@
-import { useLayoutEffect, useRef, useState } from "react";
-import { SmileCurve, DouyinIcon, XiaohongshuIcon, WeChatIcon } from "@/app/components/brand";
-import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
-import douyinQrCode from "@/imports/douyin-qr-code.png";
-import xiaohongshuQrCode from "@/imports/xiaohongshu-qr-code.jpg";
-import weixinQrCode from "@/imports/weixin-qr-code.png";
+import type { ReactNode } from "react";
+import { CONTACT_ASSETS } from "@/data/contact-assets";
+import { PageHeading } from "@/app/components/PageHeading";
+import { QrCodeDialog } from "@/app/components/QrCodeDialog";
+import "@/styles/contact.css";
 
-const CHANNELS = [
-  { key: "douyin", Icon: DouyinIcon, color: "#000000", en: "Douyin", zh: "抖音", handle: "Scan to follow on Douyin", qrCode: douyinQrCode },
-  { key: "xiaohongshu", Icon: XiaohongshuIcon, color: "#FF2442", en: "Xiaohongshu", zh: "小红书", handle: "Scan to follow on Xiaohongshu", qrCode: xiaohongshuQrCode },
-  { key: "wechat", Icon: WeChatIcon, color: "#07C160", en: "WeChat", zh: "微信", handle: "Scan to add on WeChat", qrCode: weixinQrCode },
-];
+function ContactSection({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
+  return <section className="contact-section" aria-label={title}>
+    <div className="contact-section-heading"><h2>{title}</h2>{note && <span>{note}</span>}</div>
+    <div className="contact-card">{children}</div>
+  </section>;
+}
+
+function ContactQr({ label, src }: { label: string; src: string }) {
+  return <img className="contact-qr-image" src={src} alt={`${label}二维码`} width={128} height={128} />;
+}
 
 export function ContactPage() {
-  const zhRef = useRef<HTMLParagraphElement>(null);
-  const [oneLineWidth, setOneLineWidth] = useState<number>();
-
-  useLayoutEffect(() => {
-    const zh = zhRef.current;
-    const container = zh?.parentElement;
-    if (!zh || !container) return;
-
-    const measure = () => {
-      const prevWhiteSpace = zh.style.whiteSpace;
-      const prevDisplay = zh.style.display;
-      zh.style.whiteSpace = "nowrap";
-      zh.style.display = "inline-block";
-      const naturalWidth = zh.scrollWidth;
-      zh.style.whiteSpace = prevWhiteSpace;
-      zh.style.display = prevDisplay;
-      setOneLineWidth(naturalWidth <= container.clientWidth ? naturalWidth : undefined);
-    };
-
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(container);
-    return () => ro.disconnect();
-  }, []);
-
-  return (
-    <div>
-      {/* ══ HERO ══════════════════════════════════════════════════════════════ */}
-      <section className="bg-background border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 py-9 md:px-8 md:py-11">
-          <span className="inline-flex items-center text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-3.5"
-            style={{ backgroundColor: "#C8F169", color: "#12241C" }}>
-            Contact · 联系我们
-          </span>
-          <h1 className="display-serif text-[30px] md:text-[38px] font-bold leading-[1.06] tracking-[-0.01em] text-foreground mb-2">
-            Let's stay connected
-          </h1>
-          <p className="font-zh-serif text-lg md:text-xl font-bold mb-4" style={{ color: "#0F3527" }}>扫码关注，保持联系</p>
-          <p
-            className="display-serif text-sm md:text-base italic text-muted-foreground leading-relaxed max-w-xl mb-3"
-            style={oneLineWidth ? { maxWidth: oneLineWidth } : undefined}
-          >
-            Follow Yz English on Douyin and Xiaohongshu for new real-life scenes, or scan the WeChat code to reach out directly.
-          </p>
-          <p
-            ref={zhRef}
-            className={`text-sm text-muted-foreground leading-relaxed ${oneLineWidth ? "w-fit whitespace-nowrap" : "max-w-xl"}`}
-            style={{ color: "rgba(15,53,39,0.7)" }}
-          >
-            关注 Yz English 的抖音与小红书，第一时间获取新场景内容；也可以扫描微信二维码直接联系我们。
-          </p>
+  return <div className="contact-page">
+    <PageHeading subtitle="CONTACT">联系我们</PageHeading>
+    <p className="contact-intro">有问题可以加企业微信找我，也可以先看看下面的「常见问题」。</p>
+    <ContactSection title="直接找我">
+      <div className="contact-human">
+        <div className="contact-human-qr"><ContactQr label="企业微信" src={CONTACT_ASSETS.wecomQr} /></div>
+        <div><h3>加我的企业微信</h3><p>会员、兑换码或学习上的问题，都可以加我。因为时差，可能没法马上回复，看到后我会尽快回你。</p>
+          <QrCodeDialog src={CONTACT_ASSETS.wecomQr} title="企业微信二维码" />
         </div>
-      </section>
-
-      {/* ══ QR CODES ══════════════════════════════════════════════════════════ */}
-      <section className="bg-card border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 md:px-8 py-14 md:py-18">
-          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground mb-4">Follow &amp; reach us</p>
-          <h2 className="display-serif text-[28px] md:text-[36px] font-bold leading-tight tracking-[-0.01em] text-foreground mb-1">
-            Scan a code to connect
-          </h2>
-          <p className="font-zh-serif text-base font-bold mb-10" style={{ color: "#0F3527" }}>扫描下方二维码</p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {CHANNELS.map(({ key, Icon, color, en, zh, handle, qrCode }) => (
-              <div key={key} className="bg-background rounded-2xl border border-border px-5 py-6 shadow-sm flex flex-col items-center text-center">
-                <div className="w-9 h-9 rounded-full border border-border bg-white flex items-center justify-center mb-4" style={{ color }}>
-                  <Icon size={16} />
-                </div>
-                <div
-                  className="w-40 h-40 rounded-xl overflow-hidden flex items-center justify-center mb-4"
-                  style={{ border: "1px solid rgba(15,53,39,0.15)", backgroundColor: "#FFFFFF" }}
-                >
-                  <ImageWithFallback
-                    src={qrCode}
-                    alt={`${en} QR code`}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <p className="display-serif text-[17px] font-bold text-foreground leading-snug">{en}</p>
-                <p className="font-zh-serif text-sm font-bold mt-0.5 mb-2" style={{ color: "#0F3527" }}>{zh}</p>
-                <p className="text-xs text-muted-foreground">{handle}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══ CLOSING ═══════════════════════════════════════════════════════════ */}
-      <section className="border-t border-border" style={{ backgroundColor: "#f7f6f3" }}>
-        <div className="max-w-5xl mx-auto px-4 md:px-8 py-16 md:py-20 text-center">
-          <SmileCurve width={64} opacity={0.5} className="mx-auto mb-6" />
-          <h2 className="display-serif text-[30px] md:text-[42px] font-bold leading-tight tracking-[-0.01em] text-foreground mb-2">
-            We'd love to hear from you.
-          </h2>
-          <p className="font-zh-serif text-base font-bold" style={{ color: "#0F3527" }}>
-            期待与你交流。
-          </p>
-        </div>
-      </section>
-    </div>
-  );
+      </div>
+    </ContactSection>
+    <ContactSection title="常见问题">
+      <div className="contact-qa">
+        <div className="contact-qa-item"><h3><i>1</i>买完后怎么开始学？</h3><p>打开<b>「我的学习」</b>，输入收到的兑换码就能开始，不用另外注册账号。</p></div>
+        <div className="contact-qa-item"><h3><i>2</i>兑换码找不到了怎么办？</h3><p>可以先搜一下购买时收到的邮件。如果之前已经在某台设备上登录，打开<b>「我的学习」</b>，点会员卡里的<b>「显示」</b>也能看到。还是找不到的话，加上面的企业微信，把购买邮箱发给我，我帮你查。</p></div>
+        <div className="contact-qa-item"><h3><i>3</i>可以在几台设备上用？</h3><p>同一个码最多可以同时在 <b>3 台设备</b>上使用。换设备时，如果提示名额已满，就在旧设备的<b>「我的学习」</b>里点<b>「退出本设备」</b>，再到新设备输入兑换码。</p></div>
+        <div className="contact-qa-item"><h3><i>4</i>付了款，没收到兑换码怎么办？</h3><p>先看看垃圾邮件和促销文件夹，也确认一下付款时邮箱有没有填错。等了十分钟还没收到，就加上面的企业微信，把购买邮箱发给我，我帮你核对补发。</p></div>
+      </div>
+    </ContactSection>
+    <ContactSection title="关注我们" note="三个平台同步更新">
+      <div className="contact-socials">
+        {[
+          ["抖音", CONTACT_ASSETS.douyinQr],
+          ["小红书", CONTACT_ASSETS.xiaohongshuQr],
+          ["微信视频号", CONTACT_ASSETS.channelsQr],
+        ].map(([label, src]) => <div className="contact-social" key={label}><ContactQr label={label} src={src} /><b>{label}</b></div>)}
+      </div>
+    </ContactSection>
+  </div>;
 }

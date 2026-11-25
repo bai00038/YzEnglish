@@ -6,7 +6,7 @@ export function getSceneNavigation(search: string | URLSearchParams) {
   const params = typeof search === 'string' ? new URLSearchParams(search) : search;
   const from: SceneOrigin | undefined = params.get('from') === 'membership' ? 'membership' : undefined;
   const section = from ? '我的学习' : '场景库';
-  return { from, returnTo: from ? '/membership' : '/explore', section, returnLabel: `返回${section}` };
+  return { from, returnTo: from ? '/my-learning' : '/explore', section, returnLabel: `返回${section}` };
 }
 
 export function buildSceneHref(slug: string, { from, resume = false }: { from?: SceneOrigin; resume?: boolean } = {}) {

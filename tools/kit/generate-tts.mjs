@@ -47,6 +47,18 @@ for (const target of targets) {
 }
 const audioIndex = read("src/data/kit/audio-index.json");
 console.log(`${targetScope}: ${texts.size} unique texts · ${VOICE} · ${STYLE} · ${[...texts.keys()].filter(key => audioIndex[key]?.audioUrl).length} already uploaded`);
+if (args.includes("--approved-only")) {
+  if (!upload || !args.includes("--staging") || targetScope !== "kit" || limit !== Infinity) {
+    throw new Error("Approved-only upload requires --kit --upload --approved-only --staging, without --limit");
+  }
+  const countAt = args.indexOf("--expected-count");
+  const expectedCount = Number(args[countAt + 1]);
+  if (countAt < 0 || !Number.isInteger(expectedCount) || expectedCount <= 0) throw new Error("Specify --expected-count for approved-only upload");
+  const { uploadApprovedStaging } = await import("./upload-approved-staging.mjs");
+  await uploadApprovedStaging({ root, cache, config, targets, expectedCount, dryRun });
+  process.exit(0);
+}
+if (args.includes("--staging")) throw new Error("Staging publication requires --approved-only");
 if (dryRun) process.exit(0);
 
 const envPath = path.join(root, ".env.tts.local");

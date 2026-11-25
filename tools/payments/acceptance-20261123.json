@@ -1,0 +1,36 @@
+{
+  "scope": "Acceptance checklist items 1–5, sequential staging deployments only",
+  "productionTouched": false,
+  "items": {
+    "1": {
+      "status": "deployed; real sandbox issue/display/redeem verified; email transport explicitly deferred by user",
+      "tests": "19 focused payment/issuance/client/success tests passed",
+      "proof": "/tmp/yz-payment-item1-success.png",
+      "email": "Private durable outbox and demo-based template ready; pending_configuration, never reported sent"
+    },
+    "2": {
+      "status": "deployed separately; already implemented behavior reverified",
+      "tests": "7 focused status/purchase tests passed; existing active two-year code shows secondary renewal link opening /membership in new tab"
+    },
+    "3": {
+      "status": "Deployed separately; refund and terms links opened successfully in browser",
+      "copy": "Re-read updated Downloads copy immediately before implementation; exact policy sentences and trust position verified"
+    },
+    "4": {
+      "status": "Deployed separately; real browser Back restored enabled purchase and selectable plans with cancellation notice"
+    },
+    "5": {
+      "status": "Deployed separately; badge visible and both hosted Checkout summaries identify duration and exact CNY amounts",
+      "tests": "12 focused payment/config/UI tests passed, including price rotation compatibility",
+      "sandbox": "Year 1-year CNY149 and two-year 2-year CNY249 summaries verified; same virtual email kept its code and extended 2028-11-23 to 2030-11-23",
+      "deferredLowPriority": [
+        "Initial plans request briefly disables checkout (accepted in checklist)",
+        "Unknown route currently has an empty shell; recorded for later as requested"
+      ]
+    },
+    "6": {
+      "status": "Checked only: Checkout Session code has no payment_method_types/wallet_options enabling Link; Stripe dashboard unchanged this task"
+    }
+  },
+  "awaitingUserAcceptance": true
+}

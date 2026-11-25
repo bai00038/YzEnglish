@@ -71,7 +71,7 @@ export const loadKitClipsIndex = createKitRemoteLoader<Record<string, { audioUrl
 });
 
 export const loadKitAudioIndex = createKitRemoteLoader<Record<string, { audioUrl: string }>>({
-  url: kitDataUrl("audio-index.json"),
+  url: import.meta.env.MODE === "staging" ? "/kit/audio-index-v2-staging.json" : kitDataUrl("audio-index.json"),
   bundled: async () => bundledAudioIndex,
   validate: isKitAudioIndex,
 });

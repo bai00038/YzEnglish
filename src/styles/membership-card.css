@@ -1,0 +1,44 @@
+.learning-overview>.learning-container {max-width:912px;padding-inline:16px}
+.learning-overview .site-page-heading {font-size:30px}
+@media(min-width:760px) {.learning-overview .site-page-heading {font-size:34px}}
+.member-card {margin-bottom:22px;font-family:var(--font-sans);box-shadow:0 1px 2px #12332508,0 10px 30px #12332514}
+.member-card-inactive {padding:16px 18px;border-radius:22px;color:#0F3527}
+.member-card-head {display:flex;align-items:center;justify-content:space-between;gap:12px}
+.member-card-head>strong {display:flex;align-items:center;gap:8px;font-size:15.5px;font-weight:600}
+.member-card-head>strong>svg {flex:none}
+.member-card .member-card-purchase {padding:8px 18px;font-size:14px;white-space:nowrap}
+.member-card-sub {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:11px;padding-top:11px;border-top:1px solid #EFEAE0}
+.member-card-sub p {font-size:12.5px;color:#6F7C74}
+.member-card .member-card-unlock {padding:7px 15px;font-size:13.5px;font-weight:500;border-color:#D8D2C4}
+.member-card-active {position:relative;isolation:isolate;overflow:hidden;border-radius:20px;padding:15px 18px;color:#F5F1E6;background:linear-gradient(135deg,#123325,#0F3527 60%,#1A4A35)}
+.member-card-active::after {content:'';position:absolute;right:-46px;top:-46px;width:170px;height:170px;border-radius:50%;background:#8DC63F24;z-index:-1;pointer-events:none}
+.member-card-top {display:flex;align-items:center;justify-content:space-between;gap:12px}
+.member-card-brand {font-size:11.5px;letter-spacing:.13em;font-weight:600;color:#C9D6CC}
+.member-card-warning {padding:3px 10px;border-radius:999px;background:#F2C14E;color:#123325;font-size:11px;font-weight:700;white-space:nowrap}
+.member-card-valid {margin-top:9px;font-size:13.5px;color:#E9EFE7;line-height:1.6}
+.member-card-valid b {font-size:15px;font-weight:700;color:#fff}
+.member-card-code {display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:8px 12px;border-radius:12px;border:1px solid #FFFFFF29;background:#FFFFFF14}
+.member-card-code-main {flex:1;min-width:0}
+.member-card-code small {display:block;font-size:10.5px;letter-spacing:.08em;color:#B9C8BB;margin-bottom:2px}
+.member-card-code-value {font-family:ui-monospace,Menlo,monospace;font-size:14.5px;letter-spacing:.1em;font-weight:600;color:#fff;overflow-wrap:anywhere;line-height:1.5}
+.member-card-code-ops {display:flex;align-items:center;gap:7px;flex:none}
+.member-card-code-ops button {background:#FFFFFF1F;color:#fff;border-radius:999px;padding:5px 11px;font-size:12px;white-space:nowrap;cursor:pointer}
+.member-card-code-ops button:disabled {opacity:.4;cursor:default}
+.member-card-code-feedback {font-size:12px;margin-top:5px}
+.member-card-actions {display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}
+.member-card-actions p {font-size:12px;line-height:1.6;color:#B9C8BB}
+.member-card-exit {font:inherit;color:#D8E2D5;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;cursor:pointer}
+.member-card .member-card-renew {flex:none;white-space:nowrap;background:#fff;color:#0F3527;border:0;padding:7px 16px;font-size:13px;font-weight:600}
+.member-card .member-card-renew.is-urgent {background:#8DC63F;color:#123325;font-weight:700}
+.member-card-inactive .member-card-valid,.member-card-inactive .member-card-code small,.member-card-inactive .member-card-actions p {color:#6F7C74}
+.member-card-inactive .member-card-valid b,.member-card-inactive .member-card-code-value,.member-card-inactive .member-card-exit {color:#0F3527}
+.member-card-inactive .member-card-code {border-color:#EFEAE0;background:#F7F5EF}
+.member-card-inactive .member-card-code-ops button {background:#EFEAE0;color:#0F3527}
+.member-exit-dialog {width:calc(100% - 40px);max-width:340px!important;border-radius:20px;padding:22px 20px;background:#fff;gap:9px}
+.member-exit-dialog h2 {font-size:16.5px;color:#0F3527;font-family:var(--font-sans);font-weight:700}
+.member-exit-dialog p {font-size:13.5px;line-height:1.7;color:#12241C}
+.member-exit-dialog-actions {display:flex;gap:10px;margin-top:9px}
+.member-exit-dialog-actions>* {flex:1;font-size:14px;padding:10px;white-space:nowrap}
+.member-exit-dialog-actions>button {height:40px;line-height:20px}
+.member-exit-dialog-actions>button:first-child {background:#fff;border:1px solid #D8D2C4;color:#12241C}
+@media(max-width:420px) {.member-card-code-value {font-size:12.5px;letter-spacing:.04em}}

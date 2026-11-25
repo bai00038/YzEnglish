@@ -62,3 +62,27 @@ Vite 的 local-kit-clips 插件在 dev 模式把存在于本地的片段映射�
 - 通用生成模型曾对 1 秒 Have you 样音转写出无关长句；离线 Whisper 和专用转写均证实实际是 Have you。原失败记录保留在 content-qa.json 的 previousCheck 中。核对器现改用专用转写，请求间隔至少 11 秒；默认遇到内容不符停止，--continue-on-mismatch 仅将不符项留待复核并继续，不会标为通过，最终仍以非零状态提示待复核。
 - 在线额度用完后，剩余 30 条用本机 Whisper base.en 全片转写（无目标文本提示、无裁剪）核对；只有归一化文字完全匹配且逐词最低 probability >= 0.4 才计入通过，其他留待复核，不以期望文字伪造通过。
 - 结果均在 .tts-cache/kore-podcast-lufs16-v2/：preview-2026-11-23.html、batch-report-2026-11-23.json/.csv、technical-qa-2026-11-23.json、offline-asr-2026-11-23.jsonl 与 content-qa.json。内容核对有遗留通用模型、专用模型、离线模型三种来源，实际来源见逐条 transcriptModel（无该字段的旧记录为 gemini-3.8-flash）。
+
+## 2026-11-24 续跑记录
+
+- 按锦囊库 347 条清单的既有顺序，从 `I wanted to` 继续，新增 82 条，v2 缓存累计 168 条；下一条 `fill out`，尚有 179 条未生成。
+- 本轮 82 条全部通过解码、MP3 / 单声道 / 24kHz 与非削波峰值检查；离线全文转写中未发现 Podcast / Speak only 等提示语。
+- 专用在线转写一开始即返回每日 100 次额度耗尽，因此本轮用已有本机 Whisper base.en 无目标提示、全片转写；只有归一化全文一致且逐词最低 probability >= 0.4 才通过。新音频 68 条通过，14 条待复核；累计 150 条通过、18 条待复核，0 条未核对。待复核不能作为可发布音频。
+- Gemini TTS 随后返回 GenerateRequestsPerDayPerProjectPerModel 每日 100 请求额度耗尽，已停止生成。成功文件数不等于请求次数，不因文件数不足 100 重试每日限额。
+- 结果均在 `.tts-cache/kore-podcast-lufs16-v2/`：`preview-2026-11-24.html`（默认仅本轮，可切换所有待复核/全部已生成）、`batch-report-2026-11-24.json/.csv`、`technical-qa-2026-11-24.json`、`offline-asr-2026-11-24-initial.jsonl`、`offline-asr-2026-11-24-remaining.jsonl`、`generation-2026-11-24.log`；逐条 QA 已写回 `content-qa.json`，标明真实离线来源、SHA-256 和置信度。
+- 未上传 OSS、未改线上音频索引、未部署网站；未改 Muse 旧批次裁剪成果。生成及离线核对进程均已结束。
+
+## 2026-11-24 已通过音频的 staging 发布
+
+用户授权仅发布 v2 已通过的 150 条词条音频，供 staging 验收。本次新增专用模式：
+
+```sh
+node tools/kit/generate-tts.mjs --kit --upload --approved-only --staging --expected-count 150
+```
+
+- 此模式在读取生成密钥/调用 TTS 前进入发布分支，不生成缺失音频。逐条要求当前目标、转写内容、请求配置、文件 SHA-256 和技术 QA 一致；数量须恰好匹配。18 条待复核不参与新上传。
+- 150 个文件发布到 `yz-english-videos/content/tts/staging/kore-podcast-lufs16-v2/`，以音频内容 SHA-256 命名；逐条从 CDN 下载并校验哈希。不会覆盖正式音频路径。
+- 读取原共用索引作基线，仅合并已通过项到 `public/kit/audio-index-v2-staging.json`，共 245 条。`src/data/kit.ts` 仅在 Vite staging 模式读取该索引，正式/开发模式仍沿用原路径；未写共用 `content/kit/audio-index.json`，未重建或覆盖最新 catalogue。
+- 通过 `npm run deploy:staging` 发布；17 项发布筛选/运行时索引/朗读请求相关测试通过。部署后验证 150 条映射、排除待复核新地址、共用索引未变；浏览器实测 Of course. / health card，观察到 staging 索引与 staging 音频 URL。测试设备会话已退出释放。
+- 150 条中 140 条可对应最新运行时锦囊库目录；Thank you / Thanks / You too / Hi there / Yes, please / I see / Not yet / Good morning / Good afternoon / How are you 这 10 个旧条目当前不在目录中，仅保留其音频索引，不擅自增删目录。
+- 审计明细位于 `.tts-cache/kore-podcast-lufs16-v2/staging-upload-report.json`；上传前的共用索引备份位于同目录的 `upload-staging-*/baseline-index.json`。

@@ -13,6 +13,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "ali-oss": "6.23.0"
+    "ali-oss": "6.23.0",
+    "stripe": "23.2.0"
   }
 }

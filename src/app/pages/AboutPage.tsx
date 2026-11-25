@@ -4,16 +4,16 @@ import "@/styles/about.css";
 import { useScenes } from "@/data/scenes-access";
 
 const METHOD_STEPS = [
-  { num: "01", title: "看场景", en: "Watch the scene", desc: "观看真实场景视频，看懂完整经过。" },
-  { num: "02", title: "学对话", en: "Learn the dialogue", desc: "逐句跟读，掌握关键表达。" },
-  { num: "03", title: "练开口", en: "Practise out loud", desc: "开口练习，有准备地应对。" },
+  { num: "01", title: "看一遍视频", en: "Watch the scene", desc: "先看清楚事情怎么发生，听听双方都说了什么。" },
+  { num: "02", title: "一句一句学", en: "Learn the dialogue", desc: "没听清的地方反复听，留意自己也能用上的说法。" },
+  { num: "03", title: "自己开口练", en: "Practise out loud", desc: "跟着读几遍，再试着不看字幕说出来。" },
 ];
 
 const AUDIENCES = [
-  "在海外生活的人——新落地，或定居多年、遇到事儿还是没底",
-  "要跟学校打交道的家长——家长会、请假、和老师当面聊",
-  "准备出国的人——去定居、留学或旅行，出发前先排练一遍",
-  "在国内学英语的人——不只为考试，也想学真实生活英语",
+  "已经在海外生活：有些事能应付，有些场合还是不知道怎么开口。",
+  "需要和学校沟通的家长：想提前练练家长会、请假，以及和老师聊天时会用到的话。",
+  "正在准备出国：定居、留学或旅行之前，先熟悉一些常见对话。",
+  "想学日常英语：暂时没有出国计划，也想听懂、说出生活里常用的英语。",
 ];
 
 function ExploreButton() {
@@ -32,9 +32,9 @@ export function AboutPage() {
   const sceneCount = scenes?.length;
   const collectionCount = scenes ? new Set(scenes.map((scene) => scene.collectionId)).size : undefined;
   const stats: { value: string; suffix: string; label: string }[] = [
-    { value: sceneCount != null ? String(sceneCount) : "", suffix: "+", label: "真实场景 · 持续更新中" },
-    { value: collectionCount != null ? String(collectionCount) : "", suffix: "", label: "个主题合集 · 从看牙到安家" },
-    { value: "3", suffix: " 步", label: "看懂 · 学会 · 说出口" },
+    { value: sceneCount != null ? String(sceneCount) : "", suffix: "+", label: "真实场景，持续更新" },
+    { value: collectionCount != null ? String(collectionCount) : "", suffix: "", label: "主题合集，从看牙到安家" },
+    { value: "3", suffix: " 步", label: "看视频 · 学对话 · 开口练" },
   ];
   return (
     <div className="bg-background pt-9 md:pt-11">
@@ -45,11 +45,11 @@ export function AboutPage() {
             <h1 className="mt-4 font-sans text-[32px] font-bold leading-[1.2] tracking-[-0.01em] text-primary md:text-[44px]">
               专为哑巴英语学习者而生
             </h1>
-            <p className="mt-4 max-w-[640px] font-sans text-[18px] font-semibold leading-relaxed text-primary md:text-[20px]">
+            <p className="about-hero-subtitle mt-4 max-w-[640px] font-sans text-[18px] font-semibold leading-relaxed text-primary md:text-[20px]">
               自信地开口讲英语，蜕去应试英语留下的外壳。
             </p>
             <p className="mt-3 max-w-[640px] text-base leading-relaxed text-secondary-foreground">
-              把海外真实生活做成看得见、练得出的英语场景，一集一个真实场景，先排练，再上场，让你有准备地走进每一个场景，<strong className="font-semibold">自信地开口</strong>。
+              看牙、开家长会、跟邻居聊天，这些事看着平常，换成英语却不一定知道怎么说。这里每集讲一个具体场景，你可以先看一遍，再跟着练，把可能用到的话提前说熟。
             </p>
             <div className="mt-5"><ExploreButton /></div>
           </div>
@@ -73,16 +73,13 @@ export function AboutPage() {
           <div className="max-w-[720px]">
             <PageHeading as="h2" subtitle="WHY">为什么做</PageHeading>
             <p className="mt-4 text-base leading-relaxed text-secondary-foreground">
-              我自己就是"哑巴英语"过来的。考试、单词都没问题，到了加拿大，看牙、开家长会、跟邻居聊天，还是开口就卡。我们这一代人学的英语，缺的从来不是单词，是没在真实场景里练过。
+              我自己也经历过“学了很多年英语，开口还是卡住”的时候。到了加拿大，看牙要怎么描述疼痛，家长会该问老师什么，碰到邻居又该聊什么，常常是事情到了眼前，才发现自己没准备好。
             </p>
-            <p className="display-serif mt-4 text-[16.5px] italic leading-relaxed text-secondary-foreground">
-              Many learners aren't held back by poor English, but by never having lived that situation in English before. Not knowing what comes next is what makes people nervous.
-            </p>
-            <p className="mt-2 text-base leading-relaxed text-secondary-foreground">
-              很多学习者不是英语差，而是从没用英语经历过那个场景。不知道接下来会发生什么，才是紧张的根源。
+            <p className="mt-4 text-base leading-relaxed text-secondary-foreground">
+              后来我发现，提前听过类似的对话、知道对方可能会问什么，再把自己的回答练几遍，开口时会踏实很多。我做这个网站，就是想把这些生活里的对话整理出来，也给有同样困扰的人用。
             </p>
             <p className="mt-8 border-l-4 border-accent py-0.5 pl-5 font-zh-serif text-[21px] font-bold text-primary md:mt-11 md:text-[25px]">
-              先看一遍场景，再走进真实生活。
+              先把要说的话练一练，再去面对生活里的那一刻。
             </p>
           </div>
         </div>
@@ -91,17 +88,17 @@ export function AboutPage() {
       <section className="mx-auto max-w-[1180px] px-3 pb-[72px] md:px-8">
         <div className="mt-14 border-t border-[#DCD4BE] pt-12 md:mt-16 md:pt-14">
         <PageHeading as="h2" subtitle="HOW IT WORKS">学习方法</PageHeading>
-        <div className="mt-4 grid gap-5 md:grid-cols-3">
+        <div className="mt-4 grid gap-5 xl:grid-cols-3">
           {METHOD_STEPS.map((step) => (
-            <article key={step.num} className="rounded-[22px] bg-white p-6 shadow-[0_1px_2px_rgba(18,51,37,.03),0_10px_30px_rgba(18,51,37,.08)] md:p-[26px]">
-              <span className="display-serif grid h-[46px] w-[46px] place-items-center rounded-full bg-primary text-base font-bold text-white">
+            <article key={step.num} className="about-method-card rounded-[22px] bg-white p-6 shadow-[0_1px_2px_rgba(18,51,37,.03),0_10px_30px_rgba(18,51,37,.08)] md:p-[26px]">
+              <span className="font-sans grid h-[46px] w-[46px] place-items-center rounded-full bg-primary text-base font-bold text-white">
                 {step.num}
               </span>
-              <h3 className="mt-[18px] font-zh-serif text-[19px] font-bold text-foreground">
+              <h3 className="mt-[18px] font-sans text-[19px] font-bold text-foreground">
                 {step.title}
-                <span className="display-serif mt-1 block text-[13.5px] font-medium italic text-muted-foreground">{step.en}</span>
+                <span className="mt-1 block font-sans text-[13.5px] font-medium text-muted-foreground">{step.en}</span>
               </h3>
-              <p className="mt-2 text-[14.5px] leading-relaxed text-secondary-foreground">{step.desc}</p>
+              <p className="about-method-description mt-2 font-sans leading-relaxed text-secondary-foreground">{step.desc}</p>
             </article>
           ))}
         </div>
@@ -110,9 +107,9 @@ export function AboutPage() {
 
       <section className="about-audience bg-primary py-[46px] md:py-[60px]">
         <div className="mx-auto max-w-[1180px] px-3 md:px-8">
-          <PageHeading as="h2" subtitle="WHO IT'S FOR">为想把英语用进真实生活的人而做</PageHeading>
+          <PageHeading as="h2" subtitle="WHO IT'S FOR">想在生活里用上英语，可以从这里开始</PageHeading>
           <p className="mt-4 text-[15.5px] leading-relaxed text-white/[0.78]">
-            不管你还在国内准备出发，还是已经在海外安家——看病不慌、开家长会不慌、跟邻居聊天不慌，把日子一天一天过稳、过好。
+            无论你准备出国，还是已经在海外生活，都可以挑一个眼下用得上的场景，先练起来。
           </p>
           <div className="mt-7 grid gap-4 sm:grid-cols-2">
             {AUDIENCES.map((audience) => (

@@ -6,15 +6,22 @@
 .learning-mail {position:relative;display:grid;place-items:center;width:40px;height:36px;border-radius:50%}
 .learning-dot {position:absolute;right:4px;top:3px;width:7px;height:7px;border-radius:50%;background:#c84840;box-shadow:0 0 0 2px var(--background)}
 .learning-card {background:#fff;border-radius:22px;box-shadow:0 1px 2px #12332508,0 10px 30px #12332514;overflow:hidden}
-.membership-status-heading {display:flex;align-items:center;gap:9px;margin:0 16px;padding:14px 0 12px;border-bottom:1px solid var(--border)}
-.membership-status-heading>strong {font-size:16px;font-weight:700}
+.membership-status-heading {display:flex;align-items:center;gap:12px;margin:0 16px;padding:14px 0 12px;border-bottom:1px solid var(--border)}
+.membership-status-identity>strong {font-size:16px;font-weight:700}
 .membership-shield {display:grid;place-items:center;flex:none;width:24px;height:24px;border-radius:50%;background:var(--secondary);color:#6e6a5e}
+.membership-shield:not(.unlocked) {background:transparent}
 .membership-shield.unlocked {background:var(--primary);color:#d3c273}
 .membership-expiry {margin-left:auto;white-space:nowrap;font-size:12px;color:#817f73}
 .membership-status-body {padding:4px 16px 9px}
 .membership-status-body>.mt-5 {margin-top:0;font-size:13px}
 .membership-locked {padding:14px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-size:12px}
-.membership-locked button {border-radius:30px;padding:10px 16px;background:var(--primary);color:#fff;font-weight:600}
+.membership-status-identity {display:flex;flex:1;min-width:0;flex-wrap:wrap;align-items:center;gap:9px}
+.membership-purchase-button {flex:none;min-height:44px}
+.membership-expiry-reminder {margin:0 16px;padding:12px 0 4px;color:var(--primary);font-size:13px;line-height:1.6}
+@media (max-width:480px) {
+ .membership-status-identity .membership-expiry {flex-basis:100%;margin-left:33px;white-space:normal}
+}
+@media (min-width:700px) { .membership-expiry-reminder {margin:0 22px} }
 .learning-section-heading {display:flex;justify-content:space-between;align-items:center;margin:12px 0 8px}
 .learning-section-heading h2 {font-size:18px;font-weight:700}
 .learning-section-heading a {font-size:12px}
@@ -48,7 +55,7 @@
 @media(min-width:768px) {
  .learning-page {padding:28px 0 40px}.learning-container {padding:0 32px}
  .learning-title-row {margin-bottom:20px}.learning-title-row h1,.learning-page h1 {font-size:33px}.learning-title-row h1 em {font-size:17px}
- .membership-status-heading {margin:0 22px;padding:18px 0 14px}.membership-status-body {padding:6px 22px 13px}.membership-status-heading>strong {font-size:18px}.membership-expiry {font-size:14px}
+ .membership-status-heading {margin:0 22px;padding:18px 0 14px}.membership-status-body {padding:6px 22px 13px}.membership-status-identity>strong {font-size:18px}.membership-expiry {font-size:14px}
  .membership-status-body>.mt-5 {margin-top:0;font-size:13px}.learning-section-heading {margin-top:24px}.learning-scene-row {padding:14px 18px;gap:18px}.learning-scene-cover {width:160px;height:90px}.learning-scene-info>strong {font-size:18px}.learning-scene-progress {margin:10px 0;font-size:12px}.learning-scene-meta {font-size:12px}
 }
 @media(min-width:1024px) {.learning-mobile-footer {display:none}}
@@ -62,3 +69,9 @@
 .learning-empty-action:hover {opacity:.9}
 .learning-empty-action:focus-visible {outline:2px solid var(--primary);outline-offset:4px}
 @media(min-width:768px) {.learning-empty-state {min-height:380px;padding:40px 32px 44px}.learning-empty-art {width:210px;height:149px}}
+
+.learning-info-entrances .learning-info-copy {flex:1;min-width:0}
+.learning-info-entrances small {display:block;margin-top:4px;font-size:12px;line-height:1.6;color:var(--muted-foreground)}
+.learning-info-entrances svg {flex:none}
+.learning-info-entrances a:focus-visible {outline:2px solid var(--primary);outline-offset:-4px}
+

@@ -1,11 +1,15 @@
+import { LearningInfoRow } from "@/app/components/LearningInfoRow";
 import { ContinueLearningSection } from "@/app/components/ContinueLearningSection";
+import { MembershipExitDialog } from "@/app/components/MembershipExitDialog";
+import { MembershipStatusCard } from "@/app/components/MembershipStatusCard";
 import { PageHeading } from "@/app/components/PageHeading";
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { BookOpen, Check, CheckCircle2, Copy, Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
-import { Link } from "react-router";
+import { BookOpen, CheckCircle2, Mail, MessageCircle, Info } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router";
+import { readMembershipCodeFragment } from "@/data/payments/membership-link";
 import { MembershipUnlockModal } from "@/app/components/MembershipUnlockModal";
 import { useMembershipAccess, type MembershipUnlock } from "@/data/membership";
-import { MEMBERSHIP_CODE_CHANGE_EVENT, MEMBERSHIP_CODE_STORAGE_KEY, maskMembershipDisplayCode, readMembershipDisplayCode } from "@/app/components/membership-code-display";
+import { MEMBERSHIP_CODE_CHANGE_EVENT, MEMBERSHIP_CODE_STORAGE_KEY, maskMembershipCardCode, readMembershipDisplayCode } from "@/app/components/membership-code-display";
 import { useMemberLearning } from "@/data/member-learning";
 import { useMessages } from "@/data/messages";
 import { useLearningScenes } from "@/app/components/LearningSceneRows";
@@ -24,7 +28,7 @@ function displayCodeSnapshot() {
   try { return window.localStorage.getItem(MEMBERSHIP_CODE_STORAGE_KEY) ?? ""; } catch { return ""; }
 }
 
-export function MembershipCodeRow({ membership, onChange }: { membership: MembershipUnlock; onChange: () => void }) {
+export function MembershipCodeRow({ membership }: { membership: MembershipUnlock }) {
   const raw = useSyncExternalStore(subscribeToDisplayCode, displayCodeSnapshot, () => "");
   const code = readMembershipDisplayCode(raw, membership);
   const [revealedCode, setRevealedCode] = useState("");
@@ -45,22 +49,17 @@ export function MembershipCodeRow({ membership, onChange }: { membership: Member
       setCopyError("");
     } catch { setCopyError("复制未成功，请显示兑换码后手动复制"); }
   }
-  return <div className="mt-5 text-[13px] text-muted-foreground">
-    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-      <span className="shrink-0">我的兑换码</span>
-      <span className="min-w-0 break-all font-sans text-primary">{code ? (visible ? code : maskMembershipDisplayCode(code)) : "本浏览器未保存"}</span>
-      <button type="button" disabled={!code} aria-label={visible ? "隐藏兑换码" : "显示兑换码"} aria-pressed={visible}
-        onClick={() => setRevealedCode(visible ? "" : code)} className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-primary transition-colors hover:bg-secondary disabled:opacity-35">
-        {visible ? <EyeOff size={16} /> : <Eye size={16} />}
-      </button>
-      <button type="button" disabled={!code} aria-label={copied ? "已复制兑换码" : "复制兑换码"} onClick={() => { void copyCode(); }}
-        className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-primary transition-colors hover:bg-secondary disabled:opacity-35">
-        {copied ? <Check size={16} /> : <Copy size={16} />}
-      </button>
-      <button type="button" onClick={onChange} className="ml-auto shrink-0 py-2 font-semibold text-primary underline-offset-4 hover:underline">更换 →</button>
+  return <>
+    <div className="member-card-code">
+      <div className="member-card-code-main"><small>我的兑换码</small><span className="member-card-code-value">{code ? (visible ? code : maskMembershipCardCode(code)) : "本浏览器未保存"}</span></div>
+      <div className="member-card-code-ops">
+        <button type="button" disabled={!code} aria-label={visible ? "隐藏兑换码" : "显示兑换码"} aria-pressed={visible} onClick={() => setRevealedCode(visible ? "" : code)}>{visible ? '隐藏' : '显示'}</button>
+        <button type="button" disabled={!code} aria-label={copied ? "已复制兑换码" : "复制兑换码"} onClick={() => { void copyCode(); }}>{copied ? '已复制' : '复制'}</button>
+      </div>
     </div>
-    <p role="status" className={copyError ? "mt-1 text-xs" : "sr-only"}>{copyError || (copied ? "兑换码已复制" : "")}</p>
-  </div>;
+    <p role="status" className={copyError ? "member-card-code-feedback" : "sr-only"}>{copyError || (copied ? "兑换码已复制" : "")}</p>
+  </>;
+
 }
 
 export function MembershipPage() {
@@ -68,32 +67,40 @@ export function MembershipPage() {
   const { continuing, completed, loading, error } = useLearningScenes();
   const { notebook: mistakes, learned } = useMemberLearning();
   const { hasUnread } = useMessages();
-  const [modalOpen, setModalOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [initialCode, setInitialCode] = useState(() => readMembershipCodeFragment(location.hash));
+  const [modalOpen, setModalOpen] = useState(Boolean(initialCode));
+  const [exitOpen, setExitOpen] = useState(false);
+  useEffect(() => {
+    const code = readMembershipCodeFragment(location.hash);
+    if (!code) return;
+    setInitialCode(code);setModalOpen(true);
+    navigate(location.pathname + location.search, { replace: true });
+  }, [location.hash, location.pathname, location.search, navigate]);
   const hasWords = isUnlocked && (mistakes.length > 0 || learned.length > 0);
   const hasRecords = continuing.length > 0 || completed.length > 0 || hasWords;
   return <div className="learning-page learning-overview"><div className="learning-container">
     <div className="learning-title-row">
       <PageHeading subtitle="My Learning">我的学习</PageHeading>
-      <Link to="/membership/messages" className="learning-mail" aria-label={hasUnread ? '消息中心，有未读消息' : '消息中心'}><Mail size={22} />{hasUnread && <span className="learning-dot" />}</Link>
+      <Link to="/my-learning/messages" className="learning-mail" aria-label={hasUnread ? '消息中心，有未读消息' : '消息中心'}><Mail size={22} />{hasUnread && <span className="learning-dot" />}</Link>
     </div>
-    <section className="learning-card membership-status" aria-label="会员状态">
-      <div className="membership-status-heading">
-        <span className={`membership-shield ${isUnlocked ? 'unlocked' : ''}`}>{isUnlocked ? <Check size={17} strokeWidth={2.5} /> : <LockKeyhole size={17} />}</span>
-        <strong>{isUnlocked ? '会员已开通' : isExpired ? '会员已到期' : '未解锁'}</strong>
-        {unlock && <span className="membership-expiry">{unlock.expiresAt ? `至 ${new Date(unlock.expiresAt).toLocaleDateString('sv-SE')}` : '终身有效'}</span>}
-      </div>
-      {unlock ? <div className="membership-status-body">
-        {isUnlocked ? <MembershipCodeRow membership={unlock} onChange={() => setModalOpen(true)} /> : <button className="learning-text-button" onClick={() => setModalOpen(true)}>更换 →</button>}
-      </div> : <div className="membership-locked"><button onClick={() => setModalOpen(true)}>输入兑换码解锁</button><Link to="/#free">先免费学完 3 集再决定 →</Link></div>}
-    </section>
+    <MembershipStatusCard isUnlocked={isUnlocked} isExpired={isExpired} membership={unlock} onUnlock={() => setModalOpen(true)} onExit={() => setExitOpen(true)}>
+      {unlock && <MembershipCodeRow membership={unlock} />}
+    </MembershipStatusCard>
     <ContinueLearningSection records={continuing} completedCount={completed.length} />
     {hasRecords && isUnlocked && <section className="learning-card learning-word-entrances" aria-label="单词">
-      <Link to="/membership/vocabulary"><BookOpen size={21} /><strong>生词本</strong><span>{mistakes.length} 词 ›</span></Link>
-      <Link to="/membership/learned"><CheckCircle2 size={21} /><strong>已学会</strong><span>{learned.length} 个 ›</span></Link>
+      <Link to="/my-learning/vocabulary"><BookOpen size={21} /><strong>生词本</strong><span>{mistakes.length} 词 ›</span></Link>
+      <Link to="/my-learning/learned"><CheckCircle2 size={21} /><strong>已学会</strong><span>{learned.length} 个 ›</span></Link>
     </section>}
-    {continuing.length === 0 && completed.length > 0 && <Link className="learning-completed-link" to="/membership/completed">已学完 {completed.length} 集 ›</Link>}
+    {continuing.length === 0 && completed.length > 0 && <Link className="learning-completed-link" to="/my-learning/completed">已学完 {completed.length} 集 ›</Link>}
     {!hasRecords && <p className="learning-empty">{loading ? '正在读取学习记录…' : error ? '学习记录暂时无法加载，请稍后刷新。' : '还没有学习记录，开始第一集吧。'}</p>}
+    <section className="learning-card learning-word-entrances learning-info-entrances" aria-label="关于与联系">
+      <LearningInfoRow to="/about" icon={Info} title="关于" description="了解这个网站和它的学习方法" />
+      <LearningInfoRow to="/contact" icon={MessageCircle} title="联系我们" description="购买咨询、兑换码、会员问题，找我本人" />
+    </section>
     <div className="learning-mobile-footer"><Link to="/about">关于</Link><span>·</span><Link to="/contact">联系我们</Link></div>
-    <MembershipUnlockModal open={modalOpen} onOpenChange={setModalOpen} />
+    <MembershipExitDialog open={exitOpen} onOpenChange={setExitOpen} />
+    <MembershipUnlockModal key={initialCode} initialCode={initialCode} open={modalOpen} onOpenChange={setModalOpen} />
   </div></div>;
 }

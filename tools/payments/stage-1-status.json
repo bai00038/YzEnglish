@@ -1,0 +1,35 @@
+{
+  "stage": 1,
+  "complete": true,
+  "date": "2026-11-23",
+  "mode": "Stripe test only",
+  "confirmedDecisions": {
+    "purchasePath": "/membership",
+    "learningPath": "/my-learning",
+    "renewalButtonWindowDays": 30,
+    "renewalButtonVisibility": "All active and expired memberships; primary emphasis within 30 days or expired"
+  },
+  "done": [
+    "Purchase and receipt components plus stage-1 Checkout/webhook backend",
+    "Configured test prices CNY 14900 / 24900 minor units and test webhook endpoint",
+    "25 relevant payment/navigation/presentation tests pass",
+    "Staging API code and environment deployed; health/plans 200; unsigned webhook 400",
+    "Staging frontend deployed and public HTML/JS/CSS byte verified",
+    "Existing environment preserved; secrets saved only to ignored private files",
+    "Approved payments policy created and attached only to staging runtime role; checkout and paid order storage exercised successfully",
+    "Browser: year checkout CNY 149, required email, cancellation notice; two-year sandbox card payment CNY 249 completed and signed webhook confirmed paid",
+    "Two signed replays of the completed sandbox event returned HTTP 200 duplicate=true",
+    "Browser: mobile width 390 has no horizontal overflow; legacy learning deep link redirects and existing membership/progress/notebook counts remain visible"
+  ],
+  "pending": [],
+  "productionTouched": false,
+  "nextStageAuthorized": false,
+  "privateConfigNote": "Local .env and /private/tmp/yz-staging-private hold credentials; never print or commit their contents.",
+  "acceptance": "Awaiting user acceptance of step 1. Do not begin step 2 or deploy production.",
+  "entryFollowup": {
+    "complete": true,
+    "scope": "Membership status purchase/renewal links and purchase renewal email copy only; renewal backend remains step 2",
+    "tests": "7 focused UI/status tests passed; staging build/deploy passed; mobile 390px no overflow; renewal link and copy verified in browser",
+    "productionTouched": false
+  }
+}

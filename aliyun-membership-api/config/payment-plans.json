@@ -1,0 +1,4 @@
+[
+  { "id": "year", "name": "年卡", "years": 1, "amount": 14900, "currency": "cny", "period": "年", "note": "每天约 0.4 元", "priceEnv": "STRIPE_PRICE_YEAR_ID" },
+  { "id": "two_year", "name": "双年卡", "years": 2, "amount": 24900, "currency": "cny", "period": "两年", "note": "比买两次年卡省 ¥49", "priceEnv": "STRIPE_PRICE_TWO_YEAR_ID" }
+]

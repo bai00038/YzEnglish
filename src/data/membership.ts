@@ -1,3 +1,4 @@
+import { MEMBERSHIP_DEVICE_LIMIT } from "./membership-limits";
 import { activateMemberLearning, deactivateMemberLearning } from "./member-learning";
 import { useEffect, useSyncExternalStore } from "react";
 
@@ -7,11 +8,15 @@ export interface MembershipUnlock {
   type: MembershipType;
   expiresAt: string | null;
   unlockedAt: string;
+  planName?: '年卡' | '双年卡';
+  activeSessions?: number;
 }
 
 interface MembershipApiResponse {
   authenticated?: boolean;
-  membership?: { type: MembershipType; expiresAt: string | null };
+  membership?: { type: MembershipType; expiresAt: string | null; planName?: '年卡' | '双年卡' };
+  activeSessions?: number;
+  sessionsUsed?: number;
   error?: string;
 }
 
@@ -123,10 +128,13 @@ export async function refreshMembershipAccess(force = false): Promise<void> {
         return;
       }
       if (result.authenticated && result.membership) {
-        writeStoredUnlock({ ...result.membership, unlockedAt: new Date().toISOString() });
+        writeStoredUnlock({ ...result.membership, activeSessions: result.activeSessions, unlockedAt: new Date().toISOString() });
         await activateMemberLearning();
       } else {
-        writeStoredUnlock(null);
+        // Keep only an expired display summary for the expired-card view.
+        // It never grants access: isUnlocked and protected assets remain locked.
+        const previous = readStoredUnlock();
+        if (!previous?.expiresAt || Date.parse(previous.expiresAt) > Date.now()) writeStoredUnlock(null);
         deactivateMemberLearning();
       }
       lastRefreshAt = Date.now();
@@ -170,7 +178,7 @@ export async function redeemMembershipCode(input: string): Promise<MembershipUnl
     throw new MembershipApiError(result.error || "server_error");
   }
   if (!result.membership) throw new MembershipApiError("invalid_response");
-  const unlock: MembershipUnlock = { ...result.membership, unlockedAt: new Date().toISOString() };
+  const unlock: MembershipUnlock = { ...result.membership, activeSessions: result.sessionsUsed, unlockedAt: new Date().toISOString() };
   deactivateMemberLearning();
   writeStoredUnlock(unlock);
   await activateMemberLearning(true);
@@ -232,8 +240,8 @@ export async function requestProtectedAssetUrl(sceneId: string, currentUrl: stri
 export function membershipErrorMessage(error: unknown): string {
   const code = error instanceof MembershipApiError ? error.code : "server_error";
   return {
-    device_limit_reached: "该会员码当前已有 2 台设备在线，请稍后再试",
-    session_limit_reached: "该会员码当前已有 2 台设备在线，请在其他设备退出，或 15 分钟后再试",
+    device_limit_reached: `该会员码当前已有 ${MEMBERSHIP_DEVICE_LIMIT} 台设备在线，请稍后再试`,
+    session_limit_reached: `该会员码当前已有 ${MEMBERSHIP_DEVICE_LIMIT} 台设备在线，请在其他设备退出，或 15 分钟后再试`,
     too_many_attempts: "尝试次数过多，请稍后再试",
     network_error: "网络暂时无法连接，请检查网络后重试",
   }[code] ?? "会员服务暂时不可用，请稍后再试";

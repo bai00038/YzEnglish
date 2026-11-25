@@ -72,6 +72,10 @@ export default defineConfig({
 
   server: {
     proxy: {
+      '/dev-payments': {
+        target: 'http://127.0.0.1:9001',
+        rewrite: path => path.replace(/^\/dev-payments/, ''),
+      },
       '/dev-membership': {
         target: 'https://api.learnyzenglish.com',
         changeOrigin: true,

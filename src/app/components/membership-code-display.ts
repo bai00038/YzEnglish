@@ -24,3 +24,8 @@ export function maskMembershipDisplayCode(code: string): string {
     ?? (code.startsWith("YZ-") ? "YZ" : "");
   return `${prefix ? prefix + "-" : ""}••••••`;
 }
+
+// Compact card mask keeps only the last four characters for code comparison.
+export function maskMembershipCardCode(code: string): string {
+  return code.length > 8 ? `YZ-••••-••••-${code.slice(-4)}` : 'YZ-••••';
+}

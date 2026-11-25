@@ -1,6 +1,7 @@
 const { validateChange, publicLearning } = require("./learning.cjs");
 const { cookie, json, parseCookies, readJsonBody } = require("./http.cjs");
 const { keyedHash, normalizeCode, randomId, signSession, verifySession } = require("./security.cjs");
+const { deviceLimit: DEVICE_LIMIT } = require('../config/membership.json');
 
 const SESSION_SECONDS = 30 * 24 * 60 * 60;
 const ACTIVE_SESSION_SECONDS = 15 * 60;
@@ -34,7 +35,8 @@ function membershipValid(record, now) {
 }
 
 function membershipSummary(record) {
-  return { type: record.type, expiresAt: record.type === "founder" ? null : record.expiresAt };
+  return { type: record.type, expiresAt: record.type === "founder" ? null : record.expiresAt,
+    ...(['年卡', '双年卡'].includes(record.planName) ? { planName: record.planName } : {}) };
 }
 
 function createApp({ repository, objectSigner, config, now = () => Date.now(), rateLimiter = new RuntimeRateLimiter() }) {
@@ -62,7 +64,7 @@ function createApp({ repository, objectSigner, config, now = () => Date.now(), r
     const session = await repository.claimSession(
       payload.codeHash,
       payload.deviceHash,
-      record.maxDevices ?? 2,
+      DEVICE_LIMIT,
       nowIso,
       activeAfterIso
     );
@@ -130,7 +132,7 @@ function createApp({ repository, objectSigner, config, now = () => Date.now(), r
       const deviceHash = keyedHash(config.codePepper, deviceId);
       const nowIso = new Date(now()).toISOString();
       const activeAfterIso = new Date(now() - ACTIVE_SESSION_SECONDS * 1000).toISOString();
-      const session = await repository.claimSession(codeHash, deviceHash, record.maxDevices ?? 2, nowIso, activeAfterIso);
+      const session = await repository.claimSession(codeHash, deviceHash, DEVICE_LIMIT, nowIso, activeAfterIso);
       if (!session.allowed) return json(409, { error: "session_limit_reached" }, cors);
 
       const membershipExpiry = record.type === "founder" ? Number.POSITIVE_INFINITY : Date.parse(record.expiresAt);
@@ -164,7 +166,9 @@ function createApp({ repository, objectSigner, config, now = () => Date.now(), r
 
     if (path === "/v1/membership/logout" && method === "POST") {
       const cookies = parseCookies(request.headers.cookie ?? request.headers.Cookie ?? "");
-      const payload = verifySession(config.sessionSecret, cookies[SESSION_COOKIE], now());
+      // Logout can release an expired device session. Signature validation is
+      // still mandatory; accepting expiry here never grants membership access.
+      const payload = verifySession(config.sessionSecret, cookies[SESSION_COOKIE], 0);
       if (payload?.codeHash && payload?.deviceHash) {
         await repository.endSession(payload.codeHash, payload.deviceHash);
       }

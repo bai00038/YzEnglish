@@ -9,7 +9,7 @@ test('continue and completed review links return to My Learning; only continue r
   assert.equal(review, '/scenes/dental-pain?from=membership');
   for (const href of [continuing, review]) {
     const params = new URL(href, 'https://example.test').searchParams;
-    assert.equal(getSceneNavigation(params).returnTo, '/membership');
+    assert.equal(getSceneNavigation(params).returnTo, '/my-learning');
     assert.equal(getSceneNavigation(params).returnLabel, '返回我的学习');
   }
 });
@@ -19,7 +19,7 @@ test('adjacent scene keeps source through reload without forcing the resume step
   const next = new URL(buildSceneHref('second', { from: context.from }), 'https://example.test');
   assert.equal(next.searchParams.get('from'), 'membership');
   assert.equal(next.searchParams.has('resume'), false);
-  assert.equal(getSceneNavigation(next.search).returnTo, '/membership');
+  assert.equal(getSceneNavigation(next.search).returnTo, '/my-learning');
 });
 test('normal library/direct links preserve Explore return, and arbitrary return input is ignored', () => {
   assert.equal(buildSceneHref('dental-pain'), '/scenes/dental-pain');
@@ -32,10 +32,10 @@ test('normal library/direct links preserve Explore return, and arbitrary return 
 
 test('desktop and mobile navigation select the scene source rather than an unrelated section', async () => {
   const { isNavActive } = await import('../../src/app/components/nav-utils.ts');
-  assert.equal(isNavActive('/scenes/lesson', '/membership', '?from=membership'), true);
+  assert.equal(isNavActive('/scenes/lesson', '/my-learning', '?from=membership'), true);
   assert.equal(isNavActive('/scenes/lesson', '/explore', '?from=membership'), false);
   assert.equal(isNavActive('/scenes/lesson', '/explore'), true);
-  assert.equal(isNavActive('/scenes/lesson', '/membership'), false);
-  assert.equal(isNavActive('/membership/learned', '/membership'), true);
+  assert.equal(isNavActive('/scenes/lesson', '/my-learning'), false);
+  assert.equal(isNavActive('/my-learning/learned', '/my-learning'), true);
   assert.equal(isNavActive('/', '/'), true);
 });

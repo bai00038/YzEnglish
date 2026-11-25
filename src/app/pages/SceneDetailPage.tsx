@@ -1265,7 +1265,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                 <section id="section-pdf" aria-labelledby="scene-pdf-title" className="scroll-mt-24 mb-12 flex flex-col gap-6 rounded-[24px] bg-primary px-6 py-8 text-white max-[480px]:mb-9 max-[480px]:gap-4 max-[480px]:py-6 md:flex-row md:items-center md:justify-between md:px-8">
                   <div className="max-w-[720px]">
                     <h2 id="scene-pdf-title" tabIndex={-1} className="text-[11px] font-black uppercase tracking-[0.18em] text-white/65">Step 04 · 本期讲义 PDF</h2>
-                    <p className="mt-4 font-serif text-[27px] font-semibold leading-tight md:text-[34px]">把这一课带走，贴在冰箱上练</p>
+                    <p className="mt-4 font-sans text-[27px] font-semibold leading-tight md:text-[34px]">把这一课带走，贴在冰箱上练</p>
                     <p className="mt-3 text-[14px] leading-relaxed text-white/70">完整双语对话 + 核心表达 + 本地文化提示，下载后随时复习。</p>
                   </div>
                   {!canAccessMemberContent ? (
@@ -1342,7 +1342,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         <div className="mt-5 flex items-end gap-4">
                           <span className="mb-0.5 flex-shrink-0 text-[27px] font-light leading-none text-primary transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
                           <div className="min-w-0">
-                            <p className="font-zh-serif text-[20px] font-bold leading-snug text-primary">
+                            <p className="font-sans text-[20px] font-bold leading-snug text-primary">
                               {prevScene.titleZh}
                             </p>
                             <p className="mt-1 truncate text-[12px] font-semibold text-muted-foreground">
@@ -1357,7 +1357,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                           Current episode · 当前集
                         </span>
                         <div className="mt-5">
-                          <p className="font-zh-serif text-[20px] font-bold leading-snug text-primary">
+                          <p className="font-sans text-[20px] font-bold leading-snug text-primary">
                             当前正在学习第一集
                           </p>
                           <p className="mt-1 text-[12px] font-semibold text-muted-foreground">{scene.titleZh}</p>
@@ -1375,7 +1375,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                         </span>
                         <div className="mt-5 flex items-end justify-between gap-4">
                           <div className="min-w-0 flex-1 md:text-right">
-                            <p className="font-zh-serif text-[20px] font-bold leading-snug text-primary">
+                            <p className="font-sans text-[20px] font-bold leading-snug text-primary">
                               {nextScene.titleZh}
                             </p>
                             <p className="mt-1 truncate text-[12px] font-semibold text-muted-foreground">
@@ -1391,7 +1391,7 @@ export function SceneDetailPage({ bilingualMode, setBilingualMode }: {
                           Collection complete · 合集进度
                         </span>
                         <div className="mt-5">
-                          <p className="font-zh-serif text-[20px] font-bold leading-snug text-primary">
+                          <p className="font-sans text-[20px] font-bold leading-snug text-primary">
                             当前已是本合集最后一集
                           </p>
                           <p className="mt-1 text-[12px] font-semibold text-muted-foreground">{scene.titleZh}</p>

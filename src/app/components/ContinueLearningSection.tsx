@@ -14,7 +14,7 @@ export function ContinueLearningSection({ records, completedCount }: {
   const hasMore = visibleCount < records.length;
   if (!records.length) return null;
   return <section className="learning-scene-section" aria-labelledby={`${listId}-heading`}>
-    <div className="learning-section-heading"><h2 id={`${listId}-heading`}>继续学习</h2><Link to="/membership/completed">已学完 {completedCount} 集 ›</Link></div>
+    <div className="learning-section-heading"><h2 id={`${listId}-heading`}>继续学习</h2><Link to="/my-learning/completed">已学完 {completedCount} 集 ›</Link></div>
     <div className="learning-card">
       <div id={listId}><LearningSceneRows records={records.slice(0, visibleCount)} /></div>
       {records.length > SCENES_PER_BATCH && <button type="button" className="learning-completed-link learning-expand-button"

@@ -14,7 +14,7 @@ const componentModule = { exports: {} };
 new Function('require', 'module', 'exports', code)(createRequire(import.meta.url), componentModule, componentModule.exports);
 const { MessageListCard, MessageDetailCard } = componentModule.exports;
 const notice = { id: 'notice:/a?x=1', type: 'announcement', title: '课程更新说明', body: '第一段完整正文。\n\n第二段完整正文，包含全部消息内容。', publishedAt: '2026-11-21T12:00:00Z' };
-const render = (Component, props) => renderToStaticMarkup(React.createElement(StaticRouter, { location: '/membership/messages' }, React.createElement(Component, props)));
+const render = (Component, props) => renderToStaticMarkup(React.createElement(StaticRouter, { location: '/my-learning/messages' }, React.createElement(Component, props)));
 
 test('announcement action accepts only a label plus internal path; old href is compatible', () => {
   assert.equal(isAnnouncementFile({ announcements: [{ ...notice, action: { label: '查看课程', path: '/scenes/lesson' } }] }), true);
@@ -24,7 +24,7 @@ test('announcement action accepts only a label plus internal path; old href is c
     assert.equal(isAnnouncementFile({ announcements: [{ ...notice, action: { label: '跳转', path } }] }), false);
     assert.equal(getMessageAction({ ...notice, action: { label: '跳转', path } }), undefined);
   }
-  assert.equal(isAnnouncementFile({ announcements: [{ ...notice, action: { label: '', path: '/membership' } }] }), false);
+  assert.equal(isAnnouncementFile({ announcements: [{ ...notice, action: { label: '', path: '/my-learning' } }] }), false);
   assert.equal(isAnnouncementFile({ announcements: [{ ...notice, action: { label: '查看', path: 42 } }] }), false);
 });
 test('list card links to an independent detail URL rather than directly to the action target', () => {
@@ -45,15 +45,15 @@ test('details render the complete body and exactly one optional action', () => {
   const plain = render(MessageDetailCard, { message: notice });
   assert.match(plain, /message-detail-title/); assert.match(plain, /第二段完整正文/);
   assert.equal(plain.includes('message-action'), false);
-  const targeted = render(MessageDetailCard, { message: { ...notice, action: { label: '查看我的会员', path: '/membership' } } });
-  assert.match(targeted, /href="\/membership"/); assert.match(targeted, /查看我的会员/);
+  const targeted = render(MessageDetailCard, { message: { ...notice, action: { label: '查看我的会员', path: '/my-learning' } } });
+  assert.match(targeted, /href="\/my-learning"/); assert.match(targeted, /查看我的会员/);
   const legacy = render(MessageDetailCard, { message: { ...notice, href: '/explore' } });
   assert.match(legacy, /前往查看/);
 });
 test('personal reminder uses full local text and a membership action', () => {
   const [message] = expiryNotice({ type: 'month', expiresAt: '2026-11-25T00:00:00Z', unlockedAt: '2026-11-01' }, Date.parse('2026-11-21T00:00:00Z'));
   assert.match(message.body, /目前还剩 4 天/); assert.match(message.body, /我的学习/);
-  assert.deepEqual(message.action, { label: '查看我的会员', path: '/membership' });
+  assert.deepEqual(message.action, { label: '查看我的会员', path: '/my-learning' });
   assert.match(render(MessageDetailCard, { message }), /message-action/);
 });
 test('new scene announcements include the full body and a labeled internal action', () => {

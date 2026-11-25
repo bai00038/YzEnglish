@@ -18,7 +18,7 @@ export function getMessageAction(message: SiteMessage): MessageAction | undefine
   if (isInternalMessagePath(message.href)) return { label: message.type === 'personal' ? '查看我的会员' : message.type === 'new-scene' ? '去看这一集' : '前往查看', path: message.href };
 }
 export function messageDetailHref(id: string) {
-  return `/membership/messages/detail?id=${encodeURIComponent(id)}`;
+  return `/my-learning/messages/detail?id=${encodeURIComponent(id)}`;
 }
 export function isAnnouncementFile(value: unknown): value is { announcements: SiteMessage[] } {
   if (!value || typeof value !== 'object' || !('announcements' in value) || !Array.isArray(value.announcements)) return false;
@@ -41,6 +41,6 @@ export function expiryNotice(unlock: { type: string; expiresAt: string | null; u
     body: days <= 0
       ? `你的会员已于 ${new Date(expires).toLocaleDateString('zh-CN')} 到期。\n\n可以前往「我的学习」查看会员状态或更换兑换码。`
       : `你的会员有效期至 ${new Date(expires).toLocaleDateString('zh-CN')}，目前还剩 ${days} 天。\n\n可以前往「我的学习」查看有效期，按自己的节奏继续学习。`,
-    publishedAt: new Date(expires - 7 * 86400000).toISOString(), action: { label: '查看我的会员', path: '/membership' } }];
+    publishedAt: new Date(expires - 7 * 86400000).toISOString(), action: { label: '查看我的会员', path: '/my-learning' } }];
 }
 export function unreadMessageIds(messages: SiteMessage[], readIds: string[]) { return messages.filter(message => !readIds.includes(message.id)).map(message => message.id); }

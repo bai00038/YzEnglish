@@ -21,8 +21,5 @@ export function chooseDictationBlank(text: string, sceneId: string, anchorStart:
 }
 
 export function isBlankAnswerCorrect(answer: string, input: string) {
-  const normalize = (value: string) => value.toLowerCase().replace(/\p{P}/gu, '').replace(/\s+/g, ' ').trim();
-  const expected = normalize(answer);
-  const submitted = normalize(input);
-  return Boolean(submitted) && isDictationExactMatch(expected, submitted);
+  return Boolean(input.trim()) && isDictationExactMatch(answer, input);
 }

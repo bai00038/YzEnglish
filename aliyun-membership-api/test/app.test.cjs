@@ -94,13 +94,17 @@ test("signs only an authenticated scene object under its own prefix", async () =
   assert.equal(traversal.statusCode, 400);
 });
 
-test("enforces the active session limit", async () => {
-  const { app } = setup({ maxDevices: 1 });
-  const first = await app(request("/v1/membership/redeem", { method: "POST", body: { code } }));
-  assert.equal(first.statusCode, 200);
-  const second = await app(request("/v1/membership/redeem", { method: "POST", body: { code }, ip: "127.0.0.2" }));
-  assert.equal(second.statusCode, 409);
-  assert.equal(JSON.parse(second.body).error, "session_limit_reached");
+test("enforces three devices for legacy and new codes; fourth blocked, existing device retained", async () => {
+  for (const maxDevices of [2, 1000, undefined]) {
+    const { app } = setup({ maxDevices });
+    const first = await app(request('/v1/membership/redeem', { method: 'POST', body: { code } }));
+    assert.equal(first.statusCode, 200);
+    for (let i = 0; i < 2; i++) assert.equal((await app(request('/v1/membership/redeem', { method: 'POST', body: { code } }))).statusCode, 200);
+    const fourth = await app(request('/v1/membership/redeem', { method: 'POST', body: { code } }));
+    assert.equal(fourth.statusCode, 409);assert.equal(JSON.parse(fourth.body).error, 'session_limit_reached');
+    const existing = await app(request('/v1/membership/status', { cookie: responseCookies(first) }));
+    assert.equal(existing.statusCode, 200);assert.equal(JSON.parse(existing.body).activeSessions, 3);
+  }
 });
 
 test("releases an inactive slot and automatically reacquires it with the signed cookie", async () => {
@@ -116,6 +120,9 @@ test("releases an inactive slot and automatically reacquires it with the signed 
   }));
   assert.equal(second.statusCode, 200);
 
+  // Fill all three slots before the inactive first device tries to return.
+  for (let i = 0; i < 2; i++) assert.equal((await app(request('/v1/membership/redeem', { method: 'POST', body: { code } }))).statusCode, 200);
+
   const blockedReturn = await app(request("/v1/membership/status", { cookie: firstCookie }));
   assert.equal(blockedReturn.statusCode, 409);
   assert.equal(JSON.parse(blockedReturn.body).error, "session_limit_reached");
@@ -127,20 +134,13 @@ test("releases an inactive slot and automatically reacquires it with the signed 
 });
 
 test("logout immediately releases the current session", async () => {
-  const { app } = setup({ maxDevices: 1 });
-  const first = await app(request("/v1/membership/redeem", { method: "POST", body: { code } }));
-  const loggedOut = await app(request("/v1/membership/logout", {
-    method: "POST",
-    cookie: responseCookies(first),
-  }));
+  const { app } = setup();
+  const first = await app(request('/v1/membership/redeem', { method: 'POST', body: { code } }));
+  for (let i = 0; i < 2; i++) assert.equal((await app(request('/v1/membership/redeem', { method: 'POST', body: { code } }))).statusCode, 200);
+  assert.equal((await app(request('/v1/membership/redeem', { method: 'POST', body: { code } }))).statusCode, 409);
+  const loggedOut = await app(request('/v1/membership/logout', { method: 'POST', cookie: responseCookies(first) }));
   assert.equal(loggedOut.statusCode, 200);
-
-  const second = await app(request("/v1/membership/redeem", {
-    method: "POST",
-    body: { code },
-    ip: "127.0.0.2",
-  }));
-  assert.equal(second.statusCode, 200);
+  assert.equal((await app(request('/v1/membership/redeem', { method: 'POST', body: { code } }))).statusCode, 200);
 });
 
 async function browser(app, ip) {
@@ -232,4 +232,24 @@ test("signs member MP3 and low MP4 only under the authenticated scene prefix", a
   }
   const anonymous = await app(request("/v1/content/sign", { method: "POST", body: { sceneId: "HC-06-001", objectKey: "content/HC-06-001/HC-06-001-audio.mp3" } }));
   assert.equal(anonymous.statusCode, 401);
+});
+
+test("membership card receives actual plan and current active device count", async () => {
+  const { app, repository } = setup();
+  const record = await repository.getCode(codeHash);await repository.putCode(codeHash, { ...record, planName: '双年卡' });
+  const first = await app(request('/v1/membership/redeem', { method: 'POST', body: { code } }));
+  assert.equal(JSON.parse(first.body).membership.planName, '双年卡');
+  await app(request('/v1/membership/redeem', { method: 'POST', body: { code } }));
+  const status = await app(request('/v1/membership/status', { cookie: responseCookies(first) }));
+  assert.equal(JSON.parse(status.body).activeSessions, 2);assert.equal(JSON.parse(status.body).membership.planName, '双年卡');
+});
+
+test("membership card exit releases even an expired signed device session", async () => {
+  const { app, repository, advance } = setup();
+  const redeemed = await app(request('/v1/membership/redeem', { method: 'POST', body: { code } }));
+  assert.equal(repository.devices.get(codeHash).size, 1);
+  advance(3 * 365 * 86400000);
+  const result = await app(request('/v1/membership/logout', { method: 'POST', cookie: responseCookies(redeemed) }));
+  assert.equal(result.statusCode, 200);assert.equal(repository.devices.has(codeHash), false);
+  assert.ok(await repository.getCode(codeHash));
 });

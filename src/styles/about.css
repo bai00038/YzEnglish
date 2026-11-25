@@ -1,3 +1,9 @@
 /* About page: shared section headings on the existing dark audience band. */
 .about-audience .site-heading-kicker {color:rgb(255 255 255 / .6)}
 .about-audience .site-page-heading {color:#fff}
+
+/* Keep all three method descriptions complete on one line; narrower layouts stack cards. */
+.about-method-card {container-type:inline-size;min-width:0}
+.about-method-description {white-space:nowrap;font-size:min(14.5px,4.3cqi)}
+
+@media(max-width:767px) {.about-hero-subtitle {font-size:min(18px,3.7vw);white-space:nowrap}}
