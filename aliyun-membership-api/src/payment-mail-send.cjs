@@ -19,10 +19,19 @@ function loadMailConfig(env = process.env) {
   };
 }
 
-// Aliyun RPC percent-encoding: encodeURIComponent plus the three characters
-// the RPC signature spec treats differently.
+// Aliyun RPC percent-encoding (RFC 3986 strict): only A-Z a-z 0-9 - _ . ~
+// stay literal. encodeURIComponent additionally leaves ! ' ( ) unescaped,
+// which the RPC signature spec requires encoded — leaving them literal
+// breaks every signature whenever a value contains one (the mail HTML
+// body carries apostrophes in its font-family list).
 function percentEncode(value) {
-  return encodeURIComponent(String(value)).replace(/\+/g, '%20').replace(/\*/g, '%2A').replace(/%7E/g, '~');
+  return encodeURIComponent(String(value))
+    .replace(/!/g, '%21')
+    .replace(/'/g, '%27')
+    .replace(/\(/g, '%28')
+    .replace(/\)/g, '%29')
+    .replace(/\*/g, '%2A')
+    .replace(/%7E/g, '~');
 }
 
 function buildSignedRequest(mail, config, { now = new Date(), nonce = crypto.randomUUID() } = {}) {

@@ -12,7 +12,7 @@ const mailEnv = {
   DIRECTMAIL_ACCESS_KEY_ID: 'LTAI_test_fixture',
   DIRECTMAIL_ACCESS_KEY_SECRET: 'test_secret_fixture',
 };
-const sampleMail = { to: 'buyer@example.com', subject: 'Yz English 会员码', text: 'plain body', html: '<p>html body</p>' };
+const sampleMail = { to: 'buyer@example.com', subject: 'Yz English 会员码', text: 'plain body', html: "<p style=\"font-family:'PingFang SC',sans-serif\">html body</p>" };
 
 test('mail config is fail-closed: null until account and key pair are all set', () => {
   assert.equal(loadMailConfig({}), null);
@@ -41,7 +41,10 @@ test('signed request carries the SingleSendMail parameters and a valid HMAC-SHA1
   assert.equal(params.AddressType, '1');
   assert.equal(params.Timestamp, '2026-11-25T17:00:00Z');
   const { Signature, ...unsigned } = params;
-  const encode = value => encodeURIComponent(String(value)).replace(/\+/g, '%20').replace(/\*/g, '%2A').replace(/%7E/g, '~');
+  // Reference encoder written independently of the implementation: strict
+  // RFC 3986 (Aliyun RPC spec) — everything outside A-Z a-z 0-9 - _ . ~ is
+  // percent-encoded, including the ! ' ( ) that encodeURIComponent skips.
+  const encode = value => encodeURIComponent(String(value)).replace(/!/g, '%21').replace(/'/g, '%27').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\*/g, '%2A').replace(/%7E/g, '~');
   const canonical = Object.keys(unsigned).sort().map(key => `${encode(key)}=${encode(unsigned[key])}`).join('&');
   const expected = crypto.createHmac('sha1', `${mailEnv.DIRECTMAIL_ACCESS_KEY_SECRET}&`)
     .update(`POST&${encode('/')}&${encode(canonical)}`).digest('base64');

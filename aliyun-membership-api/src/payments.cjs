@@ -28,7 +28,9 @@ function createPaymentApp({ stripe, repository, config, codePepper, mailConfig =
             await mailSender(mail, mailConfig);
             await repository.markMailSent(payment.sessionId, new Date(now()).toISOString());
           }
-        } catch { /* stays unsent in the outbox; retried on the next fulfill */ }
+        } catch (err) { /* stays unsent in the outbox; retried on the next fulfill */
+          console.error(`mail_send_failed session=${payment.sessionId} error=${err && err.message ? err.message : err}`);
+        }
       }
     }
     return issued;
