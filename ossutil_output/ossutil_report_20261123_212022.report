@@ -1,0 +1,1 @@
+# ossutil sync dist/ oss://yz-english-site-staging/ --update --exclude announcements.json --meta Cache-Control:no-cache

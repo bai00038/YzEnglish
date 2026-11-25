@@ -2,6 +2,7 @@ const { createApp } = require("./app.cjs");
 const { loadConfig } = require("./config.cjs");
 const { loadPaymentConfig } = require('./payments-config.cjs');
 const { createPaymentApp } = require('./payments.cjs');
+const { loadMailConfig } = require('./payment-mail-send.cjs');
 const { MemoryPaymentRepository, OssPaymentRepository } = require('./payments-repository.cjs');
 const { json } = require('./http.cjs');
 const { MemoryMembershipRepository, OssMembershipRepository, createOssClient } = require("./repository.cjs");
@@ -35,6 +36,7 @@ function createRuntime(env = process.env) {
   const paymentApp = paymentConfig && createPaymentApp({
     stripe: new (require('stripe'))(paymentConfig.secretKey, { maxNetworkRetries: 2, timeout: 15000 }),
     repository: paymentRepository, config: paymentConfig, codePepper: config.codePepper,
+    mailConfig: loadMailConfig(env),
   });
   const app = request => String(request.path || '').split('?')[0].startsWith('/v1/payments/')
     ? (paymentApp ? paymentApp(request) : json(503, { error: 'payments_unavailable' }))

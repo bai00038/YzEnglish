@@ -2,7 +2,7 @@ const crypto = require('node:crypto');
 const { createTestPool, allocate, membershipRecord } = require('./payment-issuance.cjs');
 
 class MemoryPaymentRepository {
-  constructor() { this.checkouts = new Map(); this.paid = new Map(); this.pool = createTestPool(); this.issued = []; this.outbox = new Map(); }
+  constructor() { this.checkouts = new Map(); this.paid = new Map(); this.pool = createTestPool(); this.issued = []; this.outbox = new Map(); this.mailStatus = new Map(); }
   async issuePaid(payment, plan, pepper) {
     const result = allocate(this.pool, this.issued, payment, plan, pepper);
     if (!result.duplicate) this.issued.push(result.record);
@@ -12,6 +12,8 @@ class MemoryPaymentRepository {
   async getIssuedCode(hash) { return membershipRecord(this.issued, hash); }
   async saveMail(record) { if (!this.outbox.has(record.sessionId)) this.outbox.set(record.sessionId, structuredClone(record)); }
   async getMail(id) { return structuredClone(this.outbox.get(id) || null); }
+  async markMailSent(sessionId, sentAt) { if (!this.mailStatus.has(sessionId)) this.mailStatus.set(sessionId, { sessionId, status: 'sent', sentAt }); }
+  async getMailStatus(id) { return structuredClone(this.mailStatus.get(id) || null); }
   async saveCheckout(record) {
     const prior = this.checkouts.get(record.sessionId);
     if (prior && prior.receiptHash !== record.receiptHash) throw new Error('checkout_conflict');
@@ -86,6 +88,10 @@ class OssPaymentRepository {
   async getIssuedCode(hash) { return membershipRecord((await this.readIssuance()).events, hash); }
   async saveMail(record) { await this.create('outbox', record); }
   getMail(id) { return this.read('outbox', id); }
+  // The outbox object itself is create-only, so delivery is recorded as a
+  // separate create-only status object; absence means "not sent yet".
+  async markMailSent(sessionId, sentAt) { await this.create('outbox-status', { sessionId, status: 'sent', sentAt }); }
+  getMailStatus(id) { return this.read('outbox-status', id); }
   // A conditional OSS create, rather than a process-local Set, arbitrates
   // concurrent webhook workers and survives function restarts.
   recordPaidOnce(record) { return this.create('paid', record); }

@@ -1,6 +1,7 @@
 const crypto = require('node:crypto');
 const { json, readJsonBody } = require('./http.cjs');
 const { membershipMail } = require('./payment-mail.cjs');
+const { sendMail: directMailSend } = require('./payment-mail-send.cjs');
 const hash = value => crypto.createHash('sha256').update(value).digest('hex');
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const SESSION_ID = /^cs_test_[A-Za-z0-9_]{8,240}$/;
@@ -8,14 +9,28 @@ const RECEIPT = /^[A-Za-z0-9_-]{43}$/;
 const INTEGRATION = 'yz-membership-staging-v1';
 function safeEqual(a, b) { const left = Buffer.from(a || ''), right = Buffer.from(b || ''); return left.length === right.length && crypto.timingSafeEqual(left, right); }
 
-function createPaymentApp({ stripe, repository, config, codePepper, now = () => Date.now() }) {
+function createPaymentApp({ stripe, repository, config, codePepper, mailConfig = null, mailSender = directMailSend, now = () => Date.now() }) {
   async function fulfill(payment) {
     if (!codePepper || codePepper.length < 32) throw new Error('issuance_configuration_missing');
     const plan = config.plans.find(plan => plan.id === payment.planId);
     const issued = await repository.issuePaid(payment, plan, codePepper);
-    // Actual transport is explicitly deferred. Persist a recoverable private
-    // outbox, without reporting "sent" or rolling back the allocated code.
+    // Persist the recoverable private outbox record first. When mail
+    // transport is configured, send the persisted record and mark delivery
+    // in a separate status record. A transport failure never rolls back the
+    // allocated code and never reports "sent"; a later fulfill retries.
     await repository.saveMail(membershipMail(issued, config.siteOrigin));
+    if (mailConfig) {
+      const prior = await repository.getMailStatus(payment.sessionId);
+      if (!prior || prior.status !== 'sent') {
+        try {
+          const mail = await repository.getMail(payment.sessionId);
+          if (mail) {
+            await mailSender(mail, mailConfig);
+            await repository.markMailSent(payment.sessionId, new Date(now()).toISOString());
+          }
+        } catch { /* stays unsent in the outbox; retried on the next fulfill */ }
+      }
+    }
     return issued;
   }
   const limits = new Map();
@@ -109,8 +124,9 @@ function createPaymentApp({ stripe, repository, config, codePepper, now = () => 
         // Only a verified, stored webhook can authorize fulfillment/status.
         const issued = paid ? await fulfill(paid) : null;
         const mail = issued ? await repository.getMail(id) : null;
+        const mailStatus = issued ? await repository.getMailStatus(id) : null;
         return respond(200, { status: paid ? 'paid' : 'pending', planId: checkout.planId,
-          ...(issued ? { membership: { code: issued.code, expiresAt: issued.expiresAt, planName: issued.planName, renewed: issued.renewed }, emailStatus: mail?.status || 'pending' } : {}) });
+          ...(issued ? { membership: { code: issued.code, expiresAt: issued.expiresAt, planName: issued.planName, renewed: issued.renewed }, emailStatus: mailStatus?.status === 'sent' ? 'sent' : (mail?.status || 'pending') } : {}) });
       } catch { return respond(503, { error: 'payment_status_unavailable' }); }
     }
     return respond(404, { error: 'not_found' });

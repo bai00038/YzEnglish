@@ -66,5 +66,5 @@ Use a separate staging Function Compute function and `api-staging.learnyzenglish
 - 现有自定义运行时启动命令为 `npm run start`，端口为 `9000`，对应 `src/local-server.cjs`；`src/index.cjs` 另保留事件 handler，不能把两种入口混用。
 - 重建上传包：在本目录执行 `npm ci --omit=dev`，将 `src/`、`config/`、`node_modules/`、`package.json`、`package-lock.json` 放在 ZIP 根目录，上传至 staging 函数后部署。不要包含任何 `.env`、私有配置导出、缓存或测试订单。
 - 实际密钥和环境变量保留在函数控制台/本地忽略文件中，仓库仅提供 `.env.example` 和 `.env.payments.example`。RAM 策略 JSON 是权限配置参考，不会随 Git push 自动生效。
-- 支付目前仅用 Stripe 测试模式；真实邮件发送仍待配置，不能把成功页显示会员码视为邮件已发送。
+- 支付目前仅用 Stripe 测试模式。发码邮件已接阿里云邮件推送（DirectMail，`src/payment-mail-send.cjs`）：在函数环境变量中配齐 `DIRECTMAIL_ACCOUNT_NAME`、`DIRECTMAIL_ACCESS_KEY_ID`、`DIRECTMAIL_ACCESS_KEY_SECRET` 后自动启用（变量清单见 `.env.payments.example`）；未配齐时不发送，邮件留存于私有 outbox，状态接口返回 `pending_configuration`，配齐后由后续履约自动补发。发送成功另存只增状态记录 `outbox-status`，状态接口据此返回 `emailStatus: "sent"`。发送失败不回滚已分配的会员码，也不会谎报已发送。
 - 前端执行 `npm run deploy:staging`，固定部署到 `yz-english-site-staging`；网站为 `https://staging.learnyzenglish.com`。此命令不会部署会员函数，也不会操作正式网站桶。
